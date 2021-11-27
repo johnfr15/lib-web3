@@ -1,4 +1,4 @@
-const { readFile, writeFile } = require('fs/promises');
+const { readFile, writeFile } = require('fs').promises;
 const chalk = require('chalk');
 
 const FILE_PATH = './deployed.json';
