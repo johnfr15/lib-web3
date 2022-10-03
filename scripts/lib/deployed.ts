@@ -1,5 +1,5 @@
-const { readFile, writeFile } = require('fs').promises;
-const chalk = require('chalk');
+import { readFile, writeFile } from "fs/promises";
+import chalk from "chalk";
 
 const FILE_PATH = './helpers/deployed.json';
 /*
@@ -7,7 +7,7 @@ const FILE_PATH = './helpers/deployed.json';
   It will create/update a file named deployed.json containing deployment informations of your smart contracts.
   DO NOT EDIT deployed.json MANUALLY, this is an automatically generated file.
 */
-exports.deployed = async (contractName: string, networkName: string, address: string): Promise<void> => {
+export const deployed = async (contractName: string, networkName: string, address: string): Promise<void> => {
   console.log(chalk.green.bold(`${contractName} deployed on ${networkName} at ${address}`));
   console.log(chalk.green(`updating ${FILE_PATH} with ${contractName} on ${networkName} at ${address}`));
   // Open and Read current FILE_PATH if exists
