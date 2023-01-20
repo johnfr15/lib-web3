@@ -50,6 +50,57 @@ export const collaterals = async(hauntId: number): Promise<string[]> => {
         throw new Error(error)
     }
 }
+
+/**
+ * @name collateralInfo
+ * @notice Query all details about a collateral in a haunt
+ * @param _hauntId The identifier of the haunt to query
+ * @param _collateralId the identifier of the collateral to query
+ * @return collateralInfo_ A struct containing extensive details about a collateral of identifier `_collateralId` in haunt `_hauntId`
+ */
+export const collateralInfo = async (hauntId: number, collateralId: number): Promise<AavegotchiCollateralTypeIO> => {
+    try {
+        const ret = await collateralFacet.collateralInfo(hauntId, collateralId)
+        return {collateralType: ret.collateralType, collateralTypeInfo: ret.collateralTypeInfo}
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
+
+/**
+ * @name getCollateralInfo
+ * @notice Query all details about a collateral in a haunt
+ * @param _hauntId The identifier of the haunt to query
+ * @return collateralInfo_ An array of structs where each struct contains extensive details about each collateral that is available in haunt `_hauntId`
+ */
+export const getCollateralInfo = async (hauntId: number): Promise<AavegotchiCollateralTypeIO[]> => {
+    let collateralsInfo: AavegotchiCollateralTypeIO[] = []
+    try {
+        const ret = await collateralFacet.getCollateralInfo(hauntId)
+        collateralsInfo = ret.map(( c: AavegotchiCollateralTypeIO ) => {
+            return {collateralType: c.collateralType, collateralTypeInfo: c.collateralTypeInfo}
+        })
+
+        return collateralsInfo
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
+
+/**
+ * @name getAllCollateralTypes
+ * @notice Query the address of all collaterals that are available universally throughout all haunts
+ * @return An array of addresses,each address representing a collateral's contract address
+ */
+export const getAllCollateralTypes = async(): Promise<string[]> => {
+    try {
+        const allCollaterals = await collateralFacet.getAllCollateralTypes()
+        return allCollaterals
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
+
 /**
  * @name collateralBalance
  * @notice Query the collateral address,balance and escrow contract of an NFT
@@ -68,21 +119,7 @@ export const collateralBalance = async (tokenId: number): Promise<{collateralTyp
     }
 }
 
-/**
- * @name collateralInfo
- * @notice Query all details about a collateral in a haunt
- * @param _hauntId The identifier of the haunt to query
- * @param _collateralId the identifier of the collateral to query
- * @return collateralInfo_ A struct containing extensive details about a collateral of identifier `_collateralId` in haunt `_hauntId`
- */
-export const collateralInfo = async (hauntId: number, collateralId: number): Promise<AavegotchiCollateralTypeIO> => {
-    try {
-        const ret = await collateralFacet.collateralInfo(hauntId, collateralId)
-        return {collateralType: ret.collateralType, collateralTypeInfo: ret.collateralTypeInfo}
-    } catch (error: any) {
-        throw new Error(error)
-    }
-}
+
 
 
 

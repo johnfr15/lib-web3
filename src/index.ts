@@ -12,7 +12,7 @@ const main = async() => {
   try {
     // console.log(await Aavegotchifacet.batchOwnerOf([317, 1421, 23, 134, 12654]))
     // console.log( await AavegotchiGamefacet.xpUntilNextLevel(490999) )
-    console.log( await CollateralFacet.collaterals(1) )
+    console.log( await CollateralFacet.getAllCollateralTypes() )
   } catch (error) {
     console.log(error)
   }
