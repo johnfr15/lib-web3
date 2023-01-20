@@ -73,7 +73,7 @@ export const deposit = async(user: string, depositData: string): Promise<void> =
 
         const tx = await bridgeFacet.deposit(user, depositData, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }
@@ -94,7 +94,7 @@ export const setChildChainManager = async(newChildChainManager: string): Promise
 
         const tx = await bridgeFacet.setChildChainManager(newChildChainManager, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }
@@ -115,7 +115,7 @@ export const withdrawAavegotchiBatch = async(tokenIds: number[]): Promise<void> 
 
         const tx = await bridgeFacet.withdrawAavegotchiBatch(tokenIds, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }
@@ -137,7 +137,7 @@ export const withdrawItemsBatch = async(ids: number[], values: number[]): Promis
 
         const tx = await bridgeFacet.withdrawItemsBatch( ids, values, {gasPrice: gasPrice} )
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }

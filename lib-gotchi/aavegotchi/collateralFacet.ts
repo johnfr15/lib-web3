@@ -149,7 +149,7 @@ export const increaseStake = async (tokenId: number, stakeAmount: number): Promi
 
         const tx = await collateralFacet.increaseStake(tokenId, stakeAmount, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }
@@ -172,7 +172,7 @@ export const decreaseStake = async (tokenId: number, reduceAmount: number): Prom
 
         const tx = await collateralFacet.decreaseStake(tokenId, reduceAmount, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }
@@ -195,7 +195,7 @@ export const decreaseAndDestroy = async(tokenId: number, toId: number): Promise<
 
         const tx = await collateralFacet.decreaseAndDestroy(tokenId, toId, {gasPrice: gasPrice})
         await tx.wait()
-        console.log("Transaction valided !\n")
+        console.log("Transaction validated !\n")
     } catch (error: any) {
         throw new Error(error)
     }

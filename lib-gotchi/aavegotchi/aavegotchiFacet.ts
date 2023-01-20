@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import FACET_ABI from "./abis/AavegotchiFacet.json"
 import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
 import { AavegotchiInfo } from "../types";
+import { getGasPrice } from "../utils";
 dotenv.config()
 
 
@@ -312,14 +313,10 @@ export const safeTransferFrom = async(from: string, to: string, tokenId: number,
 
   try {
     console.log(`Transfer token: ${tokenId} from: ${from} to: ${to}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.safeTransferFrom(from, to, tokenId, data, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.safeTransferFrom(from, to, tokenId, data, {gasPrice: await getGasPrice()})
     await tx.wait()
 
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }
@@ -333,14 +330,10 @@ export const safeBatchTransferFrom = async(from: string, to: string, tokenIds: n
 
   try {
     console.log(`Transfer token: ${tokenIds}\n from: ${from} to: ${to}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.safeBatchTransferFrom(from, to, tokenIds, data, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.safeBatchTransferFrom(from, to, tokenIds, data, {gasPrice: await getGasPrice()})
     await tx.wait()
 
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }
@@ -354,14 +347,10 @@ export const transferFrom = async(from: string, to: string, tokenId: number) => 
 
   try {
     console.log(`Transfer token: ${tokenId} from: ${from} to: ${to}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.transferFrom(from, to, tokenId, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.transferFrom(from, to, tokenId, {gasPrice: await getGasPrice()})
     await tx.wait()
 
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }
@@ -375,14 +364,10 @@ export const approve = async(approved: string, tokenId: number) => {
 
   try {
     console.log(`Approve ${approved} for token: ${tokenId}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.approve(approved, tokenId, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.approve(approved, tokenId, {gasPrice: await getGasPrice()})
     await tx.wait()
 
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }
@@ -396,14 +381,10 @@ export const setApprovalForAll = async(operator: string, approved: boolean) => {
 
   try {
     console.log(`Approve ${approved} to ${operator} for all tokens...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.setApprovalForAll(operator, approved, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.setApprovalForAll(operator, approved, {gasPrice: await getGasPrice()})
     await tx.wait()
 
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }
@@ -418,13 +399,9 @@ export const setPetOperatorForAll = async(operator: string, approved: boolean) =
 
   try {
     console.log(`Setting ${operator} as a pet operator...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiFacet.setPetOperatorForAll(operator, approved, {gasPrice: gasPrice})
+    const tx = await aavegotchiFacet.setPetOperatorForAll(operator, approved, {gasPrice: await getGasPrice()})
     await tx.wait()
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error)
   }

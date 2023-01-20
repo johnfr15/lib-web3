@@ -4,6 +4,7 @@ import FACET_ABI from "./abis/AavegotchiGameFacet.json"
 import * as AavegotchiFacet from "./aavegotchiFacet"
 import { AAVEGOTCHI_DIAMOND_ADDRES, PROVIDER, SIGNER } from "../constant";
 import { AavegotchiInfo, NUMERIC_TRAITS_NUM, Haunt, PortalAavegotchiTraitsIO, RevenueSharesIO, TokenIdsWithKinship } from "../types";
+import { getGasPrice } from "../utils";
 
 dotenv.config()
 
@@ -303,13 +304,9 @@ export const claimAavegotchi = async(tokenId: number, option: number, stakeAmoun
 
   try {
     console.log(`Sumonning gotchi: ${tokenId}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiGameFacet.claimAavegotchi( tokenId, option, stakeAmount, {gasPrice: gasPrice} )
+    const tx = await aavegotchiGameFacet.claimAavegotchi( tokenId, option, stakeAmount, {gasPrice: await getGasPrice()} )
     await tx.wait()
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error) {
     console.log(error)
   }
@@ -328,13 +325,9 @@ export const setAavegotchiName = async(tokenId: number, name: string) => {
 
   try {
     console.log(`Set gotchi: ${tokenId} a new name: ${name}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiGameFacet.setAavegotchiName( tokenId, name, {gasPrice: gasPrice} )
+    const tx = await aavegotchiGameFacet.setAavegotchiName( tokenId, name, {gasPrice: await getGasPrice()} )
     await tx.wait()
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
    throw new Error(error.reason)
   }
@@ -352,13 +345,9 @@ export const petGotchi = async(tokenId: number) => {
 
   try {
     console.log(`pet gotchi: ${tokenId}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiGameFacet.interact( [tokenId], {gasPrice: gasPrice} )
+    const tx = await aavegotchiGameFacet.interact( [tokenId], {gasPrice: await getGasPrice()} )
     await tx.wait()
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error.reason)
   }
@@ -377,14 +366,10 @@ export const petAllGotchiOfOwner = async(owner: string) => {
     })
     
     console.log(`pet all gotchis of: ${owner}...`)
-    
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiGameFacet.interact( tokenIds, { gasPrice: gasPrice} )
+    const tx = await aavegotchiGameFacet.interact( tokenIds, { gasPrice: await getGasPrice()} )
     await tx.wait()
     
-    console.log("Transaction valided !")
+    console.log("Transaction validated !")
     
   } catch (error: any) {
     throw new Error(error.reason)
@@ -403,13 +388,9 @@ export const spendSkillPoints = async(tokenId: number, values: number[]) => {
 
   try {
     console.log(`pet gotchi: ${tokenId}...`)
-
-    const gasPrice = await PROVIDER.getGasPrice()
-    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
-
-    const tx = await aavegotchiGameFacet.spendSkillPoints( tokenId, values, {gasPrice: gasPrice} )
+    const tx = await aavegotchiGameFacet.spendSkillPoints( tokenId, values, {gasPrice: await getGasPrice()} )
     await tx.wait()
-    console.log("Transaction valided !\n")
+    console.log("Transaction validated !\n")
   } catch (error: any) {
     throw new Error(error.reason)
   }
