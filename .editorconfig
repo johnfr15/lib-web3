@@ -15,7 +15,10 @@ max_line_length = 120
 indent_size = 4
 
 [*.js]
-indent_size = 2
+indent_size = 4
+[*.ts]
+indent_size = 4
 
 [*.adoc]
 max_line_length = 0
+
