@@ -114,3 +114,29 @@ export type AavegotchiCollateralTypeInfo = {
   conversionRate: number; //Current conversionRate for the price of this collateral in relation to 1 USD. Can be updated by the DAO
   delisted: boolean;
 }
+
+export type ERC721Listing = {
+  listingId: number;
+  seller: string;
+  erc721TokenAddress: string;
+  erc721TokenId: number;
+  category: number; // 0 is closed portal, 1 is vrf pending, 2 is open portal, 3 is Aavegotchi
+  priceInWei: number;
+  timeCreated: number;
+  timePurchased: number;
+  cancelled: boolean;
+  //new:
+  principalSplit: [number, number];
+  affiliate: string;
+}
+
+export type AavegotchiListing = {
+  listing: ERC721Listing;
+  aavegotchiInfo: AavegotchiInfo;
+}
+
+export type Category = {
+  erc721TokenAddress: string;
+  category: number; // 0,1,2,3 == Aavegotchi diamond, 4 == Realm diamond.
+  // uint256 status; can add this in later if necessary
+}
