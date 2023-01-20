@@ -140,3 +140,21 @@ export type Category = {
   category: number; // 0,1,2,3 == Aavegotchi diamond, 4 == Realm diamond.
   // uint256 status; can add this in later if necessary
 }
+
+export type ERC1155Listing = {
+  listingId: number;
+  seller: string;
+  erc1155TokenAddress: string;
+  erc1155TypeId: number;
+  category: number; // 0 is wearable, 1 is badge, 2 is consumable, 3 is tickets
+  quantity: number;
+  priceInWei: number;
+  timeCreated: number;
+  timeLastPurchased: number;
+  sourceListingId: number;
+  sold: boolean;
+  cancelled: boolean;
+  //new:
+  principalSplit: [number, number];
+  affiliate: string;
+}
