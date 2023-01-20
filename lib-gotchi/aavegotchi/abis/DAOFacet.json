@@ -263,7 +263,6 @@
       "name": "CreateHaunt",
       "type": "event"
     },
-    //////////////////////////////////////////////////////////////
     {
       "anonymous": false,
       "inputs": [
