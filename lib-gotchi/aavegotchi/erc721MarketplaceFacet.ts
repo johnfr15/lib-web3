@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import  FACET_ABI from "./abis/ERC721MarketplaceFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant"
+import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
 import { ERC721Listing, AavegotchiListing, AavegotchiInfo, Category } from "../types";
 import { getGasPrice } from "../utils";
 
@@ -315,7 +315,7 @@ export const executeERC721Listing = async (listingId: number) => {
       console.log("Executing listing...");
       const tx = await erc721MarketPlaceFacet.executeERC721Listing(listingId, { gasPrice: await getGasPrice() })
       await tx.wait();
-      console.log("Listing added successfully");
+      console.log("Listing executed successfully");
   } catch (error: any) {
       throw new Error(error)
   }
@@ -346,7 +346,7 @@ export const executeERC721ListingToRecipient = async (listingId: number, recipie
       )
       await tx.wait();
 
-      console.log("Listing added successfully");
+      console.log("Listing executed successfully");
   } catch (error: any) {
       throw new Error(error.reason)
   }
