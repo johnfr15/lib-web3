@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/CollateralFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
+import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant"
 import { AavegotchiCollateralTypeIO } from "../types"
 
 /*
@@ -143,7 +143,11 @@ export const collateralBalance = async (tokenId: number): Promise<{collateralTyp
 export const increaseStake = async (tokenId: number, stakeAmount: number): Promise<void> => {
     try {
         console.log(`Increasing stake of ${tokenId} by ${stakeAmount}`)
-        const tx = await collateralFacet.increaseStake(tokenId, stakeAmount)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await collateralFacet.increaseStake(tokenId, stakeAmount, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {
@@ -162,7 +166,11 @@ export const increaseStake = async (tokenId: number, stakeAmount: number): Promi
 export const decreaseStake = async (tokenId: number, reduceAmount: number): Promise<void> => {
     try {
         console.log(`Reducing stake of ${tokenId} by ${reduceAmount}`)
-        const tx = await collateralFacet.decreaseStake(tokenId, reduceAmount)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await collateralFacet.decreaseStake(tokenId, reduceAmount, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {
@@ -181,7 +189,11 @@ export const decreaseStake = async (tokenId: number, reduceAmount: number): Prom
 export const decreaseAndDestroy = async(tokenId: number, toId: number): Promise<void> => {
     try {
         console.log(`Destroying gotchi: ${tokenId} and send its xp to gotchi: ${toId}...`)
-        const tx = await collateralFacet.decreaseAndDestroy(tokenId, toId)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await collateralFacet.decreaseAndDestroy(tokenId, toId, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {

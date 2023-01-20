@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/BridgeFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant";
+import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
 
 /**
   |***********************************|
@@ -67,7 +67,11 @@ export const deposit = async(user: string, depositData: string): Promise<void> =
 
     try {
         console.log("Depositing tokens...")
-        const tx = await bridgeFacet.deposit(user, depositData)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await bridgeFacet.deposit(user, depositData, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {
@@ -84,7 +88,11 @@ export const deposit = async(user: string, depositData: string): Promise<void> =
 export const setChildChainManager = async(newChildChainManager: string): Promise<void> => {
     try {
         console.log(`New child chain manager: ${newChildChainManager}...`)
-        const tx = await bridgeFacet.setChildChainManager(newChildChainManager)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await bridgeFacet.setChildChainManager(newChildChainManager, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {
@@ -101,7 +109,11 @@ export const setChildChainManager = async(newChildChainManager: string): Promise
 export const withdrawAavegotchiBatch = async(tokenIds: number[]): Promise<void> => {
     try {
         console.log(`Withdrawing tokens: ${tokenIds}...`)
-        const tx = await bridgeFacet.withdrawAavegotchiBatch(tokenIds)
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await bridgeFacet.withdrawAavegotchiBatch(tokenIds, {gasPrice: gasPrice})
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {
@@ -119,7 +131,11 @@ export const withdrawAavegotchiBatch = async(tokenIds: number[]): Promise<void> 
 export const withdrawItemsBatch = async(ids: number[], values: number[]): Promise<void> => {
     try {
         console.log(`Withdrawing items:\n   ids: ${ids}\n   values: ${values}...`)
-        const tx = await bridgeFacet.withdrawItemsBatch( ids, values )
+
+        const gasPrice = await PROVIDER.getGasPrice()
+        console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+        const tx = await bridgeFacet.withdrawItemsBatch( ids, values, {gasPrice: gasPrice} )
         await tx.wait()
         console.log("Transaction valided !\n")
     } catch (error: any) {

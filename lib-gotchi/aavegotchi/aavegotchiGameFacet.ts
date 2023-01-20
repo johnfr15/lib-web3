@@ -303,9 +303,13 @@ export const claimAavegotchi = async(tokenId: number, option: number, stakeAmoun
 
   try {
     console.log(`Sumonning gotchi: ${tokenId}...`)
-    const tx = await aavegotchiGameFacet.claimAavegotchi( tokenId, option, stakeAmount )
+
+    const gasPrice = await PROVIDER.getGasPrice()
+    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+    const tx = await aavegotchiGameFacet.claimAavegotchi( tokenId, option, stakeAmount, {gasPrice: gasPrice} )
     await tx.wait()
-    console.log("Transaction valided !")
+    console.log("Transaction valided !\n")
   } catch (error) {
     console.log(error)
   }
@@ -324,9 +328,13 @@ export const setAavegotchiName = async(tokenId: number, name: string) => {
 
   try {
     console.log(`Set gotchi: ${tokenId} a new name: ${name}...`)
-    const tx = await aavegotchiGameFacet.setAavegotchiName( tokenId, name )
+
+    const gasPrice = await PROVIDER.getGasPrice()
+    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+    const tx = await aavegotchiGameFacet.setAavegotchiName( tokenId, name, {gasPrice: gasPrice} )
     await tx.wait()
-    console.log("Transaction valided !")
+    console.log("Transaction valided !\n")
   } catch (error: any) {
    throw new Error(error.reason)
   }
@@ -344,9 +352,13 @@ export const petGotchi = async(tokenId: number) => {
 
   try {
     console.log(`pet gotchi: ${tokenId}...`)
-    const tx = await aavegotchiGameFacet.interact( [tokenId] )
+
+    const gasPrice = await PROVIDER.getGasPrice()
+    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+    const tx = await aavegotchiGameFacet.interact( [tokenId], {gasPrice: gasPrice} )
     await tx.wait()
-    console.log("Transaction valided !")
+    console.log("Transaction valided !\n")
   } catch (error: any) {
     throw new Error(error.reason)
   }
@@ -368,6 +380,7 @@ export const petAllGotchiOfOwner = async(owner: string) => {
     
     const gasPrice = await PROVIDER.getGasPrice()
     console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
     const tx = await aavegotchiGameFacet.interact( tokenIds, { gasPrice: gasPrice} )
     await tx.wait()
     
@@ -390,9 +403,13 @@ export const spendSkillPoints = async(tokenId: number, values: number[]) => {
 
   try {
     console.log(`pet gotchi: ${tokenId}...`)
-    const tx = await aavegotchiGameFacet.spendSkillPoints( tokenId, values )
+
+    const gasPrice = await PROVIDER.getGasPrice()
+    console.log("gas price in gwei", ethers.utils.formatUnits(gasPrice, "gwei"))
+
+    const tx = await aavegotchiGameFacet.spendSkillPoints( tokenId, values, {gasPrice: gasPrice} )
     await tx.wait()
-    console.log("Transaction valided !")
+    console.log("Transaction valided !\n")
   } catch (error: any) {
     throw new Error(error.reason)
   }
