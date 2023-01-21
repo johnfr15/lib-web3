@@ -1,7 +1,7 @@
 import { ethers } from "ethers"
 import  FACET_ABI from "./abis/ERC721MarketplaceFacet.json"
 import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
-import { ERC721Listing, AavegotchiListing, AavegotchiInfo, Category } from "../types";
+import { ERC721Listing, AavegotchiListing, AavegotchiInfo, Category } from "./types";
 import { getGasPrice } from "../utils";
 
 /*

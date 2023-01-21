@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import dotenv from "dotenv";
 import FACET_ABI from "./abis/AavegotchiFacet.json"
 import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
-import { AavegotchiInfo } from "../types";
+import { AavegotchiInfo } from "./types";
 import { getGasPrice } from "../utils";
 dotenv.config()
 

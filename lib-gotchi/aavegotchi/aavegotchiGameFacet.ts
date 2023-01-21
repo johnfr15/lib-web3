@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import FACET_ABI from "./abis/AavegotchiGameFacet.json"
 import * as AavegotchiFacet from "./aavegotchiFacet"
 import { AAVEGOTCHI_DIAMOND_ADDRES, PROVIDER, SIGNER } from "../constant";
-import { AavegotchiInfo, NUMERIC_TRAITS_NUM, Haunt, PortalAavegotchiTraitsIO, RevenueSharesIO, TokenIdsWithKinship } from "../types";
+import { AavegotchiInfo, NUMERIC_TRAITS_NUM, Haunt, PortalAavegotchiTraitsIO, RevenueSharesIO, TokenIdsWithKinship } from "./types";
 import { getGasPrice } from "../utils";
 
 dotenv.config()

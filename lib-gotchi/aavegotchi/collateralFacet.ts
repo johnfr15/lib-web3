@@ -1,7 +1,7 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/CollateralFacet.json"
 import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant"
-import { AavegotchiCollateralTypeIO } from "../types"
+import { AavegotchiCollateralTypeIO } from "./types"
 
 /*
   |***********************************|
