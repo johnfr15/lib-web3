@@ -24,3 +24,11 @@ typechain-types
 cache
 artifacts
 
+#shell command
+shell/
+
+#crontab tasks
+task/
+
+#events listener
+events-gotchi/
