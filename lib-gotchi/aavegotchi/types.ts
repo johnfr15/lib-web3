@@ -158,3 +158,27 @@ export type ERC1155Listing = {
   principalSplit: [number, number];
   affiliate: string;
 }
+/**
+ * @param erc721TokenId The identifier of the NFT to lend
+ * @param initialCost The lending fee of the aavegotchi in $GHST
+ * @param period The lending period of the aavegotchi, unit: second
+ * @param revenueSplit The revenue split of the lending, 3 values, sum of the should be 100
+ * @param originalOwner The account for original owner, can be set to another address if the owner wishes to have profit split there.
+ * @param thirdParty The 3rd account for receive revenue split, can be address(0)
+ * @param whitelistId The identifier of whitelist for agree lending, if 0, allow everyone
+ */
+export type AddGotchiListing = {
+  tokenId: number;
+  initialCost: number;
+  period: number;
+  revenueSplit: [number, number, number]; // 0: lender, 1: borrower, 2: third party
+  originalOwner: string;
+  thirdParty: string;
+  whitelistId: number;
+  revenueTokens: string[];
+}
+
+export type BatchRenew = {
+  tokenId: number;
+  extension: number;
+}

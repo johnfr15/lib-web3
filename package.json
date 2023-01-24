@@ -9,6 +9,8 @@
     "start": "ts-node src/index.ts"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.8.1",
+    "axios": "^1.2.3",
     "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2"
