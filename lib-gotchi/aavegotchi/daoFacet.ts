@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/DAOFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
+import { CONTRACT, SIGNER } from "../constant"
 
 /*
   |***********************************|
@@ -55,7 +55,7 @@ import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
     !  batchUpdateItemsPrice(uint256[] calldata _itemIds, uint256[] calldata _newPrices) public onlyItemManager 
 */
 
-export const daoFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const daoFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

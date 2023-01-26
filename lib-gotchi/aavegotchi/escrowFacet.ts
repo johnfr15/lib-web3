@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import  FACET_ABI from "./abis/EscrowFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
+import { CONTRACT, SIGNER } from "../constant"
 import { getGasPrice } from "../utils";
 /*
   |***********************************|
@@ -22,7 +22,7 @@ import { getGasPrice } from "../utils";
     -  transferEscrow(uint256 _tokenId, address _erc20Contract, address _recipient, uint256 _transferAmount) external onlyAavegotchiOwner(_tokenId) onlyUnlocked(_tokenId)
 */
 
-export const escrowFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const escrowFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

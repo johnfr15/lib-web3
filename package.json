@@ -6,14 +6,17 @@
   "author": "John <bioj@hotmail.fr>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "event": "ts-node task/events/listen_gotchiLendingAdded.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.1",
     "axios": "^1.2.3",
     "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
-    "ethers": "^5.7.2"
+    "ethers": "^5.7.2",
+    "global": "^4.4.0",
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.18"

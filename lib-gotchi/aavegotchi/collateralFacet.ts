@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/CollateralFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant"
+import { CONTRACT, SIGNER, PROVIDER } from "../constant"
 import { AavegotchiCollateralTypeIO } from "./types"
 
 /*
@@ -27,7 +27,7 @@ import { AavegotchiCollateralTypeIO } from "./types"
     !  setCollateralEyeShapeSvgId(address _collateralToken, uint8 _svgId) external onlyDaoOrOwner 
 */
 
-export const collateralFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const collateralFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

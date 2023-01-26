@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import dotenv from "dotenv";
 import FACET_ABI from "./abis/AavegotchiGameFacet.json"
 import * as AavegotchiFacet from "./aavegotchiFacet"
-import { AAVEGOTCHI_DIAMOND_ADDRES, PROVIDER, SIGNER } from "../constant";
+import { CONTRACT, PROVIDER, SIGNER } from "../constant";
 import { AavegotchiInfo, NUMERIC_TRAITS_NUM, Haunt, PortalAavegotchiTraitsIO, RevenueSharesIO, TokenIdsWithKinship } from "./types";
 import { getGasPrice } from "../utils";
 
@@ -45,7 +45,7 @@ dotenv.config()
   -  setAavegotchiName(uint256 _tokenId, string calldata _name) external returns (_tokenId)
   -  spendSkillPoints(uint256 _tokenId, int16[4] calldata _values) external returns (_tokenId)
 */
-export const aavegotchiGameFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const aavegotchiGameFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 /***********************************|

@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import FACET_ABI from "./abis/BridgeFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
+import { CONTRACT, SIGNER, PROVIDER } from "../constant";
 
 /**
   |***********************************|
@@ -23,7 +23,7 @@ import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
   -  withdrawAavegotchiBatch(uint256[] calldata _tokenIds) external
  */
 
-export const bridgeFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const bridgeFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

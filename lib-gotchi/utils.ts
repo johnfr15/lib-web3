@@ -1,5 +1,8 @@
 import { ethers } from "ethers";
-import { PROVIDER } from "./constant";
+import { alchemicaFacet } from "./realm/alchemicaFacet";
+import {  ALPHA_ARPC, ALPHA_PRICE, FOMO_ARPC, FOMO_PRICE, FUD_ARPC, FUD_PRICE, KEK_ARPC, KEK_PRICE, 
+          PROVIDER, AALTAR_SPILLOVER, GHST_PRICE, SIGNER, MATIC_PRICE } from "./constant";
+
 
 export const getGasPrice = async(): Promise<ethers.BigNumber> => {
 
@@ -34,41 +37,6 @@ export const getDelta = (timestamp: number): {days: number, hours: number, minut
   return {days: daysPassed, hours: hoursPassed, minutes: minutesPassed, seconds: secondsPassed, timestamp: timestamp}
 }
 
-
-// DATA
-// parcel 2762
-/*
-0x9fefe5470000000000000000000000000000000000000000000000000000000000000aca
-          00000000000000000000000000000000000000000000000000000000000024a7
-          0000000000000000000000000000000000000000000000000000000000000060
-          0000000000000000000000000000000000000000000000000000000000000041
-          7a1ffec32fbc8a5929bdbb3aeaa83007f283b0cbcf8935bf19ba801fa1901961
-          6ac3f73919ff97bc6818abddb7e31ac41f5b993c1d8d01aafce6c8c65ae987a0
-          1b00000000000000000000000000000000000000000000000000000000000000
- */
-/*
-0x9fefe5470000000000000000000000000000000000000000000000000000000000000aca
-          0000000000000000000000000000000000000000000000000000000000001d49
-          0000000000000000000000000000000000000000000000000000000000000060
-          0000000000000000000000000000000000000000000000000000000000000041
-          2aa2bc39943ab619026f5cd5ffab665bc0a6662176b0264dc0377b248c0ed796
-          573b083d4ac28ad9c0f18b9067c06d33d9c581e76feee811fe3d31e00fb3c36d
-          1b00000000000000000000000000000000000000000000000000000000000000 
-*/
-/* 
-0x8027870e0000000000000000000000000000000000000000000000000000000000000aca
-          0000000000000000000000000000000000000000000000000000000000001d49
-          0000000000000000000000000000000000000000000000000000000000000080
-          0000000000000000000000000000000000000000000000000000000000000041
-          e9cd203cab75aeab3706f956f33eb1c554554fb361ee7aa4a64347698a0b1ad9
-          1004e6efb70aa31d9f3ef011248c4493efc921f60b27c4516b0f7e1f6c9802e6
-          1c00000000000000000000000000000000000000000000000000000000000000
-*/
-
-// parcel 2762
-
-export const sig = {"0":122,"1":31,"2":254,"3":195,"4":47,"5":188,"6":138,"7":89,"8":41,"9":189,"10":187,"11":58,"12":234,"13":168,"14":48,"15":7,"16":242,"17":131,"18":176,"19":203,"20":207,"21":137,"22":53,"23":191,"24":25,"25":186,"26":128,"27":31,"28":161,"29":144,"30":25,"31":97,"32":106,"33":195,"34":247,"35":57,"36":25,"37":255,"38":151,"39":188,"40":104,"41":24,"42":171,"43":221,"44":183,"45":227,"46":26,"47":196,"48":31,"49":91,"50":153,"51":60,"52":29,"53":141,"54":1,"55":170,"56":252,"57":230,"58":200,"59":198,"60":90,"61":233,"62":135,"63":160,"64":27}
-
 export const serializeSig = (signature: Object) => {
   let arr: any = Object.values(signature)
   console.log("Sig array: ", arr)
@@ -82,3 +50,93 @@ export const serializeSig = (signature: Object) => {
   console.log(arr)
 }
 
+export const getGasCostOfFunc = async(contractAddress: string, abi: string, functionName: string, params: any[]): Promise<number> => {
+  try {
+    const contract = new ethers.Contract( CONTRACT.aavegotchi.aavegotchiAddress, [abi], SIGNER)
+    const gasCost = await contract.estimateGas[functionName](...params);
+  
+    let gasPrice: ethers.BigNumber | number = await PROVIDER.getGasPrice()
+    gasPrice.mul(2)
+
+    let totalCost: any = gasPrice.mul(gasCost)
+    totalCost = parseFloat(ethers.utils.formatEther(totalCost))
+    totalCost *= MATIC_PRICE
+
+    return totalCost
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
+// Get how much time is needed to be tomorrow 00H00 UTC
+export const getTomorrowInterval = (): number => {
+  const current = new Date()
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setUTCHours(0, 0, 0, 0);
+  return tomorrow.getTime() - current.getTime();
+}
+
+export const getTime = (timestamp: number) => {
+  let time = timestamp
+
+  let days = Math.floor(time / (1000 * 60 * 60 * 24));
+  time = time % (1000 * 60 * 60 * 24);
+  let hours = Math.floor(time / (1000 * 60 * 60));
+  time = time % (1000 * 60 * 60);
+  let minutes = Math.floor(time / (1000 * 60));
+  time = time % (1000 * 60);
+  let seconds = Math.floor(time / 1000);
+
+  return `${days}d ${hours}h ${minutes}m ${seconds}s`
+}
+
+export const calc_channeling_revenue = (kinship: number, initialCost: number, borrowSplit: number, funcCost: number, altarLevel: number = 9): number => {
+  let total = 0
+
+  const modifier = Math.sqrt(kinship / 50)
+  const lendingCost = initialCost * GHST_PRICE
+
+  total += (FUD_ARPC   * modifier) * FUD_PRICE
+  total += (FOMO_ARPC  * modifier) * FOMO_PRICE
+  total += (ALPHA_ARPC * modifier) * ALPHA_PRICE
+  total += (KEK_ARPC   * modifier) * KEK_PRICE
+
+  total *= 1 - AALTAR_SPILLOVER[altarLevel]
+  total *= (borrowSplit / 100)
+  total - lendingCost - funcCost
+
+  return parseFloat(total.toFixed(2))
+}
+
+export const isChannable = async(gotchiId: number, listingPeriod: number): Promise<{state: boolean, when: string}> => {
+
+  // is Channable today ?
+  const lastChanneled =  await alchemicaFacet.getLastChanneled(gotchiId)
+  const currentTimestamp = new Date().getTime();
+  const nineHourTimestamp = new Date(currentTimestamp).setHours(9,0,0,0);
+
+  const delta = nineHourTimestamp - (lastChanneled.timestamp * 1000)
+
+  if (delta > 0)
+    return {state: true, when: "today"}
+
+  // is channable tomorrow ?
+  else
+  {
+    let lendingTime = listingPeriod * 1000
+    let hours = 0
+
+    const intervalTommorrow = getTomorrowInterval()
+    const intervalLending = lendingTime - intervalTommorrow
+
+    if (intervalLending > 0)
+      hours = Math.floor(intervalLending / (1000 * 60 * 60));
+
+    // check if lending interval is at least 1H if not we don't accept lending
+    if (hours >= 1)
+      return {state: true, when: "tommorrow"}
+    else
+      return {state: false, when: ""}
+  }
+}

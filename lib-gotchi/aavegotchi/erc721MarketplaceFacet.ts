@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import  FACET_ABI from "./abis/ERC721MarketplaceFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
+import { CONTRACT, SIGNER } from "../constant"
 import { ERC721Listing, AavegotchiListing, AavegotchiInfo, Category } from "./types";
 import { getGasPrice } from "../utils";
 
@@ -53,7 +53,7 @@ import { getGasPrice } from "../utils";
     -  cancelERC721Listings(uint256[] calldata _listingIds) external onlyOwner
 */
 
-export const erc721MarketPlaceFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const erc721MarketPlaceFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

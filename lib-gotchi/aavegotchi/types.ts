@@ -70,6 +70,29 @@ export type AavegotchiInfo = {
   locked: boolean;
   items: ItemTypeIO[];
 }
+export type GotchiLending = {
+  // storage slot 1
+  lender: string;
+  initialCost: number; // GHST in wei, can be zero
+  // storage slot 2
+  borrower: string;
+  listingId: number;
+  erc721TokenId: number;
+  whitelistId: number; // can be zero
+  // storage slot 3
+  originalOwner: string; // if original owner is lender, same as lender
+  timeCreated: number;
+  timeAgreed: number;
+  canceled: boolean;
+  complete: boolean;
+  // storage slot 4
+  thirdParty: string; // can be address(0)
+  revenueSplit: [number, number, number]; // lender/original owner, borrower, thirdParty
+  lastClaimed: number; //timestamp
+  period: number; //in seconds
+  // storage slot 5
+  revenueTokens: string[];
+}
 
 export type Haunt = {
   hauntMaxSize: number; //The max size of the Haunt
@@ -181,4 +204,9 @@ export type AddGotchiListing = {
 export type BatchRenew = {
   tokenId: number;
   extension: number;
+}
+
+export type LendingOperatorInputs = {
+  tokenId: number;
+  isLendingOperator: boolean;
 }

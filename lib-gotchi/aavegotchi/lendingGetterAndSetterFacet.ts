@@ -36,7 +36,7 @@ import { getGasPrice } from "../utils";
     -  getGotchiLendingListingInfo(uint32 _listingId)
 */
 
-export const lendingGetterAndSetterFacet = new ethers.Contract(CONTRACT["aavegotchi"]["aavegotchi"], FACET_ABI.abi, SIGNER)
+export const lendingGetterAndSetterFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

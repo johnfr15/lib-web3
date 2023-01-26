@@ -1,7 +1,7 @@
 import { ethers } from "ethers"
 import dotenv from "dotenv";
 import FACET_ABI from "./abis/AavegotchiFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER, PROVIDER } from "../constant";
+import { CONTRACT, SIGNER, PROVIDER } from "../constant";
 import { AavegotchiInfo } from "./types";
 import { getGasPrice } from "../utils";
 dotenv.config()
@@ -42,7 +42,7 @@ dotenv.config()
   -  setPetOperatorForAll(address _operator, bool _approved) external 
 */
 
-export const aavegotchiFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const aavegotchiFacet = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 
