@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import axios from "axios";
 import dotenv from "dotenv";
 import FACET_ABI from "./abis/AlchemicaFacet.json"
-import { REALM_DIAMOND_ADDRESS, SIGNER, SIG_CHANNEL } from "../constant";
+import { CONTRACT, SIGNER, SIG_CHANNEL } from "../constant";
 import { getGasPrice, getDelta } from "../utils";
 import { Delta, Alchemicas } from "./types";
 
@@ -47,7 +47,7 @@ dotenv.config()
   -  batchTransferTokens(address[][] calldata _tokens, uint256[][] calldata _amounts, address[] calldata _to) external
 */
 
-export const alchemicaFacet = new ethers.Contract(REALM_DIAMOND_ADDRESS, FACET_ABI.abi, SIGNER)
+export const alchemicaFacet = new ethers.Contract(CONTRACT.aavegotchi.realm, FACET_ABI.abi, SIGNER)
 
 
 

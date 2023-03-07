@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import  FACET_ABI from "./abis/EscrowFacet.json"
-import { AAVEGOTCHI_DIAMOND_ADDRES, SIGNER } from "../constant"
+import { CONTRACT, SIGNER } from "../constant"
 import { AddGotchiListing, BatchRenew } from "./types";
 import { getGasPrice } from "../utils";
 
@@ -104,7 +104,7 @@ import { getGasPrice } from "../utils";
   -  batchExtendGotchiLending(BatchRenew[] calldata _batchRenewParams) external { 
 */
 
-export const gotchiLendingFacet = new ethers.Contract(AAVEGOTCHI_DIAMOND_ADDRES, FACET_ABI.abi, SIGNER)
+export const gotchiLendingFacet = new ethers.Contract(CONTRACT.aavegotchi.aavegotchi, FACET_ABI.abi, SIGNER)
 
 
 

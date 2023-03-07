@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { alchemicaFacet } from "./realm/alchemicaFacet";
-import {  ALPHA_ARPC, ALPHA_PRICE, FOMO_ARPC, FOMO_PRICE, FUD_ARPC, FUD_PRICE, KEK_ARPC, KEK_PRICE, 
-          PROVIDER, AALTAR_SPILLOVER, GHST_PRICE, SIGNER, MATIC_PRICE } from "./constant";
+import { ALPHA_PRICE, FOMO_PRICE, FUD_PRICE, KEK_PRICE,PROVIDER, AALTAR_SPILLOVER, GHST_PRICE, SIGNER, MATIC_PRICE, ARPC, CONTRACT } from "./constant";
 
 
 export const getGasPrice = async(): Promise<ethers.BigNumber> => {
@@ -52,7 +51,7 @@ export const serializeSig = (signature: Object) => {
 
 export const getGasCostOfFunc = async(contractAddress: string, abi: string, functionName: string, params: any[]): Promise<number> => {
   try {
-    const contract = new ethers.Contract( CONTRACT.aavegotchi.aavegotchiAddress, [abi], SIGNER)
+    const contract = new ethers.Contract( CONTRACT.aavegotchi.aavegotchi, [abi], SIGNER)
     const gasCost = await contract.estimateGas[functionName](...params);
   
     let gasPrice: ethers.BigNumber | number = await PROVIDER.getGasPrice()
@@ -97,10 +96,10 @@ export const calc_channeling_revenue = (kinship: number, initialCost: number, bo
   const modifier = Math.sqrt(kinship / 50)
   const lendingCost = initialCost * GHST_PRICE
 
-  total += (FUD_ARPC   * modifier) * FUD_PRICE
-  total += (FOMO_ARPC  * modifier) * FOMO_PRICE
-  total += (ALPHA_ARPC * modifier) * ALPHA_PRICE
-  total += (KEK_ARPC   * modifier) * KEK_PRICE
+  total += (ARPC.fud   * modifier) * FUD_PRICE
+  total += (ARPC.fomo  * modifier) * FOMO_PRICE
+  total += (ARPC.alpha * modifier) * ALPHA_PRICE
+  total += (ARPC.kek   * modifier) * KEK_PRICE
 
   total *= 1 - AALTAR_SPILLOVER[altarLevel]
   total *= (borrowSplit / 100)

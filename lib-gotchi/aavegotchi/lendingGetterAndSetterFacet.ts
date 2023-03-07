@@ -323,7 +323,7 @@ export const setLendingOperator = async (operator: string, tokenId: number, isOp
  */
 export const batchSetLendingOperator = async (operator: string, inputs: LendingOperatorInputs[]) => {
   try {
-    console.log("Setting lending operator in batch...");
+    console.log(`Setting ${operator} as lending operator for gotchis: ${inputs}`)
     const tx = await lendingGetterAndSetterFacet.batchSetLendingOperator(operator, inputs, { gasPrice: await getGasPrice() });
     await tx.wait();
     console.log("Lending operator set in batch successfully");
