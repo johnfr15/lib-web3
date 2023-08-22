@@ -10,7 +10,7 @@ dotenv.config()
 
 /*
   |***********************************|
-  |        alchemicaFacet INTERFACE            |
+  |        alchemicaFacet INTERFACE   |
   |___________________________________| 
 
   EVENT
