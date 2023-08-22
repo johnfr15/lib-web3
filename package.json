@@ -7,7 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "event": "ts-node task/events/listen_gotchiLendingAdded.ts"
+    "event": "ts-node task/events/listen_gotchiLendingAdded.ts",
+    "./task/pet_all_gotchis.ts": "ts-node task/pet_all_gotchis.ts",
+    "./task/hello_world.ts": "ts-node task/hello_world.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.1",
