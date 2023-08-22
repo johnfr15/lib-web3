@@ -2,14 +2,15 @@ import { ethers } from "ethers"
 const axios = require("axios")
 
 /****************************************
-            Gotchiverse
+            Baazaar
 *****************************************/
-//Query:https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic
+const url = "https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api"
+
 
 // Fetch all nfts currently on sales
 export const getParcels = async (first = 10) => {
     const result = await axios({
-        url: 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic',
+        url: url,
         method: 'post',
         data: {
             query: `
