@@ -48,7 +48,7 @@ export const FOMO_PRICE   = 0.018
 export const ALPHA_PRICE  = 0.0065
 export const KEK_PRICE    = 0.0164
 export const GHST_PRICE   = 1.02
-export const MATIC_PRICE   = 0.997
+export const MATIC_PRICE  = 0.997
 
 // ARPC = Alchemica received per channeling
 export const ARPC = {
