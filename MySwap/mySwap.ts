@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { Account, Contract, uint256, BigNumberish, Uint256 } from 'starknet';
-import { TESTNET_MYSWAP, TESTNET_PROVIDER, TOKEN, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
+import { Account, Contract, uint256, Uint256 } from 'starknet';
+import { TESTNET_MYSWAP, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
 import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, get_balance, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, Uint256_to_float } from './utils';
 import dotenv from "dotenv";
 import { Add_liquidity_args } from './types';
@@ -8,19 +8,26 @@ import { Add_liquidity_args } from './types';
 dotenv.config()
 
 
+
+
+
 /**
  * @name swap
+ * @param signer        // Account to perform the swap
+ * @param path          // token swap from path[0] (input) to path[1] (output) 
+ * @param amountIn      // The amount that will enter in the pool
+ * @param network       // (optional) 'testnet' is the default one
+ * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
+ * @param amountOutMin  // (optional) The minimum output we are ready you cn specify if you prefere using an oracle instead of the pool
  */
 export const swap = async(
     signer: Account,
     path: [string, string],
     amountIn: number, 
-    network?: string | undefined | null,
-    slipage?: number | undefined | null,
+    network: string = "testnet",
+    slipage: number = 995,
     amountOutMin?: Uint256 | undefined | null,
 ) => {
-    network = network ?? "testnet"
-    slipage = slipage ?? 995 // 0.5% of difference accepted
 
     try {
 
@@ -64,24 +71,34 @@ export const swap = async(
     }
 }
 
+
+
+
+
 /**
  * @name add_liquidity
+ * @param signer        // Account to perform the swap
+ * @param addressA      // First token
+ * @param amountA       // Amount of first token. if set to null will check for amountB or max
+ * @param addressB      // Second token
+ * @param amountB       // Amount of second token. if set to null will check for amountA or max
+ * @param max           // (optional, recommended) if activated it will check for the highest amount possible from tokenA and tokenB
+ * @param network       // (optional) 'testnet' is the default one
+ * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
  */
 export const add_liquidity = async(
-    signer: Account, 
-    addressA: string, 
-    amountA: number | undefined | null, 
-    addressB: string, 
-    amountB: number | undefined | null,
-    max?: 0 | 1 | undefined | null,
-    network?: string | undefined | null,
-    slipage?: number | undefined | null,
+    signer: Account,                        
+    addressA: string,                       
+    amountA: number | undefined | null,     
+    addressB: string,                       
+    amountB: number | undefined | null,     
+    max: 0 | 1 = 0,                         
+    network: string = "testnet",            
+    slipage: number = 995,                  
 ): Promise<void> => {
     amountA = amountA ?? null
     amountB = amountB ?? null
-    max = max ?? 0
-    network = network ?? "testnet"
-    slipage = slipage ?? 995 // 0.5% of difference accepted
+
     let args: Add_liquidity_args
 
     if ( amountA === null && amountB === null && max === 0 )
@@ -142,8 +159,18 @@ export const add_liquidity = async(
     }
 }
 
+
+
+
+
 /**
  * @name withdraw_liquidity
+ * @param signer                // The account to widthdraw its Liquidity Tokens (lp) 
+ * @param tokenA                // Address of token A
+ * @param tokenB                // Address of token B
+ * @param percent               // (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
+ * @param network               // (optional) 'testnet' is the default one
+ * @param slipage               // (optional) protection against price movement or to high price impact default is 2%
  */
 export const withdraw_liquidity = async(
     signer: Account, 
@@ -153,6 +180,7 @@ export const withdraw_liquidity = async(
     network: string = "testnet", 
     slipage: number = 980
 ) => {
+    percent = percent > 100 ? 100 : percent
 
     if ( percent <= 0 )
         throw new Error("Percent need to be set between 0 to 100")
