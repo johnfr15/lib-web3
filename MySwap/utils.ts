@@ -1,8 +1,6 @@
 import { ethers, BigNumberish } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface } from "starknet";
-import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet } from "./constant";
-import { MYSWAP_ABI } from "./abis/mySwap";
-import { ERC20_ABI } from "./abis/erc20";
+import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { Add_liquidity_args } from "./types";
 
 export const get_amount_out = (amount_in: ethers.BigNumber, reserve_in: ethers.BigNumber, reserve_out: ethers.BigNumber ): Uint256 => {

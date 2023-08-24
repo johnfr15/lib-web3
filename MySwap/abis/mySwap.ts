@@ -1,4 +1,4 @@
-export const MYSWAP_ABI = [
+export const mySwap_abi = [
     {
       "name": "Uint256",
       "size": 2,

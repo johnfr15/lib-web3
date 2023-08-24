@@ -1,8 +1,6 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, BigNumberish, Uint256 } from 'starknet';
-import { ERC20_ABI } from './abis/erc20';
-import { MYSWAP_ABI } from './abis/mySwap';
-import { TESTNET_MYSWAP, TESTNET_PROVIDER, TOKEN, TICKER } from './constant';
+import { TESTNET_MYSWAP, TESTNET_PROVIDER, TOKEN, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
 import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, get_balance, approve, is_balance, fetch_add_liq, fetch_max_add_liq } from './utils';
 import dotenv from "dotenv";
 import { Add_liquidity_args } from './types';
@@ -190,39 +188,3 @@ export const create_new_pool = async(
 
     }
 }
-
-
-const main = async() => {
-    const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS
-    const PRIVATE_KEY = process.env.PRIVATE_KEY
-    const network = "testnet" // testnet | mainnet
-
-    try {
-        // connect the contract
-        const signer = new Account(TESTNET_PROVIDER, ACCOUNT_ADDRESS!, PRIVATE_KEY!);
-        const contract = new Contract(MYSWAP_ABI, TESTNET_MYSWAP, signer);
-        const { balance } = await get_balance(signer.address, signer, TOKEN.eth[network])
-        console.log("Account: ", signer.address)
-        console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
-
-        // await swap( signer, [TOKEN.eth[network], TOKEN.usdc[network]], 0.000001 ) 
-        /* 
-        await add_liquidity(
-            signer, 
-            TOKEN.eth[network],
-            0.00001, 
-            TOKEN.dai[network],
-            null,
-        )
-        */
-
-
-    } catch (error: any) {
-
-        console.log(error)
-        return (1)
-
-    }
-}
-
-main()

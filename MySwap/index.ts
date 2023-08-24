@@ -1,3 +1,8 @@
+import { Account, Contract } from "starknet"
+import * as MySwap from "./mySwap"
+import * as Constant from "./constant"
+import * as Utils from "./utils"
+
 /*
   |***********************************|
   |          MySwap INTERFACE         |
@@ -22,3 +27,40 @@
   !  create_new_pool(pool_name: felt, a_address: felt, a_initial_liquidity: Uint256, b_address: felt, b_initial_liquidity: Uint256, a_times_b_sqrt_value: Uint256) return(pool_id: felt)
   !  upgrade(new_implementation: felt) return()
 */
+
+
+const main = async() => {
+  const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS
+  const PRIVATE_KEY = process.env.PRIVATE_KEY
+  const { TESTNET_PROVIDER, TOKEN, TICKER } = Constant
+  const network = "testnet" // testnet | mainnet
+
+  try {
+      // connect the contract
+      const signer = new Account(TESTNET_PROVIDER, ACCOUNT_ADDRESS!, PRIVATE_KEY!);
+      const { balance } = await Utils.get_balance(signer.address, signer, TOKEN.eth[network])
+      console.log("Account: ", signer.address)
+      console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
+
+      // Swap
+      // await MySwap.swap( signer, [TOKEN.eth[network], TOKEN.usdc[network]], 0.000001 ) 
+
+      // Add liquidity
+      // await MySwap.add_liquidity(
+      //     signer, 
+      //     TOKEN.eth[network],
+      //     0.00001, 
+      //     TOKEN.dai[network],
+      //     null,
+      // )
+
+
+  } catch (error: any) {
+
+      console.log(error)
+      return (1)
+
+  }
+}
+
+main()
