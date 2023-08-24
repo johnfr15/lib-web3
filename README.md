@@ -1,8 +1,8 @@
 # jonathan
 Jonathan's code
 
-**Swap**: *DONE*
-**Add liquidity**: *DONE*
+**Swap**: *DONE*  
+**Add liquidity**: *DONE*  
 **Remove liquidity**: *In progress*
 
 
