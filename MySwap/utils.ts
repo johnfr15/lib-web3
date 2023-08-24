@@ -210,13 +210,6 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
         args.amount_a_min = ethers.BigNumber.from( args.amount_a ).mul(slipage).div(1000).toBigInt()
         args.amount_b_min = ethers.BigNumber.from( args.amount_b ).mul(slipage).div(1000).toBigInt()
 
-        // console.log("token a: ", TICKER[tokenA])
-        // console.log("amount a: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_a), decimalsA ))
-        // console.log("amount a min: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_a_min), decimalsA ))
-        // console.log("token b: ", TICKER[tokenB])
-        // console.log("amount b: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_b), decimalsB ))
-        // console.log("amount b min: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_b_min), decimalsB ))
-
         return args
 
     } catch (error: any) {
@@ -272,13 +265,6 @@ export const fetch_add_liq = async(
                 amount_b_min: amount_2.mul(slipage).div(1000).toBigInt(),
             }
 
-        // console.log("token a: ", TICKER[token_addr1_address])
-        // console.log("amount a: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_a), decimals_addr1 ))
-        // console.log("amount a min: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_a_min), decimals_addr1 ))
-        // console.log("token b: ", TICKER[token_addr2_address])
-        // console.log("amount b: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_b), decimals_addr2 ))
-        // console.log("amount b min: ", ethers.utils.formatUnits( ethers.BigNumber.from(args.amount_b_min), decimals_addr2 ))
-
         return args
 
     } catch (error: any) {
@@ -286,4 +272,53 @@ export const fetch_add_liq = async(
         throw new Error(error)
         
     }
+}
+
+export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_id: number, percent: number, slipage: number) => {
+
+    try {
+
+        const { pool } = await MySwap.functions.get_pool( pool_id )
+        const lp_address = ethers.BigNumber.from(pool.liq_token)._hex
+        const Lp = new Contract(ERC20_ABI, lp_address, signer) 
+        let { shares: lp_balance } = await MySwap.functions.get_lp_balance( pool_id, signer.address )
+        let { total_shares: lp_total } = await MySwap.functions.get_total_shares( pool_id )
+
+        
+        let amount_a_token = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_a_reserves ) )
+        let amount_b_token = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_b_reserves ) )
+        lp_balance = ethers.BigNumber.from( uint256.uint256ToBN( lp_balance ) )
+        lp_total = ethers.BigNumber.from( uint256.uint256ToBN( lp_total ) )
+        
+        let rate: any = parseFloat( ethers.utils.formatEther( lp_balance ) ) / parseFloat( ethers.utils.formatEther( lp_total ) ) 
+
+        let denominator = 10000000000
+        rate = parseInt( (denominator * rate).toString() )
+
+        const args = {
+            pool_id: pool_id,
+            shares_amount:  uint256.bnToUint256( lp_balance.mul(percent).div(100).toBigInt() ),
+            addr_a: "0x" + pool.token_a_address.toString(16),
+            amount_min_a: uint256.bnToUint256( amount_a_token.mul(rate).div(denominator).mul(slipage).div(1000).toBigInt() ), 
+            addr_b: "0x" + pool.token_b_address.toString(16),
+            amount_min_b: uint256.bnToUint256( amount_b_token.mul(rate).div(denominator).mul(slipage).div(1000).toBigInt() ),
+            lp_address: lp_address
+        }
+
+        return args
+        
+    } catch (error: any) {
+
+        throw new Error(error)
+
+    }
+}
+
+export const Uint256_to_float = (number: Uint256): number => 
+{
+    return parseFloat( ethers.utils.formatEther( ethers.BigNumber.from( uint256.uint256ToBN( number ) ) ) )
+}
+export const float_to_Uint256 = (number: number, decimals: number = 18): Uint256 => 
+{
+    return uint256.bnToUint256( ethers.utils.parseUnits( number.toString(), decimals ).toBigInt() )
 }

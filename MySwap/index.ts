@@ -32,27 +32,32 @@ import * as Utils from "./utils"
 const main = async() => {
   const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS
   const PRIVATE_KEY = process.env.PRIVATE_KEY
-  const { TESTNET_PROVIDER, TOKEN, TICKER } = Constant
+  const { TESTNET_PROVIDER, TOKEN, TICKER, TESTNET_MYSWAP, MYSWAP_ABI } = Constant
   const network = "testnet" // testnet | mainnet
 
   try {
       // connect the contract
       const signer = new Account(TESTNET_PROVIDER, ACCOUNT_ADDRESS!, PRIVATE_KEY!);
+      // const MySwap = new Contract(MYSWAP_ABI, TESTNET_MYSWAP, signer)
       const { balance } = await Utils.get_balance(signer.address, signer, TOKEN.eth[network])
       console.log("Account: ", signer.address)
       console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
 
       // Swap
-      await MySwap.swap( signer, [TOKEN.eth[network], TOKEN.usdc[network]], 0.000001 ) 
+      await MySwap.swap( signer, [TOKEN.eth[network], TOKEN.dai[network]], 0.0001 ) 
 
-      // Add liquidity
-      // await MySwap.add_liquidity(
-      //     signer, 
-      //     TOKEN.eth[network],
-      //     0.00001, 
-      //     TOKEN.dai[network],
-      //     null,
-      // )
+      //Add liquidity
+      await MySwap.add_liquidity(
+          signer, 
+          TOKEN.eth[network],
+          0.00001, 
+          TOKEN.dai[network],
+          null,
+      )
+
+      // Remove liquidity
+      await MySwap.withdraw_liquidity(signer, TOKEN.eth[network], TOKEN.dai[network])
+      
 
 
   } catch (error: any) {

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, BigNumberish, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, TOKEN, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
-import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, get_balance, approve, is_balance, fetch_add_liq, fetch_max_add_liq } from './utils';
+import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, get_balance, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, Uint256_to_float } from './utils';
 import dotenv from "dotenv";
 import { Add_liquidity_args } from './types';
 
@@ -133,7 +133,7 @@ export const add_liquidity = async(
             uint256.bnToUint256( args.amount_b_min! )
         )
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
-        console.log(`Transaction valided at hash: ${tx.transaction_hash} !`)
+        console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
         console.log(`Fees: ${ethers.utils.formatEther( receipt.actual_fee )} ETH`)
         /*=============================================================================================================================================*/
 
@@ -145,8 +145,42 @@ export const add_liquidity = async(
 /**
  * @name withdraw_liquidity
  */
-export const withdraw_liquidity = async() => {
+export const withdraw_liquidity = async(
+    signer: Account, 
+    tokenA: string, 
+    tokenB: string, 
+    percent: number = 100, 
+    network: string = "testnet", 
+    slipage: number = 980
+) => {
 
+    if ( percent <= 0 )
+        throw new Error("Percent need to be set between 0 to 100")
+
+        try {
+            
+            const MySwap = resolve_network_contract(network, signer)
+            const pool_id = resolve_pool(tokenA, tokenB, network)
+
+            const args = await fetch_withdraw_liq(signer, MySwap, pool_id, percent, slipage)
+
+            /*========================================= TX ================================================================================================*/
+            await approve(MySwap.address, Uint256_to_float( args.shares_amount ), args.lp_address, signer )
+            /*=============================================================================================================================================*/
+
+            /*========================================= TX ================================================================================================*/
+            console.log(`\nWithdrawing ${percent}% of liquidity for:\n\t(minimum) ${Uint256_to_float(args.amount_min_a)} ${TICKER[args.addr_a]}\n\t(minimum) ${Uint256_to_float(args.amount_min_b)} ${TICKER[args.addr_b]}`)
+            const tx = await MySwap.functions.withdraw_liquidity(pool_id, args.shares_amount, args.amount_min_a, args.amount_min_b)
+            const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
+            console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
+            console.log(`Fees: ${ethers.utils.formatEther( receipt.actual_fee )} ETH`) 
+            /*=============================================================================================================================================*/
+
+        } catch (error: any) {
+
+            throw new Error(error)
+
+        }
 }
 
 /**
