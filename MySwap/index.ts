@@ -43,7 +43,7 @@ const main = async() => {
       console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
 
       // Swap
-      // await MySwap.swap( signer, [TOKEN.eth[network], TOKEN.usdc[network]], 0.000001 ) 
+      await MySwap.swap( signer, [TOKEN.eth[network], TOKEN.usdc[network]], 0.000001 ) 
 
       // Add liquidity
       // await MySwap.add_liquidity(
