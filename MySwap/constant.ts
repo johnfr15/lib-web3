@@ -11,7 +11,7 @@ export const MAINNET_MYSWAP = "0x010884171baf1914edc28d7afb619b40a4051cfae78a094
 export const MYSWAP_ABI = mySwap_abi
 export const ERC20_ABI = erc20_abi
 
-export const TOKEN = {
+export const TOKEN: any = {
     eth: {
         mainnet: "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
         testnet: "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
