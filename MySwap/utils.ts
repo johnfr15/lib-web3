@@ -25,14 +25,11 @@ export const calc_price_impact = (amount_min: BigNumberish, amount_out: BigNumbe
     return price_impact
 }
 
-export const sortTokens = (addrA: string, addrB: string, pool: {[key: string]: any}): { tokenA: string, tokenB: string } => {
+export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB: string } => {
     const pool_a_addr = "0x" + pool.token_a_address.toString(16)
     const pool_b_addr = "0x" + pool.token_b_address.toString(16)
 
-    const tokenA: string = addrA === pool_a_addr ? pool_a_addr : pool_b_addr
-    const tokenB: string = addrB === pool_a_addr ? pool_a_addr : pool_b_addr
-
-    return { tokenA, tokenB }
+    return { tokenA: pool_a_addr, tokenB: pool_b_addr }
 }
 
 
@@ -169,15 +166,18 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
         
         const MySwap = resolve_network_contract(network, signer)
         const { pool } = await MySwap.functions.get_pool( resolve_pool(addrA, addrB, network) )
-        const { tokenA, tokenB } = sortTokens(addrA, addrB, pool)
+        const { tokenA, tokenB } = sortTokens(pool)
         const { balance: balanceA, decimals: decimalsA } = await get_balance(signer.address, signer, tokenA)
         const { balance: balanceB, decimals: decimalsB } = await get_balance(signer.address, signer, tokenB)
         const token_a_reserves = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_a_reserves ) )
         const token_b_reserves = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_b_reserves ) )
 
         // Cross product for both
-        let rate_a = parseFloat( balanceA ) * 100 / parseFloat( ethers.utils.formatUnits( token_b_reserves, decimalsB ) )
-        let rate_b = parseFloat( balanceB ) * 100 / parseFloat( ethers.utils.formatUnits( token_a_reserves, decimalsA ) )
+        let rate_a = parseFloat( balanceA ) * 100 / parseFloat( ethers.utils.formatUnits( token_a_reserves, decimalsB ) )
+        let rate_b = parseFloat( balanceB ) * 100 / parseFloat( ethers.utils.formatUnits( token_b_reserves, decimalsA ) )
+
+        console.log('rate token a', TICKER[tokenA], ": ", rate_a)
+        console.log('rate token b', TICKER[tokenB], ": ", rate_b)
 
         if ( rate_a > rate_b)
         {
@@ -185,7 +185,7 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
             args = {
                 token_a_addr: tokenA,
                 token_a_decimals: decimalsA,
-                amount_a: (await quote(ethers.utils.parseUnits( balanceB, decimalsB ), token_a_reserves, token_b_reserves)).toBigInt(),
+                amount_a: (await quote(ethers.utils.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves)).toBigInt(),
                 amount_a_min: null,
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
@@ -203,7 +203,7 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
                 amount_a_min: null,
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
-                amount_b: (await quote(ethers.utils.parseUnits( balanceA, decimalsA ), token_b_reserves, token_a_reserves)).toBigInt(),
+                amount_b: (await quote(ethers.utils.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves)).toBigInt(),
                 amount_b_min: null,
             }
         }
