@@ -1,11 +1,8 @@
-import { Account, Contract } from "starknet"
 import { swap, add_liquidity, withdraw_liquidity, create_new_pool } from "./mySwap"
 import * as Constant from "./constant"
 import * as Utils from "./utils"
 import * as Types from "./types"
-import dotenv from "dotenv"
 
-dotenv.config()
 /*
   |***********************************|
   |          MySwap INTERFACE         |

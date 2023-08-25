@@ -1,16 +1,12 @@
 import { Provider, constants } from 'starknet';
 import { mySwap_abi } from './abis/mySwap';
 import { erc20_abi } from './abis/erc20';
-import dotenv from "dotenv";
 
 export const TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
 export const MAINNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_MAIN } }) // for starknet mainnet
 
 export const TESTNET_MYSWAP = "0x018a439bcbb1b3535a6145c1dc9bc6366267d923f60a84bd0c7618f33c81d334"
 export const MAINNET_MYSWAP = "0x010884171baf1914edc28d7afb619b40a4051cfae78a094a55d230f19e944a28"
-
-export const PRIVATE_KEY = process.env.PRIVATE_KEY!;
-export const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS!;
 
 export const MYSWAP_ABI = mySwap_abi
 export const ERC20_ABI = erc20_abi

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
-import { TESTNET_MYSWAP, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
-import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, Uint256_to_float, get_balance, float_to_Uint256, string_to_Uint256, bn_to_string } from './utils';
+import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI } from './constant';
+import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, bn_to_string } from './utils';
 import { Add_liquidity_args } from './types';
 
 

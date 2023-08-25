@@ -1,5 +1,3 @@
-import { BigNumberish } from "ethers"
-
 export type Add_liquidity_args = {
     token_a_addr: string,
     token_a_decimals: number,

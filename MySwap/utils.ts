@@ -2,7 +2,6 @@ import { ethers, BigNumberish } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { Add_liquidity_args } from "./types";
-import { sign } from "crypto";
 
 export const get_amount_out = (amount_in: ethers.BigNumber, reserve_in: ethers.BigNumber, reserve_out: ethers.BigNumber ): Uint256 => {
     let amount_out: ethers.BigNumber
@@ -175,9 +174,6 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
         // Cross product for both
         let rate_a = parseFloat( balanceA ) * 100 / parseFloat( ethers.utils.formatUnits( token_a_reserves, decimalsB ) )
         let rate_b = parseFloat( balanceB ) * 100 / parseFloat( ethers.utils.formatUnits( token_b_reserves, decimalsA ) )
-
-        console.log('rate token a', TICKER[tokenA], ": ", rate_a)
-        console.log('rate token b', TICKER[tokenB], ": ", rate_b)
 
         if ( rate_a > rate_b)
         {
