@@ -1,11 +1,9 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, ERC20_ABI, MYSWAP_ABI } from './constant';
-import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, get_balance, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, Uint256_to_float } from './utils';
-import dotenv from "dotenv";
+import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, Uint256_to_float, get_balance, float_to_Uint256, string_to_Uint256, bn_to_string } from './utils';
 import { Add_liquidity_args } from './types';
 
-dotenv.config()
 
 
 
@@ -23,41 +21,37 @@ dotenv.config()
 export const swap = async(
     signer: Account,
     path: [string, string],
-    amountIn: number, 
+    amountIn: string, 
     network: string = "testnet",
     slipage: number = 995,
     amountOutMin?: Uint256 | undefined | null,
 ) => {
 
     try {
-
         const MySwap = resolve_network_contract(network, signer)
         const pool_id = resolve_pool(path[0], path[1], network)
         const { reserve_in, reserve_out } = await get_reserves(MySwap, path, pool_id)
         
-        const Erc20From = new Contract(ERC20_ABI, path[0], signer);
-        const Erc20To = new Contract(ERC20_ABI, path[1], signer);
-        let decimalsFrom = await Erc20From.functions.decimals()
-        let decimalsTo = await Erc20To.functions.decimals()
-        decimalsFrom = decimalsFrom.decimals
-        decimalsTo = decimalsTo.decimals
+        const { decimals: decimalsFrom } = await get_balance(signer.address, signer, path[0])
+        const { decimals: decimalsTo } = await get_balance(signer.address, signer, path[1])
         
-        let quote_ = await quote( ethers.utils.parseUnits(amountIn.toString(), decimalsFrom), reserve_in, reserve_out )
-        let amount_in: Uint256 = uint256.bnToUint256( ethers.utils.parseUnits( amountIn.toString(), decimalsFrom ).toBigInt() )
+
+        let amount_in: Uint256 = string_to_Uint256( amountIn, decimalsFrom )
+        let quote_: ethers.BigNumber = await quote( ethers.utils.parseUnits( Uint256_to_string( amount_in, decimalsFrom ), decimalsFrom ), reserve_in, reserve_out )
         let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_.mul(slipage).div(1000).toBigInt() )
-        let amount_out: Uint256 = get_amount_out( ethers.utils.parseUnits(amountIn.toString(), decimalsFrom), reserve_in, reserve_out )
+        let amount_out: Uint256 = get_amount_out( ethers.utils.parseUnits(amountIn, decimalsFrom), reserve_in, reserve_out )
         
         if ( amount_out_min > amount_out )
             throw new Error(`Price impact to high: ${ calc_price_impact( quote_.toBigInt(), uint256.uint256ToBN(amount_out) ) }%`)
 
 
         /*========================================= TX ================================================================================================*/
-        await approve( MySwap.address, amountIn, path[0], signer )
+        await approve( MySwap.address, Uint256_to_string( amount_in, decimalsFrom ), path[0], signer )
         /*=============================================================================================================================================*/
 
 
         /*========================================= TX ================================================================================================*/
-        console.log(`\nSwapping ${amountIn} ${TICKER[path[0]]} for ${ethers.utils.formatUnits( uint256.uint256ToBN(amount_out), decimalsTo )} ${TICKER[path[1]]}...`)
+        console.log(`\nSwapping ${ amountIn } ${TICKER[path[0]]} for ${ Uint256_to_string( amount_out, decimalsTo )} ${TICKER[path[1]]}...`)
         const tx = await MySwap.functions.swap(pool_id, path[0], amount_in, amount_out_min)
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
         console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
@@ -89,9 +83,9 @@ export const swap = async(
 export const add_liquidity = async(
     signer: Account,                        
     addressA: string,                       
-    amountA: number | undefined | null,     
+    amountA: string | undefined | null,     
     addressB: string,                       
-    amountB: number | undefined | null,     
+    amountB: string | undefined | null,     
     max: 0 | 1 = 0,                         
     network: string = "testnet",            
     slipage: number = 995,                  
@@ -118,20 +112,20 @@ export const add_liquidity = async(
         {
             let pool_id = resolve_pool(addressA, addressB, network)
             let addr: string = amountA ? addressA : addressB
-            let amount: number = amountA ? amountA : amountB!
+            let amount: string = amountA ? amountA : amountB!
             args = await fetch_add_liq(signer, pool_id, addr, amount, network, slipage)
         }
 
         /*========================================= TX ================================================================================================*/
         await approve( 
             MySwap.address, 
-            parseFloat( ethers.utils.formatUnits(ethers.BigNumber.from(args.amount_a), args.token_a_decimals) ), 
+            bn_to_string(args.amount_a, args.token_a_decimals), 
             args.token_a_addr, 
             signer 
         )
         await approve( 
             MySwap.address, 
-            parseFloat( ethers.utils.formatUnits(ethers.BigNumber.from(args.amount_b), args.token_b_decimals) ), 
+            bn_to_string(args.amount_b, args.token_b_decimals ), 
             args.token_b_addr, 
             signer 
         )
@@ -139,8 +133,8 @@ export const add_liquidity = async(
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nAdding liquidity for pool ${TICKER[args.token_a_addr]}/${TICKER[args.token_b_addr]}`)
-        console.log(`${ethers.utils.formatUnits(ethers.BigNumber.from(args.amount_a), args.token_a_decimals)} ${TICKER[args.token_a_addr]}`)
-        console.log(`${ethers.utils.formatUnits(ethers.BigNumber.from(args.amount_b), args.token_b_decimals)} ${TICKER[args.token_b_addr]}`)
+        console.log(`${bn_to_string( args.amount_a, args.token_a_decimals)} ${TICKER[args.token_a_addr]}`)
+        console.log(`${bn_to_string( args.amount_b, args.token_b_decimals)} ${TICKER[args.token_b_addr]}`)
         const tx = await MySwap.functions.add_liquidity(
             args.token_a_addr,
             uint256.bnToUint256( args.amount_a ),
@@ -193,11 +187,12 @@ export const withdraw_liquidity = async(
             const args = await fetch_withdraw_liq(signer, MySwap, pool_id, percent, slipage)
 
             /*========================================= TX ================================================================================================*/
-            await approve(MySwap.address, Uint256_to_float( args.shares_amount ), args.lp_address, signer )
+            await approve(MySwap.address, Uint256_to_string( args.shares_amount, args.lp_decimals), args.lp_address, signer )
             /*=============================================================================================================================================*/
+        
 
             /*========================================= TX ================================================================================================*/
-            console.log(`\nWithdrawing ${percent}% of liquidity for:\n\t(minimum) ${Uint256_to_float(args.amount_min_a)} ${TICKER[args.addr_a]}\n\t(minimum) ${Uint256_to_float(args.amount_min_b)} ${TICKER[args.addr_b]}`)
+            console.log(`\nWithdrawing ${percent}% of liquidity for:\n\t(minimum) ${Uint256_to_string(args.amount_min_a, args.a_decimals)} ${TICKER[args.addr_a]}\n\t(minimum) ${Uint256_to_string(args.amount_min_b, args.b_decimals)} ${TICKER[args.addr_b]}`)
             const tx = await MySwap.functions.withdraw_liquidity(pool_id, args.shares_amount, args.amount_min_a, args.amount_min_b)
             const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
             console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
