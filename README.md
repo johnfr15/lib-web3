@@ -66,7 +66,7 @@ If **max** parameter is activated whatever amount is in *param 3* or/and *param 
 `param2`: Address of **tokenA**  
 `param3`: Amount of first token. if set to null will check for amountB or max  
 `param4`: Address of **tokenB**  
-`param5`: Amount of second token. if set to null will check for amountA or max 
+`param5`: Amount of second token. if set to null will check for amountA or max  
 `param6 (optional)`: if activated it will check for the highest amount possible from tokenA and tokenB  
 `param7 (optional)`: The network we want to use the AMM it is set by default to **testnet**  
 `param8 (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. But will also protect us if it detect a *price impact* above its tolerance, it set by default to **995** with means a **0.5%** slipage   
