@@ -42,7 +42,7 @@ In this module you will be able to interact with all functionnalities of the AMM
 You will then be able to interact with the mains functions
 
 ```javascript
-MySwap.swap(signer, [TOKEN_A_ADDRESS, TOKEN_B_ADDRESS], "23")
+MySwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
 MySwap.add_liquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
 MySwap.withdraw_liquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
