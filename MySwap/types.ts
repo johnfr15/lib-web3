@@ -1,10 +1,10 @@
 export type Add_liquidity_args = {
     token_a_addr: string,
     token_a_decimals: number,
-    amount_a: any,
-    amount_a_min: any,
+    amount_a: bigint,
+    amount_a_min: bigint,
     token_b_addr: string,
     token_b_decimals: number,
-    amount_b: any,
-    amount_b_min: any
+    amount_b: bigint,
+    amount_b_min: bigint
 }

@@ -1,6 +1,7 @@
 import { Account } from "starknet"
 import MySwap from "../MySwap"
 import dotenv from "dotenv"
+import { ethers } from "ethers"
 
 dotenv.config()
 
@@ -17,9 +18,17 @@ const main = async() => {
         const { balance } = await MySwap.Utils.get_balance(signer.address, signer, TOKEN.eth[network])
         console.log("Account: ", signer.address)
         console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
-  
 
-        console.log( MySwap)
+        // await MySwap.add_liquidity(
+        //     signer, 
+        //     TOKEN.eth[network],
+        //     null, 
+        //     TOKEN.usdc[network],
+        //     null,
+        //     1
+        // )
+        await MySwap.withdraw_liquidity(signer, TOKEN.usdc[network], TOKEN.eth[network])
+
     } catch (error: any) {
   
         console.log(error)

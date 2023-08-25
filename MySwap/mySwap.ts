@@ -37,12 +37,12 @@ export const swap = async(
         
 
         let amount_in: Uint256 = string_to_Uint256( amountIn, decimalsFrom )
-        let quote_: ethers.BigNumber = await quote( ethers.utils.parseUnits( Uint256_to_string( amount_in, decimalsFrom ), decimalsFrom ), reserve_in, reserve_out )
-        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_.mul(slipage).div(1000).toBigInt() )
-        let amount_out: Uint256 = get_amount_out( ethers.utils.parseUnits(amountIn, decimalsFrom), reserve_in, reserve_out )
+        let quote_: bigint = await quote( ethers.parseUnits( Uint256_to_string( amount_in, decimalsFrom ), decimalsFrom ), reserve_in, reserve_out )
+        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
+        let amount_out: Uint256 = get_amount_out( ethers.parseUnits(amountIn, decimalsFrom), reserve_in, reserve_out )
         
         if ( amount_out_min > amount_out )
-            throw new Error(`Price impact to high: ${ calc_price_impact( quote_.toBigInt(), uint256.uint256ToBN(amount_out) ) }%`)
+            throw new Error(`Price impact to high: ${ calc_price_impact( quote_, uint256.uint256ToBN(amount_out) ) }%`)
 
 
         /*========================================= TX ================================================================================================*/
@@ -55,7 +55,7 @@ export const swap = async(
         const tx = await MySwap.functions.swap(pool_id, path[0], amount_in, amount_out_min)
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
         console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log("fees: ", ethers.utils.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("fees: ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
@@ -145,7 +145,7 @@ export const add_liquidity = async(
         )
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
         console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log(`Fees: ${ethers.utils.formatEther( receipt.actual_fee )} ETH`)
+        console.log(`Fees: ${ethers.formatEther( receipt.actual_fee )} ETH`)
         /*=============================================================================================================================================*/
 
     } catch (error: any) {
@@ -185,7 +185,7 @@ export const withdraw_liquidity = async(
             const pool_id = resolve_pool(tokenA, tokenB, network)
 
             const args = await fetch_withdraw_liq(signer, MySwap, pool_id, percent, slipage)
-
+            
             /*========================================= TX ================================================================================================*/
             await approve(MySwap.address, Uint256_to_string( args.shares_amount, args.lp_decimals), args.lp_address, signer )
             /*=============================================================================================================================================*/
@@ -196,7 +196,7 @@ export const withdraw_liquidity = async(
             const tx = await MySwap.functions.withdraw_liquidity(pool_id, args.shares_amount, args.amount_min_a, args.amount_min_b)
             const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
             console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-            console.log(`Fees: ${ethers.utils.formatEther( receipt.actual_fee )} ETH`) 
+            console.log(`Fees: ${ethers.formatEther( receipt.actual_fee )} ETH`) 
             /*=============================================================================================================================================*/
 
         } catch (error: any) {
@@ -228,8 +228,8 @@ export const create_new_pool = async(
 
     try {
 
-        const amountA = uint256.bnToUint256(ethers.utils.parseEther(a_init_liq.toString()).toBigInt())
-        const amountB = uint256.bnToUint256(ethers.utils.parseEther(b_init_liq.toString()).toBigInt())
+        const amountA = uint256.bnToUint256(ethers.parseEther(a_init_liq.toString()))
+        const amountB = uint256.bnToUint256(ethers.parseEther(b_init_liq.toString()))
         const share_rate = get_share_rate(a_init_liq, b_init_liq)
         
         console.log(`Creating new ${pool_name} pool...`)

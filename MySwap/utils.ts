@@ -1,24 +1,24 @@
-import { ethers, BigNumberish } from "ethers";
+import { ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { Add_liquidity_args } from "./types";
 
-export const get_amount_out = (amount_in: ethers.BigNumber, reserve_in: ethers.BigNumber, reserve_out: ethers.BigNumber ): Uint256 => {
-    let amount_out: ethers.BigNumber
+export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
+    let amount_out: bigint
 
-    let amountInWithFee = amount_in.mul(1000); // No fees
-    let numerator = amountInWithFee.mul(reserve_out);
-    let denominator = reserve_in.mul(1000).add(amountInWithFee);
-    amount_out = numerator.div(denominator);
+    let amountInWithFee = amount_in * ethers.toBigInt( 1000 ); // No fees
+    let numerator = amountInWithFee*reserve_out;
+    let denominator = reserve_in * ethers.toBigInt( 1000 ) + amountInWithFee;
+    amount_out = numerator / denominator;
 
-    return uint256.bnToUint256( amount_out.toBigInt() )
+    return uint256.bnToUint256( amount_out )
 }
 
-export const calc_price_impact = (amount_min: BigNumberish, amount_out: BigNumberish) => {
-    let min = ethers.BigNumber.from(amount_min)
-    let out = ethers.BigNumber.from(amount_out)
+export const calc_price_impact = (amount_min: bigint, amount_out: bigint) => {
+    let min = amount_min
+    let out = amount_out
 
-    let cross_product = out.mul(100000).div(min)
+    let cross_product = out * ethers.toBigInt( 100000 ) / min
     let price_impact = ( parseFloat( cross_product.toString() ) / 1000) - 100
 
     return price_impact
@@ -32,20 +32,20 @@ export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB
 }
 
 
-export const quote = async(amountA: ethers.BigNumber, reserveA: ethers.BigNumber, reserveB: ethers.BigNumber): Promise<ethers.BigNumber> => {
-    let amountB = amountA.mul(reserveB).div(reserveA)
+export const quote = async(amountA: bigint, reserveA: bigint, reserveB: bigint): Promise<bigint> => {
+    let amountB: bigint = amountA * reserveB / reserveA
     return amountB;
 }
 
-export const get_reserves = async(contract: Contract, path: [string, string], pool_id: number): Promise<{reserve_in: ethers.BigNumber, reserve_out: ethers.BigNumber}> => {
+export const get_reserves = async(contract: Contract, path: [string, string], pool_id: number): Promise<{reserve_in: bigint, reserve_out: bigint}> => {
     const { pool } = await contract.functions.get_pool( pool_id )
     
     const reserve_in: Uint256 = path[0] === "0x" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
     const reserve_out: Uint256 = path[1] === "0x" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
 
     return { 
-        reserve_in: ethers.BigNumber.from( uint256.uint256ToBN( reserve_in ) ), 
-        reserve_out: ethers.BigNumber.from( uint256.uint256ToBN( reserve_out) ) 
+        reserve_in: uint256.uint256ToBN( reserve_in ), 
+        reserve_out: uint256.uint256ToBN( reserve_out ) 
     }
 }
 
@@ -89,7 +89,7 @@ export const get_share_rate = (a_init_liq: number, b_init_liq: number): Uint256 
     const mul = a_init_liq * b_init_liq
     const share_rate = Math.sqrt(mul)
 
-    return uint256.bnToUint256(ethers.utils.parseEther( share_rate.toString() ).toBigInt())
+    return uint256.bnToUint256(ethers.parseEther( share_rate.toString() ))
 
 }
 
@@ -100,7 +100,7 @@ export const get_balance = async(account_address: string, provider: ProviderInte
         const erc20 = new Contract(ERC20_ABI, token_address, provider);
         const { balance } = await erc20.balanceOf(account_address);
         const { decimals } = await erc20.decimals();
-        let formated = ethers.utils.formatUnits( uint256.uint256ToBN( balance ), decimals );
+        let formated = ethers.formatUnits( uint256.uint256ToBN( balance ), decimals );
         
         return { balance: formated, decimals: decimals};
 
@@ -118,14 +118,14 @@ export const approve = async(spender: string, amount: string, token_address: str
 
         const erc20 = new Contract(ERC20_ABI, token_address, signer);
 
-        console.log(`\nApproving ${spender} to spend (${amount} * 1.25) ${TICKER[token_address]}...`)
+        console.log(`\nApproving ${spender} to spend (${amount} * 1.25) ${TICKER[token_address] ?? "LP"}...`)
         const { decimals } = await erc20.decimals()
-        const big_amount = uint256.bnToUint256( ethers.utils.parseUnits( amount, decimals ).mul(10).div(8).toBigInt() )
+        const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * ethers.toBigInt( 10 ) /  ethers.toBigInt( 8 ) )
 
         const tx = await erc20.approve(spender, big_amount)
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
         console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log("fees: ", ethers.utils.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("fees: ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         
     } catch (error: any) {
         
@@ -168,12 +168,12 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
         const { tokenA, tokenB } = sortTokens(pool)
         const { balance: balanceA, decimals: decimalsA } = await get_balance(signer.address, signer, tokenA)
         const { balance: balanceB, decimals: decimalsB } = await get_balance(signer.address, signer, tokenB)
-        const token_a_reserves = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_a_reserves ) )
-        const token_b_reserves = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_b_reserves ) )
+        const token_a_reserves = uint256.uint256ToBN( pool.token_a_reserves )
+        const token_b_reserves = uint256.uint256ToBN( pool.token_b_reserves )
 
         // Cross product for both
-        let rate_a = parseFloat( balanceA ) * 100 / parseFloat( ethers.utils.formatUnits( token_a_reserves, decimalsB ) )
-        let rate_b = parseFloat( balanceB ) * 100 / parseFloat( ethers.utils.formatUnits( token_b_reserves, decimalsA ) )
+        let rate_a = ethers.parseUnits(balanceA, decimalsA ) * ethers.toBigInt(100) / token_a_reserves
+        let rate_b = ethers.parseUnits(balanceB, decimalsB ) * ethers.toBigInt(100) / token_b_reserves
 
         if ( rate_a > rate_b)
         {
@@ -181,12 +181,12 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
             args = {
                 token_a_addr: tokenA,
                 token_a_decimals: decimalsA,
-                amount_a: (await quote(ethers.utils.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves)).toBigInt(),
-                amount_a_min: null,
+                amount_a: (await quote(ethers.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves)),
+                amount_a_min: ethers.toBigInt(0),
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
-                amount_b: ethers.utils.parseUnits( balanceB, decimalsB ).toBigInt(),
-                amount_b_min: null,
+                amount_b: ethers.parseUnits( balanceB, decimalsB ),
+                amount_b_min: ethers.toBigInt(0),
             }
         }
         else
@@ -195,17 +195,17 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
             args = {
                 token_a_addr: tokenA,
                 token_a_decimals: decimalsA,
-                amount_a: ethers.utils.parseUnits( balanceA, decimalsA ).toBigInt(),
-                amount_a_min: null,
+                amount_a: ethers.parseUnits( balanceA, decimalsA ),
+                amount_a_min: ethers.toBigInt(0),
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
-                amount_b: (await quote(ethers.utils.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves)).toBigInt(),
-                amount_b_min: null,
+                amount_b: (await quote(ethers.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves)),
+                amount_b_min: ethers.toBigInt(0),
             }
         }
         // calculate slipage tolerence
-        args.amount_a_min = ethers.BigNumber.from( args.amount_a ).mul(slipage).div(1000).toBigInt()
-        args.amount_b_min = ethers.BigNumber.from( args.amount_b ).mul(slipage).div(1000).toBigInt()
+        args.amount_a_min = args.amount_a * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
+        args.amount_b_min = args.amount_b * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
 
         return args
 
@@ -242,24 +242,24 @@ export const fetch_add_liq = async(
         const { balance: balance_addr1, decimals: decimals_addr1 } = await get_balance(signer.address, signer, token_addr1_address)
         const { balance: balance_addr2, decimals: decimals_addr2 } = await get_balance(signer.address, signer, token_addr2_address)
         
-        const amount_1 = ethers.utils.parseUnits( amount, decimals_addr1 )
+        const amount_1 = ethers.parseUnits( amount, decimals_addr1 )
         const amount_2 = await quote(amount_1, token_addr1_reserves, token_addr2_reserves)
 
-        if ( amount_1.gt(ethers.utils.parseUnits( balance_addr1, decimals_addr1)) )
+        if ( amount_1 > ethers.parseUnits( balance_addr1, decimals_addr1))
             throw new Error(`${TICKER[token_addr1_address]}: Unsufficient balance.`)
-        if ( amount_2.gt( ethers.utils.parseUnits( balance_addr2, decimals_addr2)) )
-            throw new Error(`${TICKER[token_addr2_address]}: Unsufficient balance.\nNeeded ${parseFloat( ethers.utils.formatUnits(amount_2, decimals_addr2))} but got ${parseFloat(balance_addr2)}`)
+        if ( amount_2 > ethers.parseUnits( balance_addr2, decimals_addr2))
+            throw new Error(`${TICKER[token_addr2_address]}: Unsufficient balance.\nNeeded ${parseFloat( ethers.formatUnits(amount_2, decimals_addr2))} but got ${parseFloat(balance_addr2)}`)
 
             // max amount will be tokenB
             args = {
                 token_a_addr: token_addr1_address,
                 token_a_decimals: decimals_addr1,
-                amount_a: amount_1.toBigInt(),
-                amount_a_min: amount_1.mul(slipage).div(1000).toBigInt(),
+                amount_a: amount_1,
+                amount_a_min: amount_1 * ethers.toBigInt(slipage) / ethers.toBigInt(1000),
                 token_b_addr: token_addr2_address,
                 token_b_decimals: decimals_addr2,
-                amount_b: amount_2.toBigInt(),
-                amount_b_min: amount_2.mul(slipage).div(1000).toBigInt(),
+                amount_b: amount_2,
+                amount_b_min: amount_2 * ethers.toBigInt(slipage) / ethers.toBigInt(1000),
             }
 
         return args
@@ -276,43 +276,44 @@ export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_
     try {
 
         const { pool } = await MySwap.functions.get_pool( pool_id )
-        const lp_address = ethers.BigNumber.from(pool.liq_token)._hex
+        const lp_address = "0x" + pool.liq_token.toString(16)
+
         const { decimals: a_decimals } = await get_balance(signer.address, signer, "0x" + pool.token_a_address.toString(16))
         const { decimals: b_decimals } = await get_balance(signer.address, signer, "0x" + pool.token_b_address.toString(16))
         const { decimals: lp_decimals } = await get_balance(signer.address, signer, lp_address)
         let { shares: lp_balance } = await MySwap.functions.get_lp_balance( pool_id, signer.address )
         let { total_shares: lp_total } = await MySwap.functions.get_total_shares( pool_id )
         
-        let amount_a_token = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_a_reserves ) )
-        let amount_b_token = ethers.BigNumber.from( uint256.uint256ToBN( pool.token_b_reserves ) )
-        lp_balance = ethers.BigNumber.from( uint256.uint256ToBN( lp_balance ) )
-        lp_total = ethers.BigNumber.from( uint256.uint256ToBN( lp_total ) )
+        let amount_a_token = uint256.uint256ToBN( pool.token_a_reserves ) 
+        let amount_b_token = uint256.uint256ToBN( pool.token_b_reserves ) 
+        lp_balance = uint256.uint256ToBN( lp_balance )
+        lp_total = uint256.uint256ToBN( lp_total )
         
         // Calcul out tokens in pool
-        let amount_min_a = amount_a_token.mul(lp_balance).div(lp_total)
-        let amount_min_b = amount_b_token.mul(lp_balance).div(lp_total)
+        let amount_min_a: bigint = amount_a_token * lp_balance / lp_total
+        let amount_min_b: bigint = amount_b_token * lp_balance / lp_total
 
         // Apply percent parameter
-        amount_min_a = amount_min_a.mul(percent).div(100)
-        amount_min_b = amount_min_b.mul(percent).div(100)
+        amount_min_a = amount_min_a * ethers.toBigInt(percent) / ethers.toBigInt(100)
+        amount_min_b = amount_min_b * ethers.toBigInt(percent) / ethers.toBigInt(100)
 
         // Apply slipage tolerance
-        amount_min_a = amount_min_a.mul(slipage).div(1000)
-        amount_min_b = amount_min_b.mul(slipage).div(1000)
+        amount_min_a = amount_min_a * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
+        amount_min_b = amount_min_b * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
 
-        if ( amount_min_a.eq(0) === true && amount_min_b.eq(0) === false)
-            amount_min_a = ethers.BigNumber.from(1)
-        if ( amount_min_a.eq(0) === false && amount_min_b.eq(0) === true )
-            amount_min_b = ethers.BigNumber.from(1)
+        if ( amount_min_a === ethers.toBigInt(0) && amount_min_b !== ethers.toBigInt(0))
+            amount_min_a = ethers.toBigInt(1)
+        if ( amount_min_a !== ethers.toBigInt(0) && amount_min_b === ethers.toBigInt(0) )
+            amount_min_b = ethers.toBigInt(1)
 
         const args = {
             pool_id: pool_id,
-            shares_amount:  uint256.bnToUint256( lp_balance.mul(percent).div(100).toBigInt() ),
+            shares_amount:  uint256.bnToUint256( lp_balance * ethers.toBigInt(percent) / ethers.toBigInt(100) ),
             addr_a: "0x" + pool.token_a_address.toString(16),
-            amount_min_a: uint256.bnToUint256( amount_min_a.toBigInt() ), 
+            amount_min_a: uint256.bnToUint256( amount_min_a ), 
             a_decimals: a_decimals,
             addr_b: "0x" + pool.token_b_address.toString(16),
-            amount_min_b: uint256.bnToUint256(amount_min_b.toBigInt() ),
+            amount_min_b: uint256.bnToUint256(amount_min_b ),
             b_decimals: b_decimals,
             lp_address: lp_address,
             lp_decimals: lp_decimals
@@ -329,25 +330,25 @@ export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_
 
 export const Uint256_to_float = (number: Uint256, decimals: number = 18): number => 
 {
-    return parseFloat( ethers.utils.formatUnits( ethers.BigNumber.from( uint256.uint256ToBN( number ) ), decimals ) )
+    return parseFloat( ethers.formatUnits( uint256.uint256ToBN( number ), decimals ) ) 
 }
 export const Uint256_to_string = (number: Uint256, decimals: number = 18): string => 
 {
-    return ethers.utils.formatUnits( ethers.BigNumber.from( uint256.uint256ToBN( number ) ), decimals )
+    return ethers.formatUnits( uint256.uint256ToBN( number ), decimals )
 }
 export const string_to_Uint256 = (number: string, decimals: number = 18): Uint256 => 
 {
-    return uint256.bnToUint256( ethers.utils.parseUnits( number, decimals ).toBigInt() )
+    return uint256.bnToUint256( ethers.parseUnits( number, decimals ) )
 }
-export const Uint256_to_bigNumber = (number: Uint256 ): ethers.BigNumber => 
+export const Uint256_to_bigNumber = (number: Uint256 ): bigint => 
 {
-    return ethers.BigNumber.from( uint256.uint256ToBN( number ) )
+    return uint256.uint256ToBN( number )
 }
-export const bn_to_string = (number: BigNumberish, decimals: number = 18): string => 
+export const bn_to_string = (number: bigint, decimals: number = 18): string => 
 {
-    return ethers.utils.formatUnits(ethers.BigNumber.from( number ), decimals)
+    return ethers.formatUnits( number, decimals )
 }
 export const float_to_Uint256 = (number: number, decimals: number = 18): Uint256 => 
 {
-    return uint256.bnToUint256( ethers.utils.parseUnits( number.toString(), decimals ).toBigInt() )
+    return uint256.bnToUint256( ethers.parseUnits( number.toString(), decimals ) )
 }
