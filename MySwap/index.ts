@@ -1,7 +1,8 @@
 import { Account, Contract } from "starknet"
-import * as MySwap from "./mySwap"
+import { swap, add_liquidity, withdraw_liquidity, create_new_pool } from "./mySwap"
 import * as Constant from "./constant"
 import * as Utils from "./utils"
+import * as Types from "./types"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -30,42 +31,4 @@ dotenv.config()
   !  upgrade(new_implementation: felt) return()
 */
 
-
-const main = async() => {
-  const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS
-  const PRIVATE_KEY = process.env.PRIVATE_KEY
-  const { TESTNET_PROVIDER, TOKEN, TICKER, TESTNET_MYSWAP, MYSWAP_ABI } = Constant
-  const network = "testnet" // testnet | mainnet
-
-  try {
-      //connect the contract
-      const signer = new Account(TESTNET_PROVIDER, ACCOUNT_ADDRESS!, PRIVATE_KEY!);
-      const MySwapContract = new Contract(MYSWAP_ABI, TESTNET_MYSWAP, signer)
-      const { balance } = await Utils.get_balance(signer.address, signer, TOKEN.eth[network])
-      console.log("Account: ", signer.address)
-      console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
-
-      // Swap
-      // await MySwap.swap( signer, [TOKEN.wsteth[network], TOKEN.eth[network]], "0.0001" ) 
-
-      //Add liquidity
-      await MySwap.add_liquidity(
-          signer, 
-          TOKEN.wsteth[network],
-          "0.0001", 
-          TOKEN.eth[network],
-          null,
-      )
-
-      // Remove liquidity
-      await MySwap.withdraw_liquidity(signer, TOKEN.wsteth[network], TOKEN.eth[network])
-
-  } catch (error: any) {
-
-      console.log(error)
-      return (1)
-
-  }
-}
-
-main()
+export default { swap, add_liquidity, withdraw_liquidity, create_new_pool, Constant, Utils, Types }
