@@ -1,14 +1,14 @@
 import { Calldata, Uint256 } from "starknet"
 
-export type Add_liquidity_args = {
+export type AddLiquidityArgs = {
     token_a_addr: string,
     token_a_decimals: number,
-    amount_a: bigint,
-    amount_a_min: bigint,
+    amount_a: Uint256,
+    amount_a_min: Uint256,
     token_b_addr: string,
     token_b_decimals: number,
-    amount_b: bigint,
-    amount_b_min: bigint
+    amount_b: Uint256,
+    amount_b_min: Uint256
 }
 
 export type ApproveCallData = {
@@ -21,4 +21,11 @@ export type SwapCallData = {
     contractAddress: string,
     entrypoint: string,
     calldata: Calldata | [number, string, Uint256, Uint256]
+}
+
+export type AddLiquidityCallData = {
+    contractAddress: string,
+    entrypoint: string,
+    calldata: Calldata | Array<AddLiquidityArgs[keyof AddLiquidityArgs]>
+    utils?: { decimalsA: number, decimalsB: number }
 }

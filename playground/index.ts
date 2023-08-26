@@ -21,15 +21,14 @@ const main = async() => {
         console.log("Account: ", signer.address)
         console.log("Balance: ", balance, TICKER[TOKEN.eth[network]])
 
-        await MySwap.swap(signer, [TOKEN.eth[network], TOKEN.dai[network]], "0.000001")
-        // await MySwap.add_liquidity(
-        //     signer, 
-        //     TOKEN.eth[network],
-        //     null, 
-        //     TOKEN.usdc[network],
-        //     null,
-        //     1
-        // )
+        // await MySwap.swap(signer, [TOKEN.eth[network], TOKEN.dai[network]], "0.000001")
+        await MySwap.add_liquidity(
+            signer, 
+            TOKEN.dai[network],
+            "0.01", 
+            TOKEN.eth[network],
+            null,
+        )
         // await MySwap.withdraw_liquidity(signer, TOKEN.usdc[network], TOKEN.eth[network])
 
     } catch (error: any) {

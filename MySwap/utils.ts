@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
-import { Add_liquidity_args } from "./types";
-import { stark } from "starknet";
+import { AddLiquidityArgs } from "./types";
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
@@ -167,8 +166,14 @@ export const is_balance = async(signer: Account, addressA: string, addressB: str
     }
 }
 
-export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: string, network: string, slipage: number): Promise<Add_liquidity_args> => {
-    let args: Add_liquidity_args;
+export const fetch_max_add_liq = async(
+    signer: Account, 
+    addrA: string, 
+    addrB: string, 
+    network: string, 
+    slipage: number
+): Promise<AddLiquidityArgs> => {
+    let args: AddLiquidityArgs;
     
     try {
         
@@ -190,12 +195,12 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
             args = {
                 token_a_addr: tokenA,
                 token_a_decimals: decimalsA,
-                amount_a: (await quote(ethers.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves)),
-                amount_a_min: ethers.toBigInt(0),
+                amount_a: uint256.bnToUint256( await quote(ethers.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves) ),
+                amount_a_min: uint256.bnToUint256( ethers.toBigInt(0) ),
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
-                amount_b: ethers.parseUnits( balanceB, decimalsB ),
-                amount_b_min: ethers.toBigInt(0),
+                amount_b: uint256.bnToUint256( ethers.parseUnits( balanceB, decimalsB ) ),
+                amount_b_min: uint256.bnToUint256( ethers.toBigInt(0) ),
             }
         }
         else
@@ -204,23 +209,23 @@ export const fetch_max_add_liq = async(signer: Account, addrA: string, addrB: st
             args = {
                 token_a_addr: tokenA,
                 token_a_decimals: decimalsA,
-                amount_a: ethers.parseUnits( balanceA, decimalsA ),
-                amount_a_min: ethers.toBigInt(0),
+                amount_a: uint256.bnToUint256( ethers.parseUnits( balanceA, decimalsA ) ),
+                amount_a_min: uint256.bnToUint256( ethers.toBigInt(0) ),
                 token_b_addr: tokenB,
                 token_b_decimals: decimalsB,
-                amount_b: (await quote(ethers.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves)),
-                amount_b_min: ethers.toBigInt(0),
+                amount_b: uint256.bnToUint256( await quote(ethers.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves) ),
+                amount_b_min: uint256.bnToUint256( ethers.toBigInt(0) ),
             }
         }
         // calculate slipage tolerence
-        args.amount_a_min = args.amount_a * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
-        args.amount_b_min = args.amount_b * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
+        args.amount_a_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_a ) * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
+        args.amount_b_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_b ) * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
 
         return args
 
     } catch (error: any) {
 
-        throw new Error(error)
+        throw error
         
     }
     
@@ -233,8 +238,8 @@ export const fetch_add_liq = async(
     amount: string,
     network: string,
     slipage: number
-): Promise<Add_liquidity_args> => {
-    let args: Add_liquidity_args;
+): Promise<AddLiquidityArgs> => {
+    let args: AddLiquidityArgs;
     
     try {
         
@@ -263,12 +268,12 @@ export const fetch_add_liq = async(
             args = {
                 token_a_addr: token_addr1_address,
                 token_a_decimals: decimals_addr1,
-                amount_a: amount_1,
-                amount_a_min: amount_1 * ethers.toBigInt(slipage) / ethers.toBigInt(1000),
+                amount_a: uint256.bnToUint256( amount_1 ),
+                amount_a_min: uint256.bnToUint256( amount_1 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
                 token_b_addr: token_addr2_address,
                 token_b_decimals: decimals_addr2,
-                amount_b: amount_2,
-                amount_b_min: amount_2 * ethers.toBigInt(slipage) / ethers.toBigInt(1000),
+                amount_b: uint256.bnToUint256( amount_2 ),
+                amount_b_min: uint256.bnToUint256( amount_2 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
             }
 
         return args
@@ -322,7 +327,7 @@ export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_
             amount_min_a: uint256.bnToUint256( amount_min_a ), 
             a_decimals: a_decimals,
             addr_b: "0x" + pool.token_b_address.toString(16),
-            amount_min_b: uint256.bnToUint256(amount_min_b ),
+            amount_min_b: uint256.bnToUint256( amount_min_b ),
             b_decimals: b_decimals,
             lp_address: lp_address,
             lp_decimals: lp_decimals

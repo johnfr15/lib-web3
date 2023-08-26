@@ -1,9 +1,8 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI } from './constant';
-import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, bn_to_string } from './utils';
-import { Add_liquidity_args } from './types';
-import { get_approve_calldata, get_swap_calldata } from './callData';
+import { get_share_rate, resolve_network_contract, resolve_pool, Uint256_to_string, approve, fetch_withdraw_liq, get_balance } from './utils';
+import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata } from './callData';
 
 
 
@@ -16,6 +15,7 @@ import { get_approve_calldata, get_swap_calldata } from './callData';
  * @param path          // token swap from path[0] (input) to path[1] (output) 
  * @param amountIn      // The amount that will enter in the pool
  * @param network       // (optional) 'testnet' is the default one
+ * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
  * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
  * @param amountOutMin  // (optional) The minimum output we are ready you cn specify if you prefere using an oracle instead of the pool
  */
@@ -46,10 +46,11 @@ export const swap = async(
         console.log(`\t2) Swapping ${ amountIn } ${TICKER[path[0]]} for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${TICKER[path[1]]}`)
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, swap_tx ]);
-        const multiCall = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-        const receipt: any = await signer.waitForTransaction(multiCall.transaction_hash);
+        const multiCall           = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
         
-        console.log(`\nTransaction valided at hash: ${multiCall.transaction_hash} !`)
+        console.log(`\nTransaction valided !`)
+        console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
         /*=============================================================================================================================================*/
@@ -75,6 +76,7 @@ export const swap = async(
  * @param max           // (optional, recommended) if activated it will check for the highest amount possible from tokenA and tokenB
  * @param network       // (optional) 'testnet' is the default one
  * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
+ * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
  */
 export const add_liquidity = async(
     signer: Account,                        
@@ -84,68 +86,46 @@ export const add_liquidity = async(
     amountB: string | undefined | null,     
     max: 0 | 1 = 0,                         
     network: string = "testnet",            
-    slipage: number = 995,                  
+    slipage: number = 995,
+    maxFees: bigint | undefined = undefined,
 ): Promise<void> => {
     amountA = amountA ?? null
     amountB = amountB ?? null
 
-    let args: Add_liquidity_args
-
-    if ( amountA === null && amountB === null && max === 0 )
-        throw new Error("Need to provide at least a value for 'amountA' or 'amountB' or set max");
-    if ( await is_balance(signer, addressA, addressB) === 0 )
-        throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)
-
     try {
 
-        const MySwap = resolve_network_contract(network, signer)
-         
-        if ( max )
-        {
-            args = await fetch_max_add_liq(signer, addressA, addressB, network, slipage)
-        }
-        else
-        {
-            let pool_id = resolve_pool(addressA, addressB, network)
-            let addr: string = amountA ? addressA : addressB
-            let amount: string = amountA ? amountA : amountB!
-            args = await fetch_add_liq(signer, pool_id, addr, amount, network, slipage)
-        }
+        // Get add liquidity Tx
+        const add_liq_calldata = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
+        const { raw: raw_add, compiled: addTx } = add_liq_calldata
+        const [ token_a_addr, amount_a, amount_a_min, token_b_addr, amount_b ] = raw_add.calldata
+        // Get approve token 'a' Tx
+        const approve_a_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_a as Uint256, raw_add.utils!.decimalsA as number), token_a_addr as string, network)
+        const { raw: raw_approve_a, compiled: approveATx } = approve_a_calldata
+        // Get approve token 'b' Tx
+        const approve_b_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_b as Uint256, raw_add.utils!.decimalsB as number), token_b_addr as string, network)
+        const { raw: raw_approve_b, compiled: approveBTx } = approve_b_calldata
+
 
         /*========================================= TX ================================================================================================*/
-        await approve( 
-            MySwap.address, 
-            bn_to_string(args.amount_a, args.token_a_decimals), 
-            args.token_a_addr, 
-            signer 
-        )
-        await approve( 
-            MySwap.address, 
-            bn_to_string(args.amount_b, args.token_b_decimals ), 
-            args.token_b_addr, 
-            signer 
-        )
-        /*=============================================================================================================================================*/
+        console.log(`\nMulticall...`)
+        console.log(`\t1) Approving ${raw_approve_a.calldata[0]} to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, raw_add.utils!.decimalsA as number )} ${TICKER[token_a_addr as string]}`)
+        console.log(`\t2) Approving ${raw_approve_b.calldata[0]} to spend ${ Uint256_to_string( raw_approve_b.calldata[1] as Uint256, raw_add.utils!.decimalsB as number )} ${TICKER[token_b_addr as string]}`)
+        console.log(`\t3) Adding liquidity for pool ${TICKER[token_a_addr as string]}/${TICKER[token_b_addr as string]}`)
 
-        /*========================================= TX ================================================================================================*/
-        console.log(`\nAdding liquidity for pool ${TICKER[args.token_a_addr]}/${TICKER[args.token_b_addr]}`)
-        console.log(`${bn_to_string( args.amount_a, args.token_a_decimals)} ${TICKER[args.token_a_addr]}`)
-        console.log(`${bn_to_string( args.amount_b, args.token_b_decimals)} ${TICKER[args.token_b_addr]}`)
-        const tx = await MySwap.functions.add_liquidity(
-            args.token_a_addr,
-            uint256.bnToUint256( args.amount_a ),
-            uint256.bnToUint256( args.amount_a_min! ),
-            args.token_b_addr,
-            uint256.bnToUint256( args.amount_b ), 
-            uint256.bnToUint256( args.amount_b_min! )
-        )
-        const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
-        console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log(`Fees: ${ethers.formatEther( receipt.actual_fee )} ETH`)
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
+        const multiCall           = await signer.execute([ approveATx, approveBTx, addTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        
+        console.log(`\nTransaction valided !`)
+        console.log("hash:            ", multiCall.transaction_hash)
+        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
         /*=============================================================================================================================================*/
-
+        
     } catch (error: any) {
-        throw new Error(error)
+
+        throw error
+
     }
 }
 

@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import { CallData, Calldata, Contract, Account, uint256, Uint256 } from "starknet"
 import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, bn_to_string } from './utils';
-import { ERC20_ABI } from "./constant";
-import { ApproveCallData, SwapCallData } from "./types";
+import { ERC20_ABI, TICKER } from "./constant";
+import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs } from "./types";
 
 export const get_approve_calldata = async(
     signer: Account, 
@@ -73,6 +73,63 @@ export const get_swap_calldata = async(
             contractAddress: MySwap.address,
             entrypoint: "swap",
             calldata: CallData.compile( [pool_id, path[0], amount_in, amount_out_min] ),
+        } 
+
+        return { raw, compiled }
+
+    } catch (error: any) {
+        
+        throw error
+
+    }
+}
+
+export const get_add_liq_calldata = async(
+    signer: Account, 
+    addressA: string,
+    amountA: string | null,
+    addressB: string,
+    amountB: string | null,
+    max: 0 | 1,
+    network: string,
+    slipage: number,
+): Promise<{raw: AddLiquidityCallData, compiled: AddLiquidityCallData}> => {
+    let args: AddLiquidityArgs
+
+    try {
+
+        if ( amountA === null && amountB === null && max === 0 )
+            throw new Error("Need to provide at least a value for 'amountA' or 'amountB' or set max");
+        if ( await is_balance(signer, addressA, addressB) === 0 )
+            throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)
+
+        const MySwap = resolve_network_contract(network, signer)
+         
+        if ( max )
+        {
+            args = await fetch_max_add_liq(signer, addressA, addressB, network, slipage)
+        }
+        else
+        {
+            let pool_id = resolve_pool(addressA, addressB, network)
+            let addr: string = amountA ? addressA : addressB
+            let amount: string = amountA ? amountA : amountB!
+            args = await fetch_add_liq(signer, pool_id, addr, amount, network, slipage)
+        }
+
+        const raw: AddLiquidityCallData = {
+            contractAddress: MySwap.address,
+            entrypoint: "add_liquidity",
+            calldata: Object.values(args).filter((item) => (typeof item !== 'bigint')),
+            utils: {
+                decimalsA: args.token_a_decimals,
+                decimalsB: args.token_b_decimals,
+            }
+        }
+        const compiled: AddLiquidityCallData = {
+            contractAddress: MySwap.address,
+            entrypoint: "add_liquidity",
+            calldata: CallData.compile( Object.values(args).filter((item) => (typeof item !== 'bigint')) ),
         } 
 
         return { raw, compiled }
