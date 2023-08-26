@@ -11,6 +11,16 @@ export type AddLiquidityArgs = {
     amount_b_min: Uint256
 }
 
+export type WidthdrawLiquidityArgs = {
+    pool_id: number,
+    shares_amount:  Uint256,
+    addr_a: string,
+    amount_min_a: Uint256, 
+    addr_b: string,
+    amount_min_b: Uint256, 
+    lp_address: string,
+}
+
 export type ApproveCallData = {
     contractAddress: string,
     entrypoint: string,
@@ -28,4 +38,18 @@ export type AddLiquidityCallData = {
     entrypoint: string,
     calldata: Calldata | Array<AddLiquidityArgs[keyof AddLiquidityArgs]>
     utils?: { decimalsA: number, decimalsB: number }
+}
+
+export type WidthdrawLiquidityCallData = {
+    contractAddress: string,
+    entrypoint: string,
+    calldata: Calldata | [number, Uint256, Uint256, Uint256]
+    utils?: { 
+        decimalsA: number, 
+        decimalsB: number, 
+        decimalsLp: number,
+        addrA: string,
+        addrB: string,
+        addrLp: string,
+    }
 }

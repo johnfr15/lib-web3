@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
-import { AddLiquidityArgs } from "./types";
+import { AddLiquidityArgs, WidthdrawLiquidityArgs } from "./types";
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
@@ -285,10 +285,16 @@ export const fetch_add_liq = async(
     }
 }
 
-export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_id: number, percent: number, slipage: number) => {
+export const fetch_withdraw_liq = async(
+    signer: Account, 
+    MySwap: Contract, 
+    pool_id: number, 
+    percent: number, 
+    slipage: number
+): Promise<WidthdrawLiquidityArgs & {a_decimals: number, b_decimals: number, lp_decimals: number}> => {
 
     try {
-
+        
         const { pool } = await MySwap.functions.get_pool( pool_id )
         const lp_address = "0x" + pool.liq_token.toString(16)
 
@@ -303,7 +309,7 @@ export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_
         lp_balance = uint256.uint256ToBN( lp_balance )
         lp_total = uint256.uint256ToBN( lp_total )
         
-        // Calcul out tokens in pool
+        // Calcul our tokens in pool
         let amount_min_a: bigint = amount_a_token * lp_balance / lp_total
         let amount_min_b: bigint = amount_b_token * lp_balance / lp_total
 
@@ -320,7 +326,7 @@ export const fetch_withdraw_liq = async(signer: Account, MySwap: Contract, pool_
         if ( amount_min_a !== ethers.toBigInt(0) && amount_min_b === ethers.toBigInt(0) )
             amount_min_b = ethers.toBigInt(1)
 
-        const args = {
+        const args: WidthdrawLiquidityArgs & {a_decimals: number, b_decimals: number, lp_decimals: number} = {
             pool_id: pool_id,
             shares_amount:  uint256.bnToUint256( lp_balance * ethers.toBigInt(percent) / ethers.toBigInt(100) ),
             addr_a: "0x" + pool.token_a_address.toString(16),

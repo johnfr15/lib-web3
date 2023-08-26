@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { CallData, Calldata, Contract, Account, uint256, Uint256 } from "starknet"
 import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, bn_to_string } from './utils';
 import { ERC20_ABI, TICKER } from "./constant";
-import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs } from "./types";
+import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs, WidthdrawLiquidityArgs, WidthdrawLiquidityCallData } from "./types";
 
 export const get_approve_calldata = async(
     signer: Account, 
@@ -130,6 +130,52 @@ export const get_add_liq_calldata = async(
             contractAddress: MySwap.address,
             entrypoint: "add_liquidity",
             calldata: CallData.compile( Object.values(args).filter((item) => (typeof item !== 'bigint')) ),
+        } 
+
+        return { raw, compiled }
+
+    } catch (error: any) {
+        
+        throw error
+
+    }
+}
+
+export const get_widthdraw_calldata = async(
+    signer: Account, 
+    tokenA: string, 
+    tokenB: string, 
+    percent: number, 
+    slipage: number, 
+    network: string,
+): Promise<{raw: WidthdrawLiquidityCallData, compiled: WidthdrawLiquidityCallData}> => {
+
+    try {
+
+        const MySwap = resolve_network_contract(network, signer)
+        const pool_id = resolve_pool(tokenA, tokenB, network)
+
+        const args = await fetch_withdraw_liq(signer, MySwap, pool_id, percent, slipage)
+
+        let callData: any =  Object.values(args).filter((item) => (typeof item !== 'bigint') && (typeof item !== 'string'))
+
+        const raw: WidthdrawLiquidityCallData = {
+            contractAddress: MySwap.address,
+            entrypoint: "withdraw_liquidity",
+            calldata: callData,
+            utils: {
+                decimalsA: args.a_decimals,
+                decimalsB: args.b_decimals,
+                decimalsLp: args.lp_decimals,
+                addrA: args.addr_a,
+                addrB: args.addr_b,
+                addrLp: args.lp_address,
+            }
+        }
+        const compiled: WidthdrawLiquidityCallData = {
+            contractAddress: MySwap.address,
+            entrypoint: "withdraw_liquidity",
+            calldata: callData,
         } 
 
         return { raw, compiled }
