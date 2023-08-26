@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
-import { Contract, Uint256, uint256, Account, ProviderInterface } from "starknet";
+import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { Add_liquidity_args } from "./types";
+import { stark } from "starknet";
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
@@ -117,15 +118,23 @@ export const approve = async(spender: string, amount: string, token_address: str
     try {
 
         const erc20 = new Contract(ERC20_ABI, token_address, signer);
-
-        console.log(`\nApproving ${spender} to spend (${amount} * 1.25) ${TICKER[token_address] ?? "LP"}...`)
         const { decimals } = await erc20.decimals()
         const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * ethers.toBigInt( 10 ) /  ethers.toBigInt( 8 ) )
+        const callData = {
+            contractAddress: erc20.address,
+            entrypoint: "approve",
+            calldata: [spender, big_amount],
+        }
 
-        const tx = await erc20.approve(spender, big_amount)
+        console.log(`\nApproving ${spender} to spend (${amount} * 1.25) ${TICKER[token_address] ?? "LP"}...`)
+
+        const { suggestedMaxFee } = await signer.estimateInvokeFee(callData);
+        const tx = await signer.execute(callData, undefined, { maxFee: suggestedMaxFee })
+
         const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
         console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log("fees: ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("suggestedMaxFee: ", ethers.formatEther( suggestedMaxFee ), "ETH")
         
     } catch (error: any) {
         

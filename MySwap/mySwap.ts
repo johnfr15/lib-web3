@@ -3,6 +3,7 @@ import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI } from './constant';
 import { get_share_rate, calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, approve, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, bn_to_string } from './utils';
 import { Add_liquidity_args } from './types';
+import { get_approve_calldata, get_swap_calldata } from './callData';
 
 
 
@@ -21,46 +22,41 @@ import { Add_liquidity_args } from './types';
 export const swap = async(
     signer: Account,
     path: [string, string],
-    amountIn: string, 
+    amountIn: string,
     network: string = "testnet",
+    maxFees: bigint | undefined = undefined,
     slipage: number = 995,
     amountOutMin?: Uint256 | undefined | null,
 ) => {
 
     try {
-        const MySwap = resolve_network_contract(network, signer)
-        const pool_id = resolve_pool(path[0], path[1], network)
-        const { reserve_in, reserve_out } = await get_reserves(MySwap, path, pool_id)
-        
-        const { decimals: decimalsFrom } = await get_balance(signer.address, signer, path[0])
-        const { decimals: decimalsTo } = await get_balance(signer.address, signer, path[1])
-        
+        const { decimals: decimals_to } = await get_balance(signer.address, signer, path[1])
+        const { decimals: decimals_from } = await get_balance(signer.address, signer, path[0])
 
-        let amount_in: Uint256 = string_to_Uint256( amountIn, decimalsFrom )
-        let quote_: bigint = await quote( ethers.parseUnits( Uint256_to_string( amount_in, decimalsFrom ), decimalsFrom ), reserve_in, reserve_out )
-        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
-        let amount_out: Uint256 = get_amount_out( ethers.parseUnits(amountIn, decimalsFrom), reserve_in, reserve_out )
-        
-        if ( amount_out_min > amount_out )
-            throw new Error(`Price impact to high: ${ calc_price_impact( quote_, uint256.uint256ToBN(amount_out) ) }%`)
-
+        // Get approve Tx
+        const approve_calldata = await get_approve_calldata(signer, amountIn, path[0], network)
+        const { raw: raw_approve, compiled: approve_tx } = approve_calldata
+        // Get swap Tx
+        const swap_calldata = await get_swap_calldata(signer, path, amountIn, network, slipage, amountOutMin)
+        const { raw: raw_swap, compiled: swap_tx } = swap_calldata
 
         /*========================================= TX ================================================================================================*/
-        await approve( MySwap.address, Uint256_to_string( amount_in, decimalsFrom ), path[0], signer )
-        /*=============================================================================================================================================*/
+        console.log(`\nMulticall...`)
+        console.log(`\t1) Approving ${raw_approve.calldata[0]} to spend ${ Uint256_to_string( raw_approve.calldata[1] as Uint256, decimals_from )} ${TICKER[path[0]]}`)
+        console.log(`\t2) Swapping ${ amountIn } ${TICKER[path[0]]} for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${TICKER[path[1]]}`)
 
-
-        /*========================================= TX ================================================================================================*/
-        console.log(`\nSwapping ${ amountIn } ${TICKER[path[0]]} for ${ Uint256_to_string( amount_out, decimalsTo )} ${TICKER[path[1]]}...`)
-        const tx = await MySwap.functions.swap(pool_id, path[0], amount_in, amount_out_min)
-        const receipt: any = await signer.waitForTransaction(tx.transaction_hash);
-        console.log(`\nTransaction valided at hash: ${tx.transaction_hash} !`)
-        console.log("fees: ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, swap_tx ]);
+        const multiCall = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const receipt: any = await signer.waitForTransaction(multiCall.transaction_hash);
+        
+        console.log(`\nTransaction valided at hash: ${multiCall.transaction_hash} !`)
+        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
 
-        throw new Error(error)
+        throw error
 
     }
 }
