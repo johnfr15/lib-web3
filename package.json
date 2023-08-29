@@ -1,11 +1,10 @@
 {
-  "name": "MySwap",
+  "name": "jonathan-tondelier",
   "version": "1.0.0",
   "main": "index.js",
   "author": "John",
   "license": "MIT",
   "dependencies": {
-    "@typechain/ethers-v6": "^0.5.0",
     "dotenv": "^16.3.1",
     "ethers": "6.7",
     "starknet": "^5.19.3"
