@@ -138,8 +138,8 @@ export const polygon_chain = {
         decimals: 18,
       },
       rpc: [
+        'https://endpoints.omniatech.io/v1/matic/mainnet/public',
         'https://rpc-mainnet.matic.network',
-        'wss://ws-mainnet.matic.network',
         'https://rpc-mainnet.matic.quiknode.pro',
         'https://matic-mainnet.chainstacklabs.com',
       ],
@@ -160,7 +160,7 @@ export const mumbai_chain = {
         decimals: 18,
       },
       rpc: [
-        'https://api.zan.top/node/v1/polygon/mumbai/public', 
+        'https://polygon-testnet.public.blastapi.io', 
         'https://polygon-mumbai.infura.io/v3/${INFURA_API_KEY}',
         'https://rpc-mumbai.matic.today', 
     ],

@@ -39,7 +39,7 @@ export const get_amounts = (
     return { payAmount: pay_amount, receiveAmount: receive_amount }
 }
 
-const get_receive_amount = ( inputAmount: string, selectMakerInfo: MarkerType ): bigint => {
+export const get_receive_amount = ( inputAmount: string, selectMakerInfo: MarkerType ): bigint => {
     const { precision, tradingFee, gasFee } = selectMakerInfo
 
     let output_minus_tradingFee = ethers.parseUnits( inputAmount, precision ) - ethers.parseUnits( tradingFee, precision )

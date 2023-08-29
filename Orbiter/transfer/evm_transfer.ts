@@ -1,5 +1,5 @@
-import { Contract, JsonRpcProvider, ethers } from "ethers";
-import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, NETWORK_NAME_TO_ORBITERID } from "../constant";
+import { Contract, JsonRpcProvider, Wallet, ethers } from "ethers";
+import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_SOL_ABI, NETWORK_NAME_TO_ORBITERID } from "../config/constant";
 import { is_native_token } from "../utils/transfer"
 import { TxTransferArgs } from "../types";
 
@@ -45,30 +45,30 @@ export const cross_transfer = async( txArgs: TxTransferArgs ) => {
 
 export const transfer = async( txArgs: TxTransferArgs ) => {
 
-    const { evmSigner, token, maker, amount } = txArgs
     let tx, receipt;
+    const { evmSigner, token, maker, amount } = txArgs
+    console.log( token.provider )
+    const signer = new Wallet( evmSigner.privateKey, token.provider as JsonRpcProvider)
 
     try {
 
         if ( is_native_token( token.address ) )
         {
-            evmSigner.connect( token.provider as JsonRpcProvider )
             const params = { to: maker.makerAddress, value: amount }
 
-            tx = await evmSigner.sendTransaction( params )
+            tx = await signer.sendTransaction( params )
             receipt = await tx.wait()
         }
         else // it is an erc20
         {
-            const contract = token.contract as Contract
-            contract.connect( evmSigner )
+            const contract = new Contract( token.address, ERC20_SOL_ABI, signer )
     
             tx = await contract.transfer( maker.makerAddress, amount )
             receipt = await tx.wait()
         }
 
         console.log("Transfer valided !")
-        console.log("hash: ", )
+        console.log("hash: ", tx.hash)
         
     } catch ( error ) {
 

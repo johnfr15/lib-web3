@@ -1,7 +1,7 @@
 import { Provider, constants } from "starknet"
-import { erc20_sol_abi } from "./abis/erc20Sol"
-import { erc20_stark_abi } from "./abis/erc20Stark"
-import { cross_address_abi } from "./abis/crossAddress"
+import { erc20_sol_abi } from "../abis/erc20Sol"
+import { erc20_stark_abi } from "../abis/erc20Stark"
+import { cross_address_abi } from "../abis/crossAddress"
 
 export const TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
 export const MAINNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_MAIN } }) // for starknet mainnet
@@ -119,13 +119,13 @@ export const TOKEN: any = {
     {
         starknet: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
         arbitrum: "0x0000000000000000000000000000000000000000",
-        polygon: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+        polygon: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
     },
 }
 
 export const TICKER: {[key: string]: string} = {
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7": "ETH",
     "0x0000000000000000000000000000000000000000": "ETH",
-    "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "ETH",
+    "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa": "ETH",
 }
 

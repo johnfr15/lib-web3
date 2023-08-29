@@ -1,4 +1,4 @@
-import { Wallet, ethers, fromTwos } from "ethers"
+import { Wallet, ethers } from "ethers"
 import { Account } from "starknet"
 import { evm_transfer } from "./transfer/evm_transfer"
 import { starknet_transfer } from "./transfer/starknet_transfer"
@@ -6,7 +6,7 @@ import { Chains, TxTransferArgs } from "./types"
 import { get_chain, resolve_maker, get_token, resolve_cross_address, append_network_target } from "./utils/bridge"
 import { get_amounts } from "./bridge"
 import { get_balance, resolve_provider } from "./utils"
-import { TICKER } from "./constant"
+import { TICKER } from "./config/constant"
 
 export const swap = async( swap: {
     evmSigner: Wallet,

@@ -17,18 +17,18 @@ const main = async() => {
         const evmSigner: Wallet = new ethers.Wallet( process.env.ETH_PRIVATE_KEY! )
         const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
 
-        console.log("bridging from account: ", evmSigner.address)
-        console.log("to account:            ", starkSigner.address)
+        console.log("evm account:   ", evmSigner.address)
+        console.log("stark account: ", starkSigner.address)
+        console.log("")
 
  
         await Orbiter.swap({
             evmSigner,
             starkSigner,
-            token: TOKEN.eth.starknet, 
-            fromChain: 'arbitrum',
-            toChain: 'polygon',
+            token: TOKEN.eth.polygon, 
+            fromChain: 'polygon',
+            toChain: 'arbitrum',
             amount: '0.006',
-            // max: true,
         })
 
     } catch (error: any) {

@@ -1,8 +1,8 @@
 import { Provider, Contract as StarkContract, Account } from "starknet"
 import { Contract as SolContract, JsonRpcProvider, Wallet, ethers } from "ethers"
-import * as m_makers from "../bridge/makerListMainnet"
-import * as t_makers from "../bridge/makerListTestnet"
-import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../constant"
+import * as m_makers from "../config/makerListMainnet"
+import * as t_makers from "../config/makerListTestnet"
+import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../config/constant"
 import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt } from "../types"
 
 export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
@@ -47,16 +47,16 @@ export const resolve_maker = ( token: string, fromChain: BridgeChain, toChain: B
     if ( network === "mainnet" )
     {
         searchMaker = Object.values( m_makers ).find(( maker ) => {
-            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id ) return true
-            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id ) return true
+            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id && maker.t1Address === token ) return true
+            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id && maker.t2Address === token ) return true
             return false
         })
     }
     if ( network === "testnet" )
     {
         searchMaker = Object.values( t_makers ).find(( maker ) => {
-            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id ) return true
-            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id ) return true
+            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id && maker.t1Address === token ) return true
+            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id && maker.t2Address === token ) return true
             return false
         })
     }
