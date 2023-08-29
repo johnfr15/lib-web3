@@ -10,6 +10,7 @@ dotenv.config()
 const main = async() => {
     
     const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKEN, NETWORK_NAME_TO_ID } = Orbiter.Constant
+    
     try {
         // Set up
         const network: 'testnet' | 'mainnet' = "testnet" // Testnet | Mainnet
@@ -21,15 +22,15 @@ const main = async() => {
         console.log("stark account: ", starkSigner.address)
         console.log("")
 
- 
-        await Orbiter.swap({
-            evmSigner,
-            starkSigner,
-            token: TOKEN.eth.polygon, 
-            fromChain: 'polygon',
-            toChain: 'arbitrum',
-            amount: '0.006',
-        })
+
+        // await Orbiter.swap({
+        //     evmSigner,
+        //     starkSigner,
+        //     token: TOKEN.eth.polygon, 
+        //     fromChain: 'polygon',
+        //     toChain: 'starknet',
+        //     amount: '0.006',
+        // })
 
     } catch (error: any) {
   
