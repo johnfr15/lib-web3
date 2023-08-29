@@ -5,8 +5,8 @@ Jonathan's code
 **Swap**: *In progress*    
   
 **urls**
-- mainnet:          https://www.orbiter.finance/?source=Starknet&dest=Polygon  
-- testnet:          https://www.orbiter.finance/?source=Starknet&dest=Polygon  
+- mainnet:          https://www.orbiter.finance/
+- testnet:          https://rinkeby.orbiter.finance/  
 - documentation:    https://docs.orbiter.finance/ 
   
 **Bridge** *Starknet* / *Polygon* / *Arbitrum*  
