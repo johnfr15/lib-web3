@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI } from './constant';
-import { get_share_rate, resolve_network_contract, resolve_pool, Uint256_to_string, approve, fetch_withdraw_liq, get_balance } from './utils';
+import { get_share_rate, Uint256_to_string, get_balance } from './utils';
 import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './callData';
 
 
