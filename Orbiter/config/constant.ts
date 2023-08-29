@@ -45,6 +45,53 @@ export const ORBITER_CHAINID_TO_NETWORKID: { [key: number]: string } = {
     517: '1402',    // po zkevm(G)
 }
 
+export const CHAIN_INDEX: any = {
+    1: "eth",
+    2: "arbitrum",
+    22: "arbitrum",
+    3: "zksync",
+    33: "zksync",
+    4: "starknet",
+    44: "starknet",
+    5: "eth",
+    6: "polygon",
+    66: "polygon",
+    7: "optimism",
+    77: "optimism",
+    8: "immutablex",
+    88: "immutablex",
+    9: "loopring",
+    99: "loopring",
+    10: "metis",
+    510: "metis",
+    11: "dydx",
+    511: "dydx",
+    12: "zkspace",
+    512: "zkspace",
+    13: "boba",
+    513: "boba",
+    14: "zksync2",
+    514: "zksync2",
+    15: "bnbchain",
+    515: "bnbchain",
+    16: "arbitrum_nova",
+    516: "arbitrum_nova",
+    17: "polygon_zkevm",
+    517: "polygon_zkevm",
+    518: "scroll_l1_test",
+    519: "scroll_l2_test",
+    21: 'base',
+    521: "base_test",
+    23: 'linea',
+    523: "linea_test",
+    24: 'mantle',
+    524: "mantle_test",
+    25: "opbnb",
+    30: "zora",
+    530: "zora_test",
+    599: "orbiter",
+  };
+
 export const CROSS_ADDRESS: { [key: string]: string } = {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
     2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -67,15 +114,22 @@ export const CROSS_ADDRESS: { [key: string]: string } = {
 export const NETWORK_NAME_TO_ORBITERID: { [key: string]: any } = {
     mainnet: 
     {
+        'eth': 1,
         'arbitrum': 2,
+        "zksync": 3,
         'starknet': 4,
         'polygon': 6,
+        "optimism": 7,
     },
     testnet:
     {
+        "eth": 5, // rinkeby
         'arbitrum': 22,
+        "zksync": 33,
         'starknet': 44,
         'polygon': 66,
+        "optimism": 77,
+
     },
 }
 
