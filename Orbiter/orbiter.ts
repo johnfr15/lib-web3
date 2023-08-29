@@ -8,6 +8,23 @@ import { get_amounts } from "./bridge"
 import { get_balance, resolve_provider } from "./utils"
 import { TICKER } from "./config/constant"
 
+
+
+
+
+
+/**
+ * @name swap
+ * @param evmSigner     // etherjs Wallet instance
+ * @param starkSigner   // starknet Account instance
+ * @param token         // Address of token to be swapped
+ * @param fromChain     // Source network's name
+ * @param toChain       // Destination network's name
+ * @param amount        // (optional) Amount to be sent
+ * @param max           // (optional) If set to true, will try to bridge all the balance of the signer
+ * @param network       // (optional) In testnet or mainnet
+ * 
+ */
 export const swap = async( swap: {
     evmSigner: Wallet,
     starkSigner: Account,

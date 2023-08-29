@@ -1,32 +1,11 @@
 # jonathan
 Jonathan's code
 
-**Swap**: *DONE*  
-**Add liquidity**: *DONE*  
-**Remove liquidity**: *DONE*  
-
-
-## Installation
-
-1. Clone this repo:
-```console
-git clone https://github.com/cpuedohacerlo/jonathan.git
-```
-
-2. Install NPM packages:
-```console
-cd jonathan
-npm install
-```
-
-## Run test cases
-
-```console
-ts-node test
-```
-
-# MySwap
-
+# MySwap  
+**Swap**: *DONE*    
+**Add liquidity**: *DONE*    
+**Remove liquidity**: *DONE*    
+  
 **url** https://www.myswap.xyz/  
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
