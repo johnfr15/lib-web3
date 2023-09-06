@@ -1,10 +1,10 @@
 # jonathan
 Jonathan's code
 
-# MySwap  
-**Swap**: *DONE*    
-**Add liquidity**: *DONE*    
-**Remove liquidity**: *DONE*    
+# 10kSwap  
+**Swap**: *In progress*    
+**Add liquidity**: *In progress*    
+**Remove liquidity**: *In progress*    
   
 **url** https://www.myswap.xyz/  
   
@@ -52,7 +52,7 @@ If **max** parameter is activated whatever amount is in *param 3* or/and *param 
   
   
 ## withdraw_liquidity
-The withdraw_liquidity function need at least 3 parameters and 3 optionnal   
+The add_liquidiy function need at least 3 parameters and 3 optionnal   
   
 `param1`: The signer acount that will sign the transaction   
 `param2`: Address of **tokenA**  

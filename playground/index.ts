@@ -1,19 +1,21 @@
 import { Account } from "starknet"
-import { Wallet, ethers } from "ethers"
+import { Wallet, ethers, BigNumberish } from "ethers"
 import Orbiter from "../Orbiter"
 import MySwap from "../MySwap"
+import l0kSwap from "../10kSwap"
 import dotenv from "dotenv"
+
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKEN, NETWORK_NAME_TO_ID } = Orbiter.Constant
+    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = l0kSwap.Constant
     
     try {
         // Set up
-        const network: 'testnet' | 'mainnet' = "testnet" // Testnet | Mainnet
+        const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
 
         const evmSigner: Wallet = new ethers.Wallet( process.env.ETH_PRIVATE_KEY! )
         const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
@@ -23,14 +25,26 @@ const main = async() => {
         console.log("")
 
 
-        // await Orbiter.swap({
-        //     evmSigner,
+
+        // l0kSwap.addLiquidity( 
         //     starkSigner,
-        //     token: TOKEN.eth.polygon, 
-        //     fromChain: 'polygon',
-        //     toChain: 'starknet',
-        //     amount: '0.006',
-        // })
+        //     TOKENS[ network ].eth,
+        //     '0.000008571428571428',
+        //     TOKENS[ network ].dai,
+        //     null,
+        // )
+
+        l0kSwap.withdrawLiquidity( 
+            starkSigner,
+            TOKENS[ network ].eth,
+            TOKENS[ network ].dai,       
+        )
+
+        // await l0kSwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
+        //     "0.000001",
+        // )
 
     } catch (error: any) {
   

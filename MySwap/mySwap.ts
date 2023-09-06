@@ -30,12 +30,14 @@ export const swap = async(
 ) => {
 
     try {
+
         const { decimals: decimals_to } = await get_balance(signer.address, signer, path[1])
         const { decimals: decimals_from } = await get_balance(signer.address, signer, path[0])
 
         // Get approve Tx
         const approve_calldata = await get_approve_calldata(signer, amountIn, path[0], network)
         const { raw: raw_approve, compiled: approve_tx } = approve_calldata
+        
         // Get swap Tx
         const swap_calldata = await get_swap_calldata(signer, path, amountIn, network, slipage, amountOutMin)
         const { raw: raw_swap, compiled: swap_tx } = swap_calldata
@@ -47,7 +49,7 @@ export const swap = async(
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, swap_tx ]);
         const multiCall           = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
         console.log("hash:            ", multiCall.transaction_hash)
@@ -98,9 +100,11 @@ export const add_liquidity = async(
         const add_liq_calldata = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
         const { raw: raw_add, compiled: addTx } = add_liq_calldata
         const [ token_a_addr, amount_a, amount_a_min, token_b_addr, amount_b ] = raw_add.calldata
+
         // Get approve token 'a' Tx
         const approve_a_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_a as Uint256, raw_add.utils!.decimalsA as number), token_a_addr as string, network)
         const { raw: raw_approve_a, compiled: approveATx } = approve_a_calldata
+
         // Get approve token 'b' Tx
         const approve_b_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_b as Uint256, raw_add.utils!.decimalsB as number), token_b_addr as string, network)
         const { raw: raw_approve_b, compiled: approveBTx } = approve_b_calldata

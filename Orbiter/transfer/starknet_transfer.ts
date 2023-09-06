@@ -15,7 +15,7 @@ export const starknet_transfer = ( txArgs: TxTransferArgs ) => {
 export const cross_transfer = async( txArgs: TxTransferArgs ) => {
 
     const { starkSigner, network, fromChain, token, maker, amount, crossAddressExt } = txArgs
-    let tx;
+    let tx, receipt;
 
     try {
 
@@ -34,7 +34,7 @@ export const cross_transfer = async( txArgs: TxTransferArgs ) => {
             console.log("\nCross transfer...")
 
             tx = await Cross_transfer.transfer( maker.makerAddress, extHex, options )
-            await starkSigner.waitForTransaction( tx.hash )
+            await starkSigner.waitForTransaction
         }
         else // It is an erc20
         {
