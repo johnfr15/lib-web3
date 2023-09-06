@@ -2,9 +2,9 @@
 Jonathan's code
 
 # 10kSwap  
-**Swap**: *DONE*    
-**Add liquidity**: *DONE*    
-**Remove liquidity**: *DONE*    
+**Swap**: ✅    
+**Add liquidity**: ✅    
+**Remove liquidity**: ✅    
   
 **url** https://www.l0kSwap.xyz/  
   
@@ -22,8 +22,8 @@ You will then be able to interact with the mains functions
 
 ```javascript
 l0kSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
-l0kSwap.add_liquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
-l0kSwap.withdraw_liquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+l0kSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
+l0kSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
 
 ### Swap  
