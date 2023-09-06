@@ -1,4 +1,4 @@
-import { swap, add_liquidity, withdraw_liquidity, create_new_pool } from "./mySwap"
+import { swap, addLiquidity, withdrawLiquidity, create_new_pool } from "./mySwap"
 import * as Constant from "./constant"
 import * as Utils from "./utils"
 import * as Types from "./types"
@@ -28,4 +28,4 @@ import * as Types from "./types"
   !  upgrade(new_implementation: felt) return()
 */
 
-export default { swap, add_liquidity, withdraw_liquidity, create_new_pool, Constant, Utils, Types }
+export default { swap, addLiquidity, withdrawLiquidity, create_new_pool, Constant, Utils, Types }

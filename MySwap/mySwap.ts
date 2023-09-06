@@ -69,7 +69,7 @@ export const swap = async(
 
 
 /**
- * @name add_liquidity
+ * @name addLiquidity
  * @param signer        // Account to perform the swap
  * @param addressA      // First token
  * @param amountA       // Amount of first token. if set to null will check for amountB or max
@@ -80,7 +80,7 @@ export const swap = async(
  * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
  * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
  */
-export const add_liquidity = async(
+export const addLiquidity = async(
     signer: Account,                        
     addressA: string,                       
     amountA: string | undefined | null,     
@@ -138,7 +138,7 @@ export const add_liquidity = async(
 
 
 /**
- * @name withdraw_liquidity
+ * @name withdrawLiquidity
  * @param signer                // The account to widthdraw its Liquidity Tokens (lp) 
  * @param tokenA                // Address of token A
  * @param tokenB                // Address of token B
@@ -147,7 +147,7 @@ export const add_liquidity = async(
  * @param slipage               // (optional) protection against price movement or to high price impact default is 2%
  * @param maxFees               // (optional) max fees signer is ready to pay for executing transaction
  */
-export const withdraw_liquidity = async(
+export const withdrawLiquidity = async(
     signer: Account, 
     tokenA: string, 
     tokenB: string, 
