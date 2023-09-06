@@ -14,6 +14,7 @@ export const get_swap_calldata = async(
     amountOut: string | null,
     network: 'TESTNET' | 'MAINNET',
     slipage: number,
+    priceImpact: number,
     deadline?: number,
 ): Promise<SwapCallData> => {
 
@@ -37,7 +38,10 @@ export const get_swap_calldata = async(
 
         const route = new Route( [ pool ], token_in )
         const trade = new Trade( route, amount_in ?? amount_out! , amount_in ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT )
-        
+
+        if ( parseFloat( trade.priceImpact.toSignificant(2) ) > priceImpact )
+            throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact.toSignificant(2) }`)
+
         if ( trade.tradeType === 0 ) amount_out_min = trade.minimumAmountOut( new Percent( BigInt( slipage * 100 ), BigInt( 100 * 100 ) ) ).raw
         if ( trade.tradeType === 1 ) amount_in_max  = trade.maximumAmountIn( new Percent( BigInt( 100 * 100 ), BigInt( slipage * 100 ) ) ).raw
 
@@ -54,6 +58,7 @@ export const get_swap_calldata = async(
                 deadline,
             ],
             utils: {
+                priceImpact: trade.priceImpact.toSignificant(2),
                 tradeType: trade.tradeType
             }
         }

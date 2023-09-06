@@ -29,6 +29,7 @@ export const swap = async(
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     maxFees?: bigint,
     slipage: number = 0.5, // this represent 0.5% of slipage
+    priceImpact: number = 2, // this represent 2% of allowed price impact (default)
     deadline?: number,
 ) => {
 
@@ -44,9 +45,10 @@ export const swap = async(
         const { decimals: decimals_to } = await get_balance( signer.address, path[1], signer )
 
         // Get swap Tx
-        const swap_calldata = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, deadline )
+        const swap_calldata = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
         const [ amount_in, amount_out ] = swap_calldata.calldata
-        const { tradeType } = swap_calldata.utils
+        const { tradeType, priceImpact: price_impact } = swap_calldata.utils
+
 
         // Get approve Tx
         const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( amount_in as Uint256, decimals_from ), path[0], network )
@@ -56,7 +58,8 @@ export const swap = async(
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( amount as Uint256, decimals_from ) } ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ tradeType === 1 ? '(maximum)' : ''}${ amountIn } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(minimum)' : ''}${Uint256_to_string( amount_out as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)
+        console.log(`\t2) Swapping ${ tradeType === 1 ? '(maximum)' : ''}${ amountIn } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(minimum)' : ''}${Uint256_to_string( amount_out as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
+        console.log(`\nPrice impact: ${ price_impact }%`)
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swap_calldata ] );
         const multiCall           = await signer.execute( [ approve_calldata, swap_calldata ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
