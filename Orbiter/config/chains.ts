@@ -478,14 +478,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://bsc-dataseed1.binance.org",
-          "https://bsc-dataseed2.ninicoin.io",
-          "https://bsc.rpc.blxrbdn.com",
-          "https://bsc-dataseed4.ninicoin.io",
-          "https://rpc-bsc.bnb48.club",
-          "https://bsc-dataseed4.binance.org"
-      ],
+      "rpc": [ "https://bsc-dataseed1.binance.org" ],
       "watch": ["api", "rpc"],
       "tokens": [
           {
@@ -744,13 +737,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": [
-      "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      "https://eth-goerli.public.blastapi.io",
-      "https://rpc.ankr.com/eth_goerli",
-      "https://rpc.goerli.mudit.blog",
-      "https://eth-goerli.g.alchemy.com/v2/demo"
-    ],
+    "rpc": [ "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161" ],
     "watch": ["rpc"],
     "tokens": [
       {
@@ -893,13 +880,7 @@ export default [
     "internalId": "66",
     "name": "Polygon Mumbai",
     "nativeCurrency": {},
-    "rpc": [
-      "https://polygon-mumbai.gateway.tenderly.co",
-      "https://matic-testnet-archive-rpc.bwarelabs.com",
-      "https://polygon-testnet.public.blastapi.io",
-      "https://rpc.ankr.com/polygon_mumbai",
-      "https://matic-mumbai.chainstacklabs.com"
-    ],
+    "rpc": [ "https://polygon-mumbai.gateway.tenderly.co" ],
     "watch": ["rpc"],
     "contracts": [],
     "tokens": [

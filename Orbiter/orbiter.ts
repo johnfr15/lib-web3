@@ -76,7 +76,7 @@ export const swap = async( swap: {
     }
 
     /*========================================= TX ================================================================================================*/
-    console.log(`\nBridging token ${ TICKER[swap.token] } from ${ swap.fromChain } to ${ swap.toChain }`)
+    console.log(`\nBridging token ${ TICKER[ swap.token ] } from ${ swap.fromChain } to ${ swap.toChain }`)
     console.log(`\tpay amount:     ${ ethers.formatUnits( payAmount, maker.fromPrecision ) } ${ TICKER[ swap.token ]}`)
     console.log(`\treceive amount: ${ ethers.formatUnits( receiveAmount, maker.toPrecision ) } ${ TICKER[ swap.token ]}`)
     console.log("\nNetwork:          ", network )
@@ -85,9 +85,9 @@ export const swap = async( swap: {
     log_routes( txArgs )
 
     if ( from_chain.name === "starknet" )
-        starknet_transfer( txArgs )
+        await starknet_transfer( txArgs )
     else
-        evm_transfer( txArgs )
+        await evm_transfer( txArgs )
     /*=============================================================================================================================================*/
 
     return (0)

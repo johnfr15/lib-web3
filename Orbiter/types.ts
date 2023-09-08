@@ -1,4 +1,4 @@
-import { Provider, Contract as StarkContract, Account } from "starknet"
+import { Provider, Contract as StarkContract, Account, Uint256 } from "starknet"
 import { JsonRpcProvider, BaseContract as SolContract, BigNumberish, Wallet } from "ethers"
 
 export type BridgeToken = {
@@ -55,7 +55,8 @@ export type MarkerType = {
     endTime: number
 }
 
-export type Chains = 'starknet' | 'arbitrum' | 'polygon' | 'ethereum' | 'zksync' | 'optimism'
+export type Chains = 'starknet' | 'arbitrum' | 'polygon' | 'ethereum' | 'zksync' | 'optimism' | 'metis' | 'boba' |
+                     'zksync2' | 'bsc' | 'arbitrum_nova' | 'polygon_zkevm' | 'base' | 'linea' | 'mantle'
 
 export type ChainType = {
     api: Object
@@ -110,4 +111,16 @@ export const CrossAddressExtTypes = {
 '0x01': 'Cross Ethereum Address',
 '0x02': 'Cross Dydx Address',
 '0x03': 'Cross Stark Address',
+}
+
+export type ApproveCallData = {
+    contractAddress: string,
+    entrypoint: string,
+    calldata: [ string, bigint ] 
+}
+
+export type CrossTransferCalldata = {
+    contractAddress: string,
+    entrypoint: string,
+    calldata: [ string, string, bigint, string ] 
 }
