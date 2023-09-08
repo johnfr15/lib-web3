@@ -1,8 +1,7 @@
 import { Account } from "starknet"
-import { Wallet, ethers, BigNumberish } from "ethers"
+import { Wallet, ethers } from "ethers"
 import Orbiter from "../Orbiter"
 import dotenv from "dotenv"
-import { L1_TO_L2_MAKER_ADDRESSES } from "../Orbiter/config/constant"
 import { Chains } from "../Orbiter/types"
 
 
@@ -23,8 +22,8 @@ const main = async() => {
         console.log("stark account: ", starkSigner.address)
         
         const network: 'TESTNET' | 'MAINNET' = "TESTNET"
-        const fromChain: Chains = "starknet"
-        const toChain: Chains = "optimism"
+        const fromChain: Chains = "arbitrum"
+        const toChain: Chains = "ethereum"
 
 
         await Orbiter.swap({

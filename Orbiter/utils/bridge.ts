@@ -1,9 +1,9 @@
 import { Provider, Contract as StarkContract, Account } from "starknet"
-import { Contract as SolContract, JsonRpcProvider, Wallet, ethers } from "ethers"
+import { Contract as SolContract, JsonRpcProvider, Wallet } from "ethers"
 import maker1 from "../config/maker-1"
 import makerTest1 from "../config/makerTest-1"
 import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../config/constant"
-import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt, OrbiterToken } from "../types"
+import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt } from "../types"
 
 export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
 

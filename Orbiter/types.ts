@@ -1,4 +1,4 @@
-import { Provider, Contract as StarkContract, Account, Uint256 } from "starknet"
+import { Provider, Contract as StarkContract, Account } from "starknet"
 import { JsonRpcProvider, BaseContract as SolContract, BigNumberish, Wallet } from "ethers"
 
 export type BridgeToken = {
@@ -19,7 +19,7 @@ export type BridgeChain = {
     icon?: string
 }
 
-export type OrbiterToken = 'ETH' | 'USDC' | 'DAI' | 'USDT' | 'BNB'
+export type OrbiterToken = 'ETH' | 'USDC' | 'DAI' | 'USDT'
 
 export type BridgeNetwork = 'Mainnet' | 'Testnet'
 
