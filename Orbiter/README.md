@@ -24,10 +24,11 @@ import Orbiter from "/Orbiter"
 
 Orbiter.swap( swap_params )
 ```
+  
 
 In this module you will be able to interact with all functionnalities of the *Orbiter* Bridge 
 on all its supported network (see `/Orbiter/config/maker-1.ts`)  
-
+  
 > [!NOTE]
 > For each chains (see `/Orbiter/config/chains.ts`) a default public ***RPC*** has been set up but feel free to put your own ones.  
 
