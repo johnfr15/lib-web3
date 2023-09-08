@@ -6,7 +6,7 @@ Jonathan's code
   
 **Swap**: *DONE* ✅  
   
-**urls**  
+**urls**
 - mainnet:          https://www.orbiter.finance/
 - testnet:          https://rinkeby.orbiter.finance/  
 - documentation:    https://docs.orbiter.finance/ 
@@ -17,6 +17,7 @@ Jonathan's code
   
 
 ## Calling Orbiter Functions
+<br />
 
 To use it just import the directory named *Orbiter*  
 ```javascript
