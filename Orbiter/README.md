@@ -29,9 +29,11 @@ Orbiter.swap( swap_params )
 <br />
 In this module you will be able to interact with all functionnalities of the *Orbiter* Bridge 
 on all its supported network (see `/Orbiter/config/maker-1.ts`)  
-  
+<br />
+
 > [!NOTE]
 > For each chains (see `/Orbiter/config/chains.ts`) a default public ***RPC*** has been set up but feel free to put your own ones.  
+<br />
 
 ```javascript
 export const swap = async( swap_params: {
