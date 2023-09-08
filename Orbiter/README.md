@@ -2,47 +2,65 @@
 Jonathan's code
 
 # Orbiter  
-**Swap**: *In progress*    
+**Swap**: *DONE* ✅    
   
 **urls**
 - mainnet:          https://www.orbiter.finance/
 - testnet:          https://rinkeby.orbiter.finance/  
 - documentation:    https://docs.orbiter.finance/ 
   
-**Bridge** *Starknet* / *Polygon* / *Arbitrum*  
+**Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
+**Tokens** *ETH* / *USDC* / *DAI* / *USDT*
+
+![Orbiter](https://avatars.githubusercontent.com/u/102346948?s=200&v=4)
 
 ## Calling Orbiter Functions
 
 To use it just import the directory named *Orbiter*  
 ```javascript
 import Orbiter from "/Orbiter"
+
+Orbiter.swap( swap_params )
 ```
 
 In this module you will be able to interact with all functionnalities of the *Orbiter* Bridge 
-on all its supported network (see `/Orbiter/config/makerListMainnet`)
+on all its supported network (see `/Orbiter/config/maker-1.ts`)  
+
+> [!NOTE]
+> For each chains (see `/Orbiter/config/chains.ts`) a default public ***RPC*** has been set up but feel free to put your own ones.  
 
 ```javascript
-Orbiter.swap({
-    evmSigner,
-    starkSigner,
-    TOKEN_FROM_ADDRESS,
-    fromChain, 
-    toChain,
-    amount,
-})
+export const swap = async( swap_params: {
+    evmSigner: Wallet,
+    starkSigner: Account,
+    token: string,
+    fromChain: Chains, 
+    toChain: Chains,
+    
+    amount?: string,
+    max?: boolean,
+    network?: 'TESTNET' | 'MAINNET' 
+}): Promise<void>
 ```
 
 ## Swap
-The swap function need at least 6 parameters and 2 optionnal  
+The swap function need an object of at least 6 parameters and 3 optionnals  
 
-`param1`: The signer of an EVM (ethereum virtual machine) acount that will sign the transaction on the evm networks  
-`param2`: The signer of an Starknet acount that will sign the transaction on the starknet network    
-`param3`: The token address, this token will be bridge to the target network  
-`param4`: Name of the source network  
-`param5`: Name of the target network   
-`param6 (optional)`: The amount to be bridge it is worth noting that makers have 'minimum' amount to be send otherwise it will revert the function (see `/Orbital/config/makerListMainnet` to know the details).   
-`param7 (optional)`: if activated it will check for the highest amount possible from token, take note that some "Makers" may have cap if your balance is above that cap this will revert the function (default is false).  
-`param8 (optional)`: The network wether on mainnet or testnet (default is testnet)
+`evmSigner`: The signer of an EVM (ethereum virtual machine) account that will sign the transaction on the evm networks  
+  
+`starkSigner`: The signer of an Starknet acount that will sign the transaction on the starknet network  
+  
+`token`: The token address, this token will be bridge to the target network make sure that the token address match with its network *fromChain* 
+  
+`fromChain`: Name of the source network  
+  
+`toChain`: Name of the target network   
+  
+`amount (optional)`: The amount to be bridge it is worth noting that makers have 'minimum' amount to be send otherwise it will revert the function (see `/Orbital/config/makerListMainnet` to know the details). If you use the `max` params to true, no need to specify an amount.  
+  
+`max (optional)`: if activated it will send the total balance of `token` param from the `fromChain` chain. It is worth noting that makers have a 'maximum' amount ceiling, if your balance is above the function will throw an error.
+  
+`network (optional)`: The network wether on mainnet or testnet (default is testnet)
 
 ## Author
  
