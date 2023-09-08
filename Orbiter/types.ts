@@ -124,3 +124,15 @@ export type CrossTransferCalldata = {
     entrypoint: string,
     calldata: [ string, string, bigint, string ] 
 }
+
+export type SwapParams = {
+    evmSigner: Wallet,
+    starkSigner: Account,
+    token: string,
+    fromChain: Chains, 
+    toChain: Chains,
+    
+    amount?: string,
+    max?: boolean,
+    network?: 'TESTNET' | 'MAINNET' 
+}
