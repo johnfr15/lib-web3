@@ -14,11 +14,11 @@ Jonathan's code
 **Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
   
 **Tokens** *ETH* / *USDC* / *DAI* / *USDT*
-| Chain | ![DAI](asset2/dai.png) |
-|-------|---------------|
-| ethereum |     ✅         |
-|       |               |
-|       |               |
+| Chain | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|-------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |                     | | | |
+|       |                        | | | |
+|       |                        | | | |
 <br />
 <br />
 <br />
