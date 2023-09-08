@@ -19,11 +19,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://rpc.ankr.com/eth",
-          "https://ethereum.blockpi.network/v1/rpc/public",
-          "https://eth.rpc.blxrbdn.com"
-      ],
+      "rpc": [ "https://rpc.ankr.com/eth" ],
       "watch": ["rpc", "api"],
       "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
       "tokens": [
@@ -62,10 +58,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://endpoints.omniatech.io/v1/arbitrum/one/public",
-          "https://arbitrum.blockpi.network/v1/rpc/public"
-      ],
+      "rpc": [ "https://endpoints.omniatech.io/v1/arbitrum/one/public" ],
       "watch": ["rpc", "api"],
       "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
       "tokens": [
@@ -105,7 +98,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [],
+      "rpc": [ "https://mainnet.era.zksync.io" ],
       "watch": ["api"],
       "contracts": [],
       "tokens": [
@@ -196,13 +189,7 @@ export default [
       "networkId": "137",
       "internalId": "6",
       "name": "Polygon",
-      "rpc": [
-          "https://polygon.llamarpc.com",
-          "https://polygon-bor.publicnode.com",
-          "https://poly-rpc.gateway.pokt.network",
-          "https://matic-mainnet.chainstacklabs.com",
-          "https://matic-mainnet-full-rpc.bwarelabs.com"
-      ],
+      "rpc": [ "https://polygon.llamarpc.com" ],
       "nativeCurrency": {
           "name": "MATIC",
           "symbol": "MATIC",
@@ -252,11 +239,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://opt-mainnet.g.alchemy.com/v2/demo",
-          "https://optimism-mainnet.public.blastapi.io",
-          "https://optimism.blockpi.network/v1/rpc/public"
-      ],
+      "rpc": [ "https://opt-mainnet.g.alchemy.com/v2/demo" ],
       "watch": ["api", "rpc"],
       "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
       "debug": false,
@@ -343,7 +326,7 @@ export default [
           "decimals": 18,
           "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
       },
-      "rpc": ["https://andromeda.metis.io/?owner=1088"],
+      "rpc": ["https://metis-mainnet.public.blastapi.io"],
       "watch": ["api", "rpc"],
       "contracts": [],
       "tokens": [
@@ -426,11 +409,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://mainnet.boba.network",
-          "https://lightning-replica.boba.network",
-          "https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f"
-      ],
+      "rpc": [ "https://mainnet.boba.network" ],
       "watch": ["rpc", "api"],
       "contracts": [],
       "tokens": [],
@@ -451,7 +430,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": ["https://zksync2-mainnet.zksync.io"],
+      "rpc": ["https://mainnet.era.zksync.io"],
       "watch": ["rpc"],
       "contracts": ["0xbf3922a0cebbcd718e715e83d9187cc4bba23f11"],
       "tokens": [
@@ -571,10 +550,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://developer-access-mainnet.base.org",
-          "https://base.blockpi.network/v1/rpc/public"
-      ],
+      "rpc": [ "https://developer-access-mainnet.base.org" ],
       "watch": [
           "rpc",
           "api"
@@ -599,7 +575,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": ["https://rpc.linea.build"],
+      "rpc": ["https://linea.drpc.org"],
       "watch": ["rpc"],
       "router": {
           "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
@@ -690,9 +666,7 @@ export default [
           "decimals": 18,
           "address": "0x0000000000000000000000000000000000000000"
       },
-      "rpc": [
-          "https://rpc.zora.energy"
-      ],
+      "rpc": [ "https://rpc.zora.energy" ],
       "router": {
           "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
       },
@@ -737,7 +711,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": [ "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161" ],
+    "rpc": [ "https://goerli.blockpi.network/v1/rpc/public" ],
     "watch": ["rpc"],
     "tokens": [
       {
@@ -788,11 +762,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": [
-      "https://goerli-rollup.arbitrum.io/rpc",
-      "https://arb-goerli.g.alchemy.com/v2/demo",
-      "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
-    ],
+    "rpc": [ "https://goerli-rollup.arbitrum.io/rpc" ],
     "watch": ["rpc"],
     "contracts": ["0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"],
     "tokens": [
@@ -928,7 +898,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://goerli.optimism.io", "https://opt-goerli.g.alchemy.com/v2/demo"],
+    "rpc": ["https://goerli.optimism.io"],
     "watch": ["rpc"],
     "contracts": ["0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54"],
     "tokens": [
@@ -1002,7 +972,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://data-seed-prebsc-1-s1.binance.org:8545", "https://bsc-testnet.public.blastapi.io"],
+    "rpc": ["https://data-seed-prebsc-1-s1.binance.org:8545"],
     "watch": ["rpc"],
     "tokens": [
       {
@@ -1191,7 +1161,7 @@ export default [
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://rpc.testnet.mantle.xyz", "https://rpc.ankr.com/mantle_testnet"],
+    "rpc": ["https://rpc.testnet.mantle.xyz"],
     "watch": ["rpc"],
     "tokens": [
       {
