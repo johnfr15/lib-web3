@@ -16,13 +16,23 @@ Jonathan's code
 **Tokens** *ETH* / *USDC* / *DAI* / *USDT*
 <br />
 <br />
-## ![ETH](assets/ethereum.png) Ethereum
+## ![ETH](assets/ethereum.png) Ethereum bridge
 | Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
 |----------|------------------------|------------------------|--------------------------|--------------------------|
 | starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ✅           |           ✅            |            ✅            |             ✅           |
+| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
+<br />
+<br />
+## ![ETH](assets/starknet.png) Starknet bridge
+| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|----------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
+| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
+| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
+| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
