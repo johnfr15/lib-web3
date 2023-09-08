@@ -14,12 +14,10 @@ Jonathan's code
 **Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
   
 **Tokens** *ETH* / *USDC* / *DAI* / *USDT*
-  
 <br />
 <br />
 <br />
 <br />
-
 ## Calling Orbiter Functions
 <br />
 
