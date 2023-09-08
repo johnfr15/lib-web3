@@ -15,34 +15,34 @@ export const get_amounts = (
     max: boolean
 ): { payAmount: bigint, receiveAmount: bigint } => {
 
-    const { fromChainName, toChainName, tradingFee, precision, minPrice, maxPrice } = maker
+    const { fromChainName, toChainName, tradingFee, fromPrecision, minPrice, maxPrice } = maker
     let pay_amount: any;
 
-    const b_amount    = ethers.parseUnits( amount, precision )
-    const b_min_price = ethers.parseUnits( minPrice, precision )
-    const b_max_price = ethers.parseUnits( maxPrice, precision )
+    const b_amount    = ethers.parseUnits( amount, fromPrecision )
+    const b_min_price = ethers.parseUnits( minPrice.toString(), fromPrecision )
+    const b_max_price = ethers.parseUnits( maxPrice.toString(), fromPrecision )
 
     // Check minPrice, maxPrice
     if ( b_amount < b_min_price )
-      throw new Error(`Orbiter get amounts failed: amount less than minPrice(${ minPrice }), token: ${token.name}, fromChain: ${ fromChainName }, toChain: ${ toChainName }`)
+      throw(`Amount less than minPrice( ${ minPrice } ), token: ${ token.name }, fromChain: ${ fromChainName }, toChain: ${ toChainName }`)
     if ( b_amount > b_max_price ) 
-      throw new Error(`Orbiter get amounts failed: amount greater than maxPrice(${ maxPrice }), token: ${token.name}, fromChain: ${ fromChainName }, toChain: ${ toChainName }`)
+      throw(`Amount greater than maxPrice( ${ maxPrice } ), token: ${ token.name }, fromChain: ${ fromChainName }, toChain: ${ toChainName }`)
     
 
     if ( max )
       pay_amount = b_amount - BigInt( 10000 ) // letting enough for identification ID  
     else
-      pay_amount = b_amount + ethers.parseUnits( tradingFee, precision )
+      pay_amount = b_amount + ethers.parseUnits( tradingFee.toString(), fromPrecision )
 
-    const receive_amount = get_receive_amount( ethers.formatUnits( pay_amount, precision ), maker )
+    const receive_amount = get_receive_amount( ethers.formatUnits( pay_amount, fromPrecision ), maker )
 
     return { payAmount: pay_amount, receiveAmount: receive_amount }
 }
 
 export const get_receive_amount = ( inputAmount: string, selectMakerInfo: MarkerType ): bigint => {
-    const { precision, tradingFee, gasFee } = selectMakerInfo
+    const { fromPrecision, tradingFee, gasFee } = selectMakerInfo
 
-    let output_minus_tradingFee = ethers.parseUnits( inputAmount, precision ) - ethers.parseUnits( tradingFee, precision )
+    let output_minus_tradingFee = ethers.parseUnits( inputAmount, fromPrecision ) - ethers.parseUnits( tradingFee.toString(), fromPrecision )
     
     let gas_fee = output_minus_tradingFee * BigInt( gasFee * 100 ) / BigInt( 100000 )
 
@@ -50,3 +50,4 @@ export const get_receive_amount = ( inputAmount: string, selectMakerInfo: Marker
 
     return receive_amount
 }
+

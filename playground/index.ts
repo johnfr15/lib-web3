@@ -24,12 +24,13 @@ const main = async() => {
         console.log("stark account: ", starkSigner.address)
         console.log("")
 
-
-        await l0kSwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].dai, TOKENS[ network ].eth ],
-            "0.01",
-        )
+        const str = 2 + '-' + 7
+        console.log( typeof str )
+        // await l0kSwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].dai, TOKENS[ network ].eth ],
+        //     "0.01",
+        // )
 
         // l0kSwap.addLiquidity( 
         //     starkSigner,

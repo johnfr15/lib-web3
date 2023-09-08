@@ -1,15 +1,15 @@
 import { Provider, Contract as StarkContract, Account } from "starknet"
 import { Contract as SolContract, JsonRpcProvider, Wallet, ethers } from "ethers"
-import * as m_makers from "../config/makerListMainnet"
-import * as t_makers from "../config/makerListTestnet"
+import maker1 from "../config/maker-1"
+import makerTest1 from "../config/makerTest-1"
 import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../config/constant"
-import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt } from "../types"
+import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt, OrbiterToken } from "../types"
 
 export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
 
-    const chain_id   = NETWORK_NAME_TO_ORBITERID[network][chain]
+    const chain_id   = NETWORK_NAME_TO_ORBITERID[ network ][ chain ]
     const chain_name = chain
-    const network_id = NETWORK_NAME_TO_ID[network][chain]
+    const network_id = NETWORK_NAME_TO_ID[ network ][ chain ]
 
     const bridge_chain: BridgeChain = {
         id: chain_id,
@@ -21,7 +21,7 @@ export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
 }
 
 export const get_token = ( maker: MarkerType, chain: Chains, provider: Provider | JsonRpcProvider ): BridgeToken => {
-    let contract;
+    let contract: StarkContract | SolContract;
 
     if ( chain === "starknet" )
         contract = new StarkContract( ERC20_STARK_ABI, maker.fromTokenAddress, provider as Provider )
@@ -32,8 +32,8 @@ export const get_token = ( maker: MarkerType, chain: Chains, provider: Provider 
         provider: provider,
         chainId: maker.fromChainId,
         name: maker.tokenName,
+        precision: maker.fromPrecision,
         address: maker.fromTokenAddress,
-        precision: maker.precision,
         makerAddress: maker.makerAddress,
         contract: contract
     }
@@ -41,37 +41,34 @@ export const get_token = ( maker: MarkerType, chain: Chains, provider: Provider 
     return bridge_token
 }
 
-export const resolve_maker = ( token: string, fromChain: BridgeChain, toChain: BridgeChain, network: string ): MarkerType => {
+export const resolve_maker = ( token: string, fromChain: BridgeChain, toChain: BridgeChain, network: string ): any => {
     let searchMaker;
+    const pair_token = TICKER[ token ] + '-' + TICKER[ token ]
+    const pair_id = fromChain.id + '-' + toChain.id
 
-    if ( network === "mainnet" )
-    {
-        searchMaker = Object.values( m_makers ).find(( maker ) => {
-            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id && maker.t1Address === token ) return true
-            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id && maker.t2Address === token ) return true
-            return false
-        })
-    }
-    if ( network === "testnet" )
-    {
-        searchMaker = Object.values( t_makers ).find(( maker ) => {
-            if ( maker.c1ID === fromChain.id && maker.c2ID === toChain.id && maker.t1Address === token ) return true
-            if ( maker.c2ID === fromChain.id && maker.c1ID === toChain.id && maker.t2Address === token ) return true
-            return false
-        })
-    }
+    if ( network === "MAINNET" )
+        searchMaker = Object.entries( maker1 ).find(( [ key, value ]: [string, Record<string, any>] ) => (pair_id === key && value[ pair_token ]) )
+    if ( network === "TESTNET" )
+        searchMaker = Object.entries( makerTest1 ).find(( [ key, value ]: [string, Record<string, any>] ) => (pair_id === key && value[ pair_token ]) )
 
     if ( searchMaker === undefined )
-        throw new Error(`resolve_maker: Bridge from ${fromChain.name} to ${toChain.name} does not exist.`)
+        throw(`${network}: Bridge from ${fromChain.name} to ${toChain.name} does not exist.`)
 
-    const makers = expand( searchMaker )
+    const maker: Record<string, any> = searchMaker[1]
 
-    // Find the right position (from/to)
-    const maker = fromChain.id === makers[0].fromChainId ? makers[0] : makers[1]
-
-    return ( maker )
+    return {
+        makerAddress: maker[ pair_token ].makerAddress ?? maker[ pair_token ].sender,
+        ...maker[ pair_token ],
+        fromChainId: fromChain.id,
+        toChainId: toChain.id,
+        fromChainName: fromChain.name,
+        toChainName: toChain.name,
+        fromTokenAddress: token,
+        tokenName: TICKER[ token ],
+    }
 }
 
+/*
 export const expand = ( makerListItem: typeof t_makers.t_starknet_arbitrum_eth | typeof m_makers.m_starknet_arbitrum_eth ): [ MarkerType, MarkerType ] => {
     return [
         {
@@ -110,6 +107,7 @@ export const expand = ( makerListItem: typeof t_makers.t_starknet_arbitrum_eth |
         },
     ]
 }
+*/
 
 /**
  * 
@@ -122,7 +120,7 @@ export const resolve_cross_address = ( evmSigner: Wallet, starkSigner: Account, 
     if ( fromChain.name === "starknet" && toChain.name !== "starknet" )
         return { type: "0x01", value: evmSigner.address }
     if ( fromChain.name !== "starknet" && toChain.name === "starknet" )
-        return { type: "0x02", value: starkSigner.address }
+        return { type: "0x03", value: starkSigner.address }
     else
         return undefined
 }

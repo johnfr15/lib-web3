@@ -10,7 +10,8 @@ export type BridgeToken = {
     makerAddress: string
     contract: StarkContract | SolContract
     icon?: string
-  }
+}
+
 export type BridgeChain = {
     id: number // Orbiter's chainId
     name: string
@@ -18,42 +19,61 @@ export type BridgeChain = {
     icon?: string
 }
 
+export type OrbiterToken = 'ETH' | 'USDC' | 'DAI' | 'USDT' | 'BNB'
+
 export type BridgeNetwork = 'Mainnet' | 'Testnet'
 
+export type Maker = {
+    makerAddress: string,
+    sender: string,
+    maxPrice: number,
+    minPrice: number,
+    tradingFee: number,
+    gasFee: number,
+    fromPrecision: number,
+    toPrecision: number,
+    startTime: number,
+    endTime: number,
+}
 export type MarkerType = {
     makerAddress: string,
+    sender: string,
     fromChainId: number,
     toChainId: number,
     fromChainName: string,
     toChainName: string,
     fromTokenAddress: string,
-    toTokenAddress: string,
+    // toTokenAddress: string,
     tokenName: string,
-    minPrice: string,
+    fromPrecision: number,
+    toPrecision: number,
     maxPrice: string,
-    precision: number,
-    avalibleDeposit: string,
+    minPrice: string,
     tradingFee: string,
     gasFee: number,
-    avalibleTimes: Array<{ startTime: number, endTime: number }>,
+    startTime: number,
+    endTime: number
 }
 
-export type Chains = 'starknet' | 'arbitrum' | 'polygon'
+export type Chains = 'starknet' | 'arbitrum' | 'polygon' | 'ethereum' | 'zksync' | 'optimism'
 
 export type ChainType = {
+    api: Object
+    chainId: string,
+    networkId: string,
+    internalId: string,
     name: string,
-    orbiterId: number,
-    chainId: number,
-    shortName: string,
-    networkId: number,
+    debug: boolean,
     nativeCurrency: {
         name: string,
         symbol: string,
         decimals: number,
+        address: string,
     },
     rpc: Array<string>
-    faucets: Array<string>,
-    explorers: Array<string>,
+    contracts: string[]
+    tokens: Array<Object>
+    xvmList: Array<string>
     infoURL: string,
 }
 
@@ -65,7 +85,7 @@ export type TxTransferArgs = {
     fromChain: BridgeChain
     toChain: BridgeChain
     maker: MarkerType
-    network: 'testnet' | 'mainnet'
+    network: 'TESTNET' | 'MAINNET'
     
     defaultGasLimit?: BigNumberish  // For evm, default value is 55000
     fromAddress?: string
@@ -88,5 +108,6 @@ export type CrossAddressExt = {
 
 export const CrossAddressExtTypes = {
 '0x01': 'Cross Ethereum Address',
-'0x02': 'Cross Stark Address',
+'0x02': 'Cross Dydx Address',
+'0x03': 'Cross Stark Address',
 }
