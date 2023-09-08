@@ -1,53 +1,41 @@
 import { ethers } from "ethers"
-import { Contract, Account } from "starknet";
-import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ORBITERID } from "../config/constant";
-import { is_native_token } from "../utils/transfer"
-import { BridgeToken, TxTransferArgs } from "../types";
-import { encode_ext } from "../utils/transfer";
+import { CROSS_ADDRESS, L1_TO_L2_MAKER_ADDRESSES } from "../config/constant";
+import { TxTransferArgs } from "../types";
+import { ApproveCallData, CrossTransferCalldata } from "../types";
 import { TICKER } from "../config/constant";
 
-export const starknet_transfer = ( txArgs: TxTransferArgs ) => {
+export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
     
-    cross_transfer( txArgs )
-}
-
-// eth (native token) address to evm network address
-export const cross_transfer = async( txArgs: TxTransferArgs ) => {
-
     const { starkSigner, network, fromChain, token, maker, amount, crossAddressExt } = txArgs
-    let tx, receipt;
 
     try {
 
-        const orbiter_id = NETWORK_NAME_TO_ORBITERID[ network ][ fromChain.name ]
-        const cross_address = CROSS_ADDRESS[ orbiter_id ]
+        const cross_address: string = CROSS_ADDRESS[ fromChain.id ]
+        const maker_L2: string      = L1_TO_L2_MAKER_ADDRESSES[ maker.makerAddress ]
+
         if ( cross_address === '' )
-            throw(`Cross transfer: Unknown cross address for network ${ txArgs.fromChain.name } need one for orbiter id: ${orbiter_id}` )
+            throw(`${ network } Cross transfer: Unknown cross address for chain ${ fromChain.name } need one for orbiter id: ${ fromChain.id }` )
+        if ( maker_L2 === undefined  )
+            throw(`${ network } Can't find any starknet address for maker ${ maker.makerAddress }` )
     
-        const Cross_transfer = new Contract( CROSS_ADDRESS_ABI, cross_address, starkSigner )
-        const extHex = encode_ext( crossAddressExt! ) // Concat the target network + wallet's address
-        const options = { value: "0x" + amount.toString(16) }
 
+        const crossTx: CrossTransferCalldata = get_crossTransfer_calldata( cross_address, token.address, maker_L2, amount, crossAddressExt!.value )
+        const approveTx: ApproveCallData     = get_approve_calldata( token.address, cross_address, amount )
+
+        /*========================================= TX ================================================================================================*/
+        console.log(`\nMulticall...`)
+        console.log(`\t1) Approving ${ cross_address } to spend ${ ethers.formatUnits( amount, token.precision ) } ${ TICKER[ token.address ] }`)
+        console.log(`\t2) Transfer erc20 to ${ maker_L2 }`)      
+
+        const { suggestedMaxFee } = await starkSigner.estimateInvokeFee( [ approveTx, crossTx ] );
+        const multiCall           = await starkSigner.execute( [ approveTx, crossTx ], undefined, { maxFee: suggestedMaxFee } )
+        const receipt: any        = await starkSigner.waitForTransaction( multiCall.transaction_hash );
         
-        if ( is_native_token( token.address ) )
-        {
-            console.log("\nCross transfer...")
-
-            tx = await Cross_transfer.transfer( maker.makerAddress, extHex, options )
-            await starkSigner.waitForTransaction
-        }
-        else // It is an erc20
-        {
-            await approve_erc20( cross_address, token, amount, starkSigner )
-
-            console.log("\nCross transfer...")
-
-            tx = await Cross_transfer.functions.transferERC20( token.address, maker.makerAddress, options.value, extHex )
-            await starkSigner.waitForTransaction( tx.hash )
-        }
-
-        console.log("Transaction valided !")
-        console.log("Hash: ", tx.hash)
+        console.log(`\nTransaction valided !`)
+        console.log("hash:            ", multiCall.transaction_hash)
+        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("suggestedMaxFee: ", ethers.formatEther( suggestedMaxFee ), "ETH")
+        /*=============================================================================================================================================*/
         
     } catch ( error ) {
         
@@ -56,24 +44,32 @@ export const cross_transfer = async( txArgs: TxTransferArgs ) => {
     }
 }
 
-export const approve_erc20 = async( target: string, token: BridgeToken, amount: bigint, signer: Account ) => {
+export const get_approve_calldata = ( tokenAddress: string,  spender: string, amount: bigint ): ApproveCallData => {
 
-    try {
-        
-        const erc20 = new Contract( ERC20_STARK_ABI, token.address, signer )
-    
-        console.log(`\nApproving ${target} to spend ${ ethers.formatUnits( amount, token.precision)} ${TICKER[token.address]}...`)
-    
-        // Approve amount + 10%
-        const tx = await erc20.functions.approve( target, (amount * BigInt( 11 )) / BigInt( 10 ))
-        await signer.waitForTransaction( tx.hash )
-
-        console.log("\nTransaction valided !")
-        console.log("hash: ", tx.hash)
-
-    } catch (error) {
-     
-        throw error
-
+    const calldata: ApproveCallData = {
+        contractAddress: tokenAddress,
+        entrypoint: "approve",
+        calldata: [ spender, amount ],
     }
+
+    return calldata
+
+}
+
+const get_crossTransfer_calldata = ( 
+    crossAddress: string, 
+    tokenAddress: string, 
+    to: string, 
+    amount: bigint, 
+    ext: string 
+): CrossTransferCalldata => {
+
+    const calldata: CrossTransferCalldata = {
+        contractAddress: crossAddress,
+        entrypoint: "transferERC20",
+        calldata: [ tokenAddress, to, amount, ext ],
+    }
+
+    return calldata
+
 }

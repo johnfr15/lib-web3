@@ -5,12 +5,12 @@ import { BridgeToken, TxTransferArgs } from "../types";
 import { encode_ext } from "../utils/transfer";
 import { TICKER } from "../config/constant";
 
-export const evm_transfer = ( txArgs: TxTransferArgs ) => {
+export const evm_transfer = async( txArgs: TxTransferArgs ) => {
     
     if ( txArgs.crossAddressExt )
-        cross_transfer( txArgs )
+        await cross_transfer( txArgs )
     else
-        transfer ( txArgs )
+        await transfer ( txArgs )
 }
 
 // eth (native token) address to starknet address
