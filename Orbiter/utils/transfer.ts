@@ -13,7 +13,7 @@ export const is_native_token = ( tokenAddress: string ): boolean => {
  * 
  * @param ext 
  * @dev 
- *  - This function will concatenate the target network ( 0x01 == polygon, 0x02 == starknet ) and the wallet address of the sender
+ *  - This function will concatenate the target network ( 0x01 == polygon, 0x03 == starknet ) and the wallet address of the sender
  *
  */
 export const encode_ext = ( ext: CrossAddressExt ) => {

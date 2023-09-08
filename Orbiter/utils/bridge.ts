@@ -117,12 +117,10 @@ export const expand = ( makerListItem: typeof t_makers.t_starknet_arbitrum_eth |
  */
 export const resolve_cross_address = ( evmSigner: Wallet, starkSigner: Account, fromChain: BridgeChain, toChain: BridgeChain ): CrossAddressExt | undefined => {
 
-    if ( fromChain.name === "starknet" && toChain.name !== "starknet" )
-        return { type: "0x01", value: evmSigner.address }
-    if ( fromChain.name !== "starknet" && toChain.name === "starknet" )
-        return { type: "0x03", value: starkSigner.address }
-    else
-        return undefined
+    if ( fromChain.name === "starknet" && toChain.name !== "starknet" ) return { type: "0x01", value: evmSigner.address }
+    if ( fromChain.name !== "starknet" && toChain.name === "starknet" ) return { type: "0x03", value: starkSigner.address }
+    
+    return undefined
 }
 
 export const append_network_target = ( payAmount: bigint, target: number): bigint => {

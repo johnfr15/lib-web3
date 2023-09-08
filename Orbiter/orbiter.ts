@@ -83,17 +83,11 @@ export const swap = async( swap: {
     console.log("Withholding fees: ", maker.tradingFee.toString(), "ETH" )
     console.log("Id code:          ", network_target + '')
     log_routes( txArgs )
-/*
+
     if ( from_chain.name === "starknet" )
         starknet_transfer( txArgs )
     else
         evm_transfer( txArgs )
-    
-    console.log(`\nTransaction valided !`)
-    console.log("hash:            ", tx.transaction_hash)
-    console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
-    console.log("suggestedMaxFee: ", ethers.formatEther( suggestedMaxFee ), "ETH")
-*/
     /*=============================================================================================================================================*/
 
     return (0)

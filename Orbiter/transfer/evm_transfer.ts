@@ -22,16 +22,16 @@ export const cross_transfer = async( txArgs: TxTransferArgs ) => {
 
     try {
 
-        const orbiter_id = NETWORK_NAME_TO_ORBITERID[ network ][ fromChain.name ]
-        const cross_address = CROSS_ADDRESS[ orbiter_id ]
+        const cross_address = CROSS_ADDRESS[ txArgs.fromChain.id ]
+
         if ( cross_address === '' )
-            throw(`Cross transfer: Unknown cross address for network ${ txArgs.fromChain.name } need one for orbiter id: ${orbiter_id}` )
+            throw(`Cross transfer: Unknown cross address for network ${ txArgs.fromChain.name } need one for orbiter id: ${ txArgs.fromChain.id }` )
     
+
         const Cross_transfer = new Contract( cross_address, CROSS_ADDRESS_ABI, signer )
         const extHex = encode_ext( crossAddressExt! ) // Concat the target network + wallet's address
         const options = { value: "0x" + amount.toString(16) }
 
-        
         if ( is_native_token( token.address ) )
         {
             console.log("\nCross transfer...")
