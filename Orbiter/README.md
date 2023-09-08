@@ -28,7 +28,7 @@ Jonathan's code
 <br />
 <br />
 
-## ![ETH](assets/starknet.png) Starknet bridge
+## ![Stark](assets/starknet.png) Starknet bridge
 | Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
 |----------|------------------------|------------------------|--------------------------|--------------------------|
 | ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
@@ -36,6 +36,50 @@ Jonathan's code
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
 | zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
+<br />
+<br />
+
+## ![ARB](assets/arbitrum.png) Arbitrum bridge
+| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|----------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
+| starknet |           ✅           |           ✅            |            ✅            |             ✅           |
+| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
+| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
+<br />
+<br />
+
+## ![MATIC](assets/polygon.png) Polygon bridge
+| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|----------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
+| starknet |           ✅           |           ✅            |            ✅            |             ✅           |
+| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
+| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
+<br />
+<br />
+
+## ![OP](assets/optimism.png) Optimism bridge
+| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|----------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
+| starknet |           ✅           |           ✅            |            ✅            |             ✅           |
+| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
+| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
+<br />
+<br />
+
+## ![ZK](assets/zkSync.png) zkSync bridge
+| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
+|----------|------------------------|------------------------|--------------------------|--------------------------|
+| ethereum |           ❌           |           ✅            |            ✅            |             ❌           |
+| starknet |           ❌           |           ✅            |            ✅            |             ❌           |
+| arbitrum |           ❌           |           ✅            |            ✅            |             ❌           |
+| optimism |           ❌           |           ✅            |            ✅            |             ❌           |
+| polygon  |           ❌           |           ✅            |            ✅            |             ❌           |
 <br />
 <br />
 <br />
