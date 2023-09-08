@@ -24,8 +24,8 @@ import Orbiter from "/Orbiter"
 
 Orbiter.swap( swap_params )
 ```
-  
-
+<br />
+<br />
 In this module you will be able to interact with all functionnalities of the *Orbiter* Bridge 
 on all its supported network (see `/Orbiter/config/maker-1.ts`)  
   
