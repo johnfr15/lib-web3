@@ -14,6 +14,11 @@ Jonathan's code
 **Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
   
 **Tokens** *ETH* / *USDC* / *DAI* / *USDT*
+| Chain | ![DAI](https://seeklogo.com/images/D/dai-dai-logo-1AFFA0EDE5-seeklogo.com.png) |
+|-------|---------------|
+| ethereum |     ✅         |
+|       |               |
+|       |               |
 <br />
 <br />
 <br />
