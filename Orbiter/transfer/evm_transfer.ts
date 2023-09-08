@@ -1,5 +1,5 @@
 import { Contract, JsonRpcProvider, Wallet, ethers } from "ethers";
-import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_SOL_ABI, NETWORK_NAME_TO_ORBITERID } from "../config/constant";
+import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_SOL_ABI } from "../config/constant";
 import { is_native_token } from "../utils/transfer"
 import { BridgeToken, TxTransferArgs } from "../types";
 import { encode_ext } from "../utils/transfer";
@@ -22,10 +22,10 @@ export const cross_transfer = async( txArgs: TxTransferArgs ) => {
 
     try {
 
-        const cross_address = CROSS_ADDRESS[ txArgs.fromChain.id ]
+        const cross_address = CROSS_ADDRESS[ fromChain.id ]
 
         if ( cross_address === '' )
-            throw(`Cross transfer: Unknown cross address for network ${ txArgs.fromChain.name } need one for orbiter id: ${ txArgs.fromChain.id }` )
+            throw(`${ network }: Cross transfer: Unknown cross address for chain ${ fromChain.name } need one for orbiter id: ${ fromChain.id }` )
     
 
         const Cross_transfer = new Contract( cross_address, CROSS_ADDRESS_ABI, signer )
