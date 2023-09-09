@@ -11,7 +11,7 @@ Jonathan's code
 - testnet:          https://rinkeby.orbiter.finance/  
 - documentation:    https://docs.orbiter.finance/ 
   
-**Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
+**Bridge** *starknet* / *arbitrum* / *polygon* / *ethereum* / *zksync2* / *optimism* / *metis* / *boba* / *zksync2* / *bsc* / *arbitrum_nova* / *polygon_zkevm* / *base* / *linea* / *mantle*  
   
 **Tokens** *ETH* / *USDC* / *DAI* / *USDT*
 <br />
@@ -23,7 +23,7 @@ Jonathan's code
 | starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
@@ -34,7 +34,7 @@ Jonathan's code
 | ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
@@ -45,7 +45,7 @@ Jonathan's code
 | ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
 | starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
@@ -56,7 +56,7 @@ Jonathan's code
 | ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
 | starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
 | optimism |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
@@ -67,12 +67,12 @@ Jonathan's code
 | ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
 | starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync   |           ❌           |           ✅            |            ✅            |             ❌           |
+| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
 <br />
 <br />
 
-## ![ZK](assets/zkSync.png) zkSync bridge
+## ![ZK](assets/zkSync.png) zkSync2 bridge
 | Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
 |----------|------------------------|------------------------|--------------------------|--------------------------|
 | ethereum |           ❌           |           ✅            |            ✅            |             ❌           |
