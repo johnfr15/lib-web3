@@ -44,7 +44,6 @@ export const resolve_provider = ( orbiterId: number ): JsonRpcProvider | Provide
 export const log_routes = ( txArgs: TxTransferArgs ) => {
 
     console.log("\nRoutes:")
-    console.log(txArgs.maker)
 
     // From
     if ( txArgs.fromChain.name === "starknet" )
