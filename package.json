@@ -5,6 +5,7 @@
   "author": "John",
   "license": "MIT",
   "dependencies": {
+    "@jediswap/sdk": "https://github.com/jediswaplabs/jediswap-sdk.git",
     "ethers": "6.7",
     "l0k_swap-sdk": "https://github.com/10k-swap/10k_swap-sdk.git#main",
     "starknet": "^5.19.3"
