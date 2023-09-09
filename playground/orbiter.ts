@@ -21,9 +21,9 @@ const main = async() => {
         console.log("evm account:   ", evmSigner.address)
         console.log("stark account: ", starkSigner.address)
         
-        const network: 'TESTNET' | 'MAINNET' = "TESTNET"
+        const network: 'TESTNET' | 'MAINNET' = "MAINNET"
         const fromChain: Chains = "arbitrum"
-        const toChain: Chains = "ethereum"
+        const toChain: Chains = "starknet"
 
 
         await Orbiter.swap({
@@ -32,7 +32,8 @@ const main = async() => {
             token: TOKENS[ network ][ fromChain ].eth,
             fromChain: fromChain,
             toChain: toChain,
-            amount: "0.01"
+            amount: "0.06",
+            network
         })
 
     } catch (error: any) {
