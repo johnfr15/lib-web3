@@ -1,8 +1,9 @@
 import { ethers } from "ethers"
-import { CROSS_ADDRESS, L1_TO_L2_MAKER_ADDRESSES } from "../config/constant";
+import { CROSS_ADDRESS } from "../config/constant";
 import { TxTransferArgs } from "../types";
 import { ApproveCallData, CrossTransferCalldata } from "../types";
 import { TICKER } from "../config/constant";
+import { uint256 } from "starknet";
 
 export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
     
@@ -22,8 +23,8 @@ export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ cross_address } to spend ${ ethers.formatUnits( amount, token.precision ) } ${ TICKER[ token.address ] }`)
-        console.log(`\t2) Transfer erc20 to ${ maker.makerAddress }`)      
+        console.log(`\t1) Approving ${ cross_address } to spend ( ${ ethers.formatUnits( amount, token.precision ) } * 1.1 ) ${ TICKER[ token.address ] }`)
+        console.log(`\t2) Transfer ${ TICKER[token.address] } to ${ maker.makerAddress }`)      
 
         const { suggestedMaxFee } = await starkSigner.estimateInvokeFee( [ approveTx, crossTx ] );
         const multiCall           = await starkSigner.execute( [ approveTx, crossTx ], undefined, { maxFee: suggestedMaxFee } )
@@ -47,7 +48,7 @@ export const get_approve_calldata = ( tokenAddress: string,  spender: string, am
     const calldata: ApproveCallData = {
         contractAddress: tokenAddress,
         entrypoint: "approve",
-        calldata: [ spender, amount ],
+        calldata: [ spender, uint256.bnToUint256( amount * BigInt(11) / BigInt(10) ) ],
     }
 
     return calldata

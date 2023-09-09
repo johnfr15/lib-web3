@@ -1,4 +1,4 @@
-import { Provider, Contract as StarkContract, Account } from "starknet"
+import { Provider, Contract as StarkContract, Account, Uint256 } from "starknet"
 import { JsonRpcProvider, BaseContract as SolContract, BigNumberish, Wallet } from "ethers"
 
 export type BridgeToken = {
@@ -116,7 +116,7 @@ export const CrossAddressExtTypes = {
 export type ApproveCallData = {
     contractAddress: string,
     entrypoint: string,
-    calldata: [ string, bigint ] 
+    calldata: [ string, Uint256 ] 
 }
 
 export type CrossTransferCalldata = {
