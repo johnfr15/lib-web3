@@ -122,7 +122,7 @@ export type ApproveCallData = {
 export type CrossTransferCalldata = {
     contractAddress: string,
     entrypoint: string,
-    calldata: [ string, string, bigint, string ] 
+    calldata: [ string, string, Uint256, string ] 
 }
 
 export type SwapParams = {

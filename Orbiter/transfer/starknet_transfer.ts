@@ -3,7 +3,7 @@ import { CROSS_ADDRESS } from "../config/constant";
 import { TxTransferArgs } from "../types";
 import { ApproveCallData, CrossTransferCalldata } from "../types";
 import { TICKER } from "../config/constant";
-import { uint256 } from "starknet";
+import { Uint256, uint256 } from "starknet";
 
 export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
     
@@ -45,10 +45,12 @@ export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
 
 export const get_approve_calldata = ( tokenAddress: string,  spender: string, amount: bigint ): ApproveCallData => {
 
+    let uint_amount: Uint256 = uint256.bnToUint256( amount * BigInt(11) / BigInt(10) )
+
     const calldata: ApproveCallData = {
         contractAddress: tokenAddress,
         entrypoint: "approve",
-        calldata: [ spender, uint256.bnToUint256( amount * BigInt(11) / BigInt(10) ) ],
+        calldata: [ spender, uint_amount ],
     }
 
     return calldata
@@ -63,10 +65,12 @@ const get_crossTransfer_calldata = (
     ext: string 
 ): CrossTransferCalldata => {
 
+    let uint_amount: Uint256 = uint256.bnToUint256( amount )
+
     const calldata: CrossTransferCalldata = {
         contractAddress: crossAddress,
         entrypoint: "transferERC20",
-        calldata: [ tokenAddress, to, amount, ext ],
+        calldata: [ tokenAddress, to, uint_amount, ext ],
     }
 
     return calldata
