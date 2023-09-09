@@ -2,12 +2,7 @@ import { ethers } from "ethers"
 import { BridgeToken, MarkerType } from "../types"
 
 
-/**
-   * @param token
-   * @param fromChain
-   * @param toChain
-   * @param amount Human readable amount
-   */
+
 export const get_amounts = (
     token: BridgeToken,
     maker: MarkerType,

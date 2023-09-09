@@ -4,4 +4,4 @@ import * as Utils from "./utils"
 import * as Bridge from "./bridge"
 import * as Transfer from "./transfer"
 
-export default { swap, Constant, Utils, Bridge }
+export default { swap, Constant, Utils, Bridge, Transfer }

@@ -57,3 +57,8 @@ export const log_routes = ( txArgs: TxTransferArgs ) => {
     else
         console.log(`\tTo ${ txArgs.toChain.name }: ${ txArgs.maker.sender } => ${ txArgs.evmSigner.address }`)
 }
+
+export const not_enough_balance = ( token: BridgeToken, amount: string, balance: string ): boolean  => {
+
+    return ethers.parseUnits( amount, token.precision ) > ethers.parseUnits( balance, token.precision )
+}

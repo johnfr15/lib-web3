@@ -13,7 +13,7 @@ export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
 
         const cross_address: string = CROSS_ADDRESS[ fromChain.id ]
 
-        if ( cross_address === '' )
+        if ( cross_address === '' || cross_address === undefined )
             throw(`${ network } Cross transfer: Unknown cross address for chain ${ fromChain.name } need one for orbiter id: ${ fromChain.id }` )
 
     
@@ -46,6 +46,7 @@ export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
 export const get_approve_calldata = ( tokenAddress: string,  spender: string, amount: bigint ): ApproveCallData => {
 
     let uint_amount: Uint256 = uint256.bnToUint256( amount * BigInt(11) / BigInt(10) )
+
 
     const calldata: ApproveCallData = {
         contractAddress: tokenAddress,

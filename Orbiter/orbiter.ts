@@ -5,7 +5,7 @@ import { starknet_transfer } from "./transfer/starknet_transfer"
 import { Chains, TxTransferArgs } from "./types"
 import { get_chain, resolve_maker, get_token, resolve_cross_address, append_network_target } from "./utils/bridge"
 import { get_amounts } from "./bridge"
-import { get_balance, log_routes, resolve_provider } from "./utils"
+import { get_balance, log_routes, resolve_provider, not_enough_balance } from "./utils"
 import { TICKER } from "./config/constant"
 
 
@@ -53,6 +53,10 @@ export const swap = async( swap: {
     const from_token    = get_token( maker, swap.fromChain, from_provider )
     const from_balance  = await get_balance( from_signer, from_token )
 
+    if ( max === false && swap.amount && not_enough_balance( from_token, swap.amount, from_balance ) )
+        throw(`${ network }: not enough balance of ${ TICKER[ from_token.address ] } amount is ${ swap.amount } but balance is ${ from_balance }`)
+
+
     const amount = max ? from_balance : swap.amount!
     const { payAmount, receiveAmount } = get_amounts( from_token, maker, amount, max )
 
@@ -89,5 +93,6 @@ export const swap = async( swap: {
         await starknet_transfer( txArgs )
     else
         await evm_transfer( txArgs )
+
     /*=============================================================================================================================================*/
 }
