@@ -98,6 +98,15 @@ export const L1_TO_L2_MAKER_ADDRESSES: { [key: string]: any } = {
       'TESTNET': '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
     },
 }
+  
+export const L2_TO_L1_MAKER_ADDRESSES: { [key: string]: any } = {
+    '0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940': {
+      'MAINNET': '0x095d2918b03b2e86d68551dcf11302121fb626c9',
+    },
+    '0x07b393627bd514d2aa4c83e9f0c468939df15ea3c29980cd8e7be3ec847795f0': {
+      'MAINNET': '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    },
+}
 
 export const CROSS_ADDRESS: { [key: string]: string } = {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',

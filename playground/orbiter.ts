@@ -22,8 +22,8 @@ const main = async() => {
         console.log("stark account: ", starkSigner.address)
         
         const network: 'TESTNET' | 'MAINNET' = "MAINNET"
-        const fromChain: Chains = "arbitrum"
-        const toChain: Chains = "starknet"
+        const fromChain: Chains = "starknet"
+        const toChain: Chains = "arbitrum"
 
 
         await Orbiter.swap({

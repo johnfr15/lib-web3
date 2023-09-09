@@ -11,21 +11,19 @@ export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
     try {
 
         const cross_address: string = CROSS_ADDRESS[ fromChain.id ]
-        const maker_L2: string      = L1_TO_L2_MAKER_ADDRESSES[ maker.makerAddress ]
 
         if ( cross_address === '' )
             throw(`${ network } Cross transfer: Unknown cross address for chain ${ fromChain.name } need one for orbiter id: ${ fromChain.id }` )
-        if ( maker_L2 === undefined  )
-            throw(`${ network } Can't find any starknet address for maker ${ maker.makerAddress }` )
+
     
 
-        const crossTx: CrossTransferCalldata = get_crossTransfer_calldata( cross_address, token.address, maker_L2, amount, crossAddressExt!.value )
+        const crossTx: CrossTransferCalldata = get_crossTransfer_calldata( cross_address, token.address, maker.makerAddress, amount, crossAddressExt!.value )
         const approveTx: ApproveCallData     = get_approve_calldata( token.address, cross_address, amount )
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ cross_address } to spend ${ ethers.formatUnits( amount, token.precision ) } ${ TICKER[ token.address ] }`)
-        console.log(`\t2) Transfer erc20 to ${ maker_L2 }`)      
+        console.log(`\t2) Transfer erc20 to ${ maker.makerAddress }`)      
 
         const { suggestedMaxFee } = await starkSigner.estimateInvokeFee( [ approveTx, crossTx ] );
         const multiCall           = await starkSigner.execute( [ approveTx, crossTx ], undefined, { maxFee: suggestedMaxFee } )
