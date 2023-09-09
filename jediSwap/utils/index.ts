@@ -1,7 +1,8 @@
 import { ethers } from "ethers"
 import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI } from "../constant"
-import { JSBI, StarknetChainId, Token, Pair, Fraction, Price, BigintIsh } from "l0k_swap-sdk"
+import { ERC20_ABI, JEDI_FACTORY_ABI, FACTORY_ADDRESS, JEDI_PAIR_ABI, TICKER } from "../constant"
+import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk"
+import { Pool } from "../types"
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
@@ -14,6 +15,18 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
     const token = new Token( chain_id, tokenAddress, Number( decimals ) )
 
     return token
+}
+
+export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Account ): Promise<Pool> => {
+
+    const Factory = new Contract( JEDI_FACTORY_ABI, FACTORY_ADDRESS[ network ], signer )
+    const { pair } = await Factory.get_pair( tokenA.address, tokenB.address )
+
+    const Pool = new Contract( JEDI_PAIR_ABI, '0x' + pair.toString(16), signer )
+    const { reserve0, reserve1 } = await Pool.get_reserves()
+    const { token0, token1 } = sort_tokens( tokenA, tokenB, null, null )
+
+    return { Pool, token0, token1, reserve0, reserve1 }
 }
 
 export const get_balance = async(
@@ -64,20 +77,14 @@ export const is_balance = async(signer: Account, addressA: string, addressB: str
     }
 }
 
-export const sort_tokens = ( addressA: string, addressB: string, pool: Pair ): { tokenA: Token, tokenB: Token } => {
-
-    const tokenA = addressA === pool.token0.address ? pool.token0 : pool.token1
-    const tokenB = addressB === pool.token0.address ? pool.token0 : pool.token1
-
-    return { tokenA, tokenB }
-}
-
-export const sort_tokens_2 = ( tokenA: Token, tokenB: Token ): { token0: Token, token1: Token } => {
+export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | null, amountB: string | null ): { token0: Token, token1: Token, amount0: TokenAmount, amount1: TokenAmount } => {
 
     const token0 = BigInt( tokenA.address ) < BigInt( tokenB.address ) ? tokenA : tokenB
     const token1 = BigInt( tokenA.address ) > BigInt( tokenB.address ) ? tokenA : tokenB 
+    const amount0 = token0.address === tokenA.address ? new TokenAmount( token0, ethers.parseUnits( amountA ?? '0', token0.decimals)) : new TokenAmount( token0, ethers.parseUnits( amountB ?? '0', token0.decimals))
+    const amount1 = token1.address === tokenA.address ? new TokenAmount( token1, ethers.parseUnits( amountA ?? '0', token1.decimals)) : new TokenAmount( token1, ethers.parseUnits( amountB ?? '0', token1.decimals))
 
-    return { token0, token1 }
+    return { token0, token1, amount0, amount1 }
 }
 
 export const Uint256_to_string = (number: Uint256, decimals: number = 18): string => 

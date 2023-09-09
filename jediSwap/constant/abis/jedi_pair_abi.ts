@@ -17,7 +17,153 @@ export default [
     "type": "struct"
   },
   {
+    "data": [
+      {
+        "name": "from_address",
+        "type": "felt"
+      },
+      {
+        "name": "to_address",
+        "type": "felt"
+      },
+      {
+        "name": "amount",
+        "type": "Uint256"
+      }
+    ],
+    "keys": [],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "data": [
+      {
+        "name": "owner",
+        "type": "felt"
+      },
+      {
+        "name": "spender",
+        "type": "felt"
+      },
+      {
+        "name": "amount",
+        "type": "Uint256"
+      }
+    ],
+    "keys": [],
+    "name": "Approval",
+    "type": "event"
+  },
+  {
+    "data": [
+      {
+        "name": "sender",
+        "type": "felt"
+      },
+      {
+        "name": "amount0",
+        "type": "Uint256"
+      },
+      {
+        "name": "amount1",
+        "type": "Uint256"
+      }
+    ],
+    "keys": [],
+    "name": "Mint",
+    "type": "event"
+  },
+  {
+    "data": [
+      {
+        "name": "sender",
+        "type": "felt"
+      },
+      {
+        "name": "amount0",
+        "type": "Uint256"
+      },
+      {
+        "name": "amount1",
+        "type": "Uint256"
+      },
+      {
+        "name": "to",
+        "type": "felt"
+      }
+    ],
+    "keys": [],
+    "name": "Burn",
+    "type": "event"
+  },
+  {
+    "data": [
+      {
+        "name": "sender",
+        "type": "felt"
+      },
+      {
+        "name": "amount0In",
+        "type": "Uint256"
+      },
+      {
+        "name": "amount1In",
+        "type": "Uint256"
+      },
+      {
+        "name": "amount0Out",
+        "type": "Uint256"
+      },
+      {
+        "name": "amount1Out",
+        "type": "Uint256"
+      },
+      {
+        "name": "to",
+        "type": "felt"
+      }
+    ],
+    "keys": [],
+    "name": "Swap",
+    "type": "event"
+  },
+  {
+    "data": [
+      {
+        "name": "reserve0",
+        "type": "Uint256"
+      },
+      {
+        "name": "reserve1",
+        "type": "Uint256"
+      }
+    ],
+    "keys": [],
+    "name": "Sync",
+    "type": "event"
+  },
+  {
     "inputs": [
+      {
+        "name": "name",
+        "type": "felt"
+      },
+      {
+        "name": "symbol",
+        "type": "felt"
+      },
+      {
+        "name": "token0",
+        "type": "felt"
+      },
+      {
+        "name": "token1",
+        "type": "felt"
+      },
+      {
+        "name": "stable",
+        "type": "felt"
+      },
       {
         "name": "registry",
         "type": "felt"
@@ -29,7 +175,93 @@ export default [
   },
   {
     "inputs": [],
-    "name": "registry",
+    "name": "name",
+    "outputs": [
+      {
+        "name": "name",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "name": "symbol",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "name": "totalSupply",
+        "type": "Uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "name": "decimals",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "account",
+        "type": "felt"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "Uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "felt"
+      },
+      {
+        "name": "spender",
+        "type": "felt"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "name": "remaining",
+        "type": "Uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "token0",
     "outputs": [
       {
         "name": "address",
@@ -40,24 +272,11 @@ export default [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "tokenA",
-        "type": "felt"
-      },
-      {
-        "name": "tokenB",
-        "type": "felt"
-      }
-    ],
-    "name": "sort_tokens",
+    "inputs": [],
+    "name": "token1",
     "outputs": [
       {
-        "name": "token0",
-        "type": "felt"
-      },
-      {
-        "name": "token1",
+        "name": "address",
         "type": "felt"
       }
     ],
@@ -65,36 +284,43 @@ export default [
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "stable",
+    "outputs": [
       {
-        "name": "amountA",
-        "type": "Uint256"
-      },
-      {
-        "name": "decimalsA",
-        "type": "felt"
-      },
-      {
-        "name": "decimalsB",
-        "type": "felt"
-      },
-      {
-        "name": "reserveA",
-        "type": "Uint256"
-      },
-      {
-        "name": "reserveB",
-        "type": "Uint256"
-      },
-      {
-        "name": "stable",
+        "name": "res",
         "type": "felt"
       }
     ],
-    "name": "quote",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "get_reserves",
     "outputs": [
       {
-        "name": "amountB",
+        "name": "reserve0",
+        "type": "Uint256"
+      },
+      {
+        "name": "reserve1",
+        "type": "Uint256"
+      },
+      {
+        "name": "block_timestamp_last",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "reserve_0_cumulative_last",
+    "outputs": [
+      {
+        "name": "res",
         "type": "Uint256"
       }
     ],
@@ -102,36 +328,23 @@ export default [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "name": "amountIn",
-        "type": "Uint256"
-      },
-      {
-        "name": "decimalsIn",
-        "type": "felt"
-      },
-      {
-        "name": "decimalsOut",
-        "type": "felt"
-      },
-      {
-        "name": "reserveIn",
-        "type": "Uint256"
-      },
-      {
-        "name": "reserveOut",
-        "type": "Uint256"
-      },
-      {
-        "name": "stable",
-        "type": "felt"
-      }
-    ],
-    "name": "get_amount_out",
+    "inputs": [],
+    "name": "reserve_1_cumulative_last",
     "outputs": [
       {
-        "name": "amountOut",
+        "name": "res",
+        "type": "Uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "klast",
+    "outputs": [
+      {
+        "name": "res",
         "type": "Uint256"
       }
     ],
@@ -141,143 +354,116 @@ export default [
   {
     "inputs": [
       {
-        "name": "amountOut",
-        "type": "Uint256"
-      },
-      {
-        "name": "decimalsIn",
+        "name": "recipient",
         "type": "felt"
       },
       {
-        "name": "decimalsOut",
-        "type": "felt"
-      },
-      {
-        "name": "reserveIn",
+        "name": "amount",
         "type": "Uint256"
-      },
-      {
-        "name": "reserveOut",
-        "type": "Uint256"
-      },
-      {
-        "name": "stable",
-        "type": "felt"
       }
     ],
-    "name": "get_amount_in",
+    "name": "transfer",
     "outputs": [
       {
-        "name": "amountIn",
-        "type": "Uint256"
+        "name": "success",
+        "type": "felt"
       }
     ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "name": "amountIn",
-        "type": "Uint256"
-      },
-      {
-        "name": "path_len",
+        "name": "sender",
         "type": "felt"
       },
       {
-        "name": "path",
-        "type": "felt*"
+        "name": "recipient",
+        "type": "felt"
+      },
+      {
+        "name": "amount",
+        "type": "Uint256"
       }
     ],
-    "name": "get_amounts_out",
+    "name": "transferFrom",
     "outputs": [
       {
-        "name": "amounts_len",
+        "name": "success",
         "type": "felt"
-      },
-      {
-        "name": "amounts",
-        "type": "Uint256*"
       }
     ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "name": "amountOut",
-        "type": "Uint256"
-      },
-      {
-        "name": "path_len",
+        "name": "spender",
         "type": "felt"
       },
       {
-        "name": "path",
-        "type": "felt*"
+        "name": "amount",
+        "type": "Uint256"
       }
     ],
-    "name": "get_amounts_in",
+    "name": "approve",
     "outputs": [
       {
-        "name": "amounts_len",
+        "name": "success",
         "type": "felt"
-      },
-      {
-        "name": "amounts",
-        "type": "Uint256*"
       }
     ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "name": "tokenA",
+        "name": "spender",
         "type": "felt"
       },
       {
-        "name": "tokenB",
+        "name": "added_value",
+        "type": "Uint256"
+      }
+    ],
+    "name": "increaseAllowance",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "felt"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "spender",
         "type": "felt"
       },
       {
-        "name": "amountADesired",
+        "name": "subtracted_value",
         "type": "Uint256"
-      },
+      }
+    ],
+    "name": "decreaseAllowance",
+    "outputs": [
       {
-        "name": "amountBDesired",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountAMin",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountBMin",
-        "type": "Uint256"
-      },
+        "name": "success",
+        "type": "felt"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "name": "to",
         "type": "felt"
-      },
-      {
-        "name": "deadline",
-        "type": "felt"
       }
     ],
-    "name": "add_liquidity",
+    "name": "mint",
     "outputs": [
-      {
-        "name": "amountA",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountB",
-        "type": "Uint256"
-      },
       {
         "name": "liquidity",
         "type": "Uint256"
@@ -288,42 +474,18 @@ export default [
   {
     "inputs": [
       {
-        "name": "tokenA",
-        "type": "felt"
-      },
-      {
-        "name": "tokenB",
-        "type": "felt"
-      },
-      {
-        "name": "liquidity",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountAMin",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountBMin",
-        "type": "Uint256"
-      },
-      {
         "name": "to",
-        "type": "felt"
-      },
-      {
-        "name": "deadline",
         "type": "felt"
       }
     ],
-    "name": "remove_liquidity",
+    "name": "burn",
     "outputs": [
       {
-        "name": "amountA",
+        "name": "amount0",
         "type": "Uint256"
       },
       {
-        "name": "amountB",
+        "name": "amount1",
         "type": "Uint256"
       }
     ],
@@ -332,81 +494,37 @@ export default [
   {
     "inputs": [
       {
-        "name": "amountIn",
+        "name": "amount0Out",
         "type": "Uint256"
       },
       {
-        "name": "amountOutMin",
+        "name": "amount1Out",
         "type": "Uint256"
-      },
-      {
-        "name": "path_len",
-        "type": "felt"
-      },
-      {
-        "name": "path",
-        "type": "felt*"
       },
       {
         "name": "to",
         "type": "felt"
-      },
-      {
-        "name": "deadline",
-        "type": "felt"
       }
     ],
-    "name": "swap_exact_tokens_for_tokens",
-    "outputs": [
-      {
-        "name": "amounts_len",
-        "type": "felt"
-      },
-      {
-        "name": "amounts",
-        "type": "Uint256*"
-      }
-    ],
+    "name": "swap",
+    "outputs": [],
     "type": "function"
   },
   {
     "inputs": [
       {
-        "name": "amountOut",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountInMax",
-        "type": "Uint256"
-      },
-      {
-        "name": "path_len",
-        "type": "felt"
-      },
-      {
-        "name": "path",
-        "type": "felt*"
-      },
-      {
         "name": "to",
         "type": "felt"
-      },
-      {
-        "name": "deadline",
-        "type": "felt"
       }
     ],
-    "name": "swap_tokens_for_exact_tokens",
-    "outputs": [
-      {
-        "name": "amounts_len",
-        "type": "felt"
-      },
-      {
-        "name": "amounts",
-        "type": "Uint256*"
-      }
-    ],
+    "name": "skim",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "sync",
+    "outputs": [],
     "type": "function"
   }
 ]

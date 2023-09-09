@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
-import { Account, Contract, Uint256, uint256 } from "starknet"
-import { TICKER, l0K_ROUTER_ABI, ROUTER_ADDRESSES } from "../constant";
+import { Account, Contract, uint256 } from "starknet"
+import { TICKER, JEDI_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
 import { AddLiquidityCallData, AddLiquidityTx } from "../types";
-import { get_token, sort_tokens, get_balance, sort_tokens_2 } from "../utils";
-import { Fetcher, Fraction, Pair, Token } from "l0k_swap-sdk";
+import { get_token, get_balance, sort_tokens, get_pool } from "../utils";
+import { Fraction, Token } from "l0k_swap-sdk";
+
 
 
 export const get_add_liq_calldata = async(
@@ -25,8 +26,8 @@ export const get_add_liq_calldata = async(
         const token_a = await get_token( addressA, network, signer )
         const token_b = await get_token( addressB, network, signer )
 
-        const { token0, token1 } = sort_tokens_2( token_a, token_b )
-        const pool = await Fetcher.fetchPairData( token0, token1 )
+        const { token0, token1 } = sort_tokens( token_a, token_b, amountA, amountB )
+        const pool = await get_pool( token0, token1, network, signer )
 
         if ( max )
         {
@@ -57,7 +58,7 @@ const get_max_liq = async(
     signer: Account, 
     tokenA: Token, 
     tokenB: Token,
-    pool: Pair,
+    pool: any,
     network: string,
     slipage: number,
     deadline: number,
@@ -65,7 +66,7 @@ const get_max_liq = async(
 
     try {
         
-        const router = new Contract( l0K_ROUTER_ABI, ROUTER_ADDRESSES[ network ], signer )
+        const router = new Contract( JEDI_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
 
         const balanceA = await get_balance( signer.address, tokenA.address, signer )
         const balanceB = await get_balance( signer.address, tokenB.address, signer )
@@ -114,7 +115,7 @@ const get_max_liq = async(
 
 const get_liq = async(
     signer: Account, 
-    pool: Pair, 
+    pool: any, 
     addr: string, 
     amount: string, 
     network: string, 
@@ -124,7 +125,7 @@ const get_liq = async(
 
     try {
         
-        const router = new Contract( l0K_ROUTER_ABI, ROUTER_ADDRESSES[ network ], signer )
+        const router = new Contract( JEDI_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
         
         const token_1: Token = pool.token0.address === addr ? pool.token0 : pool.token1
         const token_2: Token = pool.token0.address !== addr ? pool.token0 : pool.token1

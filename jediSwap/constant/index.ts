@@ -17,6 +17,10 @@ export const MINIMUM_LIQUIDITY = BigInt( 1000 )
 export const FEES_NUMERATOR = BigInt( 9970 )
 export const FEES_DENOMINATOR = BigInt( 10000 )
 export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
+export const STARKNET_CHAIN_ID = {
+  'MAINNET': "SN_MAIN",
+  'TESTNET': "SN_GOERLI"
+}
 
 
 
@@ -24,9 +28,9 @@ export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffff
 
 // ABIS
 export const ERC20_ABI = erc20_abi
-export const jedi_ROUTER_ABI = router_abi
-export const jedi_FACTORY_ABI = factory_abi
-export const jedi_PAIR_ABI = pair_abi
+export const JEDI_ROUTER_ABI = router_abi
+export const JEDI_FACTORY_ABI = factory_abi
+export const JEDI_PAIR_ABI = pair_abi
 export const ZAP_IN_ABI = zap_in_abi
 
 

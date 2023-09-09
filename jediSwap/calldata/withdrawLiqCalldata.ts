@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import { Account, Contract, uint256 } from "starknet"
-import { Fetcher, Token, Pair } from "l0k_swap-sdk";
-import { ERC20_ABI, ROUTER_ADDRESSES } from "../constant";
-import { get_balance, get_token, sort_tokens_2 } from "../utils";
+import { Token, JSBI } from "l0k_swap-sdk";
+import { ERC20_ABI, ROUTER_ADDRESS } from "../constant";
+import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { RemoveLiquidityTx, RemoveLiquidityCallData } from "../types";
 
 
@@ -21,8 +21,8 @@ export const get_remove_calldata = async(
         const token_a = await get_token( tokenA, network, signer )
         const token_b = await get_token( tokenB, network, signer )
         
-        const { token0, token1 } = sort_tokens_2( token_a, token_b )
-        const pool = await Fetcher.fetchPairData( token0, token1 )
+        const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
+        const pool = await get_pool( token0, token1, network, signer )
         
         const tx: RemoveLiquidityTx = await get_removeLiq_tx( signer, token0, token1, pool, percent, slipage, network, deadline )
         
@@ -42,7 +42,7 @@ const get_removeLiq_tx = async(
     signer: Account, 
     token0: Token, 
     token1: Token,
-    pool: Pair,
+    pool: any,
     percent: number, 
     slipage: number, 
     network: 'TESTNET' | 'MAINNET',
@@ -64,7 +64,7 @@ const get_removeLiq_tx = async(
         const amount_1_min: bigint = (reserve1 * liquidity / reserveLp) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
         const tx: RemoveLiquidityTx = {
-            contractAddress: ROUTER_ADDRESSES[ network ],
+            contractAddress: ROUTER_ADDRESS[ network ],
             entrypoint: "removeLiquidity",
             calldata: [
                 token0.address,

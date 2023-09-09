@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Account, Uint256 } from 'starknet';
-import { ROUTER_ADDRESSES, TICKER } from './constant';
+import { ROUTER_ADDRESS, TICKER } from './constant';
 import { Uint256_to_string, get_balance, is_balance } from './utils';
 import { get_swap_calldata } from './calldata/swapCalldata';
 import { get_approve_calldata } from './calldata/approveCalldata';
@@ -34,28 +34,25 @@ export const swap = async(
 ) => {
 
     try {
-
         if ( slipage < 0.01 || slipage > 100 )
             throw new Error(`Slipage parameter must be a number between 0.01 and 100`)
         if ( amountIn === null && amountOut === null )
             throw new Error(`You need to specify an amount for 'amountIn' or 'amountOut'`)
 
-    
-        const { decimals: decimals_from } = await get_balance( signer.address, path[0], signer )
-        const { decimals: decimals_to } = await get_balance( signer.address, path[1], signer )
 
         // Get swap Tx
         const swap_calldata = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
-        const [ amount_in, amount_out ] = swap_calldata.calldata
-        const { tradeType, priceImpact: price_impact } = swap_calldata.utils
+        // const [ amount_in, amount_out ] = swap_calldata.calldata
+        // const { tradeType, priceImpact: price_impact } = swap_calldata.utils
 
-
+/*
         // Get approve Tx
         const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( amount_in as Uint256, decimals_from ), path[0], network )
         const [ spender, amount ] = approve_calldata.calldata
-
+*/
 
         /*========================================= TX ================================================================================================*/
+/*        
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( amount as Uint256, decimals_from ) } ${ TICKER[ path[0] ] }`)
         console.log(`\t2) Swapping ${ tradeType === 1 ? '(maximum)' : ''}${ amountIn } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(minimum)' : ''}${Uint256_to_string( amount_out as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
@@ -69,6 +66,7 @@ export const swap = async(
         console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
+*/
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
@@ -110,7 +108,7 @@ export const addLiquidity = async(
     deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
 
     try {
-
+/*
         if ( slipage < 2 || slipage > 100 )
             throw new Error("Slipage need to be a number between 2 and 100");
         if ( amountA === null && amountB === null && max === false )
@@ -129,9 +127,9 @@ export const addLiquidity = async(
 
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_calldata(signer, Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ), tokenB as string, network)
-        
+*/        
         /*========================================= TX ================================================================================================*/
-
+/*
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
         console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
@@ -145,7 +143,7 @@ export const addLiquidity = async(
         console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-
+*/
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
@@ -183,7 +181,7 @@ export const withdrawLiquidity = async(
     deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
 
     try {
-
+/*
         if ( slipage < 0 || slipage > 100 )
             throw new Error("Slipage need to be a number between 0 and 100");
         if ( percent <= 0 || percent > 100 )
@@ -199,11 +197,11 @@ export const withdrawLiquidity = async(
 
             // Get approve Tx
             const approveTx = await get_approve_calldata(signer, Uint256_to_string( liquidity as Uint256, lp_decimals ), lp_address, network)
-
+*/
             /*========================================= TX ================================================================================================*/
-
+/*
             console.log(`\nMulticall...`)
-            console.log(`\t1) Approving ${ ROUTER_ADDRESSES[ network ] } to spend ${ Uint256_to_string( liquidity as Uint256, lp_decimals ) } ${TICKER[ lp_address ] ?? "LP"}`)
+            console.log(`\t1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ Uint256_to_string( liquidity as Uint256, lp_decimals ) } ${TICKER[ lp_address ] ?? "LP"}`)
             console.log(`\t2) Withdrawing ${ percent }% of liquidity for:\n\t\
                         (minimum)${ Uint256_to_string( amountAMin as Uint256, utils.token0.decimals ) } ${ TICKER[ utils.token0.address ] }\n\t\
                         (minimum)${ Uint256_to_string( amountBMin as Uint256, utils.token1.decimals ) } ${ TICKER[ utils.token1.address ] }
@@ -217,7 +215,7 @@ export const withdrawLiquidity = async(
             console.log("hash:            ", multiCall.transaction_hash)
             console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
             console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-
+*/
             /*=============================================================================================================================================*/
 
         } catch (error: any) {

@@ -1,5 +1,30 @@
-import { JSBI } from "l0k_swap-sdk"
-import { Calldata, Uint256, Account} from "starknet"
+import { Token, TokenAmount, TradeType } from "l0k_swap-sdk"
+import { Uint256, Contract} from "starknet"
+
+
+export type Pool = {
+    Pool: Contract
+    token0: Token,
+    token1: Token,
+    reserve0: Uint256,
+    reserve1: Uint256
+}
+
+export type Trade = {
+    amountIn: TokenAmount
+    amountOut: TokenAmount
+    tradeType: TradeType
+    priceImpact: number
+}
+
+
+
+export type ApproveCallData = {
+    contractAddress: string,
+    entrypoint: string,
+    calldata: [ string, Uint256 ] 
+}
+
 
 
 export type SwapArgs = {
@@ -9,12 +34,6 @@ export type SwapArgs = {
     path: string[],
     to: string, 
     deadline: number,
-}
-
-export type ApproveCallData = {
-    contractAddress: string,
-    entrypoint: string,
-    calldata: [ string, Uint256 ] 
 }
 
 export type SwapCallData = {
@@ -47,7 +66,6 @@ export type AddLiquidityCallData = {
     addLiquidityTx: AddLiquidityTx,
     utils: { [key: string]: any }
 }
-
 
 
 
