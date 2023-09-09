@@ -34,14 +34,19 @@ export const ZAP_IN_ABI = zap_in_abi
 
 
 // Addresses
-export const ROUTER_ADDRESSES:  { [key: string]: string } = {
-  'TESTNET': '0x00975910cd99bc56bd289eaaa5cee6cd557f0ddafdb2ce6ebea15b158eb2c664',
-  'MAINNET': '0x07a6f98c03379b9513ca84cca1373ff452a7462a3b61598f0af5bb27ad7f76d1',
+export const FACTORY_ADDRESS: { [key: string]: string } = {
+  'MAINNET': '0xdad44c139a476c7a17fc8141e6db680e9abc9f56fe249a105094c44382c2fd',
+  'TESTNET': '0x262744f8cea943dadc8823c318eaf24d0110dee2ee8026298f49a3bc58ed74a'
 }
 
-export const STARKNET_ID_ADDRESSES: { [key: string]: string } = {
-  'TESTNET': '0x06ac597f8116f886fa1c97a23fa4e08299975ecaf6b598873ca6792b9bbfb678',
-  'MINNET': '0x05cf267a0af6101667013fc6bd3f6c11116a14cda9b8c4b1198520d59f900b17',
+export const ROUTER_ADDRESS:  { [key: string]: string } = {
+  'MAINNET': '0x41fd22b238fa21cfcf5dd45a8548974d8263b3a531a60388411c5e230f97023',
+  'TESTNET': '0x2bcc885342ebbcbcd170ae6cafa8a4bed22bb993479f49806e72d96af94c965',
+}
+
+export const ZAP_IN_ADDRESS: { [key: string]: string } = {
+  'MAINNET': '0x29a303b928b9391ce797ec27d011d3937054bee783ca7831df792bae00c925c',
+  'TESTNET': '0x73e3ccd627283aed4fa3940aa2bdb4d2c702e8e44c99b6851c019222558310f',
 }
 
 
