@@ -159,7 +159,7 @@ export const NETWORK_NAME_TO_ID: { [key: string]: any } = {
     {
         'ethereum': 1,
         'arbitrum': 42161,
-        'zk': 1,
+        'zksync': 1,
         'starknet': 1,
         'rinkeby': 4,      
         'polygon': 137,    
@@ -176,7 +176,7 @@ export const NETWORK_NAME_TO_ID: { [key: string]: any } = {
     "TESTNET": {
         'metis-"TESTNET"': 588,
         'arbitrum': 421613,
-        'zk': 4,
+        'zksync': 4,
         'starknet': 5,
         'polygon': 80001,
         'optimism-kovan': 69,
