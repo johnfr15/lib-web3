@@ -36,6 +36,7 @@ export const swap = async( swap: {
     max?: boolean,
     network?: 'TESTNET' | 'MAINNET' 
 }): Promise<void> => {
+    
     const network = swap.network ?? 'TESTNET'
     const max = swap.max ?? false
     const from_signer = swap.fromChain === "starknet" ? swap.starkSigner : swap.evmSigner
