@@ -19,11 +19,7 @@ export default [
   {
     "inputs": [
       {
-        "name": "factory",
-        "type": "felt"
-      },
-      {
-        "name": "pairClass",
+        "name": "registry",
         "type": "felt"
       }
     ],
@@ -32,17 +28,66 @@ export default [
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "registry",
+    "outputs": [
+      {
+        "name": "address",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "tokenA",
+        "type": "felt"
+      },
+      {
+        "name": "tokenB",
+        "type": "felt"
+      }
+    ],
+    "name": "sort_tokens",
+    "outputs": [
+      {
+        "name": "token0",
+        "type": "felt"
+      },
+      {
+        "name": "token1",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "name": "amountA",
         "type": "Uint256"
       },
       {
-        "name": "reserveA",
+        "name": "decimalsA",
         "type": "felt"
       },
       {
+        "name": "decimalsB",
+        "type": "felt"
+      },
+      {
+        "name": "reserveA",
+        "type": "Uint256"
+      },
+      {
         "name": "reserveB",
+        "type": "Uint256"
+      },
+      {
+        "name": "stable",
         "type": "felt"
       }
     ],
@@ -63,15 +108,27 @@ export default [
         "type": "Uint256"
       },
       {
-        "name": "reserveIn",
+        "name": "decimalsIn",
         "type": "felt"
       },
       {
+        "name": "decimalsOut",
+        "type": "felt"
+      },
+      {
+        "name": "reserveIn",
+        "type": "Uint256"
+      },
+      {
         "name": "reserveOut",
+        "type": "Uint256"
+      },
+      {
+        "name": "stable",
         "type": "felt"
       }
     ],
-    "name": "getAmountOut",
+    "name": "get_amount_out",
     "outputs": [
       {
         "name": "amountOut",
@@ -88,15 +145,27 @@ export default [
         "type": "Uint256"
       },
       {
-        "name": "reserveIn",
+        "name": "decimalsIn",
         "type": "felt"
       },
       {
+        "name": "decimalsOut",
+        "type": "felt"
+      },
+      {
+        "name": "reserveIn",
+        "type": "Uint256"
+      },
+      {
         "name": "reserveOut",
+        "type": "Uint256"
+      },
+      {
+        "name": "stable",
         "type": "felt"
       }
     ],
-    "name": "getAmountIn",
+    "name": "get_amount_in",
     "outputs": [
       {
         "name": "amountIn",
@@ -121,7 +190,7 @@ export default [
         "type": "felt*"
       }
     ],
-    "name": "getAmountsOut",
+    "name": "get_amounts_out",
     "outputs": [
       {
         "name": "amounts_len",
@@ -150,7 +219,7 @@ export default [
         "type": "felt*"
       }
     ],
-    "name": "getAmountsIn",
+    "name": "get_amounts_in",
     "outputs": [
       {
         "name": "amounts_len",
@@ -199,7 +268,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "addLiquidity",
+    "name": "add_liquidity",
     "outputs": [
       {
         "name": "amountA",
@@ -247,7 +316,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "removeLiquidity",
+    "name": "remove_liquidity",
     "outputs": [
       {
         "name": "amountA",
@@ -287,7 +356,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "swapExactTokensForTokens",
+    "name": "swap_exact_tokens_for_tokens",
     "outputs": [
       {
         "name": "amounts_len",
@@ -327,7 +396,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "swapTokensForExactTokens",
+    "name": "swap_tokens_for_exact_tokens",
     "outputs": [
       {
         "name": "amounts_len",
@@ -338,37 +407,6 @@ export default [
         "type": "Uint256*"
       }
     ],
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "amountIn",
-        "type": "Uint256"
-      },
-      {
-        "name": "amountOutMin",
-        "type": "Uint256"
-      },
-      {
-        "name": "path_len",
-        "type": "felt"
-      },
-      {
-        "name": "path",
-        "type": "felt*"
-      },
-      {
-        "name": "to",
-        "type": "felt"
-      },
-      {
-        "name": "deadline",
-        "type": "felt"
-      }
-    ],
-    "name": "swapExactTokensForTokensSupportingFeeOnTransferTokens",
-    "outputs": [],
     "type": "function"
   }
 ]

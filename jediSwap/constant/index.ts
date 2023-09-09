@@ -1,9 +1,9 @@
 import { Provider, constants } from 'starknet';
 import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/l0k_router_abi"
-import factory_abi from "./abis/l0k_factory_abi"
-import pair_abi from "./abis/l0k_pair_abi"
-import naming_abi from "./abis/naming_abi"
+import router_abi from "./abis/jedi_router_abi"
+import factory_abi from "./abis/jedi_factory_abi"
+import pair_abi from "./abis/jedi_pair_abi"
+import zap_in_abi from "./abis/zap_in_abi"
 
 
 
@@ -22,12 +22,12 @@ export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffff
 
 
 
-// ABI
+// ABIS
 export const ERC20_ABI = erc20_abi
-export const l0K_ROUTER_ABI = router_abi
-export const l0K_FACTORY_ABI = factory_abi
-export const l0K_PAIR_ABI = pair_abi
-export const NAMING_ABI = naming_abi
+export const jedi_ROUTER_ABI = router_abi
+export const jedi_FACTORY_ABI = factory_abi
+export const jedi_PAIR_ABI = pair_abi
+export const ZAP_IN_ABI = zap_in_abi
 
 
 

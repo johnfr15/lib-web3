@@ -14,52 +14,28 @@ export default [
         "type": "felt"
       },
       {
-        "name": "index",
+        "name": "total_pairs",
         "type": "felt"
       }
     ],
     "keys": [],
-    "name": "PairCreated",
+    "name": "pair_created",
     "type": "event"
   },
   {
     "inputs": [
       {
-        "name": "pairClass",
+        "name": "pair_contract_class_hash",
         "type": "felt"
       },
       {
-        "name": "feeToSetter",
+        "name": "fee_to_setter",
         "type": "felt"
       }
     ],
     "name": "constructor",
     "outputs": [],
     "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "name": "feeTo",
-    "outputs": [
-      {
-        "name": "feeTo",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feeToSetter",
-    "outputs": [
-      {
-        "name": "feeToSetter",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [
@@ -72,24 +48,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "getPair",
-    "outputs": [
-      {
-        "name": "pair",
-        "type": "felt"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "index",
-        "type": "felt"
-      }
-    ],
-    "name": "allPairs",
+    "name": "get_pair",
     "outputs": [
       {
         "name": "pair",
@@ -101,10 +60,62 @@ export default [
   },
   {
     "inputs": [],
-    "name": "allPairsLength",
+    "name": "get_all_pairs",
     "outputs": [
       {
-        "name": "length",
+        "name": "all_pairs_len",
+        "type": "felt"
+      },
+      {
+        "name": "all_pairs",
+        "type": "felt*"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "get_num_of_pairs",
+    "outputs": [
+      {
+        "name": "num_of_pairs",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "get_fee_to",
+    "outputs": [
+      {
+        "name": "address",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "get_fee_to_setter",
+    "outputs": [
+      {
+        "name": "address",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "get_pair_contract_class_hash",
+    "outputs": [
+      {
+        "name": "class_hash",
         "type": "felt"
       }
     ],
@@ -122,7 +133,7 @@ export default [
         "type": "felt"
       }
     ],
-    "name": "createPair",
+    "name": "create_pair",
     "outputs": [
       {
         "name": "pair",
@@ -134,22 +145,22 @@ export default [
   {
     "inputs": [
       {
-        "name": "feeTo",
+        "name": "new_fee_to",
         "type": "felt"
       }
     ],
-    "name": "setFeeTo",
+    "name": "set_fee_to",
     "outputs": [],
     "type": "function"
   },
   {
     "inputs": [
       {
-        "name": "feeToSetter",
+        "name": "new_fee_to_setter",
         "type": "felt"
       }
     ],
-    "name": "setFeeToSetter",
+    "name": "set_fee_to_setter",
     "outputs": [],
     "type": "function"
   }

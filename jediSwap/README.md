@@ -1,29 +1,32 @@
 # jonathan
 Jonathan's code
 
-# 10kSwap  
+# jediSwap  
 **Swap**: ✅    
 **Add liquidity**: ✅    
 **Remove liquidity**: ✅    
   
-**url** https://www.l0kSwap.xyz/  
+## url
+- Mainnet: https://app.jediswap.xyz/
+- Docs: https://docs.jediswap.xyz/
+- Github: https://github.com/jediswaplabs 
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
 
-## Calling l0kSwap Functions
+## Calling jediSwap Functions
 
-To use it just import the directory named *l0kSwap*  
+To use it just import the directory named *jediSwap*  
 ```javascript
-import l0kSwap from "/10kSwap"
+import jediSwap from "/jediSwap"
 ```
 
 In this module you will be able to interact with all functionnalities of the AMM
 You will then be able to interact with the mains functions
 
 ```javascript
-l0kSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
-l0kSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
-l0kSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+jediSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
+jediSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
+jediSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
 
 ### Swap  
