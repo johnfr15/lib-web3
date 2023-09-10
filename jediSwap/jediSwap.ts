@@ -50,7 +50,6 @@ export const swap = async(
         const [ spender, amount ] = approve_calldata.calldata
 
         /*========================================= TX ================================================================================================*/
-        
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] }`)
         console.log(`\t2) Swapping ${ tradeType === 1 ? '(max)' : ''}${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(min)' : ''}${Uint256_to_string( output, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)      
@@ -106,13 +105,13 @@ export const addLiquidity = async(
     deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
 
     try {
-/*
+
         if ( slipage < 2 || slipage > 100 )
-            throw new Error("Slipage need to be a number between 2 and 100");
+            throw("Slipage need to be a number between 2 and 100");
         if ( amountA === null && amountB === null && max === false )
-            throw new Error("Need to provide at least a value for 'amountA' or 'amountB' or set max");
+            throw("Need to provide at least a value for 'amountA' or 'amountB' or set max");
         if ( await is_balance( signer, addressA, addressB ) === 0 )
-            throw new Error(`balance is empty for token ${ TICKER[ addressA ] } or ${ TICKER[ addressB ] } or both.`)
+            throw(`balance is empty for token ${ TICKER[ addressA ] } or ${ TICKER[ addressB ] } or both.`)
 
         
         // Get add liquidity Tx
@@ -125,9 +124,8 @@ export const addLiquidity = async(
 
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_calldata(signer, Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ), tokenB as string, network)
-*/        
+        
         /*========================================= TX ================================================================================================*/
-/*
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
         console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
@@ -141,7 +139,7 @@ export const addLiquidity = async(
         console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-*/
+
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
