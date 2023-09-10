@@ -23,7 +23,7 @@ export const swap = async(
     signer: Account,
     path: [string, string],
     amountIn: string,
-    network: string = "testnet",
+    network: 'TESTNET' | 'MAINNET' = "TESTNET",            
     maxFees: bigint | undefined = undefined,
     slipage: number = 995,
     amountOutMin?: Uint256 | undefined | null,
@@ -87,7 +87,7 @@ export const addLiquidity = async(
     addressB: string,                       
     amountB: string | undefined | null,     
     max: 0 | 1 = 0,                         
-    network: string = "testnet",            
+    network: 'TESTNET' | 'MAINNET' = "TESTNET",            
     slipage: number = 995,
     maxFees: bigint | undefined = undefined,
 ): Promise<void> => {
@@ -152,7 +152,7 @@ export const withdrawLiquidity = async(
     tokenA: string, 
     tokenB: string, 
     percent: number = 100, 
-    network: string = "testnet", 
+    network: 'TESTNET' | 'MAINNET' = "TESTNET", 
     slipage: number = 980,
     maxFees: bigint | undefined = undefined,
 ) => {

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
-import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKEN, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
+import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKENS, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { AddLiquidityArgs, WidthdrawLiquidityArgs } from "./types";
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
@@ -51,8 +51,8 @@ export const get_reserves = async(contract: Contract, path: [string, string], po
 
 export const resolve_network_contract = (network: string, provider?: Account): Contract => {
 
-    if (network === "testnet") return new Contract(MYSWAP_ABI, TESTNET_MYSWAP, provider ?? TESTNET_PROVIDER)
-    if (network === "mainnet") return new Contract(MYSWAP_ABI, MAINNET_MYSWAP, provider ?? MAINNET_PROVIDER)
+    if (network === "TESTNET") return new Contract(MYSWAP_ABI, TESTNET_MYSWAP, provider ?? TESTNET_PROVIDER)
+    if (network === "MAINNET") return new Contract(MYSWAP_ABI, MAINNET_MYSWAP, provider ?? MAINNET_PROVIDER)
 
     throw new Error("Unknown network: " + network)
 }
@@ -60,23 +60,23 @@ export const resolve_network_contract = (network: string, provider?: Account): C
 export const resolve_pool = (tokenA: string, tokenB: string, network: string): number => {
     const value = BigInt(tokenA) + BigInt(tokenB)
 
-    if (network === "testnet")
+    if (network === "TESTNET")
     {
-        if ( value === BigInt(TOKEN.usdc.testnet) + BigInt(TOKEN.eth.testnet) )     return Pool_testnet.USDC_ETH
-        if ( value === BigInt(TOKEN.dai.testnet) + BigInt(TOKEN.eth.testnet) )      return Pool_testnet.DAI_ETH
-        if ( value === BigInt(TOKEN.usdc.testnet) + BigInt(TOKEN.dai.testnet) )     return Pool_testnet.USDC_DAI
-        if ( value === BigInt(TOKEN.wsteth.testnet) + BigInt(TOKEN.eth.testnet) )   return Pool_testnet.wstETH_ETH
+        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].eth) )     return Pool_testnet.USDC_ETH
+        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].eth) )      return Pool_testnet.DAI_ETH
+        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].dai) )     return Pool_testnet.USDC_DAI
+        if ( value === BigInt(TOKENS[ network ].wsteth) + BigInt(TOKENS[ network ].eth) )   return Pool_testnet.wstETH_ETH
     }
-    else if (network === "mainnet")
+    else if (network === "MAINNET")
     {
-        if ( value === BigInt(TOKEN.eth.mainnet) + BigInt(TOKEN.usdc.mainnet) )     return Pool_mainnet.ETH_USDC
-        if ( value === BigInt(TOKEN.dai.mainnet) + BigInt(TOKEN.eth.mainnet) )      return Pool_mainnet.DAI_ETH
-        if ( value === BigInt(TOKEN.wbtc.mainnet) + BigInt(TOKEN.usdc.mainnet) )    return Pool_mainnet.wBTC_USDC
-        if ( value === BigInt(TOKEN.eth.mainnet) + BigInt(TOKEN.usdt.mainnet) )     return Pool_mainnet.ETH_USDT
-        if ( value === BigInt(TOKEN.usdc.mainnet) + BigInt(TOKEN.usdt.mainnet) )    return Pool_mainnet.USDC_USDT
-        if ( value === BigInt(TOKEN.dai.mainnet) + BigInt(TOKEN.usdc.mainnet) )     return Pool_mainnet.DAI_USDC
-        if ( value === BigInt(TOKEN.wsteth.mainnet) + BigInt(TOKEN.eth.mainnet) )   return Pool_mainnet.wstETH_ETH
-        if ( value === BigInt(TOKEN.lords.mainnet) + BigInt(TOKEN.eth.mainnet) )    return Pool_mainnet.LORDS_ETH
+        if ( value === BigInt(TOKENS[ network ].eth) + BigInt(TOKENS[ network ].usdc) )     return Pool_mainnet.ETH_USDC
+        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].eth) )      return Pool_mainnet.DAI_ETH
+        if ( value === BigInt(TOKENS[ network ].wbtc) + BigInt(TOKENS[ network ].usdc) )    return Pool_mainnet.wBTC_USDC
+        if ( value === BigInt(TOKENS[ network ].eth) + BigInt(TOKENS[ network ].usdt) )     return Pool_mainnet.ETH_USDT
+        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].usdt) )    return Pool_mainnet.USDC_USDT
+        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].usdc) )     return Pool_mainnet.DAI_USDC
+        if ( value === BigInt(TOKENS[ network ].wsteth) + BigInt(TOKENS[ network ].eth) )   return Pool_mainnet.wstETH_ETH
+        if ( value === BigInt(TOKENS[ network ].lords) + BigInt(TOKENS[ network ].eth) )    return Pool_mainnet.LORDS_ETH
     }
     else
         throw new Error(`Network ${network} is not supported.`)
