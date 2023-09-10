@@ -20,11 +20,11 @@ const main = async() => {
         console.log("")
 
 
-        await MySwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].eth, TOKENS[ network ].eth ],
-            "0.0000001",
-        )
+        // await MySwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].eth, TOKENS[ network ].eth ],
+        //     "0.0000001",
+        // )
 
         // MySwap.addLiquidity( 
         //     starkSigner,

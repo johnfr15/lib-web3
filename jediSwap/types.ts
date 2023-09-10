@@ -12,7 +12,9 @@ export type Pool = {
 
 export type Trade = {
     amountIn: TokenAmount
+    amountInMax: Uint256 | null
     amountOut: TokenAmount
+    amountOutMin: Uint256 | null
     tradeType: TradeType
     priceImpact: number
 }
@@ -40,7 +42,6 @@ export type SwapCallData = {
     contractAddress: string,
     entrypoint: string,
     calldata: Array<SwapArgs[keyof SwapArgs]>
-    utils: { [key: string]: any }
 }
 
 

@@ -25,8 +25,8 @@ const main = async() => {
         await jediSwap.swap(
             starkSigner,
             [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
-            "184",
             null,
+            "0.0001",
         )
 
         // jediSwap.addLiquidity( 

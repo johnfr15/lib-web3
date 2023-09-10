@@ -1,11 +1,10 @@
-import { ethers } from "ethers";
 import { Account, Contract, Uint256 } from "starknet"
-import { TradeType, TokenAmount, Route, Percent, Token, JSBI, Pair } from "l0k_swap-sdk";
+import { TradeType, Token } from "l0k_swap-sdk";
 import { SwapCallData } from "../types";
-import { get_pool, get_token, jsbi_to_Uint256, sort_tokens } from "../utils";
+import { get_pool, get_token, jsbi_to_Uint256, string_to_Uint256 } from "../utils";
 import { ROUTER_ADDRESS, JEDI_ROUTER_ABI } from "../constant";
 import { Pool, Trade } from "../types";
-import { get_trade } from "../utils/swap";
+import { get_out_min, get_trade, get_in_max } from "../utils/swap";
 
 
 
@@ -18,10 +17,7 @@ export const get_swap_calldata = async(
     slipage: number,
     priceImpact: number,
     deadline?: number,
-): Promise<SwapCallData | void> => {
-
-    let amount_out_min: Uint256
-    let amount_in_max: Uint256
+): Promise<{ swaptTx: SwapCallData, trade: Trade, input: Uint256, output: Uint256 }> => {
 
     try {
 
@@ -35,29 +31,30 @@ export const get_swap_calldata = async(
         if ( trade.priceImpact > priceImpact )
             throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }`)
     
-/*
-        if ( trade.tradeType === 0 ) amount_out_min = trade.minimumAmountOut( new Percent( BigInt( slipage * 100 ), BigInt( 100 * 100 ) ) ).raw
-        if ( trade.tradeType === 1 ) amount_in_max  = trade.maximumAmountIn( new Percent( BigInt( 100 * 100 ), BigInt( slipage * 100 ) ) ).raw
-
+        if ( trade.tradeType === TradeType.EXACT_INPUT ) trade.amountOutMin = get_out_min( trade.amountOut, slipage )
+        if ( trade.tradeType === TradeType.EXACT_OUTPUT ) trade.amountInMax = get_in_max( trade.amountIn, slipage )
+        
         deadline = deadline ? deadline : Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
-        const calldata: SwapCallData = {
-            contractAddress: l0k_router.address,
-            entrypoint: trade.tradeType ? "swapTokensForExactTokens" : "swapExactTokensForTokens",
+
+        const swaptTx: SwapCallData = {
+            contractAddress: Router.address,
+            entrypoint: trade.tradeType ? "swap_tokens_for_exact_tokens" : "swap_exact_tokens_for_tokens",
             calldata: [
-                amount_in_max ? jsbi_to_Uint256( amount_in_max, token_in.decimals ) : jsbi_to_Uint256( amount_in!.raw, token_in.decimals ),
-                amount_out_min ? jsbi_to_Uint256( amount_out_min, token_out.decimals ) : jsbi_to_Uint256( amount_out!.raw, token_out.decimals ), 
+                amountIn ? string_to_Uint256( amountIn, token_in.decimals ) : string_to_Uint256( amountOut!, token_out.decimals ),
+                trade.amountOutMin ?? trade.amountInMax!, 
                 path,
                 signer.address,
                 deadline,
             ],
-            utils: {
-                priceImpact: trade.priceImpact.toSignificant(2),
-                tradeType: trade.tradeType
-            }
         }
 
-        return calldata
-*/
+        return { 
+            swaptTx, 
+            trade, 
+            input: trade.amountInMax ?? string_to_Uint256( amountIn!, token_in.decimals ), 
+            output: trade.amountOutMin ?? string_to_Uint256( amountOut!, token_out.decimals )
+        } 
+
     } catch (error: any) {
         
         throw error

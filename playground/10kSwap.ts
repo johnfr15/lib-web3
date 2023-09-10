@@ -11,19 +11,21 @@ const main = async() => {
     
     try {
         // Set up
-        const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
+        const network: 'TESTNET' | 'MAINNET' = "MAINNET" // Testnet | Mainnet
 
-        const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
+        const starkSigner = new Account( MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
 
         console.log("stark account: ", starkSigner.address)
         console.log("")
 
 
-        await l0kSwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].dai, TOKENS[ network ].eth ],
-            "0.01",
-        )
+        // await l0kSwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].usdc, TOKENS[ network ].eth ],
+        //     "6.519125",
+        //     null,
+        //     network
+        // )
 
         // l0kSwap.addLiquidity( 
         //     starkSigner,

@@ -1,9 +1,8 @@
 import { ethers } from "ethers";
-import { TokenAmount, Token, TradeType } from "l0k_swap-sdk";
+import { TokenAmount, Token, TradeType, Fraction } from "l0k_swap-sdk";
 import { Contract, Uint256, uint256 } from "starknet";
 import { Pool, Trade } from "../types";
-import { jsbi_to_Uint256 } from "./index"
-import { TICKER } from "../constant";
+import { jsbi_to_Uint256, string_to_Uint256 } from "./index"
 
 export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
 
@@ -13,12 +12,9 @@ export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: 
         const reserve_out: Uint256 = amountIn.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
         const token_out: Token     = amountIn.token.address !== pool.token0.address ? pool.token0 : pool.token1
 
-        console.log(`reserve in ${ TICKER[ amountIn.token.address ]}: `, ethers.formatEther( uint256.uint256ToBN( reserve_in ) ))
-        console.log(`reserve out: ${ TICKER[ token_out.address ]}`, ethers.formatEther( uint256.uint256ToBN( reserve_out ) ))
-    
         const { amountOut }: { amountOut: Uint256 } = await Router.get_amount_out( jsbi_to_Uint256( amountIn.raw ), reserve_in, reserve_out )
         const amount_out = new TokenAmount( token_out, uint256.uint256ToBN( amountOut ) )
-        console.log("amount out: ", amount_out.toSignificant(3))
+
         return amount_out
         
     } catch (error) {
@@ -35,13 +31,10 @@ export const get_amount_in = async( amountOut: TokenAmount, pool: Pool, Router: 
         const reserve_in: Uint256  = amountOut.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
         const token_in: Token      = amountOut.token.address !== pool.token0.address ? pool.token0 : pool.token1
     
-        console.log(`reserve in ${ TICKER[ token_in.address ]}: `, ethers.formatEther( uint256.uint256ToBN( reserve_in ) ))
-        console.log(`reserve out: ${ TICKER[ amountOut.token.address ]}`, ethers.formatEther( uint256.uint256ToBN( reserve_out ) ))
 
         const { amountIn }: { amountIn: Uint256 } = await Router.get_amount_in( jsbi_to_Uint256( amountOut.raw ), reserve_in, reserve_out )
         const amount_in = new TokenAmount( token_in, uint256.uint256ToBN( amountIn ) )
         
-        console.log("amount in: ", amount_in.toSignificant(3))
         return amount_in
 
     } catch (error) {
@@ -71,7 +64,14 @@ export const get_trade = async(
         
         const priceImpact = await calc_price_impact( amount_in, amount_out, tradeType, Router, pool )
 
-        return { tradeType: tradeType, amountIn: amount_in, amountOut: amount_out, priceImpact: priceImpact }
+        return { 
+            tradeType: tradeType, 
+            amountIn: amount_in, 
+            amountInMax: null, 
+            amountOut: amount_out, 
+            amountOutMin: null, 
+            priceImpact: priceImpact 
+        }
 
     } catch (error) {
         
@@ -102,4 +102,22 @@ export const calc_price_impact = async( amountIn: TokenAmount, amountOut: TokenA
 
     const priceImpact = percent < 0 ? (percent * -1) / 100 : percent / 100
     return priceImpact
+}
+
+export const get_out_min = ( amountOut: TokenAmount, slipage: number): Uint256 => {
+
+    const amount_out_min = amountOut.multiply( new Fraction( BigInt( (100 - slipage) * 100 ) ) )
+                                    .divide( BigInt( 100 * 100 ) )
+                                    .toFixed( amountOut.token.decimals )
+
+    return string_to_Uint256( amount_out_min, amountOut.token.decimals )
+}
+
+export const get_in_max = ( amountIn: TokenAmount, slipage: number): Uint256 => {
+
+    const amount_in_max = amountIn.multiply( new Fraction( BigInt( (100 + slipage) * 100 ) ) )
+                                    .divide( BigInt( 100 * 100 ) )
+                                    .toFixed( amountIn.token.decimals )
+
+    return string_to_Uint256( amount_in_max, amountIn.token.decimals )
 }

@@ -99,3 +99,7 @@ export const jsbi_to_Uint256 = (number: JSBI, decimals: number = 18): Uint256 =>
 {
     return uint256.bnToUint256( BigInt( number.toString() ) )
 }
+export const string_to_Uint256 = (number: string, decimals: number = 18): Uint256 => 
+{
+    return uint256.bnToUint256( ethers.parseUnits( number, decimals ) )
+}

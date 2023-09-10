@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { Account, Uint256 } from 'starknet';
+import { Account, Uint, Uint256, uint256 } from 'starknet';
 import { ROUTER_ADDRESS, TICKER } from './constant';
-import { Uint256_to_string, get_balance, is_balance } from './utils';
+import { Uint256_to_string, get_balance, is_balance, jsbi_to_string } from './utils';
 import { get_swap_calldata } from './calldata/swapCalldata';
 import { get_approve_calldata } from './calldata/approveCalldata';
 import { get_add_liq_calldata } from './calldata/addLiqCalldata';
@@ -34,39 +34,37 @@ export const swap = async(
 ) => {
 
     try {
+
         if ( slipage < 0.01 || slipage > 100 )
-            throw new Error(`Slipage parameter must be a number between 0.01 and 100`)
+            throw(`Slipage parameter must be a number between 0.01 and 100`)
         if ( amountIn === null && amountOut === null )
-            throw new Error(`You need to specify an amount for 'amountIn' or 'amountOut'`)
+            throw(`You need to specify an amount for 'amountIn' or 'amountOut'`)
 
 
         // Get swap Tx
-        const swap_calldata = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
-        // const [ amount_in, amount_out ] = swap_calldata.calldata
-        // const { tradeType, priceImpact: price_impact } = swap_calldata.utils
+        const { swaptTx, trade, input, output } = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
+        const { tradeType, priceImpact: price_impact, amountInMax, amountIn: amount_in } = trade
 
-/*
         // Get approve Tx
-        const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( amount_in as Uint256, decimals_from ), path[0], network )
+        const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( input, trade.amountIn.token.decimals ), path[0], network )
         const [ spender, amount ] = approve_calldata.calldata
-*/
 
         /*========================================= TX ================================================================================================*/
-/*        
+        
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( amount as Uint256, decimals_from ) } ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ tradeType === 1 ? '(maximum)' : ''}${ amountIn } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(minimum)' : ''}${Uint256_to_string( amount_out as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
+        console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] }`)
+        console.log(`\t2) Swapping ${ tradeType === 1 ? '(max)' : ''}${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(min)' : ''}${Uint256_to_string( output, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)      
         console.log(`\nPrice impact: ${ price_impact }%`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swap_calldata ] );
-        const multiCall           = await signer.execute( [ approve_calldata, swap_calldata ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
+        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swaptTx ] );
+        const multiCall           = await signer.execute( [ approve_calldata, swaptTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
         const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
         console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-*/
+
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
