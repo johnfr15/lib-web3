@@ -73,20 +73,17 @@ const get_max_liq = async(
         const reserve_a: bigint = ethers.parseUnits( pool.reserveOf( tokenA ).toSignificant(2), tokenB.decimals )
         const reserve_b: bigint = ethers.parseUnits( pool.reserveOf( tokenB ).toSignificant(2), tokenB.decimals )
 
-        const { amountB: quote_a } = await router.functions.quote( balanceB, reserve_b, reserve_a )
-        const { amountB: quote_b } = await router.functions.quote( balanceA, reserve_a, reserve_b )
-
-        // Check how many units of token b we can buy
-        const token_b_buyable = pool.priceOf( tokenB ).raw.multiply( new Fraction( balanceA.bigint, BigInt( 1 ) ) )
+        const { amountB: quote_a } = await router.functions.quote( balanceB.uint256, reserve_b, reserve_a )
+        const { amountB: quote_b } = await router.functions.quote( balanceA.uint256, reserve_a, reserve_b )
 
         /**
          * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
          *      that token B is our max token to add
          */
-        const b_is_min_balance: boolean = token_b_buyable.greaterThan( new Fraction( balanceB.bigint, BigInt( 1 ) ) )
+        const b_is_min_balance: boolean = uint256.uint256ToBN( quote_b ) > balanceB.bigint
         
-        let balance_a: bigint     = b_is_min_balance ? quote_a : balanceA;
-        let balance_b: bigint     = b_is_min_balance ? balanceB : quote_b;
+        let balance_a: bigint     = b_is_min_balance ? uint256.uint256ToBN( quote_a ) : balanceA.bigint;
+        let balance_b: bigint     = b_is_min_balance ? balanceB.bigint : uint256.uint256ToBN( quote_b );
         let balance_a_min: bigint = balance_a * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         let balance_b_min: bigint = balance_b * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
