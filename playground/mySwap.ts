@@ -22,23 +22,27 @@ const main = async() => {
 
         // await MySwap.swap(
         //     starkSigner,
-        //     [ TOKENS[ network ].eth, TOKENS[ network ].eth ],
-        //     "0.0000001",
+        //     [ TOKENS[ network ].dai, TOKENS[ network ].eth ],
+        //     "0.001",
+        //     network
         // )
 
         // MySwap.addLiquidity( 
         //     starkSigner,
-        //     TOKEN[ network ].dai,
+        //     TOKENS[ network ].dai,
+        //     "0.01",
+        //     TOKENS[ network ].eth,
         //     null,
-        //     TOKEN[ network ].eth,
-        //     null,
-        //     1
+        //     false,
+        //     network
         // )
 
         // MySwap.withdrawLiquidity( 
         //     starkSigner,
-        //     TOKEN[ network ].eth,
-        //     TOKEN[ network ].dai,       
+        //     TOKENS[ network ].eth,
+        //     TOKENS[ network ].dai,
+        //     100,
+        //     network      
         // )
 
 
