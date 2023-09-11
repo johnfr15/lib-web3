@@ -174,8 +174,8 @@ export const withdrawLiquidity = async(
             
             /*========================================= TX ================================================================================================*/
             console.log(`\nMulticall...`)
-            console.log(`\t1) Approving ${raw_widthdraw.contractAddress} to spend ${ Uint256_to_string( shares_amount as Uint256, decimalsLp )} ${TICKER[addrLp as string] ?? "LP"}`)
-            console.log(`\t2) Withdrawing ${percent}% of liquidity for:\n\t\t(minimum) ${Uint256_to_string( amount_a_min as Uint256, decimalsA)} ${TICKER[addrA as string]}\n\t\t(minimum) ${Uint256_to_string(amount_b_min as Uint256, decimalsB)} ${TICKER[addrB as string]}`)
+            console.log(`\t1) Approving ${ raw_widthdraw.contractAddress } to spend ${ Uint256_to_string( shares_amount as Uint256, decimalsLp )} ${ TICKER[ addrLp as string ] ?? "LP"}`)
+            console.log(`\t2) Withdrawing ${ percent }% of liquidity for:\n\t\t(minimum) ${ Uint256_to_string( amount_a_min as Uint256, decimalsA)} ${ TICKER[ addrA as string ]}\n\t\t(minimum) ${ Uint256_to_string( amount_b_min as Uint256, decimalsB ) } ${ TICKER[ addrB as string ] }`)
 
             const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveTx, withdrawTx ]);
             const multiCall           = await signer.execute([ approveTx, withdrawTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
