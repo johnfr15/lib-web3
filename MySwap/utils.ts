@@ -32,16 +32,16 @@ export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB
 }
 
 
-export const quote = async(amountA: bigint, reserveA: bigint, reserveB: bigint): Promise<bigint> => {
+export const quote = ( amountA: bigint, reserveA: bigint, reserveB: bigint ): bigint => {
     let amountB: bigint = amountA * reserveB / reserveA
     return amountB;
 }
 
-export const get_reserves = async(contract: Contract, path: [string, string], pool_id: number): Promise<{reserve_in: bigint, reserve_out: bigint}> => {
+export const get_reserves = async( contract: Contract, path: [string, string], pool_id: number ): Promise<{reserve_in: bigint, reserve_out: bigint}> => {
     const { pool } = await contract.functions.get_pool( pool_id )
-    
-    const reserve_in: Uint256 = path[0] === "0x" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
-    const reserve_out: Uint256 = path[1] === "0x" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
+
+    const reserve_in: Uint256  = path[0] === "0x0" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
+    const reserve_out: Uint256 = path[1] === "0x0" + pool.token_a_address.toString(16) ? pool.token_a_reserves : pool.token_b_reserves
 
     return { 
         reserve_in: uint256.uint256ToBN( reserve_in ), 

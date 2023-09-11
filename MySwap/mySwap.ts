@@ -30,22 +30,22 @@ export const swap = async(
 ) => {
 
     try {
-
-        const { decimals: decimals_to } = await get_balance(signer.address, signer, path[1])
-        const { decimals: decimals_from } = await get_balance(signer.address, signer, path[0])
+        console.log( path )
+        const { decimals: decimals_to }   = await get_balance( signer.address, signer, path[1] )
+        const { decimals: decimals_from } = await get_balance( signer.address, signer, path[0] )
 
         // Get approve Tx
-        const approve_calldata = await get_approve_calldata(signer, amountIn, path[0], network)
+        const approve_calldata = await get_approve_calldata( signer, amountIn, path[0], network )
         const { raw: raw_approve, compiled: approve_tx } = approve_calldata
         
         // Get swap Tx
-        const swap_calldata = await get_swap_calldata(signer, path, amountIn, network, slipage, amountOutMin)
+        const swap_calldata = await get_swap_calldata( signer, path, amountIn, network, slipage, amountOutMin )
         const { raw: raw_swap, compiled: swap_tx } = swap_calldata
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${raw_approve.calldata[0]} to spend ${ Uint256_to_string( raw_approve.calldata[1] as Uint256, decimals_from )} ${TICKER[path[0]]}`)
-        console.log(`\t2) Swapping ${ amountIn } ${TICKER[path[0]]} for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${TICKER[path[1]]}`)
+        console.log(`\t1) Approving ${ raw_approve.calldata[0] } to spend ${ Uint256_to_string( raw_approve.calldata[1] as Uint256, decimals_from )} ${ TICKER[ path[0] ] }`)
+        console.log(`\t2) Swapping ${ amountIn } ${ TICKER[ path[0] ] } for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${ TICKER[ path[1] ] }`)
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, swap_tx ]);
         const multiCall           = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })

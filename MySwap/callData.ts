@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { CallData, Contract, Account, uint256, Uint256 } from "starknet"
-import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256 } from './utils';
+import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, Uint256_to_bigNumber } from './utils';
 import { ERC20_ABI, TICKER } from "./constant";
 import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs, WidthdrawLiquidityCallData } from "./types";
 
@@ -49,25 +49,25 @@ export const get_swap_calldata = async(
 
     try {
 
-        const MySwap = resolve_network_contract(network, signer)
-        const pool_id = resolve_pool(path[0], path[1], network)
-        const { reserve_in, reserve_out } = await get_reserves(MySwap, path, pool_id)
-        
-        const { decimals: decimals_from } = await get_balance(signer.address, signer, path[0])
-        
+        const MySwap: Contract  = resolve_network_contract( network, signer )
+        const pool_id: number   = resolve_pool( path[0], path[1], network )
 
-        let amount_in: Uint256 = string_to_Uint256( amountIn, decimals_from )
-        let quote_: bigint = await quote( ethers.parseUnits( Uint256_to_string( amount_in, decimals_from ), decimals_from ), reserve_in, reserve_out )
-        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
-        let amount_out: Uint256 = get_amount_out( ethers.parseUnits(amountIn, decimals_from), reserve_in, reserve_out )
+        const { reserve_in, reserve_out } = await get_reserves( MySwap, path, pool_id )
         
-        if ( uint256.uint256ToBN(amount_out_min) > uint256.uint256ToBN(amount_out) )
+        const { decimals: decimals_from } = await get_balance( signer.address, signer, path[0] )
+
+        let amount_in: Uint256      = string_to_Uint256( amountIn, decimals_from )
+        let quote_: bigint          = quote( Uint256_to_bigNumber( amount_in ), reserve_in, reserve_out )
+        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
+        let amount_out: Uint256     = get_amount_out( ethers.parseUnits(amountIn, decimals_from), reserve_in, reserve_out )
+        
+        if ( uint256.uint256ToBN( amount_out_min ) > uint256.uint256ToBN(amount_out) )
             throw new Error(`Price impact to high: ${ calc_price_impact( quote_, uint256.uint256ToBN( amount_out) ) }%`)
     
         const raw: SwapCallData = {
             contractAddress: MySwap.address,
             entrypoint: "swap",
-            calldata: [pool_id, path[0], amount_in, amount_out_min],
+            calldata: [ pool_id, path[0], amount_in, amount_out_min ],
         }
         const compiled: SwapCallData = {
             contractAddress: MySwap.address,
