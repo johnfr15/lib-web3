@@ -25,8 +25,8 @@ export const calc_price_impact = (amount_min: bigint, amount_out: bigint) => {
 }
 
 export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB: string } => {
-    const pool_a_addr = "0x" + pool.token_a_address.toString(16)
-    const pool_b_addr = "0x" + pool.token_b_address.toString(16)
+    const pool_a_addr = "0x0" + pool.token_a_address.toString(16)
+    const pool_b_addr = "0x0" + pool.token_b_address.toString(16)
 
     return { tokenA: pool_a_addr, tokenB: pool_b_addr }
 }
