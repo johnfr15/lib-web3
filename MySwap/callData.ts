@@ -90,7 +90,7 @@ export const get_add_liq_calldata = async(
     amountA: string | null,
     addressB: string,
     amountB: string | null,
-    max: 0 | 1,
+    max: boolean,
     network: string,
     slipage: number,
 ): Promise<{raw: AddLiquidityCallData, compiled: AddLiquidityCallData}> => {
@@ -98,7 +98,7 @@ export const get_add_liq_calldata = async(
 
     try {
 
-        if ( amountA === null && amountB === null && max === 0 )
+        if ( amountA === null && amountB === null && max === false )
             throw new Error("Need to provide at least a value for 'amountA' or 'amountB' or set max");
         if ( await is_balance(signer, addressA, addressB) === 0 )
             throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)

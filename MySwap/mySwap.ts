@@ -86,7 +86,7 @@ export const addLiquidity = async(
     amountA: string | undefined | null,     
     addressB: string,                       
     amountB: string | undefined | null,     
-    max: 0 | 1 = 0,                         
+    max: boolean = false,                         
     network: 'TESTNET' | 'MAINNET' = "TESTNET",            
     slipage: number = 995,
     maxFees: bigint | undefined = undefined,
@@ -112,9 +112,9 @@ export const addLiquidity = async(
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${raw_approve_a.calldata[0]} to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, raw_add.utils!.decimalsA as number )} ${TICKER[token_a_addr as string]}`)
-        console.log(`\t2) Approving ${raw_approve_b.calldata[0]} to spend ${ Uint256_to_string( raw_approve_b.calldata[1] as Uint256, raw_add.utils!.decimalsB as number )} ${TICKER[token_b_addr as string]}`)
-        console.log(`\t3) Adding liquidity for pool ${TICKER[token_a_addr as string]}/${TICKER[token_b_addr as string]}`)
+        console.log(`\t1) Approving ${ raw_approve_a.calldata[0] } to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, raw_add.utils!.decimalsA as number )} ${ TICKER[ token_a_addr as string ] }`)
+        console.log(`\t2) Approving ${ raw_approve_b.calldata[0] } to spend ${ Uint256_to_string( raw_approve_b.calldata[1] as Uint256, raw_add.utils!.decimalsB as number )} ${ TICKER[ token_b_addr as string ] }`)
+        console.log(`\t3) Adding liquidity for pool ${ TICKER[ token_a_addr as string ] }/${ TICKER[ token_b_addr as string ] }`)
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
         const multiCall           = await signer.execute([ approveATx, approveBTx, addTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })

@@ -246,12 +246,12 @@ export const fetch_add_liq = async(
         const MySwap = resolve_network_contract(network, signer)
         const { pool } = await MySwap.functions.get_pool( pool_id )
         
-        const token_a_reserves = Uint256_to_bigNumber( pool.token_a_reserves )
-        const token_b_reserves = Uint256_to_bigNumber( pool.token_b_reserves )
-        const token_addr1_address = addr === "0x" + pool.token_a_address.toString(16) ? "0x" + pool.token_a_address.toString(16) : "0x" + pool.token_b_address.toString(16)
-        const token_addr2_address = addr !== "0x" + pool.token_a_address.toString(16) ? "0x" + pool.token_a_address.toString(16) : "0x" + pool.token_b_address.toString(16)
-        const token_addr1_reserves = addr === "0x" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
-        const token_addr2_reserves = addr !== "0x" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
+        const token_a_reserves     = Uint256_to_bigNumber( pool.token_a_reserves )
+        const token_b_reserves     = Uint256_to_bigNumber( pool.token_b_reserves )
+        const token_addr1_address  = addr === "0x0" + pool.token_a_address.toString(16) ? "0x0" + pool.token_a_address.toString(16) : "0x0" + pool.token_b_address.toString(16)
+        const token_addr2_address  = addr !== "0x0" + pool.token_a_address.toString(16) ? "0x0" + pool.token_a_address.toString(16) : "0x0" + pool.token_b_address.toString(16)
+        const token_addr1_reserves = addr === "0x0" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
+        const token_addr2_reserves = addr !== "0x0" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
 
         const { balance: balance_addr1, decimals: decimals_addr1 } = await get_balance(signer.address, signer, token_addr1_address)
         const { balance: balance_addr2, decimals: decimals_addr2 } = await get_balance(signer.address, signer, token_addr2_address)
