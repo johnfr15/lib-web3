@@ -13,13 +13,14 @@ import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
 
 /**
  * @name swap
- * @param signer        // Account to perform the swap
- * @param path          // token swap from path[0] (input) to path[1] (output) 
- * @param amountIn      // The amount that will enter in the pool
- * @param network       // (optional) 'testnet' is the default one
- * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
- * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
- * @param amountOutMin  // (optional) The minimum output we are ready you cn specify if you prefere using an oracle instead of the pool
+ * @param signer        - Account to perform the swap
+ * @param path          - token swap from path[0](input) to path[1](output) 
+ * @param amountIn      - The amount of exact token (in token) to be swapped for the other one **(out token)**  
+ * @param amountOut     - The amount of exact token (out token) to be received by swapping the other one **(in token)**  
+ * @param network       - (optional) 'testnet' is the default one
+ * @param maxFees       - (optional) max fees signer is ready to pay for executing transaction
+ * @param slipage       - (optional) protection against price movement or to high price impact default is 0.5%
+ * @param amountOutMin  - (optional) The minimum output we are ready you cn specify if you prefere using an oracle instead of the pool
  */
 export const swap = async(
     signer: Account,

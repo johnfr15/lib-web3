@@ -32,9 +32,9 @@ const main = async() => {
         await Orbiter.swap({
             evmSigner,
             starkSigner,
-            token: TOKENS[ network ][ "starknet" ].eth,
-            fromChain: "starknet",
-            toChain: "arbitrum",
+            token: TOKENS[ network ][ fromChain ].eth,
+            fromChain: fromChain,
+            toChain: toChain,
             amount: "0.008",
             network
         })
@@ -42,9 +42,9 @@ const main = async() => {
         // await Orbiter.swap({
         //     evmSigner,
         //     starkSigner,
-        //     token: TOKENS[ network ][ "arbitrum" ].eth,
-        //     fromChain: "arbitrum",
-        //     toChain: "optimism",
+        //     token: TOKENS[ network ][ fromChain ].eth,
+        //     fromChain: fromChain,
+        //     toChain: toChain,
         //     amount: "0.005",
         //     network
         // })
