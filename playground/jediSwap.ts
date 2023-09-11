@@ -22,25 +22,26 @@ const main = async() => {
 
 
 
-        await jediSwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
-            null,
-            "0.0001",
-        )
+        // await jediSwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
+        //     "0.0000001",
+        //     null,
+        // )
 
         // jediSwap.addLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
-        //     '0.000008571428571428',
-        //     TOKENS[ network ].dai,
         //     null,
+        //     TOKENS[ network ].dai,
+        //     "0.01",
         // )
 
         // jediSwap.withdrawLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].dai,       
+        //     TOKENS[ network ].dai,
+        //     100
         // )
 
 

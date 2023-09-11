@@ -177,46 +177,43 @@ export const withdrawLiquidity = async(
     deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
 
     try {
-/*
         if ( slipage < 0 || slipage > 100 )
             throw new Error("Slipage need to be a number between 0 and 100");
         if ( percent <= 0 || percent > 100 )
             throw new Error("Percent need to be set between 0 to 100")
 
 
-            // Get widthdraw liquidity Tx
-            const withdraw_calldata = await get_remove_calldata( signer, tokenA, tokenB, percent, slipage, network, deadline )
-            const { removeLiquidityTx, utils } = withdraw_calldata
-            const [ token_a, token_b, liquidity, amountAMin, amountBMin ] = removeLiquidityTx.calldata
-            const lp_decimals = utils.pool.liquidityToken.decimals
-            const lp_address = utils.pool.liquidityToken.address
+        // Get widthdraw liquidity Tx
+        const withdraw_calldata = await get_remove_calldata( signer, tokenA, tokenB, percent, slipage, network, deadline )
+        const { removeLiquidityTx, utils } = withdraw_calldata
+        const [ token_a, token_b, liquidity, amountAMin, amountBMin ] = removeLiquidityTx.calldata
+        const { pool } = utils
+        const balanceLp = await get_balance( signer.address, pool.Pool.address, signer )
 
-            // Get approve Tx
-            const approveTx = await get_approve_calldata(signer, Uint256_to_string( liquidity as Uint256, lp_decimals ), lp_address, network)
-*/
-            /*========================================= TX ================================================================================================*/
-/*
-            console.log(`\nMulticall...`)
-            console.log(`\t1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ Uint256_to_string( liquidity as Uint256, lp_decimals ) } ${TICKER[ lp_address ] ?? "LP"}`)
-            console.log(`\t2) Withdrawing ${ percent }% of liquidity for:\n\t\
-                        (minimum)${ Uint256_to_string( amountAMin as Uint256, utils.token0.decimals ) } ${ TICKER[ utils.token0.address ] }\n\t\
-                        (minimum)${ Uint256_to_string( amountBMin as Uint256, utils.token1.decimals ) } ${ TICKER[ utils.token1.address ] }
-            `)
+        // Get approve Tx
+        const approveTx = await get_approve_calldata(signer, Uint256_to_string( liquidity as Uint256, balanceLp.decimals ), pool.Pool.address , network)
 
-            const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveTx, removeLiquidityTx ]);
-            const multiCall           = await signer.execute([ approveTx, removeLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-            const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
-            
-            console.log(`\nTransaction valided !`)
-            console.log("hash:            ", multiCall.transaction_hash)
-            console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
-            console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-*/
-            /*=============================================================================================================================================*/
+        /*========================================= TX ================================================================================================*/
+        console.log(`\nMulticall...`)
+        console.log(`\t1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ Uint256_to_string( liquidity as Uint256, balanceLp.decimals ) } ${TICKER[ pool.Pool.address ] ?? "LP"}`)
+        console.log(`\t2) Withdrawing ${ percent }% of liquidity for:\n\t\
+                    (minimum)${ Uint256_to_string( amountAMin as Uint256, utils.token0.decimals ) } ${ TICKER[ utils.token0.address ] }\n\t\
+                    (minimum)${ Uint256_to_string( amountBMin as Uint256, utils.token1.decimals ) } ${ TICKER[ utils.token1.address ] }
+        `)
 
-        } catch (error: any) {
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveTx, removeLiquidityTx ]);
+        const multiCall           = await signer.execute([ approveTx, removeLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        
+        console.log(`\nTransaction valided !`)
+        console.log("hash:            ", multiCall.transaction_hash)
+        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
+        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
+        /*=============================================================================================================================================*/
 
-            throw error
+    } catch (error: any) {
 
-        }
+        throw error
+
+    }
 }
