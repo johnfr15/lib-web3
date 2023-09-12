@@ -2,7 +2,7 @@ import { Account, Contract, Uint256 } from "starknet"
 import { TradeType, Token } from "l0k_swap-sdk";
 import { SwapCallData } from "../types";
 import { get_pool, get_token, jsbi_to_Uint256, string_to_Uint256 } from "../utils";
-import { ROUTER_ADDRESS, JEDI_ROUTER_ABI } from "../constant";
+import { ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../constant";
 import { Pool, Trade } from "../types";
 import { get_out_min, get_trade, get_in_max } from "../utils/swap";
 
@@ -21,7 +21,7 @@ export const get_swap_calldata = async(
 
     try {
 
-        const Router = new Contract( JEDI_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
+        const Router = new Contract( MUTE_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
 
         const token_in: Token   = await get_token( path[0], network, signer )
         const token_out: Token  = await get_token( path[1], network, signer )

@@ -51,20 +51,17 @@ export const swap = async(
         const [ spender, amount ] = approve_calldata.calldata
 
         /*========================================= TX ================================================================================================*/
-        console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] }`)
+
+        
+
         console.log(`\t2) Swapping ${ tradeType === 1 ? '(max)' : ''}${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(min)' : ''}${Uint256_to_string( output, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)      
         console.log(`\nPrice impact: ${ price_impact }%`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swaptTx ] );
-        const multiCall           = await signer.execute( [ approve_calldata, swaptTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
-        const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
-        console.log("hash:            ", multiCall.transaction_hash)
-        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
-        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-
+        // console.log("hash:            ", multiCall.transaction_hash)
+        // console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

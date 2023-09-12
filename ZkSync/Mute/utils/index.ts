@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI, JEDI_FACTORY_ABI, FACTORY_ADDRESS, JEDI_PAIR_ABI, TICKER } from "../constant"
+import { ERC20_ABI, MUTE_FACTORY_ABI, FACTORY_ADDRESS, MUTE_PAIR_ABI, TICKER } from "../constant"
 import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk"
 import { Pool } from "../types"
 
@@ -19,10 +19,10 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
 
 export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Account ): Promise<Pool> => {
 
-    const Factory = new Contract( JEDI_FACTORY_ABI, FACTORY_ADDRESS[ network ], signer )
+    const Factory = new Contract( MUTE_FACTORY_ABI, FACTORY_ADDRESS[ network ], signer )
     const { pair } = await Factory.get_pair( tokenA.address, tokenB.address )
 
-    const Pool = new Contract( JEDI_PAIR_ABI, '0x' + pair.toString(16), signer )
+    const Pool = new Contract( MUTE_PAIR_ABI, '0x' + pair.toString(16), signer )
     const { reserve0, reserve1 } = await Pool.get_reserves()
     const { token0, token1 } = sort_tokens( tokenA, tokenB, null, null )
 

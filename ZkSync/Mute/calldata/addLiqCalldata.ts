@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Account, Contract, uint256, Uint256 } from "starknet"
-import { TICKER, JEDI_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
+import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
 import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../types";
 import { get_token, get_balance, sort_tokens, get_pool, Uint256_to_string } from "../utils";
 import { Fraction, Token } from "l0k_swap-sdk";
@@ -63,7 +63,7 @@ const get_max_liq = async(
 ): Promise<AddLiquidityTx> => {
 
     try {
-        const Router = new Contract( JEDI_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
+        const Router = new Contract( MUTE_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
 
         const balanceA = await get_balance( signer.address, pool.token0.address, signer )
         const balanceB = await get_balance( signer.address, pool.token1.address, signer )
@@ -116,7 +116,7 @@ const get_liq = async(
 
     try {
         
-        const Router = new Contract( JEDI_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
+        const Router = new Contract( MUTE_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
         
         const token_1: Token     = pool.token0.address === addr ? pool.token0 : pool.token1
         const token_2: Token     = pool.token0.address !== addr ? pool.token0 : pool.token1

@@ -10,9 +10,9 @@ Jonathan's code
 **Remove liquidity**: ✅    
   
 ## url
-- Mainnet: https://app.jediswap.xyz/
-- Docs: https://docs.jediswap.xyz/
-- Github: https://github.com/jediswaplabs 
+- Mainnet: https://app.Muteswap.xyz/
+- Docs: https://docs.Muteswap.xyz/
+- Github: https://github.com/muteio
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
 

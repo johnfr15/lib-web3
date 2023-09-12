@@ -1,25 +1,16 @@
-import { Provider, constants } from 'starknet';
 import erc20_abi from "./abis/erc20"
 import router_abi from "./abis/mute_router_abi"
 import factory_abi from "./abis/mute_factory_abi"
 import pair_abi from "./abis/mute_pair_abi"
+import { JsonRpcProvider } from 'ethers';
 
 
 
 
 // Misc
-export const TESTNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
-export const MAINNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_MAIN } }) // for starknet mainnet
+export const MAINNET_PROVIDER = new JsonRpcProvider( "https://mainnet.era.zksync.io" ) 
+export const TESTNET_PROVIDER = new JsonRpcProvider( "https://testnet.era.zksync.dev" )
 
-export const MAX_FEE = BigInt( 0 ); // Devnet
-export const MINIMUM_LIQUIDITY = BigInt( 1000 )
-export const FEES_NUMERATOR = BigInt( 9970 )
-export const FEES_DENOMINATOR = BigInt( 10000 )
-export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
-export const STARKNET_CHAIN_ID = {
-  'MAINNET': "SN_MAIN",
-  'TESTNET': "SN_GOERLI"
-}
 
 
 
@@ -37,18 +28,18 @@ export const MUTE_PAIR_ABI = pair_abi
 
 // Addresses
 export const FACTORY_ADDRESS: { [key: string]: string } = {
-  'MAINNET': '0xdad44c139a476c7a17fc8141e6db680e9abc9f56fe249a105094c44382c2fd',
-  'TESTNET': '0x262744f8cea943dadc8823c318eaf24d0110dee2ee8026298f49a3bc58ed74a'
+  'MAINNET': '0x40be1cba6c5b47cdf9da7f963b6f761f4c60627d',
+  'TESTNET': '0xCc05E242b4A82f813a895111bCa072c8BBbA4a0e'
 }
 
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
-  'MAINNET': '0x41fd22b238fa21cfcf5dd45a8548974d8263b3a531a60388411c5e230f97023',
-  'TESTNET': '0x2bcc885342ebbcbcd170ae6cafa8a4bed22bb993479f49806e72d96af94c965',
+  'MAINNET': '0x8B791913eB07C32779a16750e3868aA8495F5964',
+  'TESTNET': '0x96c2Cf9edbEA24ce659EfBC9a6e3942b7895b5e8',
 }
 
-export const ZAP_IN_ADDRESS: { [key: string]: string } = {
-  'MAINNET': '0x29a303b928b9391ce797ec27d011d3937054bee783ca7831df792bae00c925c',
-  'TESTNET': '0x73e3ccd627283aed4fa3940aa2bdb4d2c702e8e44c99b6851c019222558310f',
+export const MULTI_CALL:  { [key: string]: string } = {
+  'MAINNET': '0xb1F9b5FCD56122CdfD7086e017ec63E50dC075e7',
+  'TESTNET': '0xd9Ee4c1e04059D4B0dd02b747282511bEE4E5fB5',
 }
 
 
@@ -58,29 +49,30 @@ export const ZAP_IN_ADDRESS: { [key: string]: string } = {
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
-        eth: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
-        usdc:'0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8',
-        dai:'0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3',
-        wbtc:'0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac',
-        usdt:'0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8',
+        eth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
+        usdc:'',
+        dai:'',
+        wbtc:'',
+        usdt:'',
     },
     'TESTNET': {
-        eth: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
-        dai: '0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9',
-        usdc: '0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426', 
-        tka: '0x02e2faab2cad8ecdde5e991798673ddcc08983b872304a66e5f99fbb24e14abc',
-        tkb: '0x0250a29c8cd4d07a4db0516798fe86225e362439e769c9a0e1640d4a8ec12883',
+        eth: '0x294cB514815CAEd9557e6bAA2947d6Cf0733f014',
+        dai: '',
+        usdc: '', 
+        tka: '',
+        tkb: '',
     }
 }
 
 export const TICKER: {[key: string]: string} = {
-    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7": "ETH",
-    "0x42b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2": "wstETH",
-    "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8": "USDC",
-    "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426": "USDC",
-    "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3": "DAI",
-    "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9": "DAI",
-    "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac": "wBTC",
-    "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8": "USDT",
-    "0x124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49": "LORDS",
+    "0x294cB514815CAEd9557e6bAA2947d6Cf0733f014": "ETH",
+    "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91": "ETH",
+    "": "wstETH",
+    "": "USDC",
+    "": "USDC",
+    "": "DAI",
+    "": "DAI",
+    "": "wBTC",
+    "": "USDT",
+    "": "LORDS",
 }
