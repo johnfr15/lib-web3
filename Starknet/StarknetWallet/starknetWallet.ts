@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 import fs from "fs";
 import { Account, ec, hash, stark, Provider, uint256, Uint256, Contract } from "starknet";
-import { ERC20_ABI, TOKENS } from "./constants";
+import { ERC20_ABI, MAINNET_PROVIDER, TESTNET_PROVIDER, TOKENS } from "./constants";
 
-const FILE_PATH = "./Starknet/accounts.json"
+const FILE_PATH = "./Starknet/StarknetWallet/accounts.json"
 
 /**
  * @name pre_compute
@@ -63,11 +63,11 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
 }
 
 /**
- * @name deploy_wallet
+ * @name deploy_contract
  * @param id            - Id of the generated wallet in ./accounts.json
  * @param provider 
  */
-export const deploy_wallet = async( id: number, provider: Provider ) => {
+export const deploy_contract = async( id: number, provider: Provider ) => {
     
     let accounts: { [key: string | number]: any } = {}
 
@@ -79,7 +79,7 @@ export const deploy_wallet = async( id: number, provider: Provider ) => {
         const account = new Account( provider, accountAddress, privateKey );
     
         /*========================================= TX ================================================================================================*/
-        console.log(`Deploying account: ${ accountAddress }...`)
+        console.log(`\nDeploying contract address: ${ accountAddress } ...`)
         const tx = await account.deployAccount({
             classHash: classHash,
             constructorCalldata: [ starkKeyPub ],
@@ -127,7 +127,7 @@ export const fund = async( recipent: string, amountETH: string, signer: Account,
 
         const uint_amount = uint256.bnToUint256( ethers.parseEther( amountETH ) )
 
-        console.log(`\nFunding ${ amountETH } to ${ recipent }...`)
+        console.log(`\nFunding ${ amountETH } to ${ recipent } ...`)
 
         const tx = await Weth.transfer( recipent, uint_amount )
         await signer.waitForTransaction( tx.transaction_hash )
@@ -138,5 +138,27 @@ export const fund = async( recipent: string, amountETH: string, signer: Account,
     } catch (error) {
         
         throw( error )
+    }
+}
+
+export const deploy_wallet = async( signer: Account, classHash: string, network: 'TESTNET' | 'MAINNET', fundInit?: string ): Promise<string> => {
+
+    const provider = network === 'TESTNET' ? TESTNET_PROVIDER : MAINNET_PROVIDER
+
+    try {
+        
+        const id = await pre_compute( classHash )
+        const new_account = await get_account( id, provider )
+
+        await fund( new_account.address, fundInit ?? '0.00002', signer, network )
+
+        await deploy_contract( id, provider )
+
+        return new_account.address
+
+    } catch (error) {
+        
+        throw( error )
+
     }
 }

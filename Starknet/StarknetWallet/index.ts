@@ -1,4 +1,4 @@
-import { pre_compute, deploy_wallet, get_account, fund } from "./starknetWallet"
+import { pre_compute, deploy_contract, get_account, fund, deploy_wallet } from "./starknetWallet"
 import * as Constant from "./constants"
 
-export default { pre_compute, deploy_wallet, get_account, fund, Constant }
+export default { deploy_wallet, pre_compute, deploy_contract, get_account, fund, Constant }

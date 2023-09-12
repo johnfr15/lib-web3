@@ -20,7 +20,7 @@ You will then be able to interact with the mains functions
 ```javascript
 StarknetWallet.pre_compute( OZContractClassHash )
 StarknetWallet.fund( new_account.address, '0.001', starkSigner, network )
-StarknetWallet.deploy_wallet( id, TESTNET_PROVIDER )
+StarknetWallet.deploy_contract( id, TESTNET_PROVIDER )
 ```
 
 ### Pre compute address
@@ -40,7 +40,7 @@ const pre_compute = async( classHash: string ): Promise<number>;
 ### Deploy wallet
   
 ```javascript
-const deploy_wallet = async( id: number, provider: Provider ): Promise<void>;
+const deploy_contract = async( id: number, provider: Provider ): Promise<void>;
 ```
 
 > [!NOTE]

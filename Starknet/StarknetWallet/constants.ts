@@ -3,6 +3,9 @@ import erc20_abi from "./abis/erc20"
 
 export const ERC20_ABI = erc20_abi
 
+export const ARGENT_ACCOUTN_CLASS_HASH = "0x025ec026985a3bf9d0cc1fe17326b245dfdc3ff89b8fde106542a3ea56c5a918"
+export const OZ_ACCOUNT_CLASS_HASH = "0x058d97f7d76e78f44905cc30cb65b91ea49a4b908a76703c54197bca90f81773"
+
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
