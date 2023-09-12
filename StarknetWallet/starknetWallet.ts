@@ -5,6 +5,11 @@ import { ERC20_ABI, TOKENS } from "./constants";
 
 const FILE_PATH = "./Starknet/accounts.json"
 
+/**
+ * @name pre_compute
+ * @param classHash   // Needed to know our future account address. It can be a OZ / Argent type of account
+ * @returns           // Return the id of the account stored in out accounts.json file
+ */
 export const pre_compute = async( classHash: string ): Promise<number> => {
     let accounts: { [key: string | number]: any } = {}
     
@@ -18,7 +23,7 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
 
     const randomAddress = stark.randomAddress()  
     const starkKeyPair = ec.starkCurve.grindKey( randomAddress ) 
-    const starkKeyPub = ec.starkCurve.getStarkKey(starkKeyPair);
+    const starkKeyPub = ec.starkCurve.getStarkKey( starkKeyPair );
 
 
     const precalculatedAddress = hash.calculateContractAddressFromHash(
@@ -28,7 +33,7 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
         0
     );
 
-    console.log("Contract address ", precalculatedAddress)
+    console.log( "Contract address ", precalculatedAddress )
 
     const id = Object.keys( accounts ).length
     const timestamp = Date.now();
@@ -57,6 +62,11 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
     return id
 }
 
+/**
+ * @name deploy_wallet
+ * @param id            - Id of the generated wallet in ./accounts.json
+ * @param provider 
+ */
 export const deploy_wallet = async( id: number, provider: Provider ) => {
     
     let accounts: { [key: string | number]: any } = {}
