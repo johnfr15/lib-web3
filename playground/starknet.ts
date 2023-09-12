@@ -20,7 +20,7 @@ const main = async() => {
 
         //========== FULL DEPLOYEMENT ==============================================================================
 
-        // await StarknetWallet.deploy_wallet( signer, ARGENT_ACCOUTN_CLASS_HASH, network )
+        await StarknetWallet.deploy_wallet( signer, OZ_ACCOUNT_CLASS_HASH, network )
 
         //==========================================================================================================
 
@@ -28,17 +28,17 @@ const main = async() => {
 
 
         //========== PARTIAL DEPLOYEMENT ===========================================================================
-        
+    /*
         // STEP 1: Pre compute keys and address
-        //const id = await StarknetWallet.pre_compute( OZContractClassHash )
+        const id = await StarknetWallet.pre_compute( OZContractClassHash )
         
         // STEP 2: Fund the newly computed contract address
-        // const new_account = await StarknetWallet.get_account( 7, TESTNET_PROVIDER )
-        // await StarknetWallet.fund( new_account.address, '0.0001', signer, network )
+        const new_account = await StarknetWallet.get_account( id, TESTNET_PROVIDER )
+        await StarknetWallet.fund( new_account.address, '0.0001', signer, network )
         
         // STEP 3: Deploy the contract address 
-        await StarknetWallet.deploy_contract( 7, TESTNET_PROVIDER )
-        
+        await StarknetWallet.deploy_contract( id, TESTNET_PROVIDER )
+    */    
         //==========================================================================================================
         
     } catch (error: any) {
