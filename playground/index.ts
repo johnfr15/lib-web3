@@ -1,8 +1,8 @@
 import { Account } from "starknet"
 import { Wallet, ethers, BigNumberish } from "ethers"
-import Orbiter from "../Orbiter"
-import MySwap from "../MySwap"
-import l0kSwap from "../10kSwap"
+import Orbiter from "../Starknet/Orbiter"
+import MySwap from "../Starknet/MySwap"
+import l0kSwap from "../Starknet/10kSwap"
 import dotenv from "dotenv"
 
 

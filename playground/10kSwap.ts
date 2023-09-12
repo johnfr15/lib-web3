@@ -1,5 +1,5 @@
 import { Account } from "starknet"
-import l0kSwap from "../10kSwap"
+import l0kSwap from "../Starknet/10kSwap"
 import dotenv from "dotenv"
 
 dotenv.config()

@@ -1,5 +1,5 @@
 import { Account, Contract, Provider, constants } from "starknet"
-import StarknetWallet from "../StarknetWallet"
+import StarknetWallet from "../Starknet/StarknetWallet"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -20,7 +20,7 @@ const main = async() => {
 
         // STEP 2: Fund the newly computed contract address
         const new_account = await StarknetWallet.get_account( id, TESTNET_PROVIDER )
-        await StarknetWallet.fund( new_account.address, '0.001', starkSigner, network )
+        await StarknetWallet.fund( new_account.address, '0.0001', starkSigner, network )
 
         // STEP 3: Deploy the contract address 
         await StarknetWallet.deploy_wallet( id, TESTNET_PROVIDER )

@@ -1,5 +1,6 @@
-import { Account } from "starknet"
-import jediSwap from "../Starknet/jediSwap"
+import { ethers, Wallet } from "ethers"
+import Mute from "../ZkSync/Mute"
+
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -7,28 +8,28 @@ dotenv.config()
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = jediSwap.Constant
+    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = Mute.Constant
     
     try {
         // Set up
         const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
 
-        const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
+        const signer = new Wallet( process.env.PRIVATE_KEY!, TESTNET_PROVIDER )
 
-        console.log("stark account: ", starkSigner.address)
+        console.log("zk account: ", signer.address)
         console.log("")
 
 
 
-        await jediSwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
-            "0.0000001",
-            null,
-            network
-        )
+        // await Mute.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
+        //     "0.0000001",
+        //     null,
+        //     network
+        // )
 
-        // jediSwap.addLiquidity( 
+        // Mute.addLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     null,
@@ -38,7 +39,7 @@ const main = async() => {
         //     network
         // )
 
-        // jediSwap.withdrawLiquidity( 
+        // Mute.withdrawLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,

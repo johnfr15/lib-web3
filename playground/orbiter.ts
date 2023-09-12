@@ -1,9 +1,8 @@
 import { Account, Contract, Provider } from "starknet"
 import { Wallet, ethers } from "ethers"
-import Orbiter from "../Orbiter"
+import Orbiter from "../Starknet/Orbiter"
 import dotenv from "dotenv"
-import { Chains } from "../Orbiter/types"
-import { ERC20_STARK_ABI } from "../Orbiter/config/constant"
+import { Chains } from "../Starknet/Orbiter/types"
 
 
 dotenv.config()
