@@ -7,7 +7,6 @@
   "dependencies": {
     "ethers": "6.7",
     "l0k_swap-sdk": "https://github.com/10k-swap/10k_swap-sdk.git#main",
-    "muteswitch-sdk": "github:muteio/muteswitch-sdk",
     "starknet": "^5.19.6"
   },
   "devDependencies": {
