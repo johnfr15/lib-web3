@@ -171,7 +171,7 @@ export const withdrawLiquidity = async(
             // Get approve Tx
             const approve_calldata = await get_approve_calldata(signer, Uint256_to_string( shares_amount as Uint256, decimalsLp ), addrLp as string, network)
             const { compiled: approveTx } = approve_calldata
-            
+
             /*========================================= TX ================================================================================================*/
             console.log(`\nMulticall...`)
             console.log(`\t1) Approving ${ raw_widthdraw.contractAddress } to spend ${ Uint256_to_string( shares_amount as Uint256, decimalsLp )} ${ TICKER[ addrLp as string ] ?? "LP"}`)
