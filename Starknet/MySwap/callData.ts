@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { CallData, Contract, Account, uint256, Uint256 } from "starknet"
-import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, Uint256_to_bigNumber } from './utils';
+import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, string_to_bigint } from './utils';
 import { ERC20_ABI, TICKER } from "./constant";
 import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs, WidthdrawLiquidityCallData } from "./types";
 
@@ -56,19 +56,24 @@ export const get_swap_calldata = async(
 
         const balanceFrom = await get_balance( signer.address, path[0], signer )
 
+
         // Check if we have enough balance
         if ( balanceFrom.bigint < ethers.parseUnits( amountIn, balanceFrom.decimals ) )
             throw(`Error: Not enough balance for amount: ${ amountIn }. Balance is ${ balanceFrom.string }`)
 
-        let amount_in: Uint256 = string_to_Uint256( amountIn, balanceFrom.decimals )
-        let quote_: bigint     = quote( uint256.uint256ToBN( amount_in ), reserve_in, reserve_out )
 
-        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
-        let amount_out: Uint256     = get_amount_out( ethers.parseUnits(amountIn, balanceFrom.decimals), reserve_in, reserve_out )
+        let amount_in: Uint256      = string_to_Uint256( amountIn, balanceFrom.decimals )
+        let amount_out: Uint256     = get_amount_out( string_to_bigint( amountIn, balanceFrom.decimals ), reserve_in, reserve_out )
+
+        let quote_out: bigint       = quote( uint256.uint256ToBN( amount_in ), reserve_in, reserve_out )
+        let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_out * BigInt( (100 * 100) - slipage * 100 ) / BigInt( 100 * 100 ) )
+
         
+        // Check that price impact do not exceed allowed amount
         if ( uint256.uint256ToBN( amount_out_min ) > uint256.uint256ToBN(amount_out) )
-            throw new Error(`Price impact to high: ${ calc_price_impact( quote_, uint256.uint256ToBN( amount_out) ) }%`)
+            throw new Error(`Price impact to high: ${ calc_price_impact( quote_out, uint256.uint256ToBN( amount_out) ) }%`)
     
+
         const raw: SwapCallData = {
             contractAddress: MySwap.address,
             entrypoint: "swap",

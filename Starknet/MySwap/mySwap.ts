@@ -45,9 +45,9 @@ export const swap = async(
         const swap_calldata = await get_swap_calldata( signer, path, amountIn, network, slipage, amountOutMin )
         let { raw: raw_swap, compiled: swap_tx } = swap_calldata
 
-        // Get fees and enforce fees for a ETH swap
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, raw_swap ]);
-
+        
+        // Get fees and enforce fees for a ETH swap
         if ( path[0] === TOKENS[ network ].eth )
             raw_swap.calldata[2] = await enforce_fees( raw_swap.calldata[2] as Uint256, suggestedMaxFee, signer, network )
 
