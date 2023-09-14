@@ -68,7 +68,7 @@ export const get_swap_calldata = async(
         let quote_out: bigint       = quote( uint256.uint256ToBN( amount_in ), reserve_in, reserve_out )
         let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_out * BigInt( (100 * 100) - slipage * 100 ) / BigInt( 100 * 100 ) )
 
-        
+
         // Check that price impact do not exceed allowed amount
         if ( uint256.uint256ToBN( amount_out_min ) > uint256.uint256ToBN(amount_out) )
             throw new Error(`Price impact to high: ${ calc_price_impact( quote_out, uint256.uint256ToBN( amount_out) ) }%`)
@@ -103,8 +103,8 @@ export const get_add_liq_calldata = async(
     max: boolean,
     network: string,
     slipage: number,
-): Promise<{raw: AddLiquidityCallData, compiled: AddLiquidityCallData}> => {
-    let args: AddLiquidityArgs
+): Promise<{ addTx: AddLiquidityCallData, utils: {[key: string]: any} }> => {
+    let args: { args: AddLiquidityArgs, reserveA: bigint, reserveB: bigint }
 
     try {
 
@@ -127,22 +127,21 @@ export const get_add_liq_calldata = async(
             args = await fetch_add_liq(signer, pool_id, addr, amount, network, slipage)
         }
 
-        const raw: AddLiquidityCallData = {
+        const addTx: AddLiquidityCallData = {
             contractAddress: MySwap.address,
             entrypoint: "add_liquidity",
-            calldata: Object.values(args).filter((item) => (typeof item !== 'bigint')),
-            utils: {
-                decimalsA: args.token_a_decimals,
-                decimalsB: args.token_b_decimals,
-            }
+            calldata: Object.values( args.args ).filter((item) => (typeof item !== 'bigint')),
+            
         }
-        const compiled: AddLiquidityCallData = {
-            contractAddress: MySwap.address,
-            entrypoint: "add_liquidity",
-            calldata: CallData.compile( Object.values(args).filter((item) => (typeof item !== 'bigint')) ),
-        } 
 
-        return { raw, compiled }
+        const utils = {
+            reserveA: args.reserveA,
+            decimalsA: args.args.token_a_decimals,
+            reserveB: args.reserveB,
+            decimalsB: args.args.token_b_decimals,
+        }
+
+        return { addTx, utils }
 
     } catch (error: any) {
         

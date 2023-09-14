@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI, TOKENS } from './constant';
-import { get_share_rate, Uint256_to_string, get_balance, enforce_fees } from './utils';
+import { get_share_rate, Uint256_to_string, get_balance, enforce_fees, quote } from './utils';
 import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './callData';
 
 
@@ -97,37 +97,58 @@ export const addLiquidity = async(
     amountB: string | undefined | null,     
     max: boolean = false,                         
     network: 'TESTNET' | 'MAINNET' = "TESTNET",            
-    slipage: number = 995,
+    slipage: number = 2,
     maxFees: bigint | undefined = undefined,
 ): Promise<void> => {
+
+    addressA = addressA.toLowerCase()
+    addressB = addressB.toLowerCase()
     amountA = amountA ?? null
     amountB = amountB ?? null
 
     try {
 
         // Get add liquidity Tx
-        const add_liq_calldata = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
-        const { raw: raw_add, compiled: addTx } = add_liq_calldata
-        const [ token_a_addr, amount_a, amount_a_min, token_b_addr, amount_b ] = raw_add.calldata
+        const { addTx, utils } = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
+        const [ token_a_addr, amount_a, amount_a_min, token_b_addr, amount_b ] = addTx.calldata
+        const { reserveA, reserveB } = utils
 
         // Get approve token 'a' Tx
-        const approve_a_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_a as Uint256, raw_add.utils!.decimalsA as number), token_a_addr as string, network)
+        const approve_a_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_a as Uint256, utils!.decimalsA as number), token_a_addr as string, network)
         const { raw: raw_approve_a, compiled: approveATx } = approve_a_calldata
 
         // Get approve token 'b' Tx
-        const approve_b_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_b as Uint256, raw_add.utils!.decimalsB as number), token_b_addr as string, network)
+        const approve_b_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_b as Uint256, utils!.decimalsB as number), token_b_addr as string, network)
         const { raw: raw_approve_b, compiled: approveBTx } = approve_b_calldata
 
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
+
+
+        // Get fees and enforce fees for a ETH swap
+        if ( addTx.calldata[0] === TOKENS[ network ].eth )
+        {
+            addTx.calldata[1] = await enforce_fees( addTx.calldata[1] as Uint256, suggestedMaxFee, signer, network )
+            addTx.calldata[2] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[1] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
+            addTx.calldata[4] = uint256.bnToUint256( await quote( uint256.uint256ToBN( addTx.calldata[1] ), reserveA, reserveB ) )
+            addTx.calldata[5] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[4] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
+        }
+        if ( addTx.calldata[3] === TOKENS[ network ].eth )
+        {
+            addTx.calldata[4] = await enforce_fees( addTx.calldata[4] as Uint256, suggestedMaxFee, signer, network )
+            addTx.calldata[5] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[4] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
+            addTx.calldata[1] = uint256.bnToUint256( await quote( uint256.uint256ToBN( addTx.calldata[4] ), reserveB, reserveA ) )
+            addTx.calldata[2] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[1] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
+        }
+        
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ raw_approve_a.calldata[0] } to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, raw_add.utils!.decimalsA as number )} ${ TICKER[ token_a_addr as string ] }`)
-        console.log(`\t2) Approving ${ raw_approve_b.calldata[0] } to spend ${ Uint256_to_string( raw_approve_b.calldata[1] as Uint256, raw_add.utils!.decimalsB as number )} ${ TICKER[ token_b_addr as string ] }`)
+        console.log(`\t1) Approving ${ raw_approve_a.calldata[0] } to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, utils!.decimalsA as number )} ${ TICKER[ token_a_addr as string ] }`)
+        console.log(`\t2) Approving ${ raw_approve_b.calldata[0] } to spend ${ Uint256_to_string( raw_approve_b.calldata[1] as Uint256, utils!.decimalsB as number )} ${ TICKER[ token_b_addr as string ] }`)
         console.log(`\t3) Adding liquidity for pool ${ TICKER[ token_a_addr as string ] }/${ TICKER[ token_b_addr as string ] }`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
-        const multiCall           = await signer.execute([ approveATx, approveBTx, addTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        const multiCall    = await signer.execute([ approveATx, approveBTx, addTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const receipt: any = await signer.waitForTransaction(multiCall.transaction_hash);
         
         console.log(`\nTransaction valided !`)
         console.log("hash:            ", multiCall.transaction_hash)

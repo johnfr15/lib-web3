@@ -37,7 +37,6 @@ export type AddLiquidityCallData = {
     contractAddress: string,
     entrypoint: string,
     calldata: Calldata | Array<AddLiquidityArgs[keyof AddLiquidityArgs]>
-    utils?: { decimalsA: number, decimalsB: number }
 }
 
 export type WidthdrawLiquidityCallData = {

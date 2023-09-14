@@ -184,25 +184,24 @@ export const fetch_max_add_liq = async(
     addrB: string, 
     network: string, 
     slipage: number
-): Promise<AddLiquidityArgs> => {
+): Promise<{args: AddLiquidityArgs, reserveA: bigint, reserveB: bigint}> => {
     let args: AddLiquidityArgs;
     
     try {
         
-        const MySwap = resolve_network_contract(network, signer)
-        const { pool } = await MySwap.functions.get_pool( resolve_pool(addrA, addrB, network) )
+        const MySwap   = resolve_network_contract(network, signer)
+
+        const pool_id  = resolve_pool(addrA, addrB, network)
+        const { pool } = await MySwap.functions.get_pool( pool_id )
         const { tokenA, tokenB } = sortTokens(pool)
 
         const balanceA = await get_balance(signer.address, tokenA, signer)
         const balanceB = await get_balance(signer.address, tokenB, signer)
-        const token_a_reserves = uint256.uint256ToBN( pool.token_a_reserves )
-        const token_b_reserves = uint256.uint256ToBN( pool.token_b_reserves )
+        const token_a_reserves: bigint = uint256.uint256ToBN( pool.token_a_reserves )
+        const token_b_reserves: bigint = uint256.uint256ToBN( pool.token_b_reserves )
 
         // Cross product for both
         let quote_b: bigint = quote( balanceA.bigint, token_a_reserves, token_b_reserves)
-        let quote_a: bigint = quote( balanceB.bigint, token_b_reserves, token_a_reserves)
-
-
         const b_is_min_balance: boolean = quote_b > balanceB.bigint
 
         if ( b_is_min_balance )
@@ -234,10 +233,10 @@ export const fetch_max_add_liq = async(
             }
         }
         // calculate slipage tolerence
-        args.amount_a_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_a ) * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
-        args.amount_b_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_b ) * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
+        args.amount_a_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_a ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 ) )
+        args.amount_b_min = uint256.bnToUint256( uint256.uint256ToBN( args.amount_b ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 ) )
 
-        return args
+        return { args, reserveA: token_a_reserves, reserveB: token_b_reserves }
 
     } catch (error: any) {
 
@@ -254,7 +253,7 @@ export const fetch_add_liq = async(
     amount: string,
     network: string,
     slipage: number
-): Promise<AddLiquidityArgs> => {
+): Promise< { args: AddLiquidityArgs, reserveA: bigint, reserveB: bigint } > => {
     let args: AddLiquidityArgs;
     
     try {
@@ -285,14 +284,14 @@ export const fetch_add_liq = async(
                 token_a_addr: token_addr1_address,
                 token_a_decimals: balance1.decimals,
                 amount_a: uint256.bnToUint256( amount_1 ),
-                amount_a_min: uint256.bnToUint256( amount_1 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
+                amount_a_min: uint256.bnToUint256( amount_1 * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) ),
                 token_b_addr: token_addr2_address,
                 token_b_decimals: balance2.decimals,
                 amount_b: uint256.bnToUint256( amount_2 ),
-                amount_b_min: uint256.bnToUint256( amount_2 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
+                amount_b_min: uint256.bnToUint256( amount_2  * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) ),
             }
 
-        return args
+        return { args, reserveA: token_addr1_reserves, reserveB: token_addr2_reserves }
 
     } catch (error: any) {
 
