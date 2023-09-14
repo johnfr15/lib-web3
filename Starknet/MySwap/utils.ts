@@ -333,8 +333,8 @@ export const fetch_withdraw_liq = async(
         amount_min_b = amount_min_b * ethers.toBigInt(percent) / ethers.toBigInt(100)
 
         // Apply slipage tolerance
-        amount_min_a = amount_min_a * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
-        amount_min_b = amount_min_b * ethers.toBigInt(slipage) / ethers.toBigInt(1000)
+        amount_min_a = amount_min_a * BigInt(100 * 100 - ( slipage * 100 )) / BigInt( 100 * 100 )
+        amount_min_b = amount_min_b * BigInt(100 * 100 - ( slipage * 100 )) / BigInt( 100 * 100 )
 
         if ( amount_min_a === ethers.toBigInt(0) && amount_min_b !== ethers.toBigInt(0))
             amount_min_a = ethers.toBigInt(1)

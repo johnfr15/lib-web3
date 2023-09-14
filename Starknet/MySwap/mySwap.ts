@@ -183,10 +183,12 @@ export const withdrawLiquidity = async(
     tokenB: string, 
     percent: number = 100, 
     network: 'TESTNET' | 'MAINNET' = "TESTNET", 
-    slipage: number = 980,
+    slipage: number = 2,
     maxFees: bigint | undefined = undefined,
 ) => {
     percent = percent > 100 ? 100 : percent
+    tokenA = tokenA.toLowerCase()
+    tokenB = tokenB.toLowerCase()
 
     if ( percent <= 0 )
         throw new Error("Percent need to be set between 0 to 100")
