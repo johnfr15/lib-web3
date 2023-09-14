@@ -6,9 +6,9 @@ import { AddLiquidityArgs, WidthdrawLiquidityArgs } from "./types";
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
 
-    let amountInWithFee = amount_in * ethers.toBigInt( 1000 ); // No fees
-    let numerator = amountInWithFee*reserve_out;
-    let denominator = reserve_in * ethers.toBigInt( 1000 ) + amountInWithFee;
+    let amountInWithFee = amount_in * BigInt( 1000 ); // No fees
+    let numerator = amountInWithFee * reserve_out;
+    let denominator = reserve_in * BigInt( 1000 ) + amountInWithFee;
     amount_out = numerator / denominator;
 
     return uint256.bnToUint256( amount_out )
@@ -35,6 +35,7 @@ export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB
 export const quote = ( amountA: bigint, reserveA: bigint, reserveB: bigint ): bigint => {
 
     let amountB: bigint = amountA * reserveB / reserveA
+
     return amountB;
 }
 
@@ -375,6 +376,10 @@ export const string_to_Uint256 = (number: string, decimals: number = 18): Uint25
 {
     return uint256.bnToUint256( ethers.parseUnits( number, decimals ) )
 }
+export const string_to_bigint = (number: string, decimals: number = 18): bigint => 
+{
+    return ethers.parseUnits( number, decimals )
+}
 export const Uint256_to_bigNumber = (number: Uint256 ): bigint => 
 {
     return uint256.uint256ToBN( number )
@@ -395,14 +400,13 @@ export const float_to_Uint256 = (number: number, decimals: number = 18): Uint256
  */
 export const enforce_fees = async( u_amount: Uint256, fees: bigint, signer: Account, network: 'TESTNET' | 'MAINNET'): Promise<Uint256> => {
 
-    
     try {
         
         const amount = uint256.uint256ToBN( u_amount )
         const balance = await get_balance( signer.address, TOKENS[ network ].eth, signer )
     
         if ( balance.bigint < (amount + fees) )
-            return uint256.bnToUint256( amount - (fees * BigInt( 2 )) )
+            return uint256.bnToUint256( amount - (fees * BigInt( 4 )) ) // I let Enought fees to do 3 more transactions
         else
             return  uint256.bnToUint256( amount )
 
