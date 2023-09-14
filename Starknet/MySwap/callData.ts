@@ -53,13 +53,18 @@ export const get_swap_calldata = async(
         const pool_id: number   = resolve_pool( path[0], path[1], network )
 
         const { reserve_in, reserve_out } = await get_reserves( MySwap, path, pool_id )
-        
-        const { decimals: decimals_from } = await get_balance( signer.address, signer, path[0] )
 
-        let amount_in: Uint256      = string_to_Uint256( amountIn, decimals_from )
-        let quote_: bigint          = quote( Uint256_to_bigNumber( amount_in ), reserve_in, reserve_out )
+        const balanceFrom = await get_balance( signer.address, path[0], signer )
+
+        // Check if we have enough balance
+        if ( balanceFrom.bigint < ethers.parseUnits( amountIn, balanceFrom.decimals ) )
+            throw(`Error: Not enough balance for amount: ${ amountIn }. Balance is ${ balanceFrom.string }`)
+
+        let amount_in: Uint256 = string_to_Uint256( amountIn, balanceFrom.decimals )
+        let quote_: bigint     = quote( uint256.uint256ToBN( amount_in ), reserve_in, reserve_out )
+
         let amount_out_min: Uint256 = amountOutMin ?? uint256.bnToUint256( quote_ * ethers.toBigInt(slipage) / ethers.toBigInt(1000) )
-        let amount_out: Uint256     = get_amount_out( ethers.parseUnits(amountIn, decimals_from), reserve_in, reserve_out )
+        let amount_out: Uint256     = get_amount_out( ethers.parseUnits(amountIn, balanceFrom.decimals), reserve_in, reserve_out )
         
         if ( uint256.uint256ToBN( amount_out_min ) > uint256.uint256ToBN(amount_out) )
             throw new Error(`Price impact to high: ${ calc_price_impact( quote_, uint256.uint256ToBN( amount_out) ) }%`)

@@ -33,6 +33,7 @@ export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB
 
 
 export const quote = ( amountA: bigint, reserveA: bigint, reserveB: bigint ): bigint => {
+
     let amountB: bigint = amountA * reserveB / reserveA
     return amountB;
 }
@@ -58,25 +59,25 @@ export const resolve_network_contract = (network: string, provider?: Account): C
 }
 
 export const resolve_pool = (tokenA: string, tokenB: string, network: string): number => {
-    const value = BigInt(tokenA) + BigInt(tokenB)
+    const value = BigInt(tokenA.toLowerCase()) + BigInt(tokenB.toLowerCase())
 
     if (network === "TESTNET")
     {
-        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].eth) )     return Pool_testnet.USDC_ETH
-        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].eth) )      return Pool_testnet.DAI_ETH
-        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].dai) )     return Pool_testnet.USDC_DAI
-        if ( value === BigInt(TOKENS[ network ].wsteth) + BigInt(TOKENS[ network ].eth) )   return Pool_testnet.wstETH_ETH
+        if ( value === BigInt(TOKENS[ network ].usdc.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )     return Pool_testnet.USDC_ETH
+        if ( value === BigInt(TOKENS[ network ].dai.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )      return Pool_testnet.DAI_ETH
+        if ( value === BigInt(TOKENS[ network ].usdc.toLowerCase()) + BigInt(TOKENS[ network ].dai.toLowerCase()) )     return Pool_testnet.USDC_DAI
+        if ( value === BigInt(TOKENS[ network ].wsteth.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )   return Pool_testnet.wstETH_ETH
     }
     else if (network === "MAINNET")
     {
-        if ( value === BigInt(TOKENS[ network ].eth) + BigInt(TOKENS[ network ].usdc) )     return Pool_mainnet.ETH_USDC
-        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].eth) )      return Pool_mainnet.DAI_ETH
-        if ( value === BigInt(TOKENS[ network ].wbtc) + BigInt(TOKENS[ network ].usdc) )    return Pool_mainnet.wBTC_USDC
-        if ( value === BigInt(TOKENS[ network ].eth) + BigInt(TOKENS[ network ].usdt) )     return Pool_mainnet.ETH_USDT
-        if ( value === BigInt(TOKENS[ network ].usdc) + BigInt(TOKENS[ network ].usdt) )    return Pool_mainnet.USDC_USDT
-        if ( value === BigInt(TOKENS[ network ].dai) + BigInt(TOKENS[ network ].usdc) )     return Pool_mainnet.DAI_USDC
-        if ( value === BigInt(TOKENS[ network ].wsteth) + BigInt(TOKENS[ network ].eth) )   return Pool_mainnet.wstETH_ETH
-        if ( value === BigInt(TOKENS[ network ].lords) + BigInt(TOKENS[ network ].eth) )    return Pool_mainnet.LORDS_ETH
+        if ( value === BigInt(TOKENS[ network ].eth.toLowerCase()) + BigInt(TOKENS[ network ].usdc.toLowerCase()) )     return Pool_mainnet.ETH_USDC
+        if ( value === BigInt(TOKENS[ network ].dai.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )      return Pool_mainnet.DAI_ETH
+        if ( value === BigInt(TOKENS[ network ].wbtc.toLowerCase()) + BigInt(TOKENS[ network ].usdc.toLowerCase()) )    return Pool_mainnet.wBTC_USDC
+        if ( value === BigInt(TOKENS[ network ].eth.toLowerCase()) + BigInt(TOKENS[ network ].usdt.toLowerCase()) )     return Pool_mainnet.ETH_USDT
+        if ( value === BigInt(TOKENS[ network ].usdc.toLowerCase()) + BigInt(TOKENS[ network ].usdt.toLowerCase()) )    return Pool_mainnet.USDC_USDT
+        if ( value === BigInt(TOKENS[ network ].dai.toLowerCase()) + BigInt(TOKENS[ network ].usdc.toLowerCase()) )     return Pool_mainnet.DAI_USDC
+        if ( value === BigInt(TOKENS[ network ].wsteth.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )   return Pool_mainnet.wstETH_ETH
+        if ( value === BigInt(TOKENS[ network ].lords.toLowerCase()) + BigInt(TOKENS[ network ].eth.toLowerCase()) )    return Pool_mainnet.LORDS_ETH
     }
     else
         throw new Error(`Network ${network} is not supported.`)
@@ -93,16 +94,26 @@ export const get_share_rate = (a_init_liq: number, b_init_liq: number): Uint256 
 
 }
 
-export const get_balance = async(account_address: string, provider: ProviderInterface, token_address: string): Promise<{ balance: string, decimals: any }> => {
+export const get_balance = async(
+    account_address: string, 
+    token_address: string, 
+    signer: Account 
+): Promise<{ uint256: Uint256, bigint: bigint, string: string, decimals: number }> => {
     
     try {
 
-        const erc20 = new Contract(ERC20_ABI, token_address, provider);
+        const erc20 = new Contract(ERC20_ABI, token_address, signer);
+
         const { balance } = await erc20.balanceOf(account_address);
         const { decimals } = await erc20.decimals();
         let formated = ethers.formatUnits( uint256.uint256ToBN( balance ), decimals );
         
-        return { balance: formated, decimals: decimals};
+        return { 
+            uint256: balance,
+            bigint: uint256.uint256ToBN( balance ),
+            string: formated, 
+            decimals: decimals
+        };
 
     } catch (error: any) {
 
@@ -150,10 +161,10 @@ export const is_balance = async(signer: Account, addressA: string, addressB: str
 
     try {
 
-        const { balance: balanceA } = await get_balance(signer.address, signer, addressA)
-        const { balance: balanceB } = await get_balance(signer.address, signer, addressB)
+        const balanceA = await get_balance(signer.address, addressA, signer,)
+        const balanceB = await get_balance(signer.address, addressB, signer,)
 
-        if (balanceA === '0.0' || balanceB === '0.0')
+        if (balanceA.string === '0.0' || balanceB.string === '0.0')
             return 0;
         else
             return 1;
@@ -180,26 +191,30 @@ export const fetch_max_add_liq = async(
         const MySwap = resolve_network_contract(network, signer)
         const { pool } = await MySwap.functions.get_pool( resolve_pool(addrA, addrB, network) )
         const { tokenA, tokenB } = sortTokens(pool)
-        const { balance: balanceA, decimals: decimalsA } = await get_balance(signer.address, signer, tokenA)
-        const { balance: balanceB, decimals: decimalsB } = await get_balance(signer.address, signer, tokenB)
+
+        const balanceA = await get_balance(signer.address, tokenA, signer)
+        const balanceB = await get_balance(signer.address, tokenB, signer)
         const token_a_reserves = uint256.uint256ToBN( pool.token_a_reserves )
         const token_b_reserves = uint256.uint256ToBN( pool.token_b_reserves )
 
         // Cross product for both
-        let rate_a = ethers.parseUnits(balanceA, decimalsA ) * ethers.toBigInt(100) / token_a_reserves
-        let rate_b = ethers.parseUnits(balanceB, decimalsB ) * ethers.toBigInt(100) / token_b_reserves
+        let quote_b: bigint = quote( balanceA.bigint, token_a_reserves, token_b_reserves)
+        let quote_a: bigint = quote( balanceB.bigint, token_b_reserves, token_a_reserves)
 
-        if ( rate_a > rate_b)
+
+        const b_is_min_balance: boolean = quote_b > balanceB.bigint
+
+        if ( b_is_min_balance )
         {
             // max amount will be tokenB
             args = {
                 token_a_addr: tokenA,
-                token_a_decimals: decimalsA,
-                amount_a: uint256.bnToUint256( await quote(ethers.parseUnits( balanceB, decimalsB ), token_b_reserves, token_a_reserves) ),
+                token_a_decimals: balanceA.decimals,
+                amount_a: uint256.bnToUint256( await quote( balanceB.bigint, token_b_reserves, token_a_reserves ) ),
                 amount_a_min: uint256.bnToUint256( ethers.toBigInt(0) ),
                 token_b_addr: tokenB,
-                token_b_decimals: decimalsB,
-                amount_b: uint256.bnToUint256( ethers.parseUnits( balanceB, decimalsB ) ),
+                token_b_decimals: balanceB.decimals,
+                amount_b: uint256.bnToUint256( balanceB.bigint ),
                 amount_b_min: uint256.bnToUint256( ethers.toBigInt(0) ),
             }
         }
@@ -208,12 +223,12 @@ export const fetch_max_add_liq = async(
             // max amount will be tokenA
             args = {
                 token_a_addr: tokenA,
-                token_a_decimals: decimalsA,
-                amount_a: uint256.bnToUint256( ethers.parseUnits( balanceA, decimalsA ) ),
+                token_a_decimals: balanceA.decimals,
+                amount_a: uint256.bnToUint256( balanceA.bigint ),
                 amount_a_min: uint256.bnToUint256( ethers.toBigInt(0) ),
                 token_b_addr: tokenB,
-                token_b_decimals: decimalsB,
-                amount_b: uint256.bnToUint256( await quote(ethers.parseUnits( balanceA, decimalsA ), token_a_reserves, token_b_reserves) ),
+                token_b_decimals: balanceB.decimals,
+                amount_b: uint256.bnToUint256( await quote( balanceA.bigint, token_a_reserves, token_b_reserves) ),
                 amount_b_min: uint256.bnToUint256( ethers.toBigInt(0) ),
             }
         }
@@ -253,25 +268,25 @@ export const fetch_add_liq = async(
         const token_addr1_reserves = addr === "0x0" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
         const token_addr2_reserves = addr !== "0x0" + pool.token_a_address.toString(16) ? token_a_reserves : token_b_reserves
 
-        const { balance: balance_addr1, decimals: decimals_addr1 } = await get_balance(signer.address, signer, token_addr1_address)
-        const { balance: balance_addr2, decimals: decimals_addr2 } = await get_balance(signer.address, signer, token_addr2_address)
+        const balance1 = await get_balance(signer.address, token_addr1_address, signer)
+        const balance2 = await get_balance(signer.address, token_addr2_address, signer)
         
-        const amount_1 = ethers.parseUnits( amount, decimals_addr1 )
+        const amount_1 = ethers.parseUnits( amount, balance1.decimals )
         const amount_2 = await quote(amount_1, token_addr1_reserves, token_addr2_reserves)
 
-        if ( amount_1 > ethers.parseUnits( balance_addr1, decimals_addr1))
+        if ( amount_1 > balance1.bigint )
             throw new Error(`${TICKER[token_addr1_address]}: Unsufficient balance.`)
-        if ( amount_2 > ethers.parseUnits( balance_addr2, decimals_addr2))
-            throw new Error(`${TICKER[token_addr2_address]}: Unsufficient balance.\nNeeded ${parseFloat( ethers.formatUnits(amount_2, decimals_addr2))} but got ${parseFloat(balance_addr2)}`)
+        if ( amount_2 > balance2.bigint )
+            throw new Error(`${TICKER[token_addr2_address]}: Unsufficient balance.\nNeeded ${parseFloat( ethers.formatUnits(amount_2, balance2.decimals))} but got ${parseFloat(balance2.string)}`)
 
             // max amount will be tokenB
             args = {
                 token_a_addr: token_addr1_address,
-                token_a_decimals: decimals_addr1,
+                token_a_decimals: balance1.decimals,
                 amount_a: uint256.bnToUint256( amount_1 ),
                 amount_a_min: uint256.bnToUint256( amount_1 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
                 token_b_addr: token_addr2_address,
-                token_b_decimals: decimals_addr2,
+                token_b_decimals: balance2.decimals,
                 amount_b: uint256.bnToUint256( amount_2 ),
                 amount_b_min: uint256.bnToUint256( amount_2 * ethers.toBigInt(slipage) / ethers.toBigInt(1000) ),
             }
@@ -298,9 +313,9 @@ export const fetch_withdraw_liq = async(
         const { pool } = await MySwap.functions.get_pool( pool_id )
         const lp_address = "0x" + pool.liq_token.toString(16)
 
-        const { decimals: a_decimals } = await get_balance(signer.address, signer, "0x" + pool.token_a_address.toString(16))
-        const { decimals: b_decimals } = await get_balance(signer.address, signer, "0x" + pool.token_b_address.toString(16))
-        const { decimals: lp_decimals } = await get_balance(signer.address, signer, lp_address)
+        const { decimals: a_decimals } = await get_balance(signer.address, "0x" + pool.token_a_address.toString(16), signer)
+        const { decimals: b_decimals } = await get_balance(signer.address, "0x" + pool.token_b_address.toString(16), signer)
+        const { decimals: lp_decimals } = await get_balance(signer.address, lp_address, signer)
         let { shares: lp_balance } = await MySwap.functions.get_lp_balance( pool_id, signer.address )
         let { total_shares: lp_total } = await MySwap.functions.get_total_shares( pool_id )
         
@@ -308,7 +323,7 @@ export const fetch_withdraw_liq = async(
         let amount_b_token = uint256.uint256ToBN( pool.token_b_reserves ) 
         lp_balance = uint256.uint256ToBN( lp_balance )
         lp_total = uint256.uint256ToBN( lp_total )
-        
+
         // Calcul our tokens in pool
         let amount_min_a: bigint = amount_a_token * lp_balance / lp_total
         let amount_min_b: bigint = amount_b_token * lp_balance / lp_total
@@ -371,4 +386,29 @@ export const bn_to_string = (number: bigint, decimals: number = 18): string =>
 export const float_to_Uint256 = (number: number, decimals: number = 18): Uint256 => 
 {
     return uint256.bnToUint256( ethers.parseUnits( number.toString(), decimals ) )
+}
+
+/**
+ * @name enforce_fees
+ * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
+ *      of this transaction
+ */
+export const enforce_fees = async( u_amount: Uint256, fees: bigint, signer: Account, network: 'TESTNET' | 'MAINNET'): Promise<Uint256> => {
+
+    
+    try {
+        
+        const amount = uint256.uint256ToBN( u_amount )
+        const balance = await get_balance( signer.address, TOKENS[ network ].eth, signer )
+    
+        if ( balance.bigint < (amount + fees) )
+            return uint256.bnToUint256( amount - (fees * BigInt( 2 )) )
+        else
+            return  uint256.bnToUint256( amount )
+
+    } catch (error) {
+        
+        throw( error )
+
+    }
 }
