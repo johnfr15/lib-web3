@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
-import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI } from './constant';
-import { get_share_rate, Uint256_to_string, get_balance } from './utils';
+import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI, TOKENS } from './constant';
+import { get_share_rate, Uint256_to_string, get_balance, enforce_fees } from './utils';
 import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './callData';
 
 
@@ -16,7 +16,7 @@ import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widt
  * @param amountIn      // The amount that will enter in the pool
  * @param network       // (optional) 'testnet' is the default one
  * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
- * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
+ * @param slipage       // (optional) protection against price movement or to high price impact default is 2%
  * @param amountOutMin  // (optional) The minimum output we are ready you cn specify if you prefere using an oracle instead of the pool
  */
 export const swap = async(
@@ -25,30 +25,39 @@ export const swap = async(
     amountIn: string,
     network: 'TESTNET' | 'MAINNET' = "TESTNET",            
     maxFees: bigint | undefined = undefined,
-    slipage: number = 995,
+    slipage: number = 2,   
     amountOutMin?: Uint256 | undefined | null,
 ) => {
 
+    path[0] = path[0].toLowerCase()
+    path[1] = path[1].toLowerCase()
+
     try {
-        console.log( path )
-        const { decimals: decimals_to }   = await get_balance( signer.address, signer, path[1] )
-        const { decimals: decimals_from } = await get_balance( signer.address, signer, path[0] )
+        
+        const { decimals: decimals_to }   = await get_balance( signer.address, path[1], signer )
+        const { decimals: decimals_from } = await get_balance( signer.address, path[0], signer )
 
         // Get approve Tx
         const approve_calldata = await get_approve_calldata( signer, amountIn, path[0], network )
-        const { raw: raw_approve, compiled: approve_tx } = approve_calldata
+        let { raw: raw_approve, compiled: approve_tx } = approve_calldata
         
         // Get swap Tx
         const swap_calldata = await get_swap_calldata( signer, path, amountIn, network, slipage, amountOutMin )
-        const { raw: raw_swap, compiled: swap_tx } = swap_calldata
+        let { raw: raw_swap, compiled: swap_tx } = swap_calldata
+
+        // Get fees and enforce fees for a ETH swap
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, raw_swap ]);
+
+        if ( path[0] === TOKENS[ network ].eth )
+            raw_swap.calldata[2] = await enforce_fees( raw_swap.calldata[2] as Uint256, suggestedMaxFee, signer, network )
+
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ raw_approve.calldata[0] } to spend ${ Uint256_to_string( raw_approve.calldata[1] as Uint256, decimals_from )} ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ amountIn } ${ TICKER[ path[0] ] } for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${ TICKER[ path[1] ] }`)
+        console.log(`\t2) Swapping ${ Uint256_to_string( raw_swap.calldata[2] as Uint256 ) } ${ TICKER[ path[0] ] } for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${ TICKER[ path[1] ] }`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, swap_tx ]);
-        const multiCall           = await signer.execute([ approve_tx, swap_tx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const multiCall           = await signer.execute([ approve_tx, raw_swap ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
         const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
