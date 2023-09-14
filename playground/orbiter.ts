@@ -1,5 +1,5 @@
 import { Account, Contract, Provider } from "starknet"
-import { Wallet, ethers } from "ethers"
+import { Wallet, ethers, JsonRpcProvider } from "ethers"
 import Orbiter from "../Starknet/Orbiter"
 import dotenv from "dotenv"
 import { Chains } from "../Starknet/Orbiter/types"
@@ -28,15 +28,23 @@ const main = async() => {
         const toChain: Chains = "polygon"
         const network: 'TESTNET' | 'MAINNET' = "MAINNET"
 
-        await Orbiter.swap({
-            evmSigner,
-            starkSigner,
-            token: TOKENS[ network ][ fromChain ].eth,
-            fromChain: fromChain,
-            toChain: toChain,
-            amount: "0.008",
-            network
-        })
+        console.log(evmSigner.address)
+
+        const provider = new JsonRpcProvider( "https://goerli-rollup.arbitrum.io/rpc" )
+        evmSigner.connect( provider )
+        const eth_balance = await provider.getBalance( evmSigner.address )
+
+        console.log( eth_balance )
+
+        // await Orbiter.swap({
+        //     evmSigner,
+        //     starkSigner,
+        //     token: TOKENS[ network ][ fromChain ].eth,
+        //     fromChain: fromChain,
+        //     toChain: toChain,
+        //     amount: "0.008",
+        //     network
+        // })
 
         // await Orbiter.swap({
         //     evmSigner,
