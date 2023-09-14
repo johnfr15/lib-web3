@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { Network, ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKENS, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
 import { AddLiquidityArgs, WidthdrawLiquidityArgs } from "./types";
@@ -319,10 +319,13 @@ export const fetch_withdraw_liq = async(
         let { shares: lp_balance } = await MySwap.functions.get_lp_balance( pool_id, signer.address )
         let { total_shares: lp_total } = await MySwap.functions.get_total_shares( pool_id )
         
-        let amount_a_token = uint256.uint256ToBN( pool.token_a_reserves ) 
-        let amount_b_token = uint256.uint256ToBN( pool.token_b_reserves ) 
+        let amount_a_token: bigint = uint256.uint256ToBN( pool.token_a_reserves ) 
+        let amount_b_token: bigint = uint256.uint256ToBN( pool.token_b_reserves ) 
         lp_balance = uint256.uint256ToBN( lp_balance )
         lp_total = uint256.uint256ToBN( lp_total )
+
+        if ( lp_balance === BigInt( 0 ))
+            throw(`Error: You don't have any token in this pool.`)
 
         // Calcul our tokens in pool
         let amount_min_a: bigint = amount_a_token * lp_balance / lp_total
@@ -358,7 +361,7 @@ export const fetch_withdraw_liq = async(
         
     } catch (error: any) {
 
-        throw new Error(error)
+        throw( error )
 
     }
 }
