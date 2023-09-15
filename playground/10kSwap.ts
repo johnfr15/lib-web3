@@ -12,39 +12,38 @@ const main = async() => {
     try {
         // Set up
         const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
-        const provider = network === 'TESTNET' ? TESTNET_PROVIDER : MAINNET_PROVIDER
 
-        const starkSigner = new Account( provider,  process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
+        const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
 
         console.log("stark account: ", starkSigner.address)
-        console.log("")
+        await l0kSwap.Log.log_balances( starkSigner, network )
 
 
         // await l0kSwap.swap(
         //     starkSigner,
-        //     [ TOKENS[ network ].dai, TOKENS[ network ].eth ],
-        //     "0.01",
+        //     [ TOKENS[ network ].eth, TOKENS[ network ].usdc ],
+        //     "0.004312009164397568",
         //     null,
         //     network
         // )
 
-        // l0kSwap.addLiquidity( 
-        //     starkSigner,
-        //     TOKENS[ network ].eth,
-        //     null,
-        //     TOKENS[ network ].dai,
-        //     "0.01",
-        //     false,
-        //     network
-        // )
+        await l0kSwap.addLiquidity( 
+            starkSigner,
+            TOKENS[ network ].eth,
+            '0.000778761998134625',
+            TOKENS[ network ].usdc,
+            null,
+            false,
+            network
+        )
 
-        // l0kSwap.withdrawLiquidity( 
-        //     starkSigner,
-        //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].dai,
-        //     100,
-        //     network      
-        // )
+        await l0kSwap.withdrawLiquidity( 
+            starkSigner,
+            TOKENS[ network ].eth,
+            TOKENS[ network ].usdc,
+            100,
+            network      
+        )
 
 
     } catch (error: any) {

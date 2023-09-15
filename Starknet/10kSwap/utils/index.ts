@@ -1,7 +1,9 @@
 import { ethers } from "ethers"
 import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI } from "../constant"
-import { JSBI, StarknetChainId, Token, Pair, Fraction, Price, BigintIsh } from "l0k_swap-sdk"
+import { ERC20_ABI, TOKENS } from "../constant"
+import { JSBI, StarknetChainId, Token, Pair, Trade, TradeType, Percent, TokenAmount } from "l0k_swap-sdk"
+import { get_add_liq_calldata } from "../calldata/addLiqCalldata"
+import { SwapCallData, AddLiquidityTx } from "../types"
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
@@ -91,4 +93,80 @@ export const jsbi_to_string = (number: JSBI, decimals: number = 18): string =>
 export const jsbi_to_Uint256 = (number: JSBI, decimals: number = 18): Uint256 => 
 {
     return uint256.bnToUint256( BigInt( number.toString() ) )
+}
+
+/**
+ * @name enforce_fees
+ * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
+ *      of this transaction
+ */
+export const enforce_swap_fees = async( swapTx: SwapCallData, fees: bigint,  signer: Account, network: 'TESTNET' | 'MAINNET'): Promise<any> => {
+    const { tradeType } = swapTx.utils
+    try {
+        
+        const amountIn: Uint256 = tradeType === 0 ? swapTx.calldata[0] as Uint256 : swapTx.calldata[1] as Uint256
+        let amount: bigint = uint256.uint256ToBN( amountIn )
+
+        const balance = await get_balance( signer.address, TOKENS[ network ].eth, signer )
+        
+        if ( balance.bigint < (amount + fees) && tradeType === 0 )
+        {
+            if ( tradeType === 0 )
+            {
+                amount =  amount - (fees * BigInt( 4 ))
+                let trade = new Trade( swapTx.utils.route, new TokenAmount( swapTx.utils.trade.inputAmount.token, amount ), TradeType.EXACT_INPUT )
+                let slipage = new Percent( BigInt( swapTx.utils.slipage * 100 ), BigInt( 100 * 100 ) )
+
+                swapTx.calldata[0] = uint256.bnToUint256( amount )
+                swapTx.calldata[1] = jsbi_to_Uint256( trade.minimumAmountOut( slipage ).raw )
+
+                return swapTx
+            }
+
+            swapTx.calldata[1] = uint256.bnToUint256( amount - (fees * BigInt( 2 )) )
+            return swapTx
+        }
+        else
+            return swapTx
+
+    } catch (error) {
+        
+        throw( error )
+
+    }
+}
+
+/**
+ * @name enforce_fees
+ * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
+ *      of this transaction
+ */
+export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key: string]: any }, fees: bigint ): Promise<AddLiquidityTx> => {
+
+    const [ tokenA, tokenB, amountADesired, amountBDesired ] = addTx.calldata
+    const { signer, network, slipage, deadline } = utils
+
+    const eth_address: string    = TOKENS[ utils.network ].eth === tokenA ? tokenA as string : tokenB as string
+    const eth_amount: Uint256    = TOKENS[ utils.network ].eth === tokenA ? amountADesired as Uint256 : amountBDesired as Uint256
+    const tokenB_address: string = TOKENS[ utils.network ].eth !== tokenA ? tokenA as string : tokenB as string
+
+    try {
+        
+        const amount: bigint = uint256.uint256ToBN( eth_amount )
+        const balance = await get_balance( signer.address, TOKENS[ network ].eth, signer )
+    
+        if ( balance.bigint < (amount + fees) )
+        {
+            const new_amount = ethers.formatEther( amount - (fees * BigInt( 4 )))
+            const { addTx: addTx2 } = await get_add_liq_calldata( signer, eth_address, new_amount, tokenB_address, null, false, network, slipage, deadline )
+            return addTx2
+        }
+        else
+            return  addTx
+
+    } catch (error) {
+        
+        throw( error )
+
+    }
 }

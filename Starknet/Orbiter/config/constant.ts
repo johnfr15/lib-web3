@@ -1,10 +1,10 @@
-import { Provider, constants } from "starknet"
+import { Provider, constants, RpcProvider } from "starknet"
 import { erc20_sol_abi } from "./abis/erc20Sol"
 import { erc20_stark_abi } from "./abis/erc20Stark"
 import { cross_address_abi } from "./abis/crossAddress"
 
 export const STARKNET_TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet "TESTNET" 1
-export const STARKNET_MAINNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_MAIN } }) // for starknet "MAINNET"
+export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
 export const ERC20_SOL_ABI = erc20_sol_abi
 export const ERC20_STARK_ABI = erc20_stark_abi

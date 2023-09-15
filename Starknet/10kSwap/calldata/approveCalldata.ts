@@ -15,7 +15,8 @@ export const get_approve_calldata = async(
         const l0k_router_address = ROUTER_ADDRESSES[ network ]
         const erc20 = new Contract( ERC20_ABI, tokenAddress, signer );
         const { decimals } = await erc20.decimals()
-        const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * BigInt( 12 ) / BigInt( 10 ) )
+
+        const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * BigInt( 10 ) / BigInt( 8 ) )
 
 
         const calldata: ApproveCallData = {

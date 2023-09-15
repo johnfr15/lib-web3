@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { Account, Contract, Uint256, uint256 } from "starknet"
 import { TICKER, l0K_ROUTER_ABI, ROUTER_ADDRESSES } from "../constant";
 import { AddLiquidityCallData, AddLiquidityTx } from "../types";
-import { get_token, sort_tokens, get_balance, sort_tokens_2 } from "../utils";
+import { get_token, sort_tokens, get_balance, sort_tokens_2, Uint256_to_string } from "../utils";
 import { Fetcher, Fraction, Pair, Token } from "l0k_swap-sdk";
 
 
@@ -40,8 +40,16 @@ export const get_add_liq_calldata = async(
         }
 
         const add_liq_callData: AddLiquidityCallData = {
-            addLiquidityTx: add_liq_tx,
-            utils: { tokenA: token_a, tokenB: token_b, pool: pool }
+            addTx: add_liq_tx,
+            utils: { 
+                signer: signer, 
+                network: network,
+                slipage: slipage,
+                deadline: deadline,
+                tokenA: token0, 
+                tokenB: token1, 
+                pool: pool 
+            }
         } 
 
         return add_liq_callData
@@ -70,11 +78,12 @@ const get_max_liq = async(
         const balanceA = await get_balance( signer.address, tokenA.address, signer )
         const balanceB = await get_balance( signer.address, tokenB.address, signer )
 
-        const reserve_a: bigint = ethers.parseUnits( pool.reserveOf( tokenA ).toSignificant(2), tokenB.decimals )
+        const reserve_a: bigint = ethers.parseUnits( pool.reserveOf( tokenA ).toSignificant(2), tokenA.decimals )
         const reserve_b: bigint = ethers.parseUnits( pool.reserveOf( tokenB ).toSignificant(2), tokenB.decimals )
 
         const { amountB: quote_a } = await router.functions.quote( balanceB.uint256, reserve_b, reserve_a )
         const { amountB: quote_b } = await router.functions.quote( balanceA.uint256, reserve_a, reserve_b )
+
 
         /**
          * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
@@ -82,10 +91,11 @@ const get_max_liq = async(
          */
         const b_is_min_balance: boolean = uint256.uint256ToBN( quote_b ) > balanceB.bigint
         
-        let balance_a: bigint     = b_is_min_balance ? uint256.uint256ToBN( quote_a ) : balanceA.bigint;
-        let balance_b: bigint     = b_is_min_balance ? balanceB.bigint : uint256.uint256ToBN( quote_b );
-        let balance_a_min: bigint = balance_a * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
-        let balance_b_min: bigint = balance_b * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        let amount_a: bigint     = b_is_min_balance ? uint256.uint256ToBN( quote_a ) : balanceA.bigint;
+        let amount_b: bigint     = b_is_min_balance ? balanceB.bigint : uint256.uint256ToBN( quote_b );
+        let balance_a_min: bigint = amount_a * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        let balance_b_min: bigint = amount_b * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+
 
         return {
             contractAddress: router.address,
@@ -93,8 +103,8 @@ const get_max_liq = async(
             calldata: [
                 tokenA.address,
                 tokenB.address,
-                uint256.bnToUint256( balance_a ),
-                uint256.bnToUint256( balance_b ),
+                uint256.bnToUint256( amount_a ),
+                uint256.bnToUint256( amount_b ),
                 uint256.bnToUint256( balance_a_min ),
                 uint256.bnToUint256( balance_b_min ),
                 signer.address,
@@ -122,9 +132,9 @@ const get_liq = async(
     try {
         
         const router = new Contract( l0K_ROUTER_ABI, ROUTER_ADDRESSES[ network ], signer )
-        
-        const token_1: Token = pool.token0.address === addr ? pool.token0 : pool.token1
-        const token_2: Token = pool.token0.address !== addr ? pool.token0 : pool.token1
+
+        const token_1: Token = BigInt( pool.token0.address ) === BigInt( addr ) ? pool.token0 : pool.token1
+        const token_2: Token = BigInt( pool.token0.address ) !== BigInt( addr ) ? pool.token0 : pool.token1
 
         const balance_1 = await get_balance(signer.address, token_1.address, signer)
         const balance_2 = await get_balance(signer.address, token_2.address, signer)
@@ -135,7 +145,7 @@ const get_liq = async(
         const amount_1: bigint = ethers.parseUnits( amount, token_1.decimals )
         const { amountB } =  await router.functions.quote( uint256.bnToUint256( amount_1 ), reserve_1, reserve_2 )
         const amount_2: bigint = uint256.uint256ToBN( amountB )
-        
+
         const amount_1_min: bigint = amount_1 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
@@ -144,16 +154,18 @@ const get_liq = async(
         if ( amount_2 > balance_2.bigint )
             throw new Error(`${ TICKER[ token_2.address ] }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
+        const { token0: tokenA, token1: tokenB } = sort_tokens_2( token_1, token_2 )
+            
         return {
             contractAddress: router.address,
             entrypoint: "addLiquidity",
             calldata: [
-                token_1.address,
-                token_2.address,
-                uint256.bnToUint256( amount_1 ),
-                uint256.bnToUint256( amount_2 ),
-                uint256.bnToUint256( amount_1_min ),
-                uint256.bnToUint256( amount_2_min ),
+                BigInt( tokenA.address ) === BigInt( token_1.address ) ? token_1.address : token_2.address,
+                BigInt( tokenB.address ) === BigInt( token_1.address ) ? token_1.address : token_2.address,
+                uint256.bnToUint256( BigInt( tokenA.address ) === BigInt( token_1.address ) ? amount_1 : amount_2 ),
+                uint256.bnToUint256( BigInt( tokenB.address ) === BigInt( token_1.address ) ? amount_1 : amount_2 ),
+                uint256.bnToUint256( BigInt( tokenA.address ) === BigInt( token_1.address ) ? amount_1_min : amount_2_min ),
+                uint256.bnToUint256( BigInt( tokenB.address ) === BigInt( token_1.address ) ? amount_1_min : amount_2_min ),
                 signer.address,
                 deadline
             ]

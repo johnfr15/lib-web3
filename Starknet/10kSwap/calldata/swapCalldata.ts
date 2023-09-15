@@ -2,8 +2,8 @@ import { ethers } from "ethers";
 import { Account, CallData, Contract, uint256 } from "starknet"
 import { TradeType, TokenAmount, Fetcher, Route, Trade, Percent, Pair, Token, JSBI } from "l0k_swap-sdk";
 import { SwapCallData } from "../types";
-import { get_token, jsbi_to_Uint256 } from "../utils";
-import { ROUTER_ADDRESSES, l0K_ROUTER_ABI } from "../constant";
+import { get_balance, get_token, jsbi_to_Uint256, jsbi_to_string } from "../utils";
+import { ROUTER_ADDRESSES, l0K_ROUTER_ABI, TICKER } from "../constant";
 
 
 
@@ -25,6 +25,7 @@ export const get_swap_calldata = async(
 
         const l0k_router = new Contract( l0K_ROUTER_ABI, ROUTER_ADDRESSES[ network ], signer )
 
+        const balanceFrom = await get_balance( signer.address, path[0], signer )
         const token_in: Token = await get_token( path[0], network, signer )
         const token_out: Token = await get_token( path[1], network, signer )
 
@@ -40,24 +41,35 @@ export const get_swap_calldata = async(
         const trade = new Trade( route, amount_in ?? amount_out! , amount_in ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT )
 
         if ( parseFloat( trade.priceImpact.toSignificant(2) ) > priceImpact )
-            throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact.toSignificant(2) }`)
+            throw(`Price impact tolerance exceeded: ${ trade.priceImpact.toSignificant(2) }`)
 
         if ( trade.tradeType === 0 ) amount_out_min = trade.minimumAmountOut( new Percent( BigInt( slipage * 100 ), BigInt( 100 * 100 ) ) ).raw
-        if ( trade.tradeType === 1 ) amount_in_max  = trade.maximumAmountIn( new Percent( BigInt( 100 * 100 ), BigInt( slipage * 100 ) ) ).raw
+        if ( trade.tradeType === 1 ) amount_in_max  = trade.maximumAmountIn( new Percent( BigInt( slipage * 100 ), BigInt( 100 * 100 ) ) ).raw
 
         deadline = deadline ? deadline : Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
+
+
+        if ( amount_in && balanceFrom.bigint < BigInt( amount_in.raw.toString() ) )
+            throw(`Error: Not enough balance for ${ TICKER[ path[0] ] }. Balance is ${ balanceFrom.string } but expect ${ amount_in.toSignificant( Number( balanceFrom.decimals ) ) }`)
+        if ( amount_in_max && balanceFrom.bigint < BigInt( amount_in_max.toString() ) )
+            throw(`Error: Not enough balance for ${ TICKER[ path[0] ] }. Balance is ${ balanceFrom.string } but expect ${ ethers.formatUnits( amount_in_max.toString(), balanceFrom.decimals) }`)
+
     
         const calldata: SwapCallData = {
             contractAddress: l0k_router.address,
             entrypoint: trade.tradeType ? "swapTokensForExactTokens" : "swapExactTokensForTokens",
             calldata: [
-                amount_in_max ? jsbi_to_Uint256( amount_in_max, token_in.decimals ) : jsbi_to_Uint256( amount_in!.raw, token_in.decimals ),
-                amount_out_min ? jsbi_to_Uint256( amount_out_min, token_out.decimals ) : jsbi_to_Uint256( amount_out!.raw, token_out.decimals ), 
+                trade.tradeType ? jsbi_to_Uint256( amount_out!.raw, token_out.decimals ) : jsbi_to_Uint256( amount_in!.raw, token_in.decimals ),
+                trade.tradeType ? jsbi_to_Uint256( amount_in_max!, token_in.decimals )   : jsbi_to_Uint256( amount_out_min!, token_out.decimals ), 
                 path,
                 signer.address,
                 deadline,
             ],
             utils: {
+                trade: trade,
+                route: route,
+                pool: pool,
+                slipage: slipage,
                 priceImpact: trade.priceImpact.toSignificant(2),
                 tradeType: trade.tradeType
             }

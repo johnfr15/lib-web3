@@ -44,7 +44,7 @@ export type AddLiquidityTx = {
 }
 
 export type AddLiquidityCallData = {
-    addLiquidityTx: AddLiquidityTx,
+    addTx: AddLiquidityTx,
     utils: { [key: string]: any }
 }
 

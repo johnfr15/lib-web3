@@ -1,11 +1,13 @@
 import { ethers } from 'ethers';
-import { Account, Uint256 } from 'starknet';
+import { Account, Uint, Uint256 } from 'starknet';
 import { ROUTER_ADDRESSES, TICKER } from './constant';
-import { Uint256_to_string, get_balance, is_balance } from './utils';
+import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees, enforce_add_liq_fees } from './utils';
+import { TradeType } from "l0k_swap-sdk"
 import { get_swap_calldata } from './calldata/swapCalldata';
 import { get_approve_calldata } from './calldata/approveCalldata';
 import { get_add_liq_calldata } from './calldata/addLiqCalldata';
 import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
+import { TOKENS } from './constant';
 
 
 
@@ -33,6 +35,9 @@ export const swap = async(
     deadline?: number,
 ) => {
 
+    path[0] = path[0].toLowerCase()
+    path[1] = path[1].toLowerCase()
+
     try {
 
         if ( slipage < 0.01 || slipage > 100 )
@@ -45,24 +50,32 @@ export const swap = async(
         const { decimals: decimals_to } = await get_balance( signer.address, path[1], signer )
 
         // Get swap Tx
-        const swap_calldata = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
-        const [ amount_in, amount_out ] = swap_calldata.calldata
-        const { tradeType, priceImpact: price_impact } = swap_calldata.utils
-
+        let swapTx = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
+        let [ amount_in, amount_out ] = swapTx.calldata
+        const { tradeType, priceImpact: price_impact } = swapTx.utils
 
         // Get approve Tx
-        const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( amount_in as Uint256, decimals_from ), path[0], network )
-        const [ spender, amount ] = approve_calldata.calldata
+        const approveTx = await get_approve_calldata( signer, Uint256_to_string( amount_in as Uint256, decimals_from ), path[0], network )
+        const [ spender, amount ] = approveTx.calldata
+        
+        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approveTx, swapTx ] );
+
+        // Get fees and enforce fees for a ETH swap
+        if ( BigInt( path[0] ) === BigInt( TOKENS[ network ].eth ) )
+            swapTx = await enforce_swap_fees( swapTx, suggestedMaxFee, signer, network )
+
 
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( amount as Uint256, decimals_from ) } ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ tradeType === 1 ? '(maximum)' : ''}${ amountIn } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(minimum)' : ''}${Uint256_to_string( amount_out as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
+        if ( tradeType === TradeType.EXACT_INPUT )
+            console.log(`\t2) Swapping exact ${ Uint256_to_string( swapTx.calldata[0] as Uint256, decimals_from ) } ${ TICKER[ path[0] ] } for (minimum)${Uint256_to_string( swapTx.calldata[1] as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
+        else
+            console.log(`\t2) Swapping (maximum)${ Uint256_to_string( swapTx.calldata[1] as Uint256, decimals_from ) } ${ TICKER[ path[0] ] } for exact ${Uint256_to_string( swapTx.calldata[0] as Uint256, decimals_to ) } ${ TICKER[ path[1] ] }`)      
         console.log(`\nPrice impact: ${ price_impact }%`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swap_calldata ] );
-        const multiCall           = await signer.execute( [ approve_calldata, swap_calldata ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
+        const multiCall           = await signer.execute( [ approveTx, swapTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
         const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
@@ -102,11 +115,13 @@ export const addLiquidity = async(
     amountB: string | null,     
     max: boolean = false,                         
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
-    slipage: number = 2, // this represent 2% of slipage
+    slipage: number = 10, // this represent 10% of slipage
     deadline: number | null = null,
     maxFees?: bigint,
 ): Promise<void> => {
 
+    addressA = addressA.toLowerCase()
+    addressB = addressB.toLowerCase()
     deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
 
     try {
@@ -120,9 +135,9 @@ export const addLiquidity = async(
 
         
         // Get add liquidity Tx
-        const add_liq_calldata = await get_add_liq_calldata( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { addLiquidityTx, utils } = add_liq_calldata
-        const [ tokenA, tokenB, amountADesired, amountBDesired ] = addLiquidityTx.calldata
+        const addLiquidityTx = await get_add_liq_calldata( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
+        let { addTx, utils } = addLiquidityTx
+        const [ tokenA, tokenB, amountADesired, amountBDesired ] = addTx.calldata
 
         // Get approve token 'a' Tx
         const approveATx = await get_approve_calldata(signer, Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ), tokenA as string, network)
@@ -130,15 +145,24 @@ export const addLiquidity = async(
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_calldata(signer, Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ), tokenB as string, network)
         
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
+
+        // Get fees and enforce fees for a ETH swap
+        if ( BigInt( addressA ) === BigInt( TOKENS[ network ].eth ) ) addTx = await enforce_add_liq_fees( addTx, utils, suggestedMaxFee )
+        if ( BigInt( addressB ) === BigInt( TOKENS[ network ].eth ) ) addTx = await enforce_add_liq_fees( addTx, utils, suggestedMaxFee )
+
+        
+        // console.log("amount A: ", Uint256_to_string( addTx.calldata[2] as Uint256, utils.tokenB.decimals ))
+        // console.log("amount B: ", Uint256_to_string( addTx.calldata[3] as Uint256, utils.tokenA.decimals ))
+        // return
         /*========================================= TX ================================================================================================*/
 
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
-        console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
+        console.log(`\t1) Approving ${ addTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
+        console.log(`\t2) Approving ${ addTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
         console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA as string ] }/${ TICKER[ tokenB as string ] }` )
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addLiquidityTx ]);
-        const multiCall           = await signer.execute([ approveATx, approveBTx, addLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
+        const multiCall           = await signer.execute([ approveATx, approveBTx, addTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
         const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
         
         console.log(`\nTransaction valided !`)

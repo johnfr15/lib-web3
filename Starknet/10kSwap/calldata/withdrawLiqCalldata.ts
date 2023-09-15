@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Account, Contract, uint256 } from "starknet"
 import { Fetcher, Token, Pair } from "l0k_swap-sdk";
-import { ERC20_ABI, ROUTER_ADDRESSES } from "../constant";
+import { ERC20_ABI, ROUTER_ADDRESSES, TICKER } from "../constant";
 import { get_balance, get_token, sort_tokens_2 } from "../utils";
 import { RemoveLiquidityTx, RemoveLiquidityCallData } from "../types";
 
@@ -54,10 +54,13 @@ const get_removeLiq_tx = async(
         const Lp = new Contract( ERC20_ABI, pool.liquidityToken.address, signer )
 
         const reserve0: bigint = ethers.parseUnits( pool.reserve0.toExact(), token0.decimals )
-        const reserve1: bigint = ethers.parseUnits( pool.reserve1.toExact(), token0.decimals )
+        const reserve1: bigint = ethers.parseUnits( pool.reserve1.toExact(), token1.decimals )
         const { totalSupply } = await Lp.functions.totalSupply()
         const reserveLp = uint256.uint256ToBN( totalSupply )
         const balanceLp = await get_balance( signer.address, Lp.address, signer )
+
+        if ( balanceLp.bigint === BigInt( 0 ) )
+            throw(`Error: You don't have any tokens in that pool ${ TICKER[ token0.address ] }/${ TICKER[ token1.address ] }`)
 
         const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
         const amount_0_min: bigint = (reserve0 * liquidity / reserveLp) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )

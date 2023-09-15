@@ -15,8 +15,8 @@ const main = async() => {
     try {
         // Set up
         
-        const evmSigner: Wallet = new ethers.Wallet( process.env.ETH_PRIVATE_KEY! )
-        const starkSigner = new Account( STARKNET_MAINNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
+        const evmSigner: Wallet = new ethers.Wallet( process.env.TEST_ETH_PRIVATE_KEY! )
+        const starkSigner = new Account( STARKNET_MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
 
         // const TEST_evmSigner: Wallet = new ethers.Wallet( process.env.TEST_ETH_PRIVATE_KEY! )
         // const TEST_starkSigner = new Account( STARKNET_MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
@@ -28,13 +28,15 @@ const main = async() => {
         const toChain: Chains = "polygon"
         const network: 'TESTNET' | 'MAINNET' = "MAINNET"
 
-        console.log(evmSigner.address)
+        console.log("evm wallet: ", evmSigner.address)
+        console.log("starknet wallet: ", starkSigner.address)
 
-        const provider = new JsonRpcProvider( "https://goerli-rollup.arbitrum.io/rpc" )
+        const provider = new JsonRpcProvider( "https://arbitrum.llamarpc.com" )
         evmSigner.connect( provider )
-        const eth_balance = await provider.getBalance( evmSigner.address )
 
-        console.log( eth_balance )
+        const eth_balance = await provider.getBalance( evmSigner.address )
+        console.log(" balance arbitrum: ", ethers.formatEther( eth_balance ))
+
 
         // await Orbiter.swap({
         //     evmSigner,
