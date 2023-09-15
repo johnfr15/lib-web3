@@ -135,6 +135,11 @@ export const get_add_liq_calldata = async(
         }
 
         const utils = {
+            signer: signer, 
+            addressA: addressA,
+            addressB: addressB,
+            network: network,
+            slipage: slipage,
             reserveA: args.reserveA,
             decimalsA: args.args.token_a_decimals,
             reserveB: args.reserveB,

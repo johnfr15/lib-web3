@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
 import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI, TOKENS } from './constant';
-import { get_share_rate, Uint256_to_string, get_balance, enforce_fees, quote } from './utils';
+import { get_share_rate, Uint256_to_string, get_balance, enforce_swap_fees, quote, enforce_add_liq_fees } from './utils';
 import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './callData';
 
 
@@ -48,14 +48,14 @@ export const swap = async(
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approve_tx, raw_swap ]);
         
         // Get fees and enforce fees for a ETH swap
-        if ( path[0] === TOKENS[ network ].eth )
-            raw_swap.calldata[2] = await enforce_fees( raw_swap.calldata[2] as Uint256, suggestedMaxFee, signer, network )
+        if ( BigInt( path[0] ) === BigInt( TOKENS[ network ].eth ) )
+            raw_swap.calldata[2] = await enforce_swap_fees( raw_swap.calldata[2] as Uint256, suggestedMaxFee, signer, network )
 
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ raw_approve.calldata[0] } to spend ${ Uint256_to_string( raw_approve.calldata[1] as Uint256, decimals_from )} ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ Uint256_to_string( raw_swap.calldata[2] as Uint256 ) } ${ TICKER[ path[0] ] } for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${ TICKER[ path[1] ] }`)
+        console.log(`\t2) Swapping ${ Uint256_to_string( raw_swap.calldata[2] as Uint256, decimals_from ) } ${ TICKER[ path[0] ] } for ${ Uint256_to_string( raw_swap.calldata[3] as Uint256, decimals_to )} ${ TICKER[ path[1] ] }`)
 
         const multiCall           = await signer.execute([ approve_tx, raw_swap ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
         const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
@@ -109,9 +109,8 @@ export const addLiquidity = async(
     try {
 
         // Get add liquidity Tx
-        const { addTx, utils } = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
+        let { addTx, utils } = await get_add_liq_calldata(signer, addressA, amountA, addressB, amountB, max, network, slipage)
         const [ token_a_addr, amount_a, amount_a_min, token_b_addr, amount_b ] = addTx.calldata
-        const { reserveA, reserveB } = utils
 
         // Get approve token 'a' Tx
         const approve_a_calldata = await get_approve_calldata(signer, Uint256_to_string( amount_a as Uint256, utils!.decimalsA as number), token_a_addr as string, network)
@@ -123,24 +122,13 @@ export const addLiquidity = async(
 
         const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addTx ]);
 
-
         // Get fees and enforce fees for a ETH swap
-        if ( addTx.calldata[0] === TOKENS[ network ].eth )
-        {
-            addTx.calldata[1] = await enforce_fees( addTx.calldata[1] as Uint256, suggestedMaxFee, signer, network )
-            addTx.calldata[2] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[1] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
-            addTx.calldata[4] = uint256.bnToUint256( await quote( uint256.uint256ToBN( addTx.calldata[1] ), reserveA, reserveB ) )
-            addTx.calldata[5] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[4] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
-        }
-        if ( addTx.calldata[3] === TOKENS[ network ].eth )
-        {
-            addTx.calldata[4] = await enforce_fees( addTx.calldata[4] as Uint256, suggestedMaxFee, signer, network )
-            addTx.calldata[5] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[4] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
-            addTx.calldata[1] = uint256.bnToUint256( await quote( uint256.uint256ToBN( addTx.calldata[4] ), reserveB, reserveA ) )
-            addTx.calldata[2] = uint256.bnToUint256( uint256.uint256ToBN( addTx.calldata[1] ) * BigInt(100 * 100 - (100 * slipage)) / BigInt( 100 * 100 ) )
-        }
-        
+        if ( BigInt( addTx.calldata[0] as string ) === BigInt( TOKENS[ network ].eth ) ) 
+            addTx = await enforce_add_liq_fees( addTx, utils, suggestedMaxFee )
+        if ( BigInt( addTx.calldata[3] as string ) === BigInt( TOKENS[ network ].eth ) ) 
+            addTx = await enforce_add_liq_fees( addTx, utils, suggestedMaxFee )
 
+    
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ raw_approve_a.calldata[0] } to spend ${ Uint256_to_string( raw_approve_a.calldata[1] as Uint256, utils!.decimalsA as number )} ${ TICKER[ token_a_addr as string ] }`)

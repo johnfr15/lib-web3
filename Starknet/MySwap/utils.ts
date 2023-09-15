@@ -1,7 +1,8 @@
 import { Network, ethers } from "ethers";
 import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
 import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKENS, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
-import { AddLiquidityArgs, WidthdrawLiquidityArgs } from "./types";
+import { AddLiquidityArgs, WidthdrawLiquidityArgs, AddLiquidityCallData } from "./types";
+import { get_add_liq_calldata } from "./callData"
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
@@ -400,7 +401,7 @@ export const float_to_Uint256 = (number: number, decimals: number = 18): Uint256
  * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
  *      of this transaction
  */
-export const enforce_fees = async( u_amount: Uint256, fees: bigint, signer: Account, network: 'TESTNET' | 'MAINNET'): Promise<Uint256> => {
+export const enforce_swap_fees = async( u_amount: Uint256, fees: bigint, signer: Account, network: 'TESTNET' | 'MAINNET'): Promise<Uint256> => {
 
     try {
         
@@ -411,6 +412,41 @@ export const enforce_fees = async( u_amount: Uint256, fees: bigint, signer: Acco
             return uint256.bnToUint256( amount - (fees * BigInt( 4 )) ) // I let Enought fees to do 3 more transactions
         else
             return  uint256.bnToUint256( amount )
+
+    } catch (error) {
+        
+        throw( error )
+
+    }
+}
+
+/**
+ * @name enforce_fees
+ * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
+ *      of this transaction
+ */
+export const enforce_add_liq_fees = async( addTx: AddLiquidityCallData, utils: { [key: string]: any }, fees: bigint ): Promise<AddLiquidityCallData> => {
+
+    const [ a_address, a_amount, a_min_amount, b_address, b_amount ] = addTx.calldata
+    const { signer, network, slipage } = utils
+
+    const eth_address: string    = TOKENS[ utils.network ].eth === a_address ? a_address as string : b_address as string
+    const eth_amount: Uint256    = TOKENS[ utils.network ].eth === a_address ? a_amount as Uint256 : b_amount as Uint256
+    const tokenB_address: string = TOKENS[ utils.network ].eth !== a_address ? a_address as string : b_address as string
+
+    try {
+        
+        const amount: bigint = uint256.uint256ToBN( eth_amount )
+        const balance = await get_balance( signer.address, TOKENS[ network ].eth, signer )
+    
+        if ( balance.bigint < (amount + fees) )
+        {
+            const new_amount = ethers.formatEther( amount - (fees * BigInt( 4 )))
+            const { addTx: addTx2 } = await get_add_liq_calldata( signer, eth_address, new_amount, tokenB_address, null, false, network, slipage )
+            return addTx2
+        }
+        else
+            return  addTx
 
     } catch (error) {
         
