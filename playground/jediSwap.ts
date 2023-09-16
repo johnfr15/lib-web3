@@ -28,24 +28,25 @@ const main = async() => {
         //     network
         // )
 
-        // JediSwap.addLiquidity( 
+        // await JediSwap.addLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     null,
-        //     TOKENS[ network ].dai,
-        //     "0.01",
-        //     false,
+        //     TOKENS[ network ].usdc,
+        //     null,
+        //     true,
         //     network
         // )
 
-        // JediSwap.withdrawLiquidity( 
+        // await JediSwap.withdrawLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].dai,
+        //     TOKENS[ network ].usdc,
         //     100,
         //     network
         // )
 
+        await JediSwap.Log.log_balances( starkSigner, network )
 
     } catch (error: any) {
   

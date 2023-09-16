@@ -4,6 +4,7 @@ import { TICKER, JEDI_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
 import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../types";
 import { get_token, get_balance, sort_tokens, get_pool, Uint256_to_string } from "../utils";
 import { Fraction, Token } from "l0k_swap-sdk";
+import { sort_tokens_2 } from "../../10kSwap/utils";
 
 
 
@@ -42,7 +43,15 @@ export const get_add_liq_calldata = async(
 
         const add_liq_callData: AddLiquidityCallData = {
             addLiquidityTx: add_liq_tx,
-            utils: { tokenA: token_a, tokenB: token_b, pool: pool }
+            utils: { 
+                signer: signer,
+                network: network,
+                slipage: slipage,
+                deadline: deadline,
+                tokenA: token0, 
+                tokenB: token1, 
+                pool: pool 
+            }
         } 
 
         return add_liq_callData
@@ -138,16 +147,18 @@ const get_liq = async(
         if ( amount_2 > balance_2.bigint )
             throw new Error(`${ TICKER[ token_2.address ] }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
+        const { token0: tokenA, token1: tokenB } = sort_tokens_2( token_1, token_2 )
+        
         return {
             contractAddress: Router.address,
             entrypoint: "add_liquidity",
             calldata: [
-                token_1.address,
-                token_2.address,
-                uint256.bnToUint256( amount_1 ),
-                uint256.bnToUint256( amount_2 ),
-                uint256.bnToUint256( amount_1_min ),
-                uint256.bnToUint256( amount_2_min ),
+                BigInt( tokenA.address ) === BigInt( token_1.address ) ? token_1.address : token_2.address,
+                BigInt( tokenB.address ) === BigInt( token_1.address ) ? token_1.address : token_2.address,
+                uint256.bnToUint256( BigInt( tokenA.address ) === BigInt( token_1.address ) ? amount_1 : amount_2 ),
+                uint256.bnToUint256( BigInt( tokenB.address ) === BigInt( token_1.address ) ? amount_1 : amount_2 ),
+                uint256.bnToUint256( BigInt( tokenA.address ) === BigInt( token_1.address ) ? amount_1_min : amount_2_min ),
+                uint256.bnToUint256( BigInt( tokenB.address ) === BigInt( token_1.address ) ? amount_1_min : amount_2_min ),
                 signer.address,
                 deadline
             ]

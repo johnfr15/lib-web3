@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Account, Uint, Uint256, uint256 } from 'starknet';
 import { ROUTER_ADDRESS, TICKER, TOKENS } from './constant';
-import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees } from './utils';
+import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees, enforce_add_liq_fees } from './utils';
 import { get_swap_calldata } from './calldata/swapCalldata';
 import { get_approve_calldata } from './calldata/approveCalldata';
 import { get_add_liq_calldata } from './calldata/addLiqCalldata';
@@ -128,7 +128,7 @@ export const addLiquidity = async(
         
         // Get add liquidity Tx
         const add_liq_calldata = await get_add_liq_calldata( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { addLiquidityTx, utils } = add_liq_calldata
+        let { addLiquidityTx, utils } = add_liq_calldata
         const [ tokenA, tokenB, amountADesired, amountBDesired ] = addLiquidityTx.calldata
 
         // Get approve token 'a' Tx
@@ -136,14 +136,21 @@ export const addLiquidity = async(
 
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_calldata(signer, Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ), tokenB as string, network)
+
+        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addLiquidityTx ]);
+
+        // Get fees and enforce fees for a ETH swap
+        if ( BigInt( addressA ) === BigInt( TOKENS[ network ].eth ) ) addLiquidityTx = await enforce_add_liq_fees( addLiquidityTx, utils, suggestedMaxFee )
+        if ( BigInt( addressB ) === BigInt( TOKENS[ network ].eth ) ) addLiquidityTx = await enforce_add_liq_fees( addLiquidityTx, utils, suggestedMaxFee )
+
+
         
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
-        console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
+        console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( addLiquidityTx.calldata[2] as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
+        console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( addLiquidityTx.calldata[3] as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
         console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA as string ] }/${ TICKER[ tokenB as string ] }` )
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addLiquidityTx ]);
         const multiCall           = await signer.execute([ approveATx, approveBTx, addLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
         const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
         

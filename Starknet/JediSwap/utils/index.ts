@@ -1,9 +1,10 @@
 import { ethers } from "ethers"
 import { Account, Contract, Uint256, uint256 } from "starknet"
 import { ERC20_ABI, JEDI_FACTORY_ABI, FACTORY_ADDRESS, JEDI_PAIR_ABI, TOKENS } from "../constant"
-import { Token, JSBI, TokenAmount, StarknetChainId, TradeType } from "l0k_swap-sdk"
-import { Pool, SwapTx, SwapCallData } from "../types"
+import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk"
+import { Pool, SwapTx, SwapCallData, AddLiquidityTx } from "../types"
 import { get_swap_calldata } from "../calldata/swapCalldata"
+import { get_add_liq_calldata } from "../calldata/addLiqCalldata"
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
@@ -151,7 +152,6 @@ export const enforce_swap_fees = async( swapTx: SwapTx, fees: bigint ): Promise<
  * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
  *      of this transaction
  */
-/*
 export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key: string]: any }, fees: bigint ): Promise<AddLiquidityTx> => {
 
     const [ tokenA, tokenB, amountADesired, amountBDesired ] = addTx.calldata
@@ -169,8 +169,8 @@ export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key:
         if ( balance.bigint < (amount + fees) )
         {
             const new_amount = ethers.formatEther( amount - (fees * BigInt( 4 )))
-            const { addTx: addTx2 } = await get_add_liq_calldata( signer, eth_address, new_amount, tokenB_address, null, false, network, slipage, deadline )
-            return addTx2
+            const { addLiquidityTx } = await get_add_liq_calldata( signer, eth_address, new_amount, tokenB_address, null, false, network, slipage, deadline )
+            return addLiquidityTx
         }
         else
             return  addTx
@@ -181,4 +181,3 @@ export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key:
 
     }
 }
-*/
