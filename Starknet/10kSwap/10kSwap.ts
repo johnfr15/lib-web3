@@ -152,9 +152,7 @@ export const addLiquidity = async(
         if ( BigInt( addressB ) === BigInt( TOKENS[ network ].eth ) ) addTx = await enforce_add_liq_fees( addTx, utils, suggestedMaxFee )
 
         
-        // console.log("amount A: ", Uint256_to_string( addTx.calldata[2] as Uint256, utils.tokenB.decimals ))
-        // console.log("amount B: ", Uint256_to_string( addTx.calldata[3] as Uint256, utils.tokenA.decimals ))
-        // return
+
         /*========================================= TX ================================================================================================*/
 
         console.log(`\nMulticall...`)
