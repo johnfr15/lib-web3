@@ -1,4 +1,4 @@
-import { Provider, constants } from 'starknet';
+import { Provider, constants, RpcProvider } from 'starknet';
 import erc20_abi from "./abis/erc20"
 import router_abi from "./abis/jedi_router_abi"
 import factory_abi from "./abis/jedi_factory_abi"
@@ -10,7 +10,7 @@ import zap_in_abi from "./abis/zap_in_abi"
 
 // Misc
 export const TESTNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
-export const MAINNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_MAIN } }) // for starknet mainnet
+export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
 export const MAX_FEE = BigInt( 0 ); // Devnet
 export const MINIMUM_LIQUIDITY = BigInt( 1000 )

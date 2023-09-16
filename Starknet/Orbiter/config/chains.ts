@@ -141,7 +141,7 @@ export default [
           "decimals": 18,
           "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
       },
-      "rpc": [],
+      "rpc": ["https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16"],
       "watch": ["rpc"],
       "tokens": [
           {
