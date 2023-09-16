@@ -3,7 +3,7 @@ import { TradeType, Token } from "l0k_swap-sdk";
 import { SwapCallData } from "../types";
 import { get_pool, get_token, jsbi_to_Uint256, string_to_Uint256 } from "../utils";
 import { ROUTER_ADDRESS, JEDI_ROUTER_ABI } from "../constant";
-import { Pool, Trade } from "../types";
+import { Pool, Trade, SwapTx } from "../types";
 import { get_out_min, get_trade, get_in_max } from "../utils/swap";
 
 
@@ -17,7 +17,7 @@ export const get_swap_calldata = async(
     slipage: number,
     priceImpact: number,
     deadline?: number,
-): Promise<{ swaptTx: SwapCallData, trade: Trade, input: Uint256, output: Uint256 }> => {
+): Promise<SwapTx> => {
 
     try {
 
@@ -36,7 +36,7 @@ export const get_swap_calldata = async(
         
         deadline = deadline ? deadline : Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
 
-        const swaptTx: SwapCallData = {
+        const swapCalldata: SwapCallData = {
             contractAddress: Router.address,
             entrypoint: trade.tradeType ? "swap_tokens_for_exact_tokens" : "swap_exact_tokens_for_tokens",
             calldata: [
@@ -49,10 +49,18 @@ export const get_swap_calldata = async(
         }
 
         return { 
-            swaptTx, 
-            trade, 
-            input: trade.amountInMax ?? string_to_Uint256( amountIn!, token_in.decimals ), 
-            output: trade.amountOutMin ?? string_to_Uint256( amountOut!, token_out.decimals )
+            swapCalldata,
+            utils: {
+                signer: signer,
+                path: path,
+                network: network,
+                slipage: slipage,
+                priceImpact: trade.priceImpact,
+                deadline: deadline,
+                trade: trade, 
+                input: trade.amountInMax ?? string_to_Uint256( amountIn!, token_in.decimals ), 
+                output: trade.amountOutMin ?? string_to_Uint256( amountOut!, token_out.decimals )
+            } 
         } 
 
     } catch (error: any) {

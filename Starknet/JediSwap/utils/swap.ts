@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { TokenAmount, Token, TradeType, Fraction } from "l0k_swap-sdk";
 import { Contract, Uint256, uint256 } from "starknet";
 import { Pool, Trade } from "../types";
-import { jsbi_to_Uint256, string_to_Uint256 } from "./index"
+import { Uint256_to_string, jsbi_to_Uint256, jsbi_to_string, string_to_Uint256 } from "./index"
 
 export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
 
@@ -82,25 +82,28 @@ export const get_trade = async(
 
 export const calc_price_impact = async( amountIn: TokenAmount, amountOut: TokenAmount, tradeType: TradeType, Router: Contract, pool: Pool ) => {
 
-    let percent: number
+    let percent: string
 
     const reserve_in  = amountIn.token.address === pool.token0.address ? pool.reserve0 : pool.reserve1
     const reserve_out = amountIn.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
 
     if ( tradeType == TradeType.EXACT_INPUT )
     {
-        const { amountB: quoteOut }: { amountB: Uint256 } = await Router.quote( jsbi_to_Uint256( amountIn.raw ), reserve_in, reserve_out )
-        const diffOut = amountOut.multiply( uint256.uint256ToBN( reserve_out ) ).divide( uint256.uint256ToBN( quoteOut ))
-        percent = 10000 - parseFloat( (uint256.uint256ToBN( reserve_out ) * BigInt(10000) / ethers.parseEther( diffOut.toSignificant(3))).toString() )
+        const { amountB: quoteOut }: { amountB: Uint256 } = await Router.quote( jsbi_to_Uint256( amountIn.raw, amountIn.token.decimals ), reserve_in, reserve_out )
+        const impact = amountOut.multiply( BigInt( 10000 )).multiply( ethers.parseUnits( '100', amountOut.token.decimals ) ).divide( uint256.uint256ToBN( quoteOut ))
+
+        percent = impact.divide( BigInt( 10000 ) ).subtract( BigInt( 100 )).toSignificant(3) 
     }
     else
     {
         const { amountB: quoteIn }: { amountB: Uint256 } = await Router.quote( jsbi_to_Uint256( amountOut.raw ), reserve_out, reserve_in )
-        const diffIn = amountIn.multiply(  uint256.uint256ToBN( reserve_in ) ).divide( uint256.uint256ToBN( quoteIn ))
-        percent = 10000 - parseFloat( (uint256.uint256ToBN( reserve_in ) * BigInt(10000) / ethers.parseEther( diffIn.toSignificant(3))).toString() )
+        const impact = amountIn.multiply( BigInt( 10000 )).multiply( ethers.parseUnits( '100', amountIn.token.decimals ) ).divide( uint256.uint256ToBN( quoteIn ))
+
+        percent = impact.divide( BigInt( 10000 ) ).subtract( BigInt( 100 )).toSignificant(3) 
     }
 
-    const priceImpact = percent < 0 ? (percent * -1) / 100 : percent / 100
+    const priceImpact = parseFloat(percent) < 0 ? (parseFloat(percent) * -1) : parseFloat(percent)
+
     return priceImpact
 }
 

@@ -1,11 +1,13 @@
 import { ethers } from 'ethers';
 import { Account, Uint, Uint256, uint256 } from 'starknet';
-import { ROUTER_ADDRESS, TICKER } from './constant';
-import { Uint256_to_string, get_balance, is_balance, jsbi_to_string } from './utils';
+import { ROUTER_ADDRESS, TICKER, TOKENS } from './constant';
+import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees } from './utils';
 import { get_swap_calldata } from './calldata/swapCalldata';
 import { get_approve_calldata } from './calldata/approveCalldata';
 import { get_add_liq_calldata } from './calldata/addLiqCalldata';
 import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
+import { TradeType } from "l0k_swap-sdk"
+import { SwapTx } from "./types"
 
 
 
@@ -43,28 +45,37 @@ export const swap = async(
 
 
         // Get swap Tx
-        const { swaptTx, trade, input, output } = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
-        const { tradeType, priceImpact: price_impact, amountInMax, amountIn: amount_in } = trade
+        const swap_tx: SwapTx = await get_swap_calldata( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
+        let { swapCalldata, utils } = swap_tx
+        const { trade, input, priceImpact: price_impact } = utils
 
         // Get approve Tx
         const approve_calldata = await get_approve_calldata( signer, Uint256_to_string( input, trade.amountIn.token.decimals ), path[0], network )
-        const [ spender, amount ] = approve_calldata.calldata
+        const [ spender ] = approve_calldata.calldata
+
+        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swapCalldata ] );
+
+        // Get fees and enforce fees for a ETH swap
+        if ( BigInt( path[0] ) === BigInt( TOKENS[ network ].eth ) )
+            swapCalldata = await enforce_swap_fees( swap_tx, suggestedMaxFee )
+
 
         /*========================================= TX ================================================================================================*/
         console.log(`\nMulticall...`)
         console.log(`\t1) Approving ${ spender } to spend ${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] }`)
-        console.log(`\t2) Swapping ${ tradeType === 1 ? '(max)' : ''}${ Uint256_to_string( input, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for ${ tradeType === 0 ? '(min)' : ''}${Uint256_to_string( output, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)      
+        if ( trade.tradeType === TradeType.EXACT_INPUT )
+            console.log(`\t2) Swapping exact ${ Uint256_to_string( swapCalldata.calldata[0] as Uint256, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for (minimum)${Uint256_to_string( swapCalldata.calldata[1] as Uint256, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)      
+        else
+            console.log(`\t2) Swapping (maximum)${ Uint256_to_string( swapCalldata.calldata[1] as Uint256, trade.amountIn.token.decimals ) } ${ TICKER[ path[0] ] } for exact ${Uint256_to_string( swapCalldata.calldata[0] as Uint256, trade.amountOut.token.decimals ) } ${ TICKER[ path[1] ] }`)       
         console.log(`\nPrice impact: ${ price_impact }%`)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee( [ approve_calldata, swaptTx ] );
-        const multiCall           = await signer.execute( [ approve_calldata, swaptTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
-        const receipt: any        = await signer.waitForTransaction( multiCall.transaction_hash );
+        const multiCall      = await signer.execute( [ approve_calldata, swapCalldata ], undefined, { maxFee: maxFees ?? suggestedMaxFee } )
+        const receipt: any  = await signer.waitForTransaction( multiCall.transaction_hash );
         
         console.log(`\nTransaction valided !`)
         console.log("hash:            ", multiCall.transaction_hash)
         console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
         console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

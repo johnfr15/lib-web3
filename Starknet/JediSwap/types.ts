@@ -44,6 +44,11 @@ export type SwapCallData = {
     calldata: Array<SwapArgs[keyof SwapArgs]>
 }
 
+export type SwapTx = {
+    swapCalldata: SwapCallData
+    utils: { [key: string]: any }
+}
+
 
 
 export type AddLiquidityABI = {

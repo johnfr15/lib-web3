@@ -1,5 +1,5 @@
 import { Account } from "starknet"
-import jediSwap from "../Starknet/jediSwap"
+import JediSwap from "../Starknet/JediSwap"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -7,7 +7,7 @@ dotenv.config()
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = jediSwap.Constant
+    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = JediSwap.Constant
     
     try {
         // Set up
@@ -16,19 +16,19 @@ const main = async() => {
         const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
 
         console.log("stark account: ", starkSigner.address)
-        console.log("")
+        await JediSwap.Log.log_balances( starkSigner, network )
 
 
 
-        await jediSwap.swap(
-            starkSigner,
-            [ TOKENS[ network ].eth, TOKENS[ network ].dai ],
-            "0.0000001",
-            null,
-            network
-        )
+        // await JediSwap.swap(
+        //     starkSigner,
+        //     [ TOKENS[ network ].usdc, TOKENS[ network ].eth ],
+        //     null,
+        //     "0.002069563663278504",
+        //     network
+        // )
 
-        // jediSwap.addLiquidity( 
+        // JediSwap.addLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     null,
@@ -38,7 +38,7 @@ const main = async() => {
         //     network
         // )
 
-        // jediSwap.withdrawLiquidity( 
+        // JediSwap.withdrawLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,
