@@ -1,8 +1,8 @@
-import { Provider, Contract as StarkContract, Account, Uint256 } from "starknet"
+import { Provider, Contract as StarkContract, Account, Uint256, RpcProvider } from "starknet"
 import { JsonRpcProvider, BaseContract as SolContract, BigNumberish, Wallet } from "ethers"
 
 export type BridgeToken = {
-    provider: JsonRpcProvider | Provider
+    provider: JsonRpcProvider | Provider | RpcProvider
     chainId: number // The tokens on different chains are different, but the names are the same
     name: string
     address: string

@@ -10,16 +10,16 @@ dotenv.config()
 
 const main = async() => {
     
-    const { STARKNET_TESTNET_PROVIDER, STARKNET_MAINNET_PROVIDER, TOKENS } = Orbiter.Constant
+    const { STARKNET_TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = Orbiter.Constant
     
     try {
         // Set up
         
         const evmSigner: Wallet = new ethers.Wallet( process.env.TEST_ETH_PRIVATE_KEY! )
-        const starkSigner = new Account( STARKNET_MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
+        const starkSigner = new Account( MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
 
         // const TEST_evmSigner: Wallet = new ethers.Wallet( process.env.TEST_ETH_PRIVATE_KEY! )
-        // const TEST_starkSigner = new Account( STARKNET_MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
+        // const TEST_starkSigner = new Account( MAINNET_PROVIDER, process.env.TEST_STARK_PUBLIC_KEY!, process.env.TEST_STARK_PRIVATE_KEY! )
         // console.log("evm account:   ", TEST_evmSigner.address)
         // console.log("stark account: ", TEST_starkSigner.address)
 

@@ -1,8 +1,8 @@
-import { Account, Contract as StarkContract, uint256, Provider } from "starknet";
+import { Account, Contract as StarkContract, uint256, Provider, RpcProvider } from "starknet";
 import { JsonRpcProvider, Contract as SolContract , Wallet, ethers } from "ethers";
 import { BridgeToken, ChainType, TxTransferArgs } from "../types";
 import chains from "../config/chains"
-import { STARKNET_MAINNET_PROVIDER, STARKNET_TESTNET_PROVIDER } from "../config/constant";
+import { MAINNET_PROVIDER, STARKNET_TESTNET_PROVIDER } from "../config/constant";
 import { is_native_token } from "./transfer";
 
 export const get_balance = async( signer: Account | Wallet, token: BridgeToken ): Promise<string> => 
@@ -29,10 +29,10 @@ export const get_balance = async( signer: Account | Wallet, token: BridgeToken )
  * 
  * @param chainId   // Orbiter id 
  */
-export const resolve_provider = ( orbiterId: number ): JsonRpcProvider | Provider => {
+export const resolve_provider = ( orbiterId: number ): JsonRpcProvider | Provider | RpcProvider => {
 
     if ( orbiterId === 4 || orbiterId === 44)
-        return orbiterId === 4 ? STARKNET_MAINNET_PROVIDER : STARKNET_TESTNET_PROVIDER
+        return orbiterId === 4 ? MAINNET_PROVIDER : STARKNET_TESTNET_PROVIDER
 
     const chain_info = <ChainType> Object.values( chains ).find(( item ) => parseInt( item.internalId ) === orbiterId )
 

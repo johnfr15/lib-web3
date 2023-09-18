@@ -27,23 +27,23 @@ const main = async() => {
         //     network
         // )
 
-        // await l0kSwap.addLiquidity( 
-        //     starkSigner,
-        //     TOKENS[ network ].eth,
-        //     '0.000778761998134625',
-        //     TOKENS[ network ].usdc,
-        //     null,
-        //     false,
-        //     network
-        // )
+        await l0kSwap.addLiquidity( 
+            starkSigner,
+            TOKENS[ network ].eth,
+            null,
+            TOKENS[ network ].usdc,
+            null,
+            true,
+            network
+        )
 
-        // await l0kSwap.withdrawLiquidity( 
-        //     starkSigner,
-        //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].usdc,
-        //     100,
-        //     network      
-        // )
+        await l0kSwap.withdrawLiquidity( 
+            starkSigner,
+            TOKENS[ network ].eth,
+            TOKENS[ network ].usdc,
+            100,
+            network      
+        )
 
 
     } catch (error: any) {

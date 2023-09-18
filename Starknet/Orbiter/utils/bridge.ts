@@ -1,4 +1,4 @@
-import { Provider, Contract as StarkContract, Account } from "starknet"
+import { Provider, Contract as StarkContract, Account, RpcProvider } from "starknet"
 import { Contract as SolContract, JsonRpcProvider, Wallet } from "ethers"
 import maker1 from "../config/maker-1"
 import makerTest1 from "../config/makerTest-1"
@@ -20,7 +20,7 @@ export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
     return bridge_chain
 }
 
-export const get_token = ( maker: MarkerType, chain: Chains, provider: Provider | JsonRpcProvider ): BridgeToken => {
+export const get_token = ( maker: MarkerType, chain: Chains, provider: Provider | JsonRpcProvider | RpcProvider ): BridgeToken => {
     let contract: StarkContract | SolContract;
 
     if ( chain === "starknet" )
