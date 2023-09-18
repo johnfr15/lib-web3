@@ -1,6 +1,7 @@
-import { ethers } from "ethers";
+import { ethers, Wallet, HDNodeWallet } from "ethers";
+import * as bip39 from "bip39"
 import fs from "fs";
-import { Account, ec, hash, stark, Provider, uint256, Uint256, Contract } from "starknet";
+import { Account, ec, hash, Provider, uint256, Contract } from "starknet";
 import { ERC20_ABI, MAINNET_PROVIDER, TESTNET_PROVIDER, TOKENS } from "./constants";
 
 const FILE_PATH = "./Starknet/StarknetWallet/accounts.json"
@@ -21,15 +22,19 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
         
     }
 
-    const randomAddress = stark.randomAddress()  
-    const starkKeyPair = ec.starkCurve.grindKey( randomAddress ) 
-    const starkKeyPub = ec.starkCurve.getStarkKey( starkKeyPair );
+    const seed = bip39.generateMnemonic(128);
+    
 
+    const path = "m/44'/9004'/0'/0/0"
+    const childNode = HDNodeWallet.fromPhrase( seed, undefined, path )
+
+    const starkKeyPair = ec.starkCurve.grindKey( childNode.privateKey  ) 
+    const starkKeyPub = ec.starkCurve.getStarkKey( starkKeyPair )
 
     const precalculatedAddress = hash.calculateContractAddressFromHash(
         starkKeyPub, // salt
         classHash,
-        [ starkKeyPub ],
+        [ "0x33434ad846cdd5f23eb73ff09fe6fddd568284a0fb7d1be20ee482f044dabe2", '0x79dc0da7c54b95f10aa182ad0a46400db63156920adb65eca2654c0945a463', [ starkKeyPub, "0x0"] ],
         0
     );
 
@@ -42,10 +47,11 @@ export const pre_compute = async( classHash: string ): Promise<number> => {
     accounts[ id ] = {
         generation: date.toLocaleString(),
         classHash: classHash,
-        seed: randomAddress,
+        seed: seed,
         privateKey: "0x" + starkKeyPair,
         starkKeyPub: starkKeyPub,
-        accountAddress: precalculatedAddress
+        accountAddress: precalculatedAddress,
+        node: childNode
     }
     
     try {
@@ -76,13 +82,13 @@ export const deploy_contract = async( id: number, provider: Provider ) => {
         accounts = await JSON.parse( fs.readFileSync( FILE_PATH ).toString('ascii') )
         let { classHash, accountAddress, privateKey, starkKeyPub } = accounts[ id ]
 
-        const account = new Account( provider, accountAddress, privateKey );
+        const account = new Account( provider, starkKeyPub, privateKey );
     
         /*========================================= TX ================================================================================================*/
         console.log(`\nDeploying contract address: ${ accountAddress } ...`)
         const tx = await account.deployAccount({
             classHash: classHash,
-            constructorCalldata: [ starkKeyPub ],
+            constructorCalldata: [ "0x33434ad846cdd5f23eb73ff09fe6fddd568284a0fb7d1be20ee482f044dabe2", '0x79dc0da7c54b95f10aa182ad0a46400db63156920adb65eca2654c0945a463', [ starkKeyPub, "0x0"] ],
             contractAddress: accountAddress,
             addressSalt: starkKeyPub
         });
