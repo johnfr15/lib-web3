@@ -42,17 +42,28 @@ export const get_pool = async( tokenA: Token, tokenB: Token, network: string, si
 }
 
 export const get_balance = async(
-    Wallet_address: string, 
-    token_address: string, 
-    signer: Wallet 
+    tokenAddress: string, 
+    signer: Wallet,
 ): Promise<{ bigint: bigint, string: string, decimals: number }> => {
     
+    let balance: bigint;
+    let decimals: number
+
     try {
 
-        const erc20 = new Contract(token_address, ERC20_ABI, signer);
+        const erc20 = new Contract(tokenAddress, ERC20_ABI, signer);
 
-        const balance = await erc20.balanceOf(Wallet_address);
-        const { decimals } = await erc20.decimals();
+        if ( is_native( tokenAddress ))
+        {
+            balance  = await signer.provider!.getBalance( signer.address )
+            decimals = 18
+        }
+        else
+        {
+            balance = await erc20.balanceOf( signer.address );
+            decimals = await erc20.decimals();
+        }
+
         let formated = ethers.formatUnits( balance , decimals );
         
         return { 
@@ -73,8 +84,8 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
 
     try {
 
-        const balanceA = await get_balance( signer.address, addressA, signer )
-        const balanceB = await get_balance( signer.address, addressB, signer )
+        const balanceA = await get_balance( addressA, signer )
+        const balanceB = await get_balance( addressB, signer )
 
         if ( balanceA.string === '0.0' || balanceB.string === '0.0' )
             return 0;

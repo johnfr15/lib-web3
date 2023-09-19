@@ -1,7 +1,7 @@
 import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
 import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
 import { AddLiquidity, Pool, Token } from "../types";
-import { get_token, get_balance, get_pool, sort_tokens } from "../utils";
+import { get_token, get_balance, get_pool, sort_tokens, is_balance } from "../utils";
 import { encode_add_datas } from "../utils/add"
 import { addLiquidity } from "../mute";
 
@@ -30,6 +30,9 @@ export const get_add_liq_tx = async(
         const { token0, token1 } = sort_tokens( token_a, token_b, amountA, amountB )
 
         const pool: Pool = await get_pool( token0, token1, network, signer )
+
+        if ( await is_balance(signer, addressA, addressB) === 0 )
+            throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)
 
         if ( max )
         {
@@ -69,8 +72,8 @@ const get_max_liq = async(
     try {
         const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-        const balanceA = await get_balance( signer.address, pool.tokenA.address, signer )
-        const balanceB = await get_balance( signer.address, pool.tokenB.address, signer )
+        const balanceA = await get_balance( pool.tokenA.address, signer )
+        const balanceB = await get_balance( pool.tokenB.address, signer )
 
         const quoteB = await Router.quote( balanceA.bigint, pool.reserveA, pool.reserveB )
         const quoteA = await Router.quote( balanceB.bigint, pool.reserveB, pool.reserveA )
@@ -125,8 +128,8 @@ const get_liq = async(
         const reserve_1: bigint = pool.tokenA.address === addr ? pool.reserveA : pool.reserveB
         const reserve_2: bigint = pool.tokenA.address !== addr ? pool.reserveA : pool.reserveB
 
-        const balance_1 = await get_balance(signer.address, token_1.address, signer)
-        const balance_2 = await get_balance(signer.address, token_2.address, signer)
+        const balance_1 = await get_balance( token_1.address, signer )
+        const balance_2 = await get_balance( token_2.address, signer )
 
         const amount_1: bigint = ethers.parseUnits( amount, token_1.decimals )
         const amount_2 =  await Router.quote( amount_1, reserve_1, reserve_2 )
