@@ -206,7 +206,7 @@ export default [
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
+      { "internalType": "address", "name": "Wallet", "type": "address" },
       { "internalType": "bool", "name": "enforce", "type": "bool" }
     ],
     "name": "calculateMultiplier",

@@ -42,6 +42,12 @@ export const MULTI_CALL:  { [key: string]: string } = {
   'TESTNET': '0xd9Ee4c1e04059D4B0dd02b747282511bEE4E5fB5',
 }
 
+export const CHAIN_ID:  { [key: string]: number } = {
+  'MAINNET': 324,
+  'TESTNET': 280,
+}
+
+
 
 
 
@@ -49,30 +55,38 @@ export const MULTI_CALL:  { [key: string]: string } = {
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
-        eth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
+        eth: "0x0000000000000000000000000000000000000000",
+        weth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
         usdc:'',
         dai:'',
         wbtc:'',
         usdt:'',
     },
     'TESTNET': {
-        eth: '0x294cB514815CAEd9557e6bAA2947d6Cf0733f014',
-        dai: '',
-        usdc: '', 
+        eth: "0x0000000000000000000000000000000000000000",
+        weth: '0x294cB514815CAEd9557e6bAA2947d6Cf0733f014',
+        dai: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b',
+        usdc: '0x0faF6df7054946141266420b43783387A78d82A9', 
+        usdt: '0xfcEd12dEbc831D3a84931c63687C395837D42c2B', 
         tka: '',
         tkb: '',
     }
 }
 
 export const TICKER: {[key: string]: string} = {
-    "0x294cB514815CAEd9557e6bAA2947d6Cf0733f014": "ETH",
-    "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91": "ETH",
-    "": "wstETH",
-    "": "USDC",
-    "": "USDC",
-    "": "DAI",
-    "": "DAI",
-    "": "wBTC",
-    "": "USDT",
-    "": "LORDS",
+
+    "0x0000000000000000000000000000000000000000": "ETH",
+
+    "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91": "WETH",
+    "0x294cB514815CAEd9557e6bAA2947d6Cf0733f014": "WETH",
+
+    "a": "wstETH",
+    "z": "USDC",
+    "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4": "USDC",
+    "0x0faF6df7054946141266420b43783387A78d82A9": "USDC",
+    "r": "DAI",
+    "t": "DAI",
+    "y": "wBTC",
+    "u": "USDT",
+    "i": "LORDS",
 }

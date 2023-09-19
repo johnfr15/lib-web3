@@ -1,51 +1,62 @@
-import { ethers } from "ethers"
-import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI, MUTE_FACTORY_ABI, FACTORY_ADDRESS, MUTE_PAIR_ABI, TICKER } from "../constant"
-import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk"
-import { Pool } from "../types"
+import { ethers, Wallet, Contract } from "ethers"
+import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../config/constants"
+import tokens from "../config/tokens"
+import { Token, Pool } from "../types";
 
 
-export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
+export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<Token> => {
 
-    const Erc20 = new Contract( ERC20_ABI, tokenAddress, signer )
+    const token: Token | undefined = tokens.find( (token: Token) => 
+    {
+        return BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ] 
+    })
+
+    if ( token === undefined )
+        throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)
     
-    const { decimals } = await Erc20.functions.decimals()
-    const chain_id = StarknetChainId[ network ]
-
-    const token = new Token( chain_id, tokenAddress, Number( decimals ) )
+    if ( is_native(token.address) )
+        token.address = TOKENS[ network ].weth
 
     return token
 }
 
-export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Account ): Promise<Pool> => {
+export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Wallet ): Promise<Pool> => {
 
-    const Factory = new Contract( MUTE_FACTORY_ABI, FACTORY_ADDRESS[ network ], signer )
-    const { pair } = await Factory.get_pair( tokenA.address, tokenB.address )
+    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-    const Pool = new Contract( MUTE_PAIR_ABI, '0x' + pair.toString(16), signer )
-    const { reserve0, reserve1 } = await Pool.get_reserves()
-    const { token0, token1 } = sort_tokens( tokenA, tokenB, null, null )
+    const fromToken = is_native( tokenA.address ) ? TOKENS[ network ].weth : tokenA.address
+    const toToken = tokenB.address
 
-    return { Pool, token0, token1, reserve0, reserve1 }
+    const pair = await Router.getPairInfo( [ fromToken, toToken], false )
+
+    const pool: Pool = {
+        tokenA: pair[0],
+        tokenB: pair[1],
+        pair: pair[2],
+        reserveA: pair[3],
+        reserveB: pair[4],
+        fee: pair[5]
+    }
+
+    return pool
 }
 
 export const get_balance = async(
-    account_address: string, 
+    Wallet_address: string, 
     token_address: string, 
-    signer: Account 
-): Promise<{ uint256: Uint256, bigint: bigint, string: string, decimals: number }> => {
+    signer: Wallet 
+): Promise<{ bigint: bigint, string: string, decimals: number }> => {
     
     try {
 
-        const erc20 = new Contract(ERC20_ABI, token_address, signer);
+        const erc20 = new Contract(token_address, ERC20_ABI, signer);
 
-        const { balance } = await erc20.balanceOf(account_address);
+        const balance = await erc20.balanceOf(Wallet_address);
         const { decimals } = await erc20.decimals();
-        let formated = ethers.formatUnits( uint256.uint256ToBN( balance ), decimals );
+        let formated = ethers.formatUnits( balance , decimals );
         
         return { 
-            uint256: balance,
-            bigint: uint256.uint256ToBN( balance ),
+            bigint: balance,
             string: formated, 
             decimals: decimals
         };
@@ -58,7 +69,7 @@ export const get_balance = async(
 
 }
 
-export const is_balance = async(signer: Account, addressA: string, addressB: string): Promise<number> => {
+export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
 
     try {
 
@@ -77,6 +88,12 @@ export const is_balance = async(signer: Account, addressA: string, addressB: str
     }
 }
 
+
+export const is_native = ( token: string ): boolean => {
+    return BigInt( token ) === BigInt( 0 )
+}
+
+/*
 export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | null, amountB: string | null ): { token0: Token, token1: Token, amount0: TokenAmount, amount1: TokenAmount } => {
 
     const token0 = BigInt( tokenA.address ) < BigInt( tokenB.address ) ? tokenA : tokenB
@@ -86,20 +103,4 @@ export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | nul
 
     return { token0, token1, amount0, amount1 }
 }
-
-export const Uint256_to_string = (number: Uint256, decimals: number = 18): string => 
-{
-    return ethers.formatUnits( uint256.uint256ToBN( number ), decimals )
-}
-export const jsbi_to_string = (number: JSBI, decimals: number = 18): string => 
-{
-    return ethers.formatUnits( BigInt( number.toString() ), decimals )
-}
-export const jsbi_to_Uint256 = (number: JSBI, decimals: number = 18): Uint256 => 
-{
-    return uint256.bnToUint256( BigInt( number.toString() ) )
-}
-export const string_to_Uint256 = (number: string, decimals: number = 18): Uint256 => 
-{
-    return uint256.bnToUint256( ethers.parseUnits( number, decimals ) )
-}
+*/

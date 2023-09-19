@@ -485,7 +485,7 @@ export default [
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
+      { "internalType": "address", "name": "Wallet", "type": "address" }
     ],
     "name": "getCurrentVotes",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -494,7 +494,7 @@ export default [
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
+      { "internalType": "address", "name": "Wallet", "type": "address" },
       { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
     ],
     "name": "getPriorVotes",

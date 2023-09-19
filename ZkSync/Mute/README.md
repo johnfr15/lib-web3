@@ -35,7 +35,7 @@ Mute.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ### Swap  
 ```javascript
 export const swap = async(
-    signer: Account,
+    signer: Wallet,
     path: [string, string],
     amountIn: string | null,
     amountOut: string | null = null,
@@ -51,7 +51,7 @@ The swap function need at least 3 parameters and 6 optionnal
 **note:** amountIn is for *exact input*, where amountOut is for *exact output* we must specify at least one of both.  
           if amountOut *exact output* is used amountIn should be set to ***null***.  
   
-`signer`: The signer account that will sign the transaction.  
+`signer`: The signer Wallet that will sign the transaction.  
   
 `path`: An array containing the address of the 2 tokens involved the first index is the address of token that will enter the pool **(in token)** and the second index is the address of the token getting out of the pool (out token)  
   
@@ -73,7 +73,7 @@ The swap function need at least 3 parameters and 6 optionnal
   
 ```javascript
 export const addLiquidity = async(
-    signer: Account,                        
+    signer: Wallet,                        
     addressA: string,                       
     amountA: string | null,     
     addressB: string,                       
@@ -113,7 +113,7 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
   
 ```javascript
 export const withdrawLiquidity = async(
-    signer: Account, 
+    signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
     percent: number = 100, 

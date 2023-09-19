@@ -1,76 +1,41 @@
-import { ethers } from "ethers";
-import { TokenAmount, Token, TradeType, Fraction } from "l0k_swap-sdk";
-import { Contract, Uint256, uint256 } from "starknet";
-import { Pool, Trade } from "../types";
-import { jsbi_to_Uint256, string_to_Uint256 } from "./index"
+import { ethers, Contract, Wallet } from "ethers";
+import { Pool, Trade, Token } from "../types";
+import { MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
+import { is_native } from ".";
 
-export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
-
-    try {
-
-        const reserve_in: Uint256  = amountIn.token.address === pool.token0.address ? pool.reserve0 : pool.reserve1
-        const reserve_out: Uint256 = amountIn.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
-        const token_out: Token     = amountIn.token.address !== pool.token0.address ? pool.token0 : pool.token1
-
-        const { amountOut }: { amountOut: Uint256 } = await Router.get_amount_out( jsbi_to_Uint256( amountIn.raw ), reserve_in, reserve_out )
-        const amount_out = new TokenAmount( token_out, uint256.uint256ToBN( amountOut ) )
-
-        return amount_out
-        
-    } catch (error) {
-        
-        throw error
-    }
-}
-
-export const get_amount_in = async( amountOut: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
-    
-    try {
-        
-        const reserve_out: Uint256 = amountOut.token.address === pool.token0.address ? pool.reserve0 : pool.reserve1
-        const reserve_in: Uint256  = amountOut.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
-        const token_in: Token      = amountOut.token.address !== pool.token0.address ? pool.token0 : pool.token1
-    
-
-        const { amountIn }: { amountIn: Uint256 } = await Router.get_amount_in( jsbi_to_Uint256( amountOut.raw ), reserve_in, reserve_out )
-        const amount_in = new TokenAmount( token_in, uint256.uint256ToBN( amountIn ) )
-        
-        return amount_in
-
-    } catch (error) {
-        
-        throw error
-
-    }
-}
 
 export const get_trade = async( 
     tokenIn: Token, 
-    amountIn: string | null, 
     tokenOut: Token, 
-    amountOut: string | null,
+    amountIn: string,
     pool: Pool,
-    Router: Contract 
+    slipage: number,
+    deadline: number | undefined,
+    network: string,
+    signer: Wallet
 ): Promise<Trade> => {
 
     try {
 
-        let amount_in  = new TokenAmount( tokenIn, ethers.parseUnits( amountIn ?? '0', tokenIn.decimals ) )
-        let amount_out = new TokenAmount( tokenOut, ethers.parseUnits( amountOut ?? '0', tokenOut.decimals ) )
-        const tradeType = amount_out.toExact() === '0' ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT
-        
-        if ( tradeType === TradeType.EXACT_INPUT )  amount_out = await get_amount_out( amount_in, pool, Router )
-        if ( tradeType === TradeType.EXACT_OUTPUT ) amount_in  = await get_amount_in( amount_out, pool, Router )
-        
-        const priceImpact = await calc_price_impact( amount_in, amount_out, tradeType, Router, pool )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
+        const reserve_in: number  = tokenIn.address === pool.tokenA ? parseFloat( ethers.formatUnits( pool.reserveA, tokenIn.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenIn.decimals ) )
+        const reserve_out: number = tokenOut.address === pool.tokenA ? parseFloat( ethers.formatUnits( pool.reserveA, tokenOut.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenOut.decimals ) )
+
+        const amount_in: bigint      = ethers.parseUnits( amountIn, tokenIn.decimals ) 
+        const amount_out: bigint     = ethers.parseUnits( (parseFloat( amountIn ) * reserve_out / reserve_in).toString(), tokenOut.decimals )
+        console.log(amount_out)
+        const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        
         return { 
-            tradeType: tradeType, 
+            tokenFrom: tokenIn,
+            tokenTo: tokenOut,
+            pool: pool,
             amountIn: amount_in, 
-            amountInMax: null, 
             amountOut: amount_out, 
-            amountOutMin: null, 
-            priceImpact: priceImpact 
+            amountOutMin: amount_out_min, 
+            priceImpact: 0,
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
         }
 
     } catch (error) {
@@ -80,44 +45,65 @@ export const get_trade = async(
     }
 }
 
-export const calc_price_impact = async( amountIn: TokenAmount, amountOut: TokenAmount, tradeType: TradeType, Router: Contract, pool: Pool ) => {
+export const calc_price_impact = async( trade: Trade, pool: Pool, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<number> => {
 
     let percent: number
 
-    const reserve_in  = amountIn.token.address === pool.token0.address ? pool.reserve0 : pool.reserve1
-    const reserve_out = amountIn.token.address !== pool.token0.address ? pool.reserve0 : pool.reserve1
+    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-    if ( tradeType == TradeType.EXACT_INPUT )
-    {
-        const { amountB: quoteOut }: { amountB: Uint256 } = await Router.quote( jsbi_to_Uint256( amountIn.raw ), reserve_in, reserve_out )
-        const diffOut = amountOut.multiply( uint256.uint256ToBN( reserve_out ) ).divide( uint256.uint256ToBN( quoteOut ))
-        percent = 10000 - parseFloat( (uint256.uint256ToBN( reserve_out ) * BigInt(10000) / ethers.parseEther( diffOut.toSignificant(3))).toString() )
-    }
-    else
-    {
-        const { amountB: quoteIn }: { amountB: Uint256 } = await Router.quote( jsbi_to_Uint256( amountOut.raw ), reserve_out, reserve_in )
-        const diffIn = amountIn.multiply(  uint256.uint256ToBN( reserve_in ) ).divide( uint256.uint256ToBN( quoteIn ))
-        percent = 10000 - parseFloat( (uint256.uint256ToBN( reserve_in ) * BigInt(10000) / ethers.parseEther( diffIn.toSignificant(3))).toString() )
-    }
+    const reserve_in  = trade.tokenFrom.address === pool.tokenA ? pool.reserveA : pool.reserveB
+    const reserve_out = trade.tokenTo.address   === pool.tokenA ? pool.reserveA : pool.reserveB
 
-    const priceImpact = percent < 0 ? (percent * -1) / 100 : percent / 100
+    const quoteOut: bigint = await Router.quote( trade.amountIn, reserve_in, reserve_out )
+    const diffOut: bigint  = trade.amountOut * reserve_out / quoteOut
+
+    percent = 10000 - parseFloat( (reserve_out * BigInt( 10000 ) / diffOut).toString() )
+
+    const priceImpact = percent < 0 ? -percent / 100 : percent / 100
+
     return priceImpact
 }
 
-export const get_out_min = ( amountOut: TokenAmount, slipage: number): Uint256 => {
+/**
+ * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
+ * 
+ */
+export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
 
-    const amount_out_min = amountOut.multiply( new Fraction( BigInt( (100 - slipage) * 100 ) ) )
-                                    .divide( BigInt( 100 * 100 ) )
-                                    .toFixed( amountOut.token.decimals )
+    let datas: string;
 
-    return string_to_Uint256( amount_out_min, amountOut.token.decimals )
-}
+    if ( is_native( trade.tokenFrom.address ) )
+    {
+        datas = Router.interface.encodeFunctionData( "swapExactETHForTokens", [
+            trade.amountOutMin,
+            [ trade.tokenFrom.address, trade.tokenTo.address ],
+            Router.target.toString(),
+            trade.deadline,
+            [ false ]
+        ] )
+    }
+    else if ( is_native( trade.tokenTo.address ) )
+    {
+        datas = Router.interface.encodeFunctionData( "swapExactTokensForETH", [
+            trade.amountIn,
+            trade.amountOutMin,
+            [ trade.tokenFrom.address, trade.tokenTo.address ],
+            Router.target.toString(),
+            trade.deadline,
+            [ false ]
+        ] )
+    }
+    else
+    {
+        datas = Router.interface.encodeFunctionData( "swapExactTokensForTokens", [
+            trade.amountIn,
+            trade.amountOutMin,
+            [ trade.tokenFrom.address, trade.tokenTo.address ],
+            Router.target.toString(),
+            trade.deadline,
+            [ false ]
+        ] )
+    }
 
-export const get_in_max = ( amountIn: TokenAmount, slipage: number): Uint256 => {
-
-    const amount_in_max = amountIn.multiply( new Fraction( BigInt( (100 + slipage) * 100 ) ) )
-                                    .divide( BigInt( 100 * 100 ) )
-                                    .toFixed( amountIn.token.decimals )
-
-    return string_to_Uint256( amount_in_max, amountIn.token.decimals )
+    return datas
 }

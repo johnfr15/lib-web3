@@ -1,13 +1,11 @@
-import { ethers } from "ethers";
-import { Account, Contract, uint256 } from "starknet"
-import { Token, JSBI } from "l0k_swap-sdk";
-import { ERC20_ABI, ROUTER_ADDRESS } from "../constant";
+import { ethers, Wallet, Contract } from "ethers";
+import { ERC20_ABI, ROUTER_ADDRESS } from "../config/abis";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { RemoveLiquidityTx, RemoveLiquidityCallData, Pool } from "../types";
 
 
 export const get_remove_calldata = async(
-    signer: Account, 
+    signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
     percent: number, 
@@ -39,7 +37,7 @@ export const get_remove_calldata = async(
 }
 
 const get_removeLiq_tx = async(
-    signer: Account, 
+    signer: Wallet, 
     pool: Pool,
     percent: number, 
     slipage: number, 

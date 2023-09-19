@@ -1,15 +1,39 @@
-import { Token, TokenAmount, TradeType } from "l0k_swap-sdk"
-import { Uint256, Contract} from "starknet"
 
-
-export type Pool = {
-    Pool: Contract
-    token0: Token,
-    token1: Token,
-    reserve0: Uint256,
-    reserve1: Uint256
+export type Token = {
+    chainId: number
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+    logoURI: string
 }
 
+export type Pool = {
+    tokenA: string
+    tokenB: string
+    pair: string
+    reserveA: bigint
+    reserveB: bigint
+    fee: bigint
+}
+
+export type Trade = {
+    tokenFrom: Token
+    tokenTo: Token
+    pool: Pool
+    amountIn: bigint
+    amountOut: bigint
+    amountOutMin: bigint
+    priceImpact: number
+    deadline: number
+}
+
+export declare enum TradeType {
+    EXACT_INPUT,
+    EXACT_OUTPUT
+}
+
+/*
 export type Trade = {
     amountIn: TokenAmount
     amountInMax: Uint256 | null
@@ -92,3 +116,4 @@ export type RemoveLiquidityCallData = {
 }
 
 
+*/

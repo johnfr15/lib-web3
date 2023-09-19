@@ -1,6 +1,5 @@
-import { ethers } from "ethers";
-import { Account, Contract, uint256, Uint256 } from "starknet"
-import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
+import { ethers, Wallet, Contract } from "ethers";
+import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/abis";
 import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../types";
 import { get_token, get_balance, sort_tokens, get_pool, Uint256_to_string } from "../utils";
 import { Fraction, Token } from "l0k_swap-sdk";
@@ -8,7 +7,7 @@ import { Fraction, Token } from "l0k_swap-sdk";
 
 
 export const get_add_liq_calldata = async(
-    signer: Account, 
+    signer: Wallet, 
     addressA: string,
     amountA: string | null,
     addressB: string,
@@ -55,7 +54,7 @@ export const get_add_liq_calldata = async(
 }
 
 const get_max_liq = async(
-    signer: Account, 
+    signer: Wallet, 
     pool: Pool,
     network: string,
     slipage: number,
@@ -105,7 +104,7 @@ const get_max_liq = async(
 }
 
 const get_liq = async(
-    signer: Account, 
+    signer: Wallet, 
     pool: Pool, 
     addr: string, 
     amount: string, 
