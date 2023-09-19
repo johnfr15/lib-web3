@@ -24,14 +24,16 @@ export const get_pool = async( tokenA: Token, tokenB: Token, network: string, si
 
     const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
+    const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
+
     const fromToken = is_native( tokenA.address ) ? TOKENS[ network ].weth : tokenA.address
     const toToken = tokenB.address
 
     const pair = await Router.getPairInfo( [ fromToken, toToken], false )
 
     const pool: Pool = {
-        tokenA: pair[0],
-        tokenB: pair[1],
+        tokenA: token0,
+        tokenB: token1,
         pair: pair[2],
         reserveA: pair[3],
         reserveB: pair[4],
@@ -99,6 +101,17 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
     }
 }
 
+export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, pool: Pool): string => {
+
+    const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+    const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB 
+
+    const amount_in = parseFloat( amountIn )
+    const reserve_in = parseFloat( ethers.formatUnits( reserveIn, tokenIn.decimals ) )
+    const reserve_out = parseFloat( ethers.formatUnits( reserveOut, tokenOut.decimals ) )
+
+    return (amount_in * reserve_out / reserve_in).toFixed( tokenOut.decimals )
+}
 
 export const is_native = ( token: string ): boolean => {
     return BigInt( token ) === BigInt( 0 )

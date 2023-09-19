@@ -1,7 +1,7 @@
 import { ethers, Contract, Wallet } from "ethers";
 import { Pool, Trade, Token } from "../types";
 import { MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
-import { is_native } from ".";
+import { get_quote, is_native } from ".";
 
 
 export const get_trade = async( 
@@ -11,20 +11,13 @@ export const get_trade = async(
     pool: Pool,
     slipage: number,
     deadline: number | undefined,
-    network: string,
-    signer: Wallet
 ): Promise<Trade> => {
 
     try {
 
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
-
-        const reserve_in: number  = tokenIn.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenIn.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenIn.decimals ) )
-        const reserve_out: number = tokenOut.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenOut.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenOut.decimals ) )
-
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const amount_out: bigint = ethers.parseUnits( (parseFloat( amountIn ) * reserve_out / reserve_in).toString(), tokenOut.decimals )
-        console.log(amount_out)
+        const quote: string = get_quote( amountIn, tokenIn, tokenOut, pool )
+        const amount_out: bigint = ethers.parseUnits( quote, tokenOut.decimals )
         const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         
         return { 

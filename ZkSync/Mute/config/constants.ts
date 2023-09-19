@@ -27,6 +27,8 @@ export const MUTE_PAIR_ABI = pair_abi
 
 
 // Addresses
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+
 export const FACTORY_ADDRESS: { [key: string]: string } = {
   'MAINNET': '0x40be1cba6c5b47cdf9da7f963b6f761f4c60627d',
   'TESTNET': '0xCc05E242b4A82f813a895111bCa072c8BBbA4a0e'

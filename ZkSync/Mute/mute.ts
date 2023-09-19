@@ -147,7 +147,7 @@ export const addLiquidity = async(
 
         const gasTx1 = await signer.estimateGas( approveATx )
         approveATx.maxFeePerGas = gasTx1
-
+        
         tx1 = await signer.sendTransaction( approveATx )
         receipt1 = await tx1.wait()
 

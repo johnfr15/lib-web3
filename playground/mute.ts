@@ -1,15 +1,14 @@
-import { ethers, Wallet } from "ethers"
+import { ethers, Wallet, Contract } from "ethers"
 import Mute from "../ZkSync/Mute"
-
-import dotenv from "dotenv"
 import { log_balances } from "../ZkSync/Mute/log"
+import dotenv from "dotenv"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = Mute.Constant
+    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS, MUTE_ROUTER_ABI, ZERO_ADDRESS } = Mute.Constant
     
     try {
         // Set up
@@ -17,27 +16,28 @@ const main = async() => {
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
+
         console.log("account: ", signer.address)
         await log_balances( signer, network )
         console.log("")
 
 
-        // await Mute.swap(
-        //     signer,
-        //     [ "0x0", "0x0faF6df7054946141266420b43783387A78d82A9"],
-        //     "0.0001",
-        //     network
-        // )
-
-        Mute.addLiquidity( 
+        await Mute.swap(
             signer,
-            TOKENS[ network ].eth,
-            null,
-            TOKENS[ network ].dai,
-            "0.01",
-            false,
+            [ ZERO_ADDRESS, "0x0faF6df7054946141266420b43783387A78d82A9"],
+            "0.1",
             network
         )
+
+        // Mute.addLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].eth,
+        //     null,
+        //     TOKENS[ network ].dai,
+        //     "0.01",
+        //     false,
+        //     network
+        // )
 
         // Mute.withdrawLiquidity( 
         //     signer,
