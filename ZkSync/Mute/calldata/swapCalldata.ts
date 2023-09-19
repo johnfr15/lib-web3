@@ -30,7 +30,7 @@ export const get_swap_tx = async(
         
         if ( trade.priceImpact > priceImpact )
             throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }`)
-console.log( trade )
+
         const datas = encode_swap_datas( trade, Router )
 
         const swapTx: TransactionRequest = {

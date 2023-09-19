@@ -19,11 +19,11 @@ export const get_trade = async(
 
         const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-        const reserve_in: number  = tokenIn.address === pool.tokenA ? parseFloat( ethers.formatUnits( pool.reserveA, tokenIn.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenIn.decimals ) )
-        const reserve_out: number = tokenOut.address === pool.tokenA ? parseFloat( ethers.formatUnits( pool.reserveA, tokenOut.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenOut.decimals ) )
+        const reserve_in: number  = tokenIn.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenIn.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenIn.decimals ) )
+        const reserve_out: number = tokenOut.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenOut.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenOut.decimals ) )
 
-        const amount_in: bigint      = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const amount_out: bigint     = ethers.parseUnits( (parseFloat( amountIn ) * reserve_out / reserve_in).toString(), tokenOut.decimals )
+        const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
+        const amount_out: bigint = ethers.parseUnits( (parseFloat( amountIn ) * reserve_out / reserve_in).toString(), tokenOut.decimals )
         console.log(amount_out)
         const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         
@@ -51,8 +51,8 @@ export const calc_price_impact = async( trade: Trade, pool: Pool, network: 'TEST
 
     const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-    const reserve_in  = trade.tokenFrom.address === pool.tokenA ? pool.reserveA : pool.reserveB
-    const reserve_out = trade.tokenTo.address   === pool.tokenA ? pool.reserveA : pool.reserveB
+    const reserve_in  = trade.tokenFrom.address === pool.tokenA.address ? pool.reserveA : pool.reserveB
+    const reserve_out = trade.tokenTo.address   === pool.tokenA.address ? pool.reserveA : pool.reserveB
 
     const quoteOut: bigint = await Router.quote( trade.amountIn, reserve_in, reserve_out )
     const diffOut: bigint  = trade.amountOut * reserve_out / quoteOut

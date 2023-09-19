@@ -22,25 +22,25 @@ const main = async() => {
         console.log("")
 
 
-        await Mute.swap(
-            signer,
-            [ "0x0", "0x0faF6df7054946141266420b43783387A78d82A9"],
-            "0.0001",
-            network
-        )
-
-        // Mute.addLiquidity( 
-        //     starkSigner,
-        //     TOKENS[ network ].eth,
-        //     null,
-        //     TOKENS[ network ].dai,
-        //     "0.01",
-        //     false,
+        // await Mute.swap(
+        //     signer,
+        //     [ "0x0", "0x0faF6df7054946141266420b43783387A78d82A9"],
+        //     "0.0001",
         //     network
         // )
 
+        Mute.addLiquidity( 
+            signer,
+            TOKENS[ network ].eth,
+            null,
+            TOKENS[ network ].dai,
+            "0.01",
+            false,
+            network
+        )
+
         // Mute.withdrawLiquidity( 
-        //     starkSigner,
+        //     signer,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,
         //     100,

@@ -1,12 +1,12 @@
-import { ethers, Wallet, Contract } from "ethers";
-import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/abis";
-import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../types";
-import { get_token, get_balance, sort_tokens, get_pool, Uint256_to_string } from "../utils";
-import { Fraction, Token } from "l0k_swap-sdk";
+import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
+import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
+import { AddLiquidity, Pool, Token } from "../types";
+import { get_token, get_balance, get_pool, sort_tokens } from "../utils";
+import { encode_add_datas } from "../utils/add"
+import { addLiquidity } from "../mute";
 
 
-
-export const get_add_liq_calldata = async(
+export const get_add_liq_tx = async(
     signer: Wallet, 
     addressA: string,
     amountA: string | null,
@@ -15,36 +15,41 @@ export const get_add_liq_calldata = async(
     max: boolean,
     network: 'TESTNET' | 'MAINNET',
     slipage: number,
-    deadline: number,
-): Promise<AddLiquidityCallData> => {
+    deadline: number | null | undefined,
+): Promise<{ addTx: TransactionRequest, addLiquidity: AddLiquidity, pool: Pool }> => {
 
-    let add_liq_tx: AddLiquidityTx;
+    let addTx: TransactionRequest;
+    let addLiquidity: AddLiquidity
     
     try {
 
-        const token_a: Token = await get_token( addressA, network, signer )
-        const token_b: Token = await get_token( addressB, network, signer )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+
+        const token_a: Token     = await get_token( addressA, network, signer )
+        const token_b: Token     = await get_token( addressB, network, signer )
         const { token0, token1 } = sort_tokens( token_a, token_b, amountA, amountB )
 
-        const pool: Pool  = await get_pool( token0, token1, network, signer )
+        const pool: Pool = await get_pool( token0, token1, network, signer )
 
         if ( max )
         {
-            add_liq_tx = await get_max_liq( signer, pool, network, slipage, deadline )
+            addLiquidity = await get_max_liq( signer, pool, network, slipage, deadline )
         }
         else
         {
             let addr: string = amountA ? addressA : addressB
             let amount: string = amountA ? amountA : amountB!
-            add_liq_tx = await get_liq( signer, pool, addr, amount, network, slipage, deadline )
+            addLiquidity = await get_liq( signer, pool, addr, amount, network, slipage, deadline )
         }
 
-        const add_liq_callData: AddLiquidityCallData = {
-            addLiquidityTx: add_liq_tx,
-            utils: { tokenA: token_a, tokenB: token_b, pool: pool }
+        const datas = encode_add_datas( addLiquidity, Router )
+
+        addTx = {
+            to: ROUTER_ADDRESS[ network ],
+            data: datas
         } 
 
-        return add_liq_callData
+        return { addTx, addLiquidity, pool }
 
     } catch (error: any) {
         
@@ -58,42 +63,40 @@ const get_max_liq = async(
     pool: Pool,
     network: string,
     slipage: number,
-    deadline: number,
-): Promise<AddLiquidityTx> => {
+    deadline: number | null | undefined,
+): Promise<AddLiquidity> => {
 
     try {
-        const Router = new Contract( MUTE_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-        const balanceA = await get_balance( signer.address, pool.token0.address, signer )
-        const balanceB = await get_balance( signer.address, pool.token1.address, signer )
+        const balanceA = await get_balance( signer.address, pool.tokenA.address, signer )
+        const balanceB = await get_balance( signer.address, pool.tokenB.address, signer )
 
-        const { amountB: quoteB } = await Router.functions.quote( balanceA.uint256, pool.reserve0, pool.reserve1 )
-        const { amountB: quoteA } = await Router.functions.quote( balanceB.uint256, pool.reserve1, pool.reserve0 )
+        const quoteB = await Router.quote( balanceA.bigint, pool.reserveA, pool.reserveB )
+        const quoteA = await Router.quote( balanceB.bigint, pool.reserveB, pool.reserveA )
 
-        /**
+        /*
          * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
          *      that token B is our max token to add
          */
-        const b_is_min_balance: boolean = uint256.uint256ToBN( quoteB ) > balanceB.bigint
+        const b_is_min_balance: boolean = quoteB  > balanceB.bigint
 
-        let balance_a: bigint     = b_is_min_balance ? uint256.uint256ToBN( quoteA ) : balanceA.bigint;
-        let balance_b: bigint     = b_is_min_balance ? balanceB.bigint : uint256.uint256ToBN( quoteB );
+        let balance_a: bigint     = b_is_min_balance ?  quoteA : balanceA.bigint;
+        let balance_b: bigint     = b_is_min_balance ? balanceB.bigint :  quoteB;
         let balance_a_min: bigint = balance_a * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         let balance_b_min: bigint = balance_b * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
         return {
-            contractAddress: Router.address,
-            entrypoint: "add_liquidity",
-            calldata: [
-                pool.token0.address,
-                pool.token1.address,
-                uint256.bnToUint256( balance_a ),
-                uint256.bnToUint256( balance_b ),
-                uint256.bnToUint256( balance_a_min ),
-                uint256.bnToUint256( balance_b_min ),
-                signer.address,
-                deadline
-            ]
+            tokenA: pool.tokenA,
+            tokenB: pool.tokenB,
+            amountADesired: balance_a,
+            amountBDesired: balance_b,
+            amountAMin: balance_a_min,
+            amountBMin: balance_b_min,
+            to: ROUTER_ADDRESS[ network ],
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+            feeType: 0,
+            stable: false,
         }
 
     } catch (error: any) {
@@ -110,24 +113,23 @@ const get_liq = async(
     amount: string, 
     network: string, 
     slipage: number, 
-    deadline: number
-): Promise<AddLiquidityTx> => {
+    deadline: number | null | undefined
+): Promise<AddLiquidity> => {
 
     try {
         
-        const Router = new Contract( MUTE_ROUTER_ABI, ROUTER_ADDRESS[ network ], signer )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
         
-        const token_1: Token     = pool.token0.address === addr ? pool.token0 : pool.token1
-        const token_2: Token     = pool.token0.address !== addr ? pool.token0 : pool.token1
-        const reserve_1: Uint256 = pool.token0.address === addr ? pool.reserve0 : pool.reserve1
-        const reserve_2: Uint256 = pool.token0.address !== addr ? pool.reserve0 : pool.reserve1
+        const token_1: Token    = pool.tokenA.address === addr ? pool.tokenA : pool.tokenB
+        const token_2: Token    = pool.tokenA.address !== addr ? pool.tokenA : pool.tokenB
+        const reserve_1: bigint = pool.tokenA.address === addr ? pool.reserveA : pool.reserveB
+        const reserve_2: bigint = pool.tokenA.address !== addr ? pool.reserveA : pool.reserveB
 
         const balance_1 = await get_balance(signer.address, token_1.address, signer)
         const balance_2 = await get_balance(signer.address, token_2.address, signer)
 
         const amount_1: bigint = ethers.parseUnits( amount, token_1.decimals )
-        const { amountB } =  await Router.functions.quote( uint256.bnToUint256( amount_1 ), reserve_1, reserve_2 )
-        const amount_2: bigint = uint256.uint256ToBN( amountB )
+        const amount_2 =  await Router.quote( amount_1, reserve_1, reserve_2 )
         
         const amount_1_min: bigint = amount_1 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
@@ -137,19 +139,18 @@ const get_liq = async(
         if ( amount_2 > balance_2.bigint )
             throw new Error(`${ TICKER[ token_2.address ] }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
+
         return {
-            contractAddress: Router.address,
-            entrypoint: "add_liquidity",
-            calldata: [
-                token_1.address,
-                token_2.address,
-                uint256.bnToUint256( amount_1 ),
-                uint256.bnToUint256( amount_2 ),
-                uint256.bnToUint256( amount_1_min ),
-                uint256.bnToUint256( amount_2_min ),
-                signer.address,
-                deadline
-            ]
+            tokenA: token_1,
+            tokenB: token_2,
+            amountADesired: amount_1,
+            amountBDesired: amount_2,
+            amountAMin: amount_1_min,
+            amountBMin: amount_2_min,
+            to: ROUTER_ADDRESS[ network ],
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+            feeType: 0,
+            stable: false,
         }
 
     } catch(error) {

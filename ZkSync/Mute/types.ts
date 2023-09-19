@@ -9,8 +9,8 @@ export type Token = {
 }
 
 export type Pool = {
-    tokenA: string
-    tokenB: string
+    tokenA: Token
+    tokenB: Token
     pair: string
     reserveA: bigint
     reserveB: bigint
@@ -33,6 +33,19 @@ export declare enum TradeType {
     EXACT_OUTPUT
 }
 
+
+export type AddLiquidity = {
+    tokenA: Token
+    tokenB: Token
+    amountADesired: bigint
+    amountBDesired: bigint
+    amountAMin: bigint
+    amountBMin: bigint
+    to: string
+    deadline: number
+    feeType: number
+    stable: boolean
+}
 /*
 export type Trade = {
     amountIn: TokenAmount

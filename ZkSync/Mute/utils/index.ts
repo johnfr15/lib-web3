@@ -93,14 +93,13 @@ export const is_native = ( token: string ): boolean => {
     return BigInt( token ) === BigInt( 0 )
 }
 
-/*
-export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | null, amountB: string | null ): { token0: Token, token1: Token, amount0: TokenAmount, amount1: TokenAmount } => {
+
+export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | null, amountB: string | null ): { token0: Token, token1: Token, amount0: bigint, amount1: bigint } => {
 
     const token0 = BigInt( tokenA.address ) < BigInt( tokenB.address ) ? tokenA : tokenB
     const token1 = BigInt( tokenA.address ) > BigInt( tokenB.address ) ? tokenA : tokenB 
-    const amount0 = token0.address === tokenA.address ? new TokenAmount( token0, ethers.parseUnits( amountA ?? '0', token0.decimals)) : new TokenAmount( token0, ethers.parseUnits( amountB ?? '0', token0.decimals))
-    const amount1 = token1.address === tokenA.address ? new TokenAmount( token1, ethers.parseUnits( amountA ?? '0', token1.decimals)) : new TokenAmount( token1, ethers.parseUnits( amountB ?? '0', token1.decimals))
+    const amount0 = token0.address === tokenA.address ? ethers.parseUnits( amountA ?? '0', token0.decimals) : ethers.parseUnits( amountB ?? '0', token0.decimals)
+    const amount1 = token1.address === tokenA.address ? ethers.parseUnits( amountA ?? '0', token1.decimals) : ethers.parseUnits( amountB ?? '0', token1.decimals)
 
     return { token0, token1, amount0, amount1 }
 }
-*/

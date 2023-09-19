@@ -3,7 +3,7 @@ import { ROUTER_ADDRESS, TICKER } from './config/constants';
 import { get_balance, is_balance, is_native } from './utils';
 import { get_swap_tx } from './calldata/swapCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
-import { get_add_liq_calldata } from './calldata/addLiqCalldata';
+import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
 
 
@@ -33,7 +33,8 @@ export const swap = async(
 ) => {
 
     let approveTx: TransactionRequest | undefined
-    let tx1: TransactionResponse, tx2: TransactionResponse, receipt1: TransactionReceipt | null, receipt2: TransactionReceipt | null
+    let tx1: TransactionResponse, receipt1: TransactionReceipt | null
+    let tx2: TransactionResponse, receipt2: TransactionReceipt | null
 
     try {
 
@@ -49,7 +50,7 @@ export const swap = async(
             approveTx = await get_approve_tx( signer, amountIn, path[0], network )
 
 
-        /*========================================= TX ================================================================================================*/
+        /*========================================= TX 1 ================================================================================================*/
         if ( approveTx )
         {
             console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ amountIn } ${ TICKER[ path[0] ] }...`)
@@ -64,11 +65,13 @@ export const swap = async(
             console.log("hash: ", tx1.hash)
             console.log("Fees: ", ethers.formatEther( receipt1?.fee ?? '0' ))
         }
+        /*=============================================================================================================================================*/
 
+        /*========================================= TX 2 ================================================================================================*/
         console.log(`2) Swapping exact ${ amountIn } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( trade.amountOutMin, trade.tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
 
-        const gasTx1 = await signer.estimateGas( swapTx )
-        swapTx.maxFeePerGas = maxFees ?? gasTx1
+        const gasTx2 = await signer.estimateGas( swapTx )
+        swapTx.maxFeePerGas = maxFees ?? gasTx2
 
         tx2 = await signer.sendTransaction( swapTx )
         receipt2 = await tx2.wait()
@@ -114,7 +117,9 @@ export const addLiquidity = async(
     maxFees?: bigint,
 ): Promise<void> => {
 
-    deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
+    let tx1: TransactionResponse, receipt1: TransactionReceipt | null
+    let tx2: TransactionResponse, receipt2: TransactionReceipt | null
+    let tx3: TransactionResponse, receipt3: TransactionReceipt | null
 
     try {
 
@@ -125,34 +130,58 @@ export const addLiquidity = async(
         if ( await is_balance( signer, addressA, addressB ) === 0 )
             throw(`balance is empty for token ${ TICKER[ addressA ] } or ${ TICKER[ addressB ] } or both.`)
 
-/*        
+        
         // Get add liquidity Tx
-        const add_liq_calldata = await get_add_liq_calldata( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { addLiquidityTx, utils } = add_liq_calldata
-        const [ tokenA, tokenB, amountADesired, amountBDesired ] = addLiquidityTx.calldata
+        const addLiqTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
+        const { addTx, addLiquidity } = addLiqTx
+        const { tokenA, tokenB, amountADesired, amountBDesired } = addLiquidity
 
         // Get approve token 'a' Tx
-        const approveATx = await get_approve_calldata(signer, Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ), tokenA as string, network)
+        const approveATx = await get_approve_tx(signer, ethers.formatUnits( amountADesired, tokenA.decimals ), tokenA.address, network)
 
         // Get approve token 'b' Tx
-        const approveBTx = await get_approve_calldata(signer, Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ), tokenB as string, network)
-*/        
-        /*========================================= TX ================================================================================================*/
-/*
-        console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountADesired as Uint256, utils.tokenA.decimals ) } ${ TICKER[ tokenA as string ] }` )
-        console.log(`\t2) Approving ${ addLiquidityTx.contractAddress } to spend ${ Uint256_to_string( amountBDesired as Uint256, utils.tokenB.decimals ) } ${ TICKER[ tokenB as string ] }` )
-        console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA as string ] }/${ TICKER[ tokenB as string ] }` )
+        const approveBTx = await get_approve_tx(signer, ethers.formatUnits( amountBDesired, tokenB.decimals ), tokenB.address, network)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveATx, approveBTx, addLiquidityTx ]);
-        const multiCall           = await signer.execute([ approveATx, approveBTx, addLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        /*========================================= TX 1 ================================================================================================*/
+        console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amountADesired, tokenA.decimals ) } ${ TICKER[ tokenA.address ] }...`)
+
+        const gasTx1 = await signer.estimateGas( approveATx )
+        approveATx.maxFeePerGas = gasTx1
+
+        tx1 = await signer.sendTransaction( approveATx )
+        receipt1 = await tx1.wait()
+
+        console.log("Transaction valided !")
+        console.log("hash: ", tx1.hash)
+        console.log("Fees: ", ethers.formatEther( receipt1?.fee ?? '0' ))
+        /*=============================================================================================================================================*/
+
+        /*========================================= TX 2 ================================================================================================*/
+        console.log(`2) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amountBDesired, tokenB.decimals ) } ${ TICKER[ tokenB.address ] }...`)
+
+        const gasTx2 = await signer.estimateGas( approveBTx )
+        approveATx.maxFeePerGas = gasTx2
+
+        tx2 = await signer.sendTransaction( approveBTx )
+        receipt2 = await tx2.wait()
+
+        console.log("Transaction valided !")
+        console.log("hash: ", tx2.hash)
+        console.log("Fees: ", ethers.formatEther( receipt2?.fee ?? '0' ))
+        /*=============================================================================================================================================*/
+
+        /*========================================= TX 2 ================================================================================================*/
+        console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
+
+        const gasTx3 = await signer.estimateGas( addTx )
+        addTx.maxFeePerGas = maxFees ?? gasTx3
+
+        tx3 = await signer.sendTransaction( addTx )
+        receipt3 = await tx3.wait()
         
-        console.log(`\nTransaction valided !`)
-        console.log("hash:            ", multiCall.transaction_hash)
-        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
-        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-*/
+        console.log("Transaction valided !")
+        console.log("hash: ", tx3.hash)
+        console.log("Fees: ", ethers.formatEther( receipt3?.fee ?? '0' ))
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
