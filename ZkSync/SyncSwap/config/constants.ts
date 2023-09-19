@@ -1,7 +1,7 @@
 import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/mute_router_abi"
-import factory_abi from "./abis/mute_factory_abi"
-import pair_abi from "./abis/mute_pair_abi"
+import router_abi from "./abis/router_abi"
+import factory_abi from "./abis/vault_abi"
+import pair_abi from "./abis/classic_pool_factory_abi"
 import { JsonRpcProvider } from 'ethers';
 
 
@@ -27,20 +27,32 @@ export const MUTE_PAIR_ABI = pair_abi
 
 
 // Addresses
-export const FACTORY_ADDRESS: { [key: string]: string } = {
-  'MAINNET': '0x40be1cba6c5b47cdf9da7f963b6f761f4c60627d',
-  'TESTNET': '0xCc05E242b4A82f813a895111bCa072c8BBbA4a0e'
-}
-
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
-  'MAINNET': '0x8B791913eB07C32779a16750e3868aA8495F5964',
-  'TESTNET': '0x96c2Cf9edbEA24ce659EfBC9a6e3942b7895b5e8',
+  'MAINNET': '0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295',
+  'TESTNET': '0xB3b7fCbb8Db37bC6f572634299A58f51622A847e',
 }
 
-export const MULTI_CALL:  { [key: string]: string } = {
-  'MAINNET': '0xb1F9b5FCD56122CdfD7086e017ec63E50dC075e7',
-  'TESTNET': '0xd9Ee4c1e04059D4B0dd02b747282511bEE4E5fB5',
+export const VAULT:  { [key: string]: string } = {
+  'MAINNET': '0x621425a1Ef6abE91058E9712575dcc4258F8d091',
+  'TESTNET': '0x4Ff94F499E1E69D687f3C3cE2CE93E717a0769F8',
 }
+
+export const POOL_MASTER:  { [key: string]: string } = {
+  'MAINNET': '0xbB05918E9B4bA9Fe2c8384d223f0844867909Ffb',
+  'TESTNET': '0x22E50b84ec0C362427B617dB3e33914E91Bf865a',
+}
+
+export const CLASSIC_POOL_FACTORY:  { [key: string]: string } = {
+  'MAINNET': '0xf2DAd89f2788a8CD54625C60b55cD3d2D0ACa7Cb',
+  'TESTNET': '0xf2FD2bc2fBC12842aAb6FbB8b1159a6a83E72006',
+}
+
+export const STABLE_POOL_FACTORY:  { [key: string]: string } = {
+  'MAINNET': '0x5b9f21d407F35b10CbfDDca17D5D84b129356ea3',
+  'TESTNET': '0xB6a70D6ab2dE494592546B696208aCEeC18D755f',
+}
+
+
 
 export const CHAIN_ID:  { [key: string]: number } = {
   'MAINNET': 324,
