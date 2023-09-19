@@ -1,33 +1,38 @@
-import { ethers, Wallet, Contract } from "ethers";
-import { ERC20_ABI, ROUTER_ADDRESS } from "../config/abis";
+import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
+import { ERC20_ABI, MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { RemoveLiquidityTx, RemoveLiquidityCallData, Pool } from "../types";
+import { Pool, RemoveLiquidity, Token } from "../types";
+import { encode_remove_datas } from "../utils/remove"
 
 
-export const get_remove_calldata = async(
+export const get_remove_tx = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
     percent: number, 
     slipage: number, 
     network: 'TESTNET' | 'MAINNET',
-    deadline: number,
-): Promise<RemoveLiquidityCallData> => {
+    deadline: number | null,
+): Promise<{ removeTx: TransactionRequest, removeLiq: RemoveLiquidity}> => {
 
     try {
         
-        const token_a = await get_token( tokenA, network, signer )
-        const token_b = await get_token( tokenB, network, signer )
-        
+        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+
+        const token_a: Token     = await get_token( tokenA, network, signer )
+        const token_b: Token     = await get_token( tokenB, network, signer )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
-        const pool = await get_pool( token0, token1, network, signer )
         
-        const tx: RemoveLiquidityTx = await get_removeLiq_tx( signer, pool, percent, slipage, network, deadline )
-        
-        return {
-            removeLiquidityTx: tx,
-            utils: { token0, token1, pool },
+        const pool: Pool = await get_pool( token0, token1, network, signer )
+        const removeLiq: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
+
+        const datas: string = encode_remove_datas( removeLiq, Router )
+        const removeTx = {
+            to: ROUTER_ADDRESS[ network ],
+            datas: datas
         }
+        
+        return { removeTx, removeLiq }
 
     } catch (error: any) {
         
@@ -36,40 +41,41 @@ export const get_remove_calldata = async(
     }
 }
 
-const get_removeLiq_tx = async(
+const get_removeLiq = async(
     signer: Wallet, 
+    network: 'TESTNET' | 'MAINNET',
     pool: Pool,
     percent: number, 
     slipage: number, 
-    network: 'TESTNET' | 'MAINNET',
-    deadline: number,
-): Promise<RemoveLiquidityTx> => {
+    deadline: number | null,
+): Promise<RemoveLiquidity> => {
 
     try {
 
-        const { totalSupply } = await pool.Pool.functions.totalSupply()
-        const reserveLp = uint256.uint256ToBN( totalSupply )
-        const balanceLp = await get_balance( signer.address, pool.Pool.address, signer )
+        const Pool              = new Contract( pool.pair, MUTE_PAIR_ABI, signer )
+        const lp                = await get_token( pool.pair, network, signer )
+        const reserveLp: bigint = await Pool.totalSupply()
+        const balanceLp         = await get_balance( signer.address, pool.pair, signer )
+
 
         const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
-        const amount_0_min: bigint = ( uint256.uint256ToBN( pool.reserve0 ) * liquidity / reserveLp) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
-        const amount_1_min: bigint = ( uint256.uint256ToBN( pool.reserve1 ) * liquidity / reserveLp) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        const amount_0_min: bigint = ( pool.reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        const amount_1_min: bigint = ( pool.reserveB * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
-        const tx: RemoveLiquidityTx = {
-            contractAddress: ROUTER_ADDRESS[ network ],
-            entrypoint: "remove_liquidity",
-            calldata: [
-                pool.token0.address,
-                pool.token1.address,
-                uint256.bnToUint256( liquidity ),
-                uint256.bnToUint256( amount_0_min ),
-                uint256.bnToUint256( amount_1_min ),
-                signer.address,
-                deadline
-            ],
+        const removeLiq: RemoveLiquidity = {
+            tokenA: pool.tokenA,
+            tokenB: pool.tokenB,
+            lp: lp,
+            balanceLp: balanceLp,
+            liquidity: liquidity,
+            amountAMin: amount_0_min,
+            amountBMin: amount_1_min,
+            to: signer.address,
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
+            stable: false,
         } 
         
-        return tx
+        return removeLiq
 
     } catch (error) {
         

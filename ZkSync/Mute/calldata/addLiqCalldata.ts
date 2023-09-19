@@ -93,7 +93,7 @@ const get_max_liq = async(
             amountBDesired: balance_b,
             amountAMin: balance_a_min,
             amountBMin: balance_b_min,
-            to: ROUTER_ADDRESS[ network ],
+            to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
             feeType: 0,
             stable: false,
@@ -147,7 +147,7 @@ const get_liq = async(
             amountBDesired: amount_2,
             amountAMin: amount_1_min,
             amountBMin: amount_2_min,
-            to: ROUTER_ADDRESS[ network ],
+            to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
             feeType: 0,
             stable: false,

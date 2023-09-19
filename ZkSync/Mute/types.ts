@@ -46,6 +46,19 @@ export type AddLiquidity = {
     feeType: number
     stable: boolean
 }
+
+export type RemoveLiquidity = {
+    tokenA: Token,
+    tokenB: Token,
+    lp: Token,
+    balanceLp: any,
+    liquidity: bigint,
+    amountAMin: bigint,
+    amountBMin: bigint,
+    to: string,
+    deadline: number,
+    stable: boolean
+}
 /*
 export type Trade = {
     amountIn: TokenAmount

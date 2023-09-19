@@ -1,10 +1,10 @@
 import { ethers, TransactionReceipt, TransactionRequest, TransactionResponse, Wallet } from 'ethers';
 import { ROUTER_ADDRESS, TICKER } from './config/constants';
-import { get_balance, is_balance, is_native } from './utils';
+import { is_balance, is_native } from './utils';
 import { get_swap_tx } from './calldata/swapCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
 import { get_add_liq_tx } from './calldata/addLiqCalldata';
-import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
+import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 
 
 
@@ -216,7 +216,8 @@ export const withdrawLiquidity = async(
     maxFees?: bigint,
 ) => {
 
-    deadline = deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20  // 20 minutes from the current Unix time
+    let tx1: TransactionResponse, receipt1: TransactionReceipt | null
+    let tx2: TransactionResponse, receipt2: TransactionReceipt | null
 
     try {
         if ( slipage < 0 || slipage > 100 )
@@ -224,35 +225,44 @@ export const withdrawLiquidity = async(
         if ( percent <= 0 || percent > 100 )
             throw new Error("Percent need to be set between 0 to 100")
 
-/*
+
         // Get widthdraw liquidity Tx
-        const withdraw_calldata = await get_remove_calldata( signer, tokenA, tokenB, percent, slipage, network, deadline )
-        const { removeLiquidityTx, utils } = withdraw_calldata
-        const [ token_a, token_b, liquidity, amountAMin, amountBMin ] = removeLiquidityTx.calldata
-        const { pool } = utils
-        const balanceLp = await get_balance( signer.address, pool.Pool.address, signer )
+        const withdrawTx = await get_remove_tx( signer, tokenA, tokenB, percent, slipage, network, deadline )
+        const { removeTx, removeLiq } = withdrawTx
+        const { liquidity, balanceLp, lp, amountAMin, amountBMin, tokenA: token0, tokenB: token1 } = removeLiq
 
         // Get approve Tx
-        const approveTx = await get_approve_calldata(signer, Uint256_to_string( liquidity as Uint256, balanceLp.decimals ), pool.Pool.address , network)
-*/
-        /*========================================= TX ================================================================================================*/
-/*        
-        console.log(`\nMulticall...`)
-        console.log(`\t1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ Uint256_to_string( liquidity as Uint256, balanceLp.decimals ) } ${TICKER[ pool.Pool.address ] ?? "LP"}`)
-        console.log(`\t2) Withdrawing ${ percent }% of liquidity for:\n\t\
-                    (minimum)${ Uint256_to_string( amountAMin as Uint256, utils.token0.decimals ) } ${ TICKER[ utils.token0.address ] }\n\t\
-                    (minimum)${ Uint256_to_string( amountBMin as Uint256, utils.token1.decimals ) } ${ TICKER[ utils.token1.address ] }
+        const approveTx = await get_approve_tx(signer, ethers.formatUnits( liquidity, balanceLp.decimals ), lp.address , network)
+
+        /*========================================= TX 1 ================================================================================================*/
+        console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( liquidity, balanceLp.decimals ) } ${ TICKER[ lp.address ] ?? "LP" }...`)
+
+        const gasTx1 = await signer.estimateGas( approveTx )
+        approveTx.maxFeePerGas = gasTx1
+
+        tx1 = await signer.sendTransaction( approveTx )
+        receipt1 = await tx1.wait()
+
+        console.log("Transaction valided !")
+        console.log("hash: ", tx1.hash)
+        console.log("Fees: ", ethers.formatEther( receipt1?.fee ?? '0' ))
+        /*=============================================================================================================================================*/
+
+        /*========================================= TX 2 ================================================================================================*/        
+        console.log(`2) Withdrawing ${ percent }% of liquidity for:\n\t\
+                    (minimum)${ ethers.formatUnits( amountAMin, token0.decimals ) } ${ TICKER[ token0.address ] }\n\t\
+                    (minimum)${ ethers.formatUnits( amountBMin, token1.decimals ) } ${ TICKER[ token1.address ] }
         `)
 
-        const { suggestedMaxFee } = await signer.estimateInvokeFee([ approveTx, removeLiquidityTx ]);
-        const multiCall           = await signer.execute([ approveTx, removeLiquidityTx ], undefined, { maxFee: maxFees ?? suggestedMaxFee })
-        const receipt: any        = await signer.waitForTransaction(multiCall.transaction_hash);
+        const gasTx2 = await signer.estimateGas( removeTx )
+        removeTx.maxFeePerGas = maxFees ?? gasTx2
+
+        tx2 = await signer.sendTransaction( removeTx )
+        receipt2 = await tx2.wait()
         
-        console.log(`\nTransaction valided !`)
-        console.log("hash:            ", multiCall.transaction_hash)
-        console.log("fees:            ", ethers.formatEther( receipt.actual_fee ) , "ETH")
-        console.log("suggestedMaxFee: ", ethers.formatEther( maxFees ?? suggestedMaxFee ), "ETH")
-*/
+        console.log("Transaction valided !")
+        console.log("hash: ", tx2.hash)
+        console.log("Fees: ", ethers.formatEther( receipt2?.fee ?? '0' ))
         /*=============================================================================================================================================*/
 
     } catch (error: any) {
