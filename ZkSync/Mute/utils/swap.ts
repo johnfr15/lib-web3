@@ -68,7 +68,7 @@ export const calc_price_impact = async( trade: Trade, pool: Pool, network: 'TEST
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
  * 
  */
-export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
+export const encode_swap_datas = ( trade: Trade, Router: Contract, signer: Wallet ): string => {
 
     let datas: string;
 
@@ -77,7 +77,7 @@ export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
         datas = Router.interface.encodeFunctionData( "swapExactETHForTokens", [
             trade.amountOutMin,
             [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
+            signer.address,
             trade.deadline,
             [ false ]
         ] )
@@ -88,7 +88,7 @@ export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
             trade.amountIn,
             trade.amountOutMin,
             [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
+            signer.address,
             trade.deadline,
             [ false ]
         ] )
@@ -99,7 +99,7 @@ export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
             trade.amountIn,
             trade.amountOutMin,
             [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
+            signer.address,
             trade.deadline,
             [ false ]
         ] )

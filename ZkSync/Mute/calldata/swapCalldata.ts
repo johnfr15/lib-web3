@@ -34,7 +34,7 @@ export const get_swap_tx = async(
         if ( balance_in.bigint === BigInt( 0 ) )
             throw new Error(`Error: Balance of token ${ TICKER[ path[0] ] } is empty`)
 
-        const datas = encode_swap_datas( trade, Router )
+        const datas = encode_swap_datas( trade, Router, signer )
 
         const swapTx: TransactionRequest = {
             to: ROUTER_ADDRESS[ network ],
