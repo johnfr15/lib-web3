@@ -1,8 +1,7 @@
-import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
-import { ERC20_ABI, MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
-import { get_balance, get_pool, get_token, is_balance, sort_tokens } from "../utils";
+import { Wallet, Contract} from "ethers";
+import { MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
+import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { Pool, RemoveLiquidity, Token } from "../types";
-import { encode_remove_datas } from "../utils/remove"
 
 
 export const get_remove_tx = async(
