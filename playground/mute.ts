@@ -13,7 +13,7 @@ const main = async() => {
     try {
         // Set up
         const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
-
+        const USDC_TESTNET =  "0x0faF6df7054946141266420b43783387A78d82A9"
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
 
@@ -22,12 +22,13 @@ const main = async() => {
         console.log("")
 
 
-        await Mute.swap(
-            signer,
-            [ "0x0faF6df7054946141266420b43783387A78d82A9", ZERO_ADDRESS ],
-            "1",
-            network
-        )
+
+        // await Mute.swap(
+        //     signer,
+        //     [ USDC_TESTNET, ZERO_ADDRESS ],
+        //     "1",
+        //     network
+        // )
 
         // Mute.addLiquidity( 
         //     signer,
