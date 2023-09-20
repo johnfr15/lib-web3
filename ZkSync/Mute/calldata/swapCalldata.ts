@@ -22,7 +22,7 @@ export const get_swap_tx = async(
         const token_in: Token   = await get_token( path[0], network, signer )
         const token_out: Token  = await get_token( path[1], network, signer )
         const pool: Pool        = await get_pool( token_in, token_out, network, signer )
-        const trade: Trade      = await get_trade( path, token_in, token_out, amountIn, pool, slipage, deadline )
+        const trade: Trade      = await get_trade( path, token_in, token_out, amountIn, pool, slipage, deadline, network )
 
         trade.priceImpact = await calc_price_impact( trade, pool )
         

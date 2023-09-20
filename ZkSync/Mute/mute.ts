@@ -5,7 +5,7 @@ import { get_swap_tx } from './calldata/swapCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
 import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
-import { exec_swap } from './utils/swap';
+import { exec_swap } from './transactions/swap';
 import { exec_approve } from './transactions/approve';
 
 
@@ -35,8 +35,6 @@ export const swap = async(
 ) => {
 
     let approveTx: any
-    let tx1: TransactionResponse, receipt1: TransactionReceipt | null | undefined
-    let tx2: TransactionResponse, receipt2: TransactionReceipt | null | undefined
 
     try {
 
@@ -52,30 +50,13 @@ export const swap = async(
             approveTx = await get_approve_tx( signer, amountIn, path[0], network )
 
 
-        /*========================================= TX 1 ================================================================================================*/
+        /*========================================= TX =================================================================================================*/
         if ( approveTx )
         {
-            console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ amountIn } ${ TICKER[ path[0] ] }...`)
-
-            tx1 = await exec_approve( approveTx )
-            receipt1 = await signer.provider?.waitForTransaction( tx1.hash )
-
-            console.log("Transaction valided !")
-            console.log("hash: ", tx1.hash)
-            console.log("Fees: ", ethers.formatEther( receipt1?.fee ?? '0' ))
+            await exec_approve( approveTx, signer )
         }
-        /*=============================================================================================================================================*/
 
-        /*========================================= TX 2 ================================================================================================*/
-        console.log(`2) Swapping exact ${ amountIn } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( swapTx.amountOutMin, swapTx.tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
-
-        console.log( swapTx )
-        tx2 = await exec_swap( swapTx, network, signer )
-        receipt2 = await signer.provider?.waitForTransaction( tx2.hash )
-        
-        console.log("Transaction valided !")
-        console.log("hash: ", tx2.hash)
-        console.log("Fees: ", ethers.formatEther( receipt2?.fee ?? '0' ))
+        await exec_swap( swapTx, signer )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
@@ -139,35 +120,10 @@ export const addLiquidity = async(
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_tx(signer, ethers.formatUnits( amountBDesired, tokenB.decimals ), tokenB.address, network)
 
-        /*========================================= TX 1 ================================================================================================*/
-        // console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amountADesired, tokenA.decimals ) } ${ TICKER[ tokenA.address ] }...`)
-
-        // const gasTx1 = await signer.estimateGas( approveATx )
-        // approveATx.maxFeePerGas = gasTx1
-        
-        // tx1 = await signer.sendTransaction( approveATx )
-        // receipt1 = await tx1.wait()
-
-        // console.log("Transaction valided !")
-        // console.log("hash: ", tx1.hash)
-        // console.log("Fees: ", ethers.formatEther( receipt1?.fee ?? '0' ))
-        /*=============================================================================================================================================*/
-
         /*========================================= TX 2 ================================================================================================*/
-        // console.log(`2) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amountBDesired, tokenB.decimals ) } ${ TICKER[ tokenB.address ] }...`)
+        await exec_approve( approveATx, signer )
+        await exec_approve( approveBTx, signer )
 
-        // const gasTx2 = await signer.estimateGas( approveBTx )
-        // approveATx.maxFeePerGas = gasTx2
-
-        // tx2 = await signer.sendTransaction( approveBTx )
-        // receipt2 = await tx2.wait()
-
-        // console.log("Transaction valided !")
-        // console.log("hash: ", tx2.hash)
-        // console.log("Fees: ", ethers.formatEther( receipt2?.fee ?? '0' ))
-        /*=============================================================================================================================================*/
-
-        /*========================================= TX 2 ================================================================================================*/
         console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
 
         const gasTx3 = await signer.estimateGas( addTx )

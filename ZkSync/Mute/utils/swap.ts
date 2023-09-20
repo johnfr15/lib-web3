@@ -1,7 +1,6 @@
-import { ethers, Contract, Wallet, TransactionResponse } from "ethers";
+import { ethers } from "ethers";
 import { Pool, Trade, Token } from "../types";
-import { MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
-import { get_quote, is_native } from ".";
+import { get_quote } from ".";
 
 
 export const get_trade = async( 
@@ -12,6 +11,7 @@ export const get_trade = async(
     pool: Pool,
     slipage: number,
     deadline: number | undefined,
+    network: 'TESTNET' | 'MAINNET'
 ): Promise<Trade> => {
 
     try {
@@ -30,7 +30,8 @@ export const get_trade = async(
             amountOut: amount_out, 
             amountOutMin: amount_out_min, 
             priceImpact: 0,
-            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+            network: network
         }
 
     } catch (error) {
@@ -57,49 +58,3 @@ export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<numb
     return priceImpact
 }
 
-/**
- * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
- * 
- */
-export const exec_swap = async( trade: Trade, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<TransactionResponse> => {
-
-    let tx: TransactionResponse;
-
-    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
-
-    if ( is_native( trade.path[0] ) )
-    {
-        tx = await Router.swapExactETHForTokens( 
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            signer.address,
-            trade.deadline,
-            [ false ],
-            { value: trade.amountIn }
-        )
-    }
-    else if ( is_native( trade.path[1] ) )
-    {
-        tx = await Router.swapExactTokensForETH(
-            trade.amountIn,
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            signer.address,
-            trade.deadline,
-            [ false ]
-        )
-    }
-    else
-    {
-        tx = await Router.swapExactTokensForTokens(
-            trade.amountIn,
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            signer.address,
-            trade.deadline,
-            [ false ]
-        )
-    }
-
-    return tx
-}
