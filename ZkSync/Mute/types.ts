@@ -66,5 +66,7 @@ export type RemoveLiquidity = {
     amountBMin: bigint,
     to: string,
     deadline: number,
-    stable: boolean
+    stable: boolean,
+    percent: number,
+    network: 'TESTNET' | 'MAINNET' 
 }

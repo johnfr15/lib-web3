@@ -1,9 +1,7 @@
-import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
+import { ethers, Wallet, Contract } from "ethers";
 import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
 import { AddLiquidity, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance } from "../utils";
-import { encode_add_datas } from "../utils/add"
-import { addLiquidity } from "../mute";
 
 
 export const get_add_liq_tx = async(

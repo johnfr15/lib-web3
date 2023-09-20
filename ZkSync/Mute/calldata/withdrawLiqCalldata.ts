@@ -13,7 +13,7 @@ export const get_remove_tx = async(
     slipage: number, 
     network: 'TESTNET' | 'MAINNET',
     deadline: number | null,
-): Promise<{ removeTx: TransactionRequest, removeLiq: RemoveLiquidity}> => {
+): Promise<RemoveLiquidity> => {
 
     try {
         
@@ -24,18 +24,13 @@ export const get_remove_tx = async(
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
         
         const pool: Pool = await get_pool( token0, token1, network, signer )
-        const removeLiq: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
+        const removeTx: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
 
-        if ( removeLiq.balanceLp.bigint === BigInt( 0 ) )
+        if ( removeTx.balanceLp.bigint === BigInt( 0 ) )
             throw(`Error: You don't have any LP token for pool ${ TICKER[ tokenA ] }/${ TICKER[ tokenB ] }`)
 
-        const datas: string = encode_remove_datas( removeLiq, Router )
-        const removeTx = {
-            to: ROUTER_ADDRESS[ network ],
-            datas: datas
-        }
         
-        return { removeTx, removeLiq }
+        return removeTx
 
     } catch (error: any) {
         
@@ -76,6 +71,8 @@ const get_removeLiq = async(
             to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
             stable: false,
+            percent: percent,
+            network: network
         } 
         
         return removeLiq
