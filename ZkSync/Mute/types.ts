@@ -18,6 +18,7 @@ export type Pool = {
 }
 
 export type Trade = {
+    path: [string, string]
     tokenFrom: Token
     tokenTo: Token
     pool: Pool
