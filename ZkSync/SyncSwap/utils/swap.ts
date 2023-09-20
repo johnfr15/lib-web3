@@ -1,33 +1,47 @@
-import { ethers, Contract, Wallet } from "ethers";
-import { Pool, Trade, Token } from "../types";
-import { MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
-import { is_native } from ".";
+import { Wallet, ethers } from "ethers";
+import { Pool, Trade, Token, SwapStep, SwapPath, WithdrawMode } from "../types";
+import { get_quote } from ".";
+import { ZERO_ADDRESS } from "../config/constants";
 
 
-export const get_trade = async( 
+export const get_trade = async(
+    signer: Wallet,
+    path: [string, string],
     tokenIn: Token, 
-    tokenOut: Token, 
+    tokenOut: Token,
     amountIn: string,
     pool: Pool,
     slipage: number,
     deadline: number | undefined,
-    network: string,
-    signer: Wallet
+    network: 'TESTNET' | 'MAINNET'
 ): Promise<Trade> => {
 
     try {
-
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
-
-        const reserve_in: number  = tokenIn.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenIn.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenIn.decimals ) )
-        const reserve_out: number = tokenOut.address === pool.tokenA.address ? parseFloat( ethers.formatUnits( pool.reserveA, tokenOut.decimals) ) : parseFloat( ethers.formatUnits( pool.reserveB, tokenOut.decimals ) )
-
-        const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const amount_out: bigint = ethers.parseUnits( (parseFloat( amountIn ) * reserve_out / reserve_in).toString(), tokenOut.decimals )
-        console.log(amount_out)
-        const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         
+        const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
+        const quote: string = get_quote( amountIn, tokenIn, tokenOut, pool )
+        const amount_out: bigint = ethers.parseUnits( quote, tokenOut.decimals )
+        const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+
+    
+        // There is only 1 step (2 tokens involved in the tx)
+        const steps: SwapStep[] = [{
+            pool: pool.pair,
+            data: encode_swap( tokenIn.address, signer.address, WithdrawMode.WITHDRAW_AND_UNWRAP_TO_NATIVE_ETH ),
+            callback: ZERO_ADDRESS, // we don't have a callback
+            callbackData: '0x',
+        }];
+
+        // There is only 1 step (2 tokens involved in the tx)
+        const paths: SwapPath[] = [{
+            steps: steps,
+            tokenIn: path[0],
+            amountIn: amount_in,
+        }]
+
         return { 
+            path: path,
+            paths: paths,
             tokenFrom: tokenIn,
             tokenTo: tokenOut,
             pool: pool,
@@ -35,7 +49,8 @@ export const get_trade = async(
             amountOut: amount_out, 
             amountOutMin: amount_out_min, 
             priceImpact: 0,
-            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20 // 20 minutes from the current Unix time
+            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+            network: network
         }
 
     } catch (error) {
@@ -45,17 +60,15 @@ export const get_trade = async(
     }
 }
 
-export const calc_price_impact = async( trade: Trade, pool: Pool, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<number> => {
+export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
 
     let percent: number
 
-    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+    const reserve_in  = BigInt( trade.tokenFrom.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+    const reserve_out = BigInt( trade.tokenTo.address   ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
 
-    const reserve_in  = trade.tokenFrom.address === pool.tokenA.address ? pool.reserveA : pool.reserveB
-    const reserve_out = trade.tokenTo.address   === pool.tokenA.address ? pool.reserveA : pool.reserveB
-
-    const quoteOut: bigint = await Router.quote( trade.amountIn, reserve_in, reserve_out )
-    const diffOut: bigint  = trade.amountOut * reserve_out / quoteOut
+    const quoteOut: string = get_quote( ethers.formatUnits( trade.amountIn, trade.tokenFrom.decimals), trade.tokenFrom, trade.tokenTo, pool )
+    const diffOut: bigint  = trade.amountOut * reserve_out / ethers.parseUnits( quoteOut, trade.tokenTo.decimals)
 
     percent = 10000 - parseFloat( (reserve_out * BigInt( 10000 ) / diffOut).toString() )
 
@@ -64,46 +77,14 @@ export const calc_price_impact = async( trade: Trade, pool: Pool, network: 'TEST
     return priceImpact
 }
 
-/**
- * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
- * 
- */
-export const encode_swap_datas = ( trade: Trade, Router: Contract ): string => {
+export const encode_swap = (tokenIn: string, signerAddress: string, withdrawMode: WithdrawMode): string => {
 
-    let datas: string;
+    const abiCoder = ethers.AbiCoder.defaultAbiCoder()
 
-    if ( is_native( trade.tokenFrom.address ) )
-    {
-        datas = Router.interface.encodeFunctionData( "swapExactETHForTokens", [
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
-            trade.deadline,
-            [ false ]
-        ] )
-    }
-    else if ( is_native( trade.tokenTo.address ) )
-    {
-        datas = Router.interface.encodeFunctionData( "swapExactTokensForETH", [
-            trade.amountIn,
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
-            trade.deadline,
-            [ false ]
-        ] )
-    }
-    else
-    {
-        datas = Router.interface.encodeFunctionData( "swapExactTokensForTokens", [
-            trade.amountIn,
-            trade.amountOutMin,
-            [ trade.tokenFrom.address, trade.tokenTo.address ],
-            Router.target.toString(),
-            trade.deadline,
-            [ false ]
-        ] )
-    }
+    const encoded_data = abiCoder.encode(
+        [ "address", "address", "uint8" ],
+        [ tokenIn, signerAddress, withdrawMode ],
+    )
 
-    return datas
+    return encoded_data
 }

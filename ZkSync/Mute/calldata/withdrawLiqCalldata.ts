@@ -1,5 +1,5 @@
 import { Wallet, Contract} from "ethers";
-import { MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
+import { CLASSIC_POOL_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { Pool, RemoveLiquidity, Token } from "../types";
 
@@ -49,7 +49,7 @@ const get_removeLiq = async(
 
     try {
 
-        const Pool              = new Contract( pool.pair, MUTE_PAIR_ABI, signer )
+        const Pool              = new Contract( pool.pair, CLASSIC_POOL_ABI, signer )
         const lp                = await get_token( pool.pair, network, signer )
         const reserveLp: bigint = await Pool.totalSupply()
         const balanceLp         = await get_balance( pool.pair, signer )

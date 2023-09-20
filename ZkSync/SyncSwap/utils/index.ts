@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../config/constants"
+import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, ZERO_ADDRESS, ROUTER_ABI, CLASSIC_POOL_FACTORY, CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../config/constants"
 import tokens from "../config/tokens"
 import { Token, Pool } from "../types";
 
@@ -22,20 +22,25 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
 
 export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Wallet ): Promise<Pool> => {
 
-    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+    const Classic_pool_factory: Contract = new Contract( CLASSIC_POOL_FACTORY[ network ], CLASSIC_POOL_FACTORY_ABI, signer );
+    const pool_address: string = await Classic_pool_factory.getPool( tokenA.address, tokenB.address )
 
-    const fromToken = is_native( tokenA.address ) ? TOKENS[ network ].weth : tokenA.address
-    const toToken = tokenB.address
+    if ( pool_address === ZERO_ADDRESS ) 
+        throw('Error: Pool does not exist yet.');
+    
 
-    const pair = await Router.getPairInfo( [ fromToken, toToken], false )
+    const Pool = new Contract( pool_address, CLASSIC_POOL_ABI, signer )
+    const reserves = await Pool.getReserves()
+
+    const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
+
 
     const pool: Pool = {
-        tokenA: pair[0],
-        tokenB: pair[1],
-        pair: pair[2],
-        reserveA: pair[3],
-        reserveB: pair[4],
-        fee: pair[5]
+        pair: pool_address,
+        tokenA: token0,
+        tokenB: token1,
+        reserveA: reserves[0],
+        reserveB: reserves[1],
     }
 
     return pool
@@ -99,6 +104,17 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
     }
 }
 
+export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, pool: Pool): string => {
+
+    const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+    const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB 
+
+    const amount_in   = parseFloat( amountIn )
+    const reserve_in  = parseFloat( ethers.formatUnits( reserveIn, tokenIn.decimals ) )
+    const reserve_out = parseFloat( ethers.formatUnits( reserveOut, tokenOut.decimals ) )
+
+    return (amount_in * reserve_out / reserve_in).toFixed( tokenOut.decimals )
+}
 
 export const is_native = ( token: string ): boolean => {
     return BigInt( token ) === BigInt( 0 )

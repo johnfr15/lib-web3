@@ -1,8 +1,7 @@
-import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
-import { ERC20_ABI, MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
-import { get_balance, get_pool, get_token, is_balance, sort_tokens } from "../utils";
+import { Wallet, Contract} from "ethers";
+import { CLASSIC_POOL_ABI, ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
+import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { Pool, RemoveLiquidity, Token } from "../types";
-import { encode_remove_datas } from "../utils/remove"
 
 
 export const get_remove_tx = async(
@@ -13,29 +12,24 @@ export const get_remove_tx = async(
     slipage: number, 
     network: 'TESTNET' | 'MAINNET',
     deadline: number | null,
-): Promise<{ removeTx: TransactionRequest, removeLiq: RemoveLiquidity}> => {
+): Promise<RemoveLiquidity> => {
 
     try {
         
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer )
 
         const token_a: Token     = await get_token( tokenA, network, signer )
         const token_b: Token     = await get_token( tokenB, network, signer )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
         
         const pool: Pool = await get_pool( token0, token1, network, signer )
-        const removeLiq: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
+        const removeTx: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
 
-        if ( removeLiq.balanceLp.bigint === BigInt( 0 ) )
+        if ( removeTx.balanceLp.bigint === BigInt( 0 ) )
             throw(`Error: You don't have any LP token for pool ${ TICKER[ tokenA ] }/${ TICKER[ tokenB ] }`)
 
-        const datas: string = encode_remove_datas( removeLiq, Router )
-        const removeTx = {
-            to: ROUTER_ADDRESS[ network ],
-            datas: datas
-        }
         
-        return { removeTx, removeLiq }
+        return removeTx
 
     } catch (error: any) {
         
@@ -55,7 +49,7 @@ const get_removeLiq = async(
 
     try {
 
-        const Pool              = new Contract( pool.pair, MUTE_PAIR_ABI, signer )
+        const Pool              = new Contract( pool.pair, CLASSIC_POOL_ABI, signer )
         const lp                = await get_token( pool.pair, network, signer )
         const reserveLp: bigint = await Pool.totalSupply()
         const balanceLp         = await get_balance( pool.pair, signer )
@@ -76,6 +70,8 @@ const get_removeLiq = async(
             to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
             stable: false,
+            percent: percent,
+            network: network
         } 
         
         return removeLiq

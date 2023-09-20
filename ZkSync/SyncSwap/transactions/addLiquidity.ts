@@ -1,6 +1,6 @@
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants";
+import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../config/constants";
 import { AddLiquidity } from "../types";
 
 /**
@@ -13,7 +13,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
     let receipt: TransactionReceipt | null | undefined
 
     const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable, network } = addLiquidity
-    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
+    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer ) 
 
 
     console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
@@ -44,7 +44,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
             deadline,
             feeType,
             stable
-        ] )
+        ])
     }
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )

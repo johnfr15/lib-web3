@@ -1,7 +1,7 @@
 import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
 import { RemoveLiquidity } from "../types";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
+import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../config/constants"
 
 export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) => {
 
@@ -9,7 +9,7 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
     let receipt: TransactionReceipt | null | undefined
 
     const { tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, stable, network, percent } = removeLiq
-    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
+    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer ) 
 
     console.log(`2) Withdrawing ${ percent }% of liquidity for:\n\t\
         (minimum)${ ethers.formatUnits( amountAMin, tokenA.decimals ) } ${ TICKER[ tokenA.address ] }\n\t\

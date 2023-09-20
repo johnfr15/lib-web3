@@ -1,7 +1,7 @@
 import erc20_abi from "./abis/erc20"
 import router_abi from "./abis/mute_router_abi"
 import factory_abi from "./abis/mute_factory_abi"
-import pair_abi from "./abis/mute_pair_abi"
+import pair_abi from "./abis/CLASSIC_POOL_ABI"
 import { JsonRpcProvider } from 'ethers';
 
 
@@ -20,7 +20,7 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://testnet.era.zksync
 export const ERC20_ABI = erc20_abi
 export const MUTE_ROUTER_ABI = router_abi
 export const MUTE_FACTORY_ABI = factory_abi
-export const MUTE_PAIR_ABI = pair_abi
+export const CLASSIC_POOL_ABI = pair_abi
 
 
 

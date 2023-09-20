@@ -2,13 +2,14 @@ import { ethers, Wallet } from "ethers"
 import SyncSwap from "../ZkSync/SyncSwap"
 import { log_balances } from "../ZkSync/SyncSwap/log"
 import dotenv from "dotenv"
+import { get_balance } from "../ZkSync/SyncSwap/utils"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, MAINNET_PROVIDER, TOKENS } = SyncSwap.Constant
+    const { TESTNET_PROVIDER, ZERO_ADDRESS, TOKENS } = SyncSwap.Constant
     
     try {
         // Set up
@@ -20,11 +21,13 @@ const main = async() => {
         await log_balances( signer, network )
         console.log("")
 
+        // console.log( await get_balance(TOKENS[ network ].dai, signer))
 
+        
         // await SyncSwap.swap(
         //     signer,
-        //     [ "0x0", "0x0faF6df7054946141266420b43783387A78d82A9"],
-        //     "0.0001",
+        //     [ TOKENS[ network ].dai, ZERO_ADDRESS ],
+        //     "100",
         //     network
         // )
 

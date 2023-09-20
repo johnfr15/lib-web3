@@ -1,4 +1,4 @@
-import { ethers, TransactionReceipt, TransactionResponse, Wallet } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 import { TICKER } from './config/constants';
 import { is_balance, is_native } from './utils';
 import { get_swap_tx } from './calldata/swapCalldata';
@@ -50,7 +50,6 @@ export const swap = async(
         // Get approve Tx
         if ( is_native( path[0] ) === false )
             approveTx = await get_approve_tx( signer, amountIn, path[0], network )
-
 
         /*========================================= TX =================================================================================================*/
         if ( approveTx )

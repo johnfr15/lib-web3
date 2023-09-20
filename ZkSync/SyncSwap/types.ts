@@ -1,3 +1,22 @@
+import { Contract } from "ethers"
+
+export type TokenInput = {
+    token: string
+    amount: bigint
+}
+
+export type SwapStep = {
+    pool: string // The pool of the step.
+    data: string // The data to execute swap with the pool.
+    callback: string // Address of another smat contract to call after the swap
+    callbackData: string // Arguments (encoded) to pass to the other smat contract to call after the swap
+}
+
+export type SwapPath = {
+    steps: SwapStep[] ; // Steps of the path.
+    tokenIn: string // The input token of the path.
+    amountIn: bigint; // The input token amount of the path.
+}
 
 export type Token = {
     chainId: number
@@ -14,10 +33,11 @@ export type Pool = {
     pair: string
     reserveA: bigint
     reserveB: bigint
-    fee: bigint
 }
 
 export type Trade = {
+    path: [string, string]
+    paths: SwapPath[]
     tokenFrom: Token
     tokenTo: Token
     pool: Pool
@@ -26,14 +46,26 @@ export type Trade = {
     amountOutMin: bigint
     priceImpact: number
     deadline: number
+    network: 'TESTNET' | 'MAINNET'
 }
 
-export declare enum TradeType {
+export enum TradeType {
     EXACT_INPUT,
     EXACT_OUTPUT
 }
 
+export enum WithdrawMode {
+    VAULT_INTERNAL_TRANSFER,
+    WITHDRAW_AND_UNWRAP_TO_NATIVE_ETH,
+    WITHDRAW_AND_WRAP_TO_WETH,
+}
 
+export type ApproveTx = {
+    Erc20: Contract, 
+    spender: string, 
+    amount: bigint, 
+    network: 'TESTNET' | 'MAINNET' 
+}
 export type AddLiquidity = {
     tokenA: Token
     tokenB: Token
@@ -45,6 +77,7 @@ export type AddLiquidity = {
     deadline: number
     feeType: number
     stable: boolean
+    network: 'TESTNET' | 'MAINNET' 
 }
 
 export type RemoveLiquidity = {
@@ -57,89 +90,7 @@ export type RemoveLiquidity = {
     amountBMin: bigint,
     to: string,
     deadline: number,
-    stable: boolean
+    stable: boolean,
+    percent: number,
+    network: 'TESTNET' | 'MAINNET' 
 }
-/*
-export type Trade = {
-    amountIn: TokenAmount
-    amountInMax: Uint256 | null
-    amountOut: TokenAmount
-    amountOutMin: Uint256 | null
-    tradeType: TradeType
-    priceImpact: number
-}
-
-
-
-export type ApproveCallData = {
-    contractAddress: string,
-    entrypoint: string,
-    calldata: [ string, Uint256 ] 
-}
-
-
-
-export type SwapArgs = {
-    amountIn:  Uint256,
-    amountOut: Uint256,
-    pathLenght: number, 
-    path: string[],
-    to: string, 
-    deadline: number,
-}
-
-export type SwapCallData = {
-    contractAddress: string,
-    entrypoint: string,
-    calldata: Array<SwapArgs[keyof SwapArgs]>
-}
-
-
-
-export type AddLiquidityABI = {
-    tokenA: string,
-    tokenB: string,
-    amountADesired: Uint256,
-    amountBDesired: Uint256,
-    amountAMin: Uint256,
-    amountBMin: Uint256,
-    to: string,
-    deadline: number
-}
-
-export type AddLiquidityTx = {
-    contractAddress: string,
-    entrypoint: string,
-    calldata: Array<AddLiquidityABI[keyof AddLiquidityABI]>
-}
-
-export type AddLiquidityCallData = {
-    addLiquidityTx: AddLiquidityTx,
-    utils: { [key: string]: any }
-}
-
-
-
-export type RemoveLiquidityABI = {
-    tokenA: string,
-    tokenB: string,
-    liquidity: Uint256,
-    amountAMin: Uint256,
-    amountBMin: Uint256,
-    to: string, 
-    deadline: number,
-}
-
-export type RemoveLiquidityTx = {
-    contractAddress: string,
-    entrypoint: string,
-    calldata: Array<AddLiquidityABI[keyof AddLiquidityABI]>
-}
-
-export type RemoveLiquidityCallData = {
-    removeLiquidityTx: RemoveLiquidityTx
-    utils: { [key: string]: any }
-}
-
-
-*/

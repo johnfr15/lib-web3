@@ -1,8 +1,13 @@
 import erc20_abi from "./abis/erc20"
 import router_abi from "./abis/router_abi"
-import factory_abi from "./abis/vault_abi"
-import pair_abi from "./abis/classic_pool_factory_abi"
+import vault from "./abis/vault_abi"
+import classic_pair_abi from "./abis/classic_pool_abi"
+import classic_pair_factory_abi from "./abis/classic_pool_factory_abi"
+import stable_pair_abi from "./abis/SyncSwap_stable_pool_abi"
+import stable_pair_factory_abi from "./abis/SyncSwap_stable_pool_factory_abi"
+
 import { JsonRpcProvider } from 'ethers';
+import { WithdrawMode } from "../types"
 
 
 
@@ -16,7 +21,22 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://testnet.era.zksync
 
 
 
+// ABIS
+export const ERC20_ABI = erc20_abi
+export const ROUTER_ABI = router_abi
+export const VAULT_ABI = vault
+export const CLASSIC_POOL_ABI = classic_pair_abi
+export const CLASSIC_POOL_FACTORY_ABI = classic_pair_factory_abi
+export const STABLE_POOL_ABI = stable_pair_abi
+export const STABLE_POOL_FACTORY_ABI = stable_pair_factory_abi
+
+
+
+
+
 // Addresses
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
   'MAINNET': '0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295',
   'TESTNET': '0xB3b7fCbb8Db37bC6f572634299A58f51622A847e',
@@ -66,7 +86,7 @@ export const TOKENS: { [key: string]: any } = {
     },
     'TESTNET': {
         eth: "0x0000000000000000000000000000000000000000",
-        weth: '0x294cB514815CAEd9557e6bAA2947d6Cf0733f014',
+        weth: '0x20b28B1e4665FFf290650586ad76E977EAb90c5D',
         dai: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b',
         usdc: '0x0faF6df7054946141266420b43783387A78d82A9', 
         usdt: '0xfcEd12dEbc831D3a84931c63687C395837D42c2B', 
@@ -75,18 +95,21 @@ export const TOKENS: { [key: string]: any } = {
     }
 }
 
+
+
 export const TICKER: {[key: string]: string} = {
 
     "0x0000000000000000000000000000000000000000": "ETH",
 
     "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91": "WETH",
-    "0x294cB514815CAEd9557e6bAA2947d6Cf0733f014": "WETH",
+    "0x20b28B1e4665FFf290650586ad76E977EAb90c5D": "WETH",
 
     "a": "wstETH",
     "z": "USDC",
     "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4": "USDC",
     "0x0faF6df7054946141266420b43783387A78d82A9": "USDC",
-    "r": "DAI",
+
+    "0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b": "DAI",
     "t": "DAI",
     "y": "wBTC",
     "u": "USDT",

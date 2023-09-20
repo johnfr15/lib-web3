@@ -5,8 +5,8 @@ export const get_approve_tx = async(
     signer: Wallet, 
     amount: string, 
     tokenAddress: string, 
-    network: string
-): Promise<TransactionRequest> => {
+    network: 'TESTNET' | 'MAINNET'
+): Promise<{ Erc20: Contract, spender: string, amount: bigint, network: 'TESTNET' | 'MAINNET' }> => {
 
     try {
         
@@ -15,14 +15,8 @@ export const get_approve_tx = async(
 
         const decimals = await erc20.decimals()
         const big_amount =  ethers.parseUnits( amount, decimals )
-        
-
-        const approveTx: TransactionRequest = {
-            to: tokenAddress,
-            data: erc20.interface.encodeFunctionData( "approve", [ router_address, big_amount ]),
-        }
     
-        return approveTx
+        return { Erc20: erc20, spender: router_address, amount: big_amount, network: network }
 
     } catch (error: any) {
         
