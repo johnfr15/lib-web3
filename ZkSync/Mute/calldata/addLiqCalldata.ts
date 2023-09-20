@@ -16,14 +16,11 @@ export const get_add_liq_tx = async(
     network: 'TESTNET' | 'MAINNET',
     slipage: number,
     deadline: number | null | undefined,
-): Promise<{ addTx: TransactionRequest, addLiquidity: AddLiquidity, pool: Pool }> => {
+): Promise<AddLiquidity> => {
 
-    let addTx: TransactionRequest;
-    let addLiquidity: AddLiquidity
+    let addTx: AddLiquidity;
     
     try {
-
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
         const token_a: Token     = await get_token( addressA, network, signer )
         const token_b: Token     = await get_token( addressB, network, signer )
@@ -36,23 +33,17 @@ export const get_add_liq_tx = async(
 
         if ( max )
         {
-            addLiquidity = await get_max_liq( signer, pool, network, slipage, deadline )
+            addTx = await get_max_liq( signer, pool, slipage, deadline, network )
         }
         else
         {
             let addr: string = amountA ? addressA : addressB
             let amount: string = amountA ? amountA : amountB!
-            addLiquidity = await get_liq( signer, pool, addr, amount, network, slipage, deadline )
+            addTx = await get_liq( signer, pool, addr, amount, slipage, deadline, network )
         }
 
-        const datas = encode_add_datas( addLiquidity, Router )
 
-        addTx = {
-            to: ROUTER_ADDRESS[ network ],
-            data: datas
-        } 
-
-        return { addTx, addLiquidity, pool }
+        return addTx
 
     } catch (error: any) {
         
@@ -64,9 +55,9 @@ export const get_add_liq_tx = async(
 const get_max_liq = async(
     signer: Wallet, 
     pool: Pool,
-    network: string,
     slipage: number,
     deadline: number | null | undefined,
+    network: 'TESTNET' | 'MAINNET',
 ): Promise<AddLiquidity> => {
 
     try {
@@ -100,6 +91,7 @@ const get_max_liq = async(
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
             feeType: 0,
             stable: false,
+            network: network
         }
 
     } catch (error: any) {
@@ -114,9 +106,9 @@ const get_liq = async(
     pool: Pool, 
     addr: string, 
     amount: string, 
-    network: string, 
     slipage: number, 
-    deadline: number | null | undefined
+    deadline: number | null | undefined,
+    network: 'TESTNET' | 'MAINNET',
 ): Promise<AddLiquidity> => {
 
     try {
@@ -154,6 +146,7 @@ const get_liq = async(
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
             feeType: 0,
             stable: false,
+            network: network
         }
 
     } catch(error) {

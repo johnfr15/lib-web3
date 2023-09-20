@@ -24,8 +24,8 @@ const main = async() => {
 
         await Mute.swap(
             signer,
-            [ ZERO_ADDRESS, "0x0faF6df7054946141266420b43783387A78d82A9"],
-            "0.1",
+            [ "0x0faF6df7054946141266420b43783387A78d82A9", ZERO_ADDRESS ],
+            "1",
             network
         )
 

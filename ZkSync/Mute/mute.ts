@@ -7,6 +7,7 @@ import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 import { exec_swap } from './transactions/swap';
 import { exec_approve } from './transactions/approve';
+import { exec_add_liquidity } from './transactions/addLiquidity';
 
 
 
@@ -95,10 +96,6 @@ export const addLiquidity = async(
     maxFees?: bigint,
 ): Promise<void> => {
 
-    let tx1: TransactionResponse, receipt1: TransactionReceipt | null
-    let tx2: TransactionResponse, receipt2: TransactionReceipt | null
-    let tx3: TransactionResponse, receipt3: TransactionReceipt | null
-
     try {
 
         if ( slipage < 2 || slipage > 100 )
@@ -110,9 +107,8 @@ export const addLiquidity = async(
 
         
         // Get add liquidity Tx
-        const addLiqTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { addTx, addLiquidity } = addLiqTx
-        const { tokenA, tokenB, amountADesired, amountBDesired } = addLiquidity
+        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
+        const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
 
         // Get approve token 'a' Tx
         const approveATx = await get_approve_tx(signer, ethers.formatUnits( amountADesired, tokenA.decimals ), tokenA.address, network)
@@ -120,21 +116,10 @@ export const addLiquidity = async(
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_tx(signer, ethers.formatUnits( amountBDesired, tokenB.decimals ), tokenB.address, network)
 
-        /*========================================= TX 2 ================================================================================================*/
+        /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx, signer )
         await exec_approve( approveBTx, signer )
-
-        console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
-
-        const gasTx3 = await signer.estimateGas( addTx )
-        addTx.maxFeePerGas = maxFees ?? gasTx3
-
-        tx3 = await signer.sendTransaction( addTx )
-        receipt3 = await tx3.wait()
-        
-        console.log("Transaction valided !")
-        console.log("hash: ", tx3.hash)
-        console.log("Fees: ", ethers.formatEther( receipt3?.fee ?? '0' ))
+        await exec_add_liquidity( addTx, signer )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

@@ -7,7 +7,7 @@ import { Trade } from "../types";
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
  * 
  */
-export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<TransactionResponse> => {
+export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<TransactionReceipt> => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
@@ -59,5 +59,5 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
     console.log("hash: ", tx.hash)
     console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 
-    return tx
+    return receipt as TransactionReceipt
 }

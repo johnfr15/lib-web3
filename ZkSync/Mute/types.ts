@@ -53,6 +53,7 @@ export type AddLiquidity = {
     deadline: number
     feeType: number
     stable: boolean
+    network: 'TESTNET' | 'MAINNET' 
 }
 
 export type RemoveLiquidity = {
