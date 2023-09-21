@@ -31,17 +31,17 @@ const main = async() => {
         //     network
         // )
 
-    //    await  Mute.addLiquidity( 
-    //         signer,
-    //         TOKENS[ network ].eth,
-    //         null,
-    //         TOKENS[ network ].dai,
-    //         "0.01",
-    //         true,
-    //         network
-    //     )
+        // await  Mute.addLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].eth,
+        //     null,
+        //     TOKENS[ network ].dai,
+        //     null,
+        //     true,
+        //     network
+        // )
 
-        // Mute.withdrawLiquidity( 
+        // await Mute.withdrawLiquidity( 
         //     signer,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,
@@ -49,6 +49,12 @@ const main = async() => {
         //     network
         // )
 
+        // await Mute.swap(
+        //     signer,
+        //     [ DAI_TESTNET, ZERO_ADDRESS ],
+        //     "5200.0",
+        //     network
+        // )
 
     } catch (error: any) {
   

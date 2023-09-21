@@ -15,8 +15,7 @@ export const get_approve_tx = async(
         if ( is_native( tokenAddress ) ) 
             return undefined
     
-    console.log( tokenAddress )
-    console.log( amount )
+
         const router_address = ROUTER_ADDRESS[ network ]
         const erc20 = new Contract( tokenAddress, ERC20_ABI, signer );
 

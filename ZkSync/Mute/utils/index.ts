@@ -14,7 +14,7 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
     if ( token === undefined )
         throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)
     
-    if ( is_native(token.address) )
+    if ( is_native( token.address ) )
         token.address = TOKENS[ network ].weth
 
     return token
