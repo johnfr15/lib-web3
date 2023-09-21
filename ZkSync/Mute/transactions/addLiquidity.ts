@@ -20,7 +20,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
     if ( is_native( addLiquidity.tokenA.address ) || is_native( addLiquidity.tokenB.address ) )
     {
-        tx = await Router.addLiquidityETH([
+        tx = await Router.addLiquidityETH(
             is_native( tokenA.address ) ? tokenB.address : tokenA.address,
             is_native( tokenA.address ) ? amountBDesired : amountADesired,
             is_native( tokenA.address ) ? amountBMin : amountAMin,
@@ -28,14 +28,15 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
             to,
             deadline,
             feeType,
-            stable
-        ])
+            stable,
+            { value: is_native( tokenA.address ) ? amountADesired : amountBDesired }
+        )
     }
     else 
     {
-        tx = await Router.addLiquidity([
-            tokenA,
-            tokenB,
+        tx = await Router.addLiquidity(
+            tokenA.address,
+            tokenB.address,
             amountADesired,
             amountBDesired,
             amountAMin,
@@ -44,7 +45,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
             deadline,
             feeType,
             stable
-        ] )
+        )
     }
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )

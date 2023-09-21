@@ -1,7 +1,7 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS } from "../config/constants";
+import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TOKENS, ZERO_ADDRESS } from "../config/constants";
 import { AddLiquidity, Pool, Token } from "../types";
-import { get_token, get_balance, get_pool, sort_tokens, is_balance } from "../utils";
+import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
 
 
 export const get_add_liq_tx = async(
@@ -59,25 +59,26 @@ const get_max_liq = async(
 ): Promise<AddLiquidity> => {
 
     try {
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
 
-        const balanceA = await get_balance( pool.tokenA.address, signer )
-        const balanceB = await get_balance( pool.tokenB.address, signer )
+        const balanceA = await get_balance( is_native( pool.tokenA.address) ? ZERO_ADDRESS : pool.tokenA.address, signer )
+        const balanceB = await get_balance( is_native( pool.tokenB.address) ? ZERO_ADDRESS : pool.tokenB.address, signer )
 
-        const quoteB = await Router.quote( balanceA.bigint, pool.reserveA, pool.reserveB )
-        const quoteA = await Router.quote( balanceB.bigint, pool.reserveB, pool.reserveA )
+        const quoteB = get_quote( balanceA.string, pool.tokenA, pool.tokenB, pool )
+        const quoteA = get_quote( balanceB.string, pool.tokenB, pool.tokenA, pool )
 
+        
         /*
          * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
          *      that token B is our max token to add
          */
-        const b_is_min_balance: boolean = quoteB  > balanceB.bigint
+        const b_is_min_balance: boolean = parseFloat( quoteB ) > parseFloat( balanceB.string)
 
-        let balance_a: bigint     = b_is_min_balance ?  quoteA : balanceA.bigint;
-        let balance_b: bigint     = b_is_min_balance ? balanceB.bigint :  quoteB;
+        let balance_a: bigint = b_is_min_balance ? ethers.parseUnits( quoteA, balanceA.decimals ) : balanceA.bigint
+        let balance_b: bigint = b_is_min_balance ? balanceB.bigint : ethers.parseUnits( quoteB, balanceB.decimals )
         let balance_a_min: bigint = balance_a * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         let balance_b_min: bigint = balance_b * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
+        
         return {
             tokenA: pool.tokenA,
             tokenB: pool.tokenB,
@@ -111,18 +112,14 @@ const get_liq = async(
 
     try {
         
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
-        
         const token_1: Token    = pool.tokenA.address === addr ? pool.tokenA : pool.tokenB
         const token_2: Token    = pool.tokenA.address !== addr ? pool.tokenA : pool.tokenB
-        const reserve_1: bigint = pool.tokenA.address === addr ? pool.reserveA : pool.reserveB
-        const reserve_2: bigint = pool.tokenA.address !== addr ? pool.reserveA : pool.reserveB
 
-        const balance_1 = await get_balance( token_1.address, signer )
-        const balance_2 = await get_balance( token_2.address, signer )
+        const balance_1 = await get_balance( token_1.address === TOKENS[network].weth ? ZERO_ADDRESS : token_1.address, signer )
+        const balance_2 = await get_balance( token_2.address === TOKENS[network].weth ? ZERO_ADDRESS : token_2.address, signer )
 
         const amount_1: bigint = ethers.parseUnits( amount, token_1.decimals )
-        const amount_2 =  await Router.quote( amount_1, reserve_1, reserve_2 )
+        const amount_2 = ethers.parseUnits( get_quote( amount, token_1, token_2, pool ), token_2.decimals )
         
         const amount_1_min: bigint = amount_1 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )

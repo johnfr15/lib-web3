@@ -60,7 +60,7 @@ export type AddLiquidity = {
 export type RemoveLiquidity = {
     tokenA: Token,
     tokenB: Token,
-    lp: Token,
+    lp: string,
     balanceLp: any,
     liquidity: bigint,
     amountAMin: bigint,

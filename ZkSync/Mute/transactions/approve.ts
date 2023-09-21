@@ -2,10 +2,14 @@ import { TransactionResponse, TransactionReceipt, Wallet, ethers } from "ethers"
 import { ROUTER_ADDRESS, TICKER } from "../config/constants"
 import { ApproveTx } from "../types"
 
-export const exec_approve = async( approveTx: ApproveTx, signer: Wallet ): Promise<TransactionReceipt> => {
+export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wallet ): Promise<TransactionReceipt | undefined> => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
+
+    if ( approveTx === undefined ) 
+        return
+
     const { Erc20, spender, amount, network, decimals } = approveTx
 
     try {

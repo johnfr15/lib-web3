@@ -1,16 +1,20 @@
 import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
 import { ERC20_ABI, ROUTER_ADDRESS } from "../config/constants";
 import { ApproveTx } from "../types";
+import { is_native } from "../utils";
 
 export const get_approve_tx = async(
     signer: Wallet, 
     amount: string, 
     tokenAddress: string, 
     network: 'TESTNET' | 'MAINNET'
-): Promise<ApproveTx> => {
+): Promise<ApproveTx | undefined> => {
 
     try {
         
+        if ( is_native( tokenAddress ) ) 
+            return undefined
+
         const router_address = ROUTER_ADDRESS[ network ]
         const erc20 = new Contract( tokenAddress, ERC20_ABI, signer );
 

@@ -21,8 +21,8 @@ export const get_remove_tx = async(
         const token_a: Token     = await get_token( tokenA, network, signer )
         const token_b: Token     = await get_token( tokenB, network, signer )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
-        
-        const pool: Pool = await get_pool( token0, token1, network, signer )
+        const pool: Pool         = await get_pool( token0, token1, network, signer )
+
         const removeTx: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
 
         if ( removeTx.balanceLp.bigint === BigInt( 0 ) )
@@ -50,10 +50,8 @@ const get_removeLiq = async(
     try {
 
         const Pool              = new Contract( pool.pair, MUTE_PAIR_ABI, signer )
-        const lp                = await get_token( pool.pair, network, signer )
         const reserveLp: bigint = await Pool.totalSupply()
         const balanceLp         = await get_balance( pool.pair, signer )
-
 
         const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
         const amount_0_min: bigint = ( pool.reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
@@ -62,7 +60,7 @@ const get_removeLiq = async(
         const removeLiq: RemoveLiquidity = {
             tokenA: pool.tokenA,
             tokenB: pool.tokenB,
-            lp: lp,
+            lp: pool.pair,
             balanceLp: balanceLp,
             liquidity: liquidity,
             amountAMin: amount_0_min,

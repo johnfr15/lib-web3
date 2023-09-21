@@ -36,28 +36,17 @@ export const swap = async(
     maxFees?: bigint,
 ) => {
 
-    let approveTx: any
-
     try {
 
         if ( slipage < 0.01 || slipage > 100 )
             throw(`Slipage parameter must be a number between 0.01 and 100`)
 
 
-        // Get swap Tx
         const swapTx = await get_swap_tx( signer, path, amountIn, network, slipage, priceImpact, deadline )
-
-        // Get approve Tx
-        if ( is_native( path[0] ) === false )
-            approveTx = await get_approve_tx( signer, amountIn, path[0], network )
-
+        const approveTx = await get_approve_tx( signer, amountIn, path[0], network )
 
         /*========================================= TX =================================================================================================*/
-        if ( approveTx )
-        {
-            await exec_approve( approveTx, signer )
-        }
-
+        await exec_approve( approveTx, signer )
         await exec_swap( swapTx, signer )
         /*=============================================================================================================================================*/
         
@@ -110,6 +99,7 @@ export const addLiquidity = async(
         // Get add liquidity Tx
         const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
         const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
+
 
         // Get approve token 'a' Tx
         const approveATx = await get_approve_tx(signer, ethers.formatUnits( amountADesired, tokenA.decimals ), tokenA.address, network)
@@ -167,11 +157,11 @@ export const withdrawLiquidity = async(
         const { liquidity, balanceLp, lp } = removeTx
 
         // Get approve Tx
-        const approveTx = await get_approve_tx(signer, ethers.formatUnits( liquidity, balanceLp.decimals ), lp.address , network)
+        const approveTx = await get_approve_tx(signer, ethers.formatUnits( liquidity, balanceLp.decimals ), lp , network)
 
         /*========================================= TX =================================================================================================*/        
-        exec_approve( approveTx, signer )
-        exec_remove( removeTx, signer )
+        await exec_approve( approveTx, signer )
+        await exec_remove( removeTx, signer )
         /*=============================================================================================================================================*/
 
     } catch (error: any) {
