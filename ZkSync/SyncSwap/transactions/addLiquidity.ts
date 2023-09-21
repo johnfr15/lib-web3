@@ -1,5 +1,4 @@
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
-import { is_native } from "../utils";
 import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../config/constants";
 import { AddLiquidity } from "../types";
 
@@ -12,40 +11,21 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
 
-    const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable, network } = addLiquidity
+    const { pool, inputs, data, minLiquidity, callback, value, callbackData, tokenA, tokenB, network } = addLiquidity
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer ) 
 
 
-    console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
-
-    if ( is_native( addLiquidity.tokenA.address ) || is_native( addLiquidity.tokenB.address ) )
-    {
-        tx = await Router.addLiquidityETH([
-            is_native( tokenA.address ) ? tokenB.address : tokenA.address,
-            is_native( tokenA.address ) ? amountBDesired : amountADesired,
-            is_native( tokenA.address ) ? amountBMin : amountAMin,
-            is_native( tokenA.address ) ? amountAMin : amountBMin,
-            to,
-            deadline,
-            feeType,
-            stable
-        ])
-    }
-    else 
-    {
-        tx = await Router.addLiquidity([
-            tokenA,
-            tokenB,
-            amountADesired,
-            amountBDesired,
-            amountAMin,
-            amountBMin,
-            to,
-            deadline,
-            feeType,
-            stable
-        ])
-    }
+    console.log(`\tAdding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
+    
+    tx = await Router.addLiquidity(
+        pool,
+        inputs,
+        data,
+        minLiquidity, 
+        callback,
+        callbackData,
+        { value: value }
+    )
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )
         

@@ -1,7 +1,7 @@
-import { Wallet, ethers } from "ethers";
+import { Wallet, ethers, Contract } from "ethers";
 import { Pool, Trade, Token, SwapStep, SwapPath, WithdrawMode } from "../types";
 import { get_quote } from ".";
-import { ZERO_ADDRESS } from "../config/constants";
+import { CLASSIC_POOL_ABI, ZERO_ADDRESS } from "../config/constants";
 
 
 export const get_trade = async(
@@ -18,6 +18,8 @@ export const get_trade = async(
 
     try {
         
+        const Pool = new Contract( pool.pair, CLASSIC_POOL_ABI, signer )
+
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
         const quote: string = get_quote( amountIn, tokenIn, tokenOut, pool )
         const amount_out: bigint = ethers.parseUnits( quote, tokenOut.decimals )

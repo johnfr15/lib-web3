@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, ZERO_ADDRESS, ROUTER_ABI, CLASSIC_POOL_FACTORY, CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../config/constants"
+import { ERC20_ABI, TOKENS, CHAIN_ID, TICKER, ZERO_ADDRESS, ROUTER_ABI, CLASSIC_POOL_FACTORY, CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../config/constants"
 import tokens from "../config/tokens"
 import { Token, Pool } from "../types";
 
@@ -33,14 +33,15 @@ export const get_pool = async( tokenA: Token, tokenB: Token, network: string, si
     const reserves = await Pool.getReserves()
 
     const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
+    const [ reserve0, reserve1 ] = BigInt( tokenA.address ) < BigInt( tokenB.address ) ? reserves : [ reserves[1], reserves[0] ]
 
 
     const pool: Pool = {
         pair: pool_address,
         tokenA: token0,
         tokenB: token1,
-        reserveA: reserves[0],
-        reserveB: reserves[1],
+        reserveA: reserve0,
+        reserveB: reserve1,
     }
 
     return pool
@@ -109,11 +110,12 @@ export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, po
     const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
     const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB 
 
-    const amount_in   = parseFloat( amountIn )
-    const reserve_in  = parseFloat( ethers.formatUnits( reserveIn, tokenIn.decimals ) )
-    const reserve_out = parseFloat( ethers.formatUnits( reserveOut, tokenOut.decimals ) )
+    const amount_in  = ethers.parseUnits( amountIn, tokenIn.decimals )
 
-    return (amount_in * reserve_out / reserve_in).toFixed( tokenOut.decimals )
+    const quote = amount_in * reserveOut / reserveIn
+
+    
+    return ethers.formatUnits( quote, tokenOut.decimals )
 }
 
 export const is_native = ( token: string ): boolean => {

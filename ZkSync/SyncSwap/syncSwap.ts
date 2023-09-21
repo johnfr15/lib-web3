@@ -51,6 +51,7 @@ export const swap = async(
         if ( is_native( path[0] ) === false )
             approveTx = await get_approve_tx( signer, amountIn, path[0], network )
 
+
         /*========================================= TX =================================================================================================*/
         if ( approveTx )
         {
@@ -92,7 +93,6 @@ export const addLiquidity = async(
     max: boolean = false,                         
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     slipage: number = 2, // this represent 2% of slipage
-    deadline: number | null = null,
     maxFees?: bigint,
 ): Promise<void> => {
 
@@ -106,15 +106,13 @@ export const addLiquidity = async(
             throw(`balance is empty for token ${ TICKER[ addressA ] } or ${ TICKER[ addressB ] } or both.`)
 
         
-        // Get add liquidity Tx
-        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
+        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage )
+        const { tokenA, tokenB, inputs } = addTx
 
-        // Get approve token 'a' Tx
-        const approveATx = await get_approve_tx(signer, ethers.formatUnits( amountADesired, tokenA.decimals ), tokenA.address, network)
-
-        // Get approve token 'b' Tx
-        const approveBTx = await get_approve_tx(signer, ethers.formatUnits( amountBDesired, tokenB.decimals ), tokenB.address, network)
+        
+        const approveATx = await get_approve_tx(signer, ethers.formatUnits( inputs[0].amount, tokenA.decimals ), inputs[0].token, network)
+        
+        const approveBTx = await get_approve_tx(signer, ethers.formatUnits( inputs[1].amount, tokenB.decimals ), inputs[1].token, network)
 
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx, signer )

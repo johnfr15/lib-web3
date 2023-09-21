@@ -35,6 +35,15 @@ export type Pool = {
     reserveB: bigint
 }
 
+export type SplitPermitParams = {
+    token: string
+    approveAmount: bigint
+    deadline: number
+    v: number
+    r: string
+    s: string
+}
+
 export type Trade = {
     path: [string, string]
     paths: SwapPath[]
@@ -63,20 +72,20 @@ export enum WithdrawMode {
 export type ApproveTx = {
     Erc20: Contract, 
     spender: string, 
-    amount: bigint, 
+    amount: bigint,
+    decimals: number,
     network: 'TESTNET' | 'MAINNET' 
 }
 export type AddLiquidity = {
+    pool: string
+    inputs: TokenInput[]
+    data: string
+    minLiquidity: bigint
+    callback: string
+    callbackData: string
     tokenA: Token
     tokenB: Token
-    amountADesired: bigint
-    amountBDesired: bigint
-    amountAMin: bigint
-    amountBMin: bigint
-    to: string
-    deadline: number
-    feeType: number
-    stable: boolean
+    value?: bigint                   // If native token is involve
     network: 'TESTNET' | 'MAINNET' 
 }
 
