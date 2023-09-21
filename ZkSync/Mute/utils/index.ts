@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../config/constants"
+import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
 import tokens from "../config/tokens"
 import { Token, Pool } from "../types";
 
@@ -35,8 +35,8 @@ export const get_pool = async( tokenA: Token, tokenB: Token, network: string, si
         tokenA: token0,
         tokenB: token1,
         pair: pair[2],
-        reserveA: token0.address === pair[1] ? pair[3] : pair[4],
-        reserveB: token1.address === pair[1] ? pair[3] : pair[4] ,
+        reserveA: token0.address === fromToken ? pair[3] : pair[4],
+        reserveB: token1.address === fromToken ? pair[3] : pair[4],
         fee: pair[5]
     }
 

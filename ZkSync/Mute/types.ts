@@ -39,7 +39,8 @@ export declare enum TradeType {
 export type ApproveTx = {
     Erc20: Contract, 
     spender: string, 
-    amount: bigint, 
+    amount: bigint,
+    decimals: number
     network: 'TESTNET' | 'MAINNET' 
 }
 export type AddLiquidity = {

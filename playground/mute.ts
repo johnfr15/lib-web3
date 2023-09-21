@@ -26,19 +26,19 @@ const main = async() => {
         // await Mute.swap(
         //     signer,
         //     [ USDC_TESTNET, ZERO_ADDRESS ],
-        //     "1",
+        //     "3841869690058753894.4",
         //     network
         // )
 
-        // Mute.addLiquidity( 
-        //     signer,
-        //     TOKENS[ network ].eth,
-        //     null,
-        //     TOKENS[ network ].dai,
-        //     "0.01",
-        //     false,
-        //     network
-        // )
+       await  Mute.addLiquidity( 
+            signer,
+            TOKENS[ network ].eth,
+            null,
+            TOKENS[ network ].usdc,
+            "0.01",
+            true,
+            network
+        )
 
         // Mute.withdrawLiquidity( 
         //     signer,

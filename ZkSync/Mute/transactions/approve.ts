@@ -6,11 +6,11 @@ export const exec_approve = async( approveTx: ApproveTx, signer: Wallet ): Promi
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
-    const { Erc20, spender, amount, network } = approveTx
+    const { Erc20, spender, amount, network, decimals } = approveTx
 
     try {
 
-        console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ amount } ${ TICKER[ await Erc20.getAddress() ] }...`)
+        console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] }...`)
 
         tx = await Erc20.approve( spender, amount )
         receipt = await signer.provider?.waitForTransaction( tx.hash )
