@@ -77,12 +77,12 @@ export const CHAIN_ID:  { [key: string]: number } = {
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
-        eth: "0x0000000000000000000000000000000000000000",
-        weth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
-        usdc:'',
-        dai:'',
-        wbtc:'',
-        usdt:'',
+      eth: "0x0000000000000000000000000000000000000000",
+      weth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
+      usdc:'0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
+      dai:'',
+      wbtc:'0xBBeB516fb02a01611cBBE0453Fe3c580D7281011',
+      usdt:'0x59ac51Cfb025adCE007D1EC96A21f7c7e3f32330',
     },
     'TESTNET': {
         eth: "0x0000000000000000000000000000000000000000",
