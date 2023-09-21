@@ -27,6 +27,14 @@ export default [
     },
     {
       "chainId": 324,
+      "address": "0x59ac51Cfb025adCE007D1EC96A21f7c7e3f32330",
+      "name": "USDT Tether",
+      "symbol": "USDT",
+      "decimals": 6,
+      "logoURI": ""
+    },
+    {
+      "chainId": 324,
       "address": "0x0e97C7a0F8B2C9885C8ac9fC6136e829CbC21d42",
       "name": "Mute",
       "symbol": "MUTE",
