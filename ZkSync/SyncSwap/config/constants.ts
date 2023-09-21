@@ -90,8 +90,6 @@ export const TOKENS: { [key: string]: any } = {
         dai: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b',
         usdc: '0x0faF6df7054946141266420b43783387A78d82A9', 
         usdt: '0xfcEd12dEbc831D3a84931c63687C395837D42c2B', 
-        tka: '',
-        tkb: '',
     }
 }
 
@@ -111,7 +109,11 @@ export const TICKER: {[key: string]: string} = {
 
     "0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b": "DAI",
     "t": "DAI",
-    "y": "wBTC",
-    "u": "USDT",
+
+    "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011": "wBTC",
+
+    "0x59ac51Cfb025adCE007D1EC96A21f7c7e3f32330": "USDT",
+    "0xfcEd12dEbc831D3a84931c63687C395837D42c2B": "USDT",
+
     "i": "LORDS",
 }
