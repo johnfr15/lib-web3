@@ -19,17 +19,22 @@ export type Pool = {
 }
 
 export type Trade = {
-    path: [string, string]
     tokenFrom: Token
     tokenTo: Token
     pool: Pool
     amountIn: bigint
     amountOut: bigint
     amountOutMin: bigint
+    path: [string, string]
+    to: string,
     priceImpact: number
+    slipage: number
     deadline: number
+    stable: boolean[]
     network: 'TESTNET' | 'MAINNET'
 }
+
+
 
 export declare enum TradeType {
     EXACT_INPUT,
@@ -70,4 +75,30 @@ export type RemoveLiquidity = {
     stable: boolean,
     percent: number,
     network: 'TESTNET' | 'MAINNET' 
+}
+
+export type SwapExactETHForTokens = {
+    amountOutMin: bigint 
+    path: string[] 
+    to: string
+    deadline: number
+    stable: boolean[]
+}
+
+export type SwapExactTokensForETH = {
+    amountIn: bigint
+    amountOutMin: bigint 
+    path: string[] 
+    to: string
+    deadline: bigint
+    stable: boolean[]
+}
+
+export type SwapExactTokensForTokens = {
+    amountIn: bigint
+    amountOutMin: bigint 
+    path: string[] 
+    to: string
+    deadline: bigint
+    stable: boolean[]
 }

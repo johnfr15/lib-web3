@@ -1,7 +1,8 @@
-import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
+import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt, Provider } from "ethers";
 import { MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
 import { is_native } from "../utils";
-import { Trade } from "../types";
+import { Trade, SwapExactETHForTokens, SwapExactTokensForETH, SwapExactTokensForTokens } from "../types";
+import { enforce_swap_fees } from "../utils/swap";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
@@ -10,11 +11,11 @@ import { Trade } from "../types";
 export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<TransactionReceipt> => {
 
     let tx: TransactionResponse
-    let fees: bigint
-    let txArgs: any
+    let feesPerGas: bigint
+    let txArgs: SwapExactETHForTokens | SwapExactTokensForETH | SwapExactTokensForETH
     let receipt: TransactionReceipt | null | undefined
 
-    const { path, tokenFrom, tokenTo, amountIn, amountOutMin, deadline, network } = swapTx
+    let { path, tokenFrom, tokenTo, amountIn, amountOutMin, deadline, network } = swapTx
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
 
 
@@ -24,24 +25,28 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
 
         if ( is_native( path[0] ) )
         {
-            txArgs = [ amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-            fees = await Router.swapExactETHForTokens.estimateGas( ...txArgs, { value: amountIn } )
-    
-            tx = await Router.swapExactETHForTokens( ...txArgs, { value: amountIn, maxPriorityFeePerGas: fees } )
+            let args: SwapExactETHForTokens = { amountOutMin: amountOutMin, path: [ tokenFrom.address, tokenTo.address ], to: signer.address, deadline: deadline, stable: [ false ] }
+
+            feesPerGas = await Router.swapExactETHForTokens.estimateGas( ...Object.values( args ), { value: amountIn } )
+            const totalFee = feesPerGas * (await signer.provider!.getFeeData()).gasPrice!
+            let { tx: newTx, amountIn: newAmountIn } = await enforce_swap_fees( swapTx, args, totalFee, signer )
+
+            tx = await Router.swapExactETHForTokens( ...Object.values( newTx ), { value: newAmountIn, maxPriorityFeePerGas: feesPerGas } )
         }
         else if ( is_native( path[1] ) )
         {
-            txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-            fees = await Router.swapExactTokensForETH.estimateGas( ...txArgs )
+            let args: any = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+            feesPerGas = await Router.swapExactTokensForETH.estimateGas( ...args )
     
-            tx = await Router.swapExactTokensForETH( ...txArgs, { maxPriorityFeePerGas: fees })
+            tx = await Router.swapExactTokensForETH( ...args, { maxPriorityFeePerGas: feesPerGas })
         }
         else
         {
-            txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-            fees = await Router.swapExactTokensForTokens.estimateGas( ...txArgs )
+
+            let args: any = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+            feesPerGas = await Router.swapExactTokensForTokens.estimateGas( ...args )
     
-            tx = await Router.swapExactTokensForTokens( ...txArgs, { maxPriorityFeePerGas: fees } )
+            tx = await Router.swapExactTokensForTokens( ...args, { maxPriorityFeePerGas: feesPerGas } )
         }
     
 
@@ -49,7 +54,7 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+        console.log("Total feesPerGas: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
     
         return receipt as TransactionReceipt
         
