@@ -18,7 +18,7 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
 
     if ( is_native( tokenA.address ) || is_native( tokenB.address ) )
     {
-        tx = await Router.removeLiquidityETH(
+        const fees = await Router.removeLiquidityETH.estimateGas(
             is_native( tokenA.address ) ? tokenB.address : tokenA.address,
             liquidity,
             is_native( tokenA.address ) ? amountBMin : amountAMin,
@@ -26,6 +26,17 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
             to,
             deadline,
             stable
+        )
+
+        tx = await Router.removeLiquidityETH(
+            is_native( tokenA.address ) ? tokenB.address : tokenA.address,
+            liquidity,
+            is_native( tokenA.address ) ? amountBMin : amountAMin,
+            is_native( tokenA.address ) ? amountAMin : amountBMin,
+            to,
+            deadline,
+            stable,
+            { maxPriorityFeePerGas: fees}
         )
     }
     else 

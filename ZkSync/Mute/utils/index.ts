@@ -1,15 +1,29 @@
 import { ethers, Wallet, Contract } from "ethers"
 import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
-import tokens from "../config/tokens"
+import fs from "fs"
 import { Token, Pool } from "../types";
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<Token> => {
 
-    const token: Token | undefined = tokens.find( (token: Token) => 
+    const FILE_PATH = "src/ZkSync-module/Mute/config/tokens.json"
+    let tokens: {[key: string]: Token } = {}
+
+    try {
+        
+        tokens = await JSON.parse( fs.readFileSync( FILE_PATH ).toString('ascii') )
+        
+    } catch (error) {
+
+        throw(`Error: ${FILE_PATH} do not contains the tokens datas`)    
+
+    }
+
+    const token = Object.values(tokens).find( (token: Token) => 
     {
-        return BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ] 
+        return  ( BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ]  )
     })
+
 
     if ( token === undefined )
         throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)

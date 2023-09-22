@@ -2,6 +2,8 @@ import { ethers, Wallet, Contract } from "ethers"
 import Mute from "../ZkSync/Mute"
 import { log_balances } from "../ZkSync/Mute/log"
 import dotenv from "dotenv"
+import Tokens from "../ZkSync/Mute/config/tokens"
+import fs from "fs"
 
 dotenv.config()
 
@@ -18,16 +20,28 @@ const main = async() => {
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
 
-        console.log("account: ", signer.address)
-        await log_balances( signer, network )
-        console.log("")
+        // console.log("account: ", signer.address)
+        // await log_balances( signer, network )
+        // console.log("")
 
 
+        const obj: {[key: number]: any} = {}
 
+        Tokens.forEach((token, index) => {
+            obj[ index ] = token
+        })
+
+        try {
+            let formated = JSON.stringify( obj, null, 2 ) 
+
+            await fs.writeFileSync( "tokens.json", formated, { encoding: 'utf-8', flag: 'w' } )
+        } catch (error) {
+            
+        }
         // await Mute.swap(
         //     signer,
-        //     [ ZERO_ADDRESS, DAI_TESTNET ],
-        //     "0.00001",
+        //     [ ZERO_ADDRESS, TOKENS[ network ].usdt ],
+        //     "0.18",
         //     network
         // )
 

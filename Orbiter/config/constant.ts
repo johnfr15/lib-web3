@@ -227,6 +227,11 @@ export const TOKENS: { [key: string]: any } = {
             usdc:' 0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
         },
 
+        zksync2: {
+            eth: '0x0000000000000000000000000000000000000000',
+            usdc:' 0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
+        },
+
         optimism: {
             eth: '0x0000000000000000000000000000000000000000',
             usdc:'0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
@@ -300,6 +305,11 @@ export const TOKENS: { [key: string]: any } = {
         },
 
         zksync: {
+            eth: '0x0000000000000000000000000000000000000000',
+            usdc: '0x0faF6df7054946141266420b43783387A78d82A9',
+        },
+        
+        zksync2: {
             eth: '0x0000000000000000000000000000000000000000',
             usdc: '0x0faF6df7054946141266420b43783387A78d82A9',
         },

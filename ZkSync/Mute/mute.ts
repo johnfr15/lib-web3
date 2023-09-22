@@ -30,7 +30,7 @@ export const swap = async(
     path: [string, string],
     amountIn: string,
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
-    slipage: number = 10, // this represent 5% of slipage
+    slipage: number = 50, // this represent 5% of slipage
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
     deadline?: number,
     maxFees?: bigint,

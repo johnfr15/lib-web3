@@ -53,7 +53,6 @@ export const CHAIN_ID:  { [key: string]: number } = {
 
 
 
-
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
