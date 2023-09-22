@@ -14,7 +14,7 @@ import { WithdrawMode } from "../types"
 
 // Misc
 export const MAINNET_PROVIDER = new JsonRpcProvider( "https://mainnet.era.zksync.io" ) 
-export const TESTNET_PROVIDER = new JsonRpcProvider( "https://testnet.era.zksync.dev" )
+export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet.blockpi.network/v1/rpc/public" )
 
 
 

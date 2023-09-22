@@ -91,7 +91,7 @@ const get_max_liq = async(
         return {
             pool: pool.pair,
             inputs: inputs,
-            data: signer.address,
+            data: ethers.AbiCoder.defaultAbiCoder().encode( ["address"], [ signer.address ]),
             minLiquidity: BigInt( 1 ),
             callback: ZERO_ADDRESS,
             callbackData: "0x",

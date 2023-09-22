@@ -1,7 +1,7 @@
-import { Wallet, ethers, Contract } from "ethers";
+import { Wallet, ethers } from "ethers";
 import { Pool, Trade, Token, SwapStep, SwapPath, WithdrawMode } from "../types";
 import { get_quote } from ".";
-import { CLASSIC_POOL_ABI, ZERO_ADDRESS } from "../config/constants";
+import { ZERO_ADDRESS } from "../config/constants";
 
 
 export const get_trade = async(
@@ -18,14 +18,10 @@ export const get_trade = async(
 
     try {
         
-        const Pool = new Contract( pool.pair, CLASSIC_POOL_ABI, signer )
-
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const quote: string = get_quote( amountIn, tokenIn, tokenOut, pool )
-        const amount_out: bigint = ethers.parseUnits( quote, tokenOut.decimals )
+        const amount_out: bigint = get_amount_out( amount_in, pool.reserveA, pool.reserveB )
         const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
-    
         // There is only 1 step (2 tokens involved in the tx)
         const steps: SwapStep[] = [{
             pool: pool.pair,
@@ -89,4 +85,15 @@ export const encode_swap = (tokenIn: string, signerAddress: string, withdrawMode
     )
 
     return encoded_data
+}
+
+export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): bigint => {
+    let amount_out: bigint
+
+    let amountInWithFee = amount_in * BigInt( 1000 ); // No fees
+    let numerator = amountInWithFee * reserve_out;
+    let denominator = reserve_in * BigInt( 1000 ) + amountInWithFee;
+    amount_out = numerator / denominator;
+
+    return  amount_out
 }

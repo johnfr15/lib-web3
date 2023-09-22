@@ -24,8 +24,8 @@ const main = async() => {
         
         // await SyncSwap.swap(
         //     signer,
-        //     [ TOKENS[ network ].dai, ZERO_ADDRESS ],
-        //     "100",
+        //     [ ZERO_ADDRESS, TOKENS[ network ].dai ],
+        //     "0.0000000001",
         //     network
         // )
 
@@ -33,7 +33,7 @@ const main = async() => {
         //     signer,
         //     TOKENS[ network ].eth,
         //     null,
-        //     TOKENS[ network ].usdc,
+        //     TOKENS[ network ].dai,
         //     null,
         //     true,
         //     network
