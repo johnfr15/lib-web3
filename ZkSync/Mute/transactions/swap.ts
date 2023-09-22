@@ -18,35 +18,44 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
 
 
-    console.log(`2) Swapping exact ${ ethers.formatUnits( amountIn, tokenFrom.decimals)  } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( amountOutMin, tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
+    try {
 
-    if ( is_native( path[0] ) )
-    {
-        txArgs = [ amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-        fees = await Router.swapExactETHForTokens.estimateGas( ...txArgs, { value: amountIn } )
+        console.log(`\n\nSwapping exact ${ ethers.formatUnits( amountIn, tokenFrom.decimals)  } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( amountOutMin, tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
 
-        tx = await Router.swapExactETHForTokens( ...txArgs, { value: amountIn, maxPriorityFeePerGas: fees } )
-    }
-    else if ( is_native( path[1] ) )
-    {
-        txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-        fees = await Router.swapExactTokensForETH.estimateGas( ...txArgs )
+        if ( is_native( path[0] ) )
+        {
+            txArgs = [ amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+            fees = await Router.swapExactETHForTokens.estimateGas( ...txArgs, { value: amountIn } )
+    
+            tx = await Router.swapExactETHForTokens( ...txArgs, { value: amountIn, maxPriorityFeePerGas: fees } )
+        }
+        else if ( is_native( path[1] ) )
+        {
+            txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+            fees = await Router.swapExactTokensForETH.estimateGas( ...txArgs )
+    
+            tx = await Router.swapExactTokensForETH( ...txArgs, { maxPriorityFeePerGas: fees })
+        }
+        else
+        {
+            txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+            fees = await Router.swapExactTokensForTokens.estimateGas( ...txArgs )
+    
+            tx = await Router.swapExactTokensForTokens( ...txArgs, { maxPriorityFeePerGas: fees } )
+        }
+    
 
-        tx = await Router.swapExactTokensForETH( ...txArgs, { maxPriorityFeePerGas: fees })
-    }
-    else
-    {
-        txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
-        fees = await Router.swapExactTokensForTokens.estimateGas( ...txArgs )
+        receipt = await tx.wait()
 
-        tx = await Router.swapExactTokensForTokens( ...txArgs, { maxPriorityFeePerGas: fees } )
-    }
-
-    receipt = await signer.provider?.waitForTransaction( tx.hash )
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+    
+        return receipt as TransactionReceipt
         
-    console.log("Transaction valided !")
-    console.log("hash: ", tx.hash)
-    console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+    } catch (error) {
 
-    return receipt as TransactionReceipt
+       throw( error )
+    }
+
 }

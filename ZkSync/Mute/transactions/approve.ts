@@ -14,12 +14,12 @@ export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wal
 
     try {
 
-        console.log(`1) Approving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] }...`)
+        console.log(`\n\nApproving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] ?? 'LP' }...`)
 
         tx = await Erc20.approve( spender, amount )
         receipt = await signer.provider?.waitForTransaction( tx.hash )
 
-        console.log("Transaction valided !")
+        console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
         console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 

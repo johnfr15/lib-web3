@@ -18,7 +18,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
 
 
-    console.log(`\t3) Adding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
+    console.log(`\n\nAdding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
 
     if ( is_native( addLiquidity.tokenA.address ) || is_native( addLiquidity.tokenB.address ) )
     {
@@ -30,7 +30,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
         args = [ token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline, feeType, stable ]
         fees = await Router.addLiquidityETH.estimateGas( ...args, { value: value } )
-        
+
         tx = await Router.addLiquidityETH( ...args, { value: value, maxPriorityFeePerGas: fees } )
     }
     else 
@@ -43,7 +43,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )
         
-    console.log("Transaction valided !")
+    console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)
     console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 

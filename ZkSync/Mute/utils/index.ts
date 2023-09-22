@@ -1,25 +1,25 @@
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
+import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../config/constants"
 import fs from "fs"
 import { Token, Pool } from "../types";
 
 
-export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<Token> => {
+export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET' ): Promise<Token> => {
 
-    const FILE_PATH = "src/ZkSync-module/Mute/config/tokens.json"
-    let tokens: {[key: string]: Token } = {}
+    const FILE_PATH = __dirname + "/../config/tokens.json"
+    let Tokens: {[key: string]: Token } = {}
 
     try {
         
-        tokens = await JSON.parse( fs.readFileSync( FILE_PATH ).toString('ascii') )
+        Tokens = await JSON.parse( fs.readFileSync( FILE_PATH ).toString('ascii') )
         
     } catch (error) {
 
-        throw(`Error: ${FILE_PATH} do not contains the tokens datas`)    
+        throw(`Error: ${ FILE_PATH } do not contains the tokens datas`)    
 
     }
 
-    const token = Object.values(tokens).find( (token: Token) => 
+    const token = Object.values(Tokens).find( (token: Token) => 
     {
         return  ( BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ]  )
     })
