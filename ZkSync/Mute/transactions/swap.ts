@@ -36,14 +36,10 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
     }
     else
     {
-        tx = await Router.swapExactTokensForTokens(
-            amountIn,
-            amountOutMin,
-            [ tokenFrom.address, tokenTo.address ],
-            signer.address,
-            deadline,
-            [ false ]
-        )
+        txArgs = [ amountIn, amountOutMin, [ tokenFrom.address, tokenTo.address ], signer.address, deadline, [ false ] ]
+        fees = await Router.swapExactTokensForTokens.estimateGas( ...txArgs )
+
+        tx = await Router.swapExactTokensForTokens( ...txArgs, { maxPriorityFeePerGas: fees } )
     }
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )

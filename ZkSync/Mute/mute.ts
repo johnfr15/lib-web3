@@ -23,7 +23,6 @@ import { exec_remove } from './transactions/remove';
  * @param slipage       - (optional) protection against price movement or to high price impact default is 0.5%
  * @param priceImpact   - (optional) protection against price movement or to high price impact default is 2%
  * @param deadline      - (optional) Maximum amount of time (in unix time) before the trade get reverted
- * @param maxFees       - (optional) max fees signer is ready to pay for executing transaction
  */
 export const swap = async(
     signer: Wallet,
@@ -33,7 +32,6 @@ export const swap = async(
     slipage: number = 50, // this represent 5% of slipage
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
     deadline?: number,
-    maxFees?: bigint,
 ) => {
 
     try {
@@ -71,7 +69,7 @@ export const swap = async(
  * @param max           // (optional, recommended) if activated it will check for the highest amount possible from tokenA and tokenB
  * @param network       // (optional) 'testnet' is the default one
  * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
- * @param maxFees       // (optional) max fees signer is ready to pay for executing transaction
+ * @param deadline      - (optional) Maximum amount of time (in unix time) before the trade get reverted
  */
 export const addLiquidity = async(
     signer: Wallet,                        
@@ -83,7 +81,6 @@ export const addLiquidity = async(
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     slipage: number = 2, // this represent 2% of slipage
     deadline: number | null = null,
-    maxFees?: bigint,
 ): Promise<void> => {
 
     try {
@@ -126,13 +123,13 @@ export const addLiquidity = async(
 
 /**
  * @name withdrawLiquidity
- * @param signer                // The Wallet to widthdraw its Liquidity Tokens (lp) 
- * @param tokenA                // Address of token A
- * @param tokenB                // Address of token B
- * @param percent               // (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
- * @param network               // (optional) 'testnet' is the default one
- * @param slipage               // (optional) protection against price movement or to high price impact default is 2%
- * @param maxFees               // (optional) max fees signer is ready to pay for executing transaction
+ * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
+ * @param tokenA         - Address of token A
+ * @param tokenB         - Address of token B
+ * @param percent        - (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
+ * @param network        - (optional) 'testnet' is the default one
+ * @param slipage        - (optional) protection against price movement or to high price impact default is 2%
+ * @param deadline       - (optional) Maximum amount of time (in unix time) before the trade get reverted
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 
@@ -142,7 +139,6 @@ export const withdrawLiquidity = async(
     network: 'TESTNET' | 'MAINNET' = 'TESTNET', 
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
     deadline: number | null = null,
-    maxFees?: bigint,
 ) => {
 
     try {

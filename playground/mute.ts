@@ -19,25 +19,10 @@ const main = async() => {
         const DAI_TESTNET =  "0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b"
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
+        console.log("account: ", signer.address)
+        await log_balances( signer, network )
+        console.log("")
 
-        // console.log("account: ", signer.address)
-        // await log_balances( signer, network )
-        // console.log("")
-
-
-        const obj: {[key: number]: any} = {}
-
-        Tokens.forEach((token, index) => {
-            obj[ index ] = token
-        })
-
-        try {
-            let formated = JSON.stringify( obj, null, 2 ) 
-
-            await fs.writeFileSync( "tokens.json", formated, { encoding: 'utf-8', flag: 'w' } )
-        } catch (error) {
-            
-        }
         // await Mute.swap(
         //     signer,
         //     [ ZERO_ADDRESS, TOKENS[ network ].usdt ],

@@ -11,6 +11,8 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
+    let args: any
+    let fees: bigint
 
     const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable, network } = addLiquidity
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
@@ -20,44 +22,23 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
     if ( is_native( addLiquidity.tokenA.address ) || is_native( addLiquidity.tokenB.address ) )
     {
-        const fee = await Router.addLiquidityETH.estimateGas(
-            is_native( tokenA.address ) ? tokenB.address : tokenA.address,
-            is_native( tokenA.address ) ? amountBDesired : amountADesired,
-            is_native( tokenA.address ) ? amountBMin : amountAMin,
-            is_native( tokenA.address ) ? amountAMin : amountBMin,
-            to,
-            deadline,
-            feeType,
-            stable,
-            { value: is_native( tokenA.address ) ? amountADesired : amountBDesired }
-        )
+        let token              = is_native( tokenA.address ) ? tokenB.address : tokenA.address
+        let amountTokenDesired = is_native( tokenA.address ) ? amountBDesired : amountADesired
+        let amountTokenMin     = is_native( tokenA.address ) ? amountBMin : amountAMin
+        let amountETHMin       = is_native( tokenA.address ) ? amountAMin : amountBMin
+        let value              = is_native( tokenA.address ) ? amountADesired : amountBDesired
 
-        tx = await Router.addLiquidityETH(
-            is_native( tokenA.address ) ? tokenB.address : tokenA.address,
-            is_native( tokenA.address ) ? amountBDesired : amountADesired,
-            is_native( tokenA.address ) ? amountBMin : amountAMin,
-            is_native( tokenA.address ) ? amountAMin : amountBMin,
-            to,
-            deadline,
-            feeType,
-            stable,
-            { value: is_native( tokenA.address ) ? amountADesired : amountBDesired, maxPriorityFeePerGas: fee }
-        )
+        args = [ token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline, feeType, stable ]
+        fees = await Router.addLiquidityETH.estimateGas( ...args, { value: value } )
+        
+        tx = await Router.addLiquidityETH( ...args, { value: value, maxPriorityFeePerGas: fees } )
     }
     else 
     {
-        tx = await Router.addLiquidity(
-            tokenA.address,
-            tokenB.address,
-            amountADesired,
-            amountBDesired,
-            amountAMin,
-            amountBMin,
-            to,
-            deadline,
-            feeType,
-            stable
-        )
+        args = [ tokenA.address, tokenB.address, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable ]
+        fees = await Router.addLiquidity.estimateGas( ...args )
+
+        tx = await Router.addLiquidity( ...args, { maxPriorityFeePerGas: fees })
     }
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )
