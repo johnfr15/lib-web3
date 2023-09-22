@@ -79,7 +79,7 @@ export type ApproveTx = {
 export type AddLiquidity = {
     pool: string
     inputs: TokenInput[]
-    data: string
+    data: string                // Address of the LP receiver 
     minLiquidity: bigint
     callback: string
     callbackData: string
@@ -90,16 +90,15 @@ export type AddLiquidity = {
 }
 
 export type RemoveLiquidity = {
+    pool: string
+    liquidity: bigint
+    data: string                // Address of the tokens receiver 
+    minLiquidities: bigint[]
+    callback: string
+    callbackData: string
     tokenA: Token,
     tokenB: Token,
-    lp: Token,
-    balanceLp: any,
-    liquidity: bigint,
-    amountAMin: bigint,
-    amountBMin: bigint,
-    to: string,
-    deadline: number,
-    stable: boolean,
+    balanceLp: { [key: string]: any }
     percent: number,
     network: 'TESTNET' | 'MAINNET' 
 }

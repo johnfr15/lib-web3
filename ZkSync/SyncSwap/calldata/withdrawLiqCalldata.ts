@@ -1,7 +1,7 @@
-import { Wallet, Contract} from "ethers";
-import { CLASSIC_POOL_ABI, ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
+import { Wallet, Contract, ethers } from "ethers";
+import { CLASSIC_POOL_ABI, ROUTER_ABI, ROUTER_ADDRESS, TICKER, ZERO_ADDRESS } from "../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { Pool, RemoveLiquidity, Token } from "../types";
+import { Pool, RemoveLiquidity, Token, WithdrawMode } from "../types";
 
 
 export const get_remove_tx = async(
@@ -16,8 +16,6 @@ export const get_remove_tx = async(
 
     try {
         
-        const Router = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer )
-
         const token_a: Token     = await get_token( tokenA, network, signer )
         const token_b: Token     = await get_token( tokenB, network, signer )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
@@ -50,26 +48,26 @@ const get_removeLiq = async(
     try {
 
         const Pool              = new Contract( pool.pair, CLASSIC_POOL_ABI, signer )
-        const lp                = await get_token( pool.pair, network, signer )
         const reserveLp: bigint = await Pool.totalSupply()
         const balanceLp         = await get_balance( pool.pair, signer )
-
 
         const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
         const amount_0_min: bigint = ( pool.reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         const amount_1_min: bigint = ( pool.reserveB * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
+        const withdraw_mode = WithdrawMode.WITHDRAW_AND_UNWRAP_TO_NATIVE_ETH
+
+
         const removeLiq: RemoveLiquidity = {
+            pool: pool.pair,
+            liquidity: liquidity,
+            data: ethers.AbiCoder.defaultAbiCoder().encode( ["address", "uint8"], [ signer.address, withdraw_mode ]),
+            minLiquidities: [ amount_0_min, amount_1_min ],
+            callback: ZERO_ADDRESS,
+            callbackData: "0x",
             tokenA: pool.tokenA,
             tokenB: pool.tokenB,
-            lp: lp,
             balanceLp: balanceLp,
-            liquidity: liquidity,
-            amountAMin: amount_0_min,
-            amountBMin: amount_1_min,
-            to: signer.address,
-            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
-            stable: false,
             percent: percent,
             network: network
         } 

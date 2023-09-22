@@ -161,14 +161,14 @@ export const withdrawLiquidity = async(
 
         // Get widthdraw liquidity Tx
         const removeTx = await get_remove_tx( signer, tokenA, tokenB, percent, slipage, network, deadline )
-        const { liquidity, balanceLp, lp } = removeTx
+        const { liquidity, balanceLp, pool } = removeTx
 
         // Get approve Tx
-        const approveTx = await get_approve_tx(signer, ethers.formatUnits( liquidity, balanceLp.decimals ), lp.address , network)
+        const approveTx = await get_approve_tx(signer, ethers.formatUnits( liquidity, balanceLp.decimals ), pool, network)
 
         /*========================================= TX =================================================================================================*/        
-        exec_approve( approveTx, signer )
-        exec_remove( removeTx, signer )
+        // await exec_approve( approveTx, signer )
+        await exec_remove( removeTx, signer )
         /*=============================================================================================================================================*/
 
     } catch (error: any) {

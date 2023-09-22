@@ -39,7 +39,7 @@ const main = async() => {
         //     network
         // )
 
-        // SyncSwap.withdrawLiquidity( 
+        // await SyncSwap.withdrawLiquidity( 
         //     signer,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,
