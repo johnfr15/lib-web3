@@ -8,7 +8,7 @@ import { JsonRpcProvider } from 'ethers';
 
 
 // Misc
-export const MAINNET_PROVIDER = new JsonRpcProvider( "https://mainnet.era.zksync.io" ) 
+export const MAINNET_PROVIDER = new JsonRpcProvider( "https://1rpc.io/5MhQH7HHMtWL2dh9x/zksync2-era" ) 
 export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet.blockpi.network/v1/rpc/public" )
 
 
