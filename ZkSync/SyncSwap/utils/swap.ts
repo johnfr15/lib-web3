@@ -58,19 +58,13 @@ export const get_trade = async(
     }
 }
 
+
 export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
 
-    let percent: number
-
-    const reserve_in  = BigInt( trade.tokenFrom.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
-    const reserve_out = BigInt( trade.tokenTo.address   ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
-
     const quoteOut: string = get_quote( ethers.formatUnits( trade.amountIn, trade.tokenFrom.decimals), trade.tokenFrom, trade.tokenTo, pool )
-    const diffOut: bigint  = trade.amountOut * reserve_out / ethers.parseUnits( quoteOut, trade.tokenTo.decimals)
+    const amountOut: string = ethers.formatUnits( trade.amountOut, trade.tokenTo.decimals )
 
-    percent = 10000 - parseFloat( (reserve_out * BigInt( 10000 ) / diffOut).toString() )
-
-    const priceImpact = percent < 0 ? -percent / 100 : percent / 100
+    const priceImpact = 100 - parseFloat( amountOut ) * 100 / parseFloat( quoteOut )
 
     return priceImpact
 }
