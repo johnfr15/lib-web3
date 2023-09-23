@@ -14,7 +14,7 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
         const { paths, path, tokenFrom, tokenTo, amountIn, amountOutMin, deadline, network } = swapTx
         const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer ) 
     
-        console.log(`\n2) Swapping exact ${ ethers.formatUnits( amountIn, tokenFrom.decimals)  } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( amountOutMin, tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
+        console.log(`\nSwapping exact ${ ethers.formatUnits( amountIn, tokenFrom.decimals)  } ${ TICKER[ path[0] ] } for (min)${ ethers.formatUnits( amountOutMin, tokenTo.decimals ) } ${ TICKER[ path[1] ] }`)      
     
         tx = await Router.swap( 
             paths, 
@@ -24,7 +24,7 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
         ) 
         receipt = await signer.provider?.waitForTransaction( tx.hash )
             
-        console.log("Transaction valided !")
+        console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
         console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
     

@@ -10,12 +10,10 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
     const { tokenA, tokenB, pool, liquidity, data, minLiquidities, callback, callbackData, network, percent } = removeLiq
     const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer ) 
 
-    console.log(`2) Withdrawing ${ percent }% of liquidity for:\n\t\
+    console.log(`\nWithdrawing ${ percent }% of liquidity for:\n\t\
         (minimum)${ ethers.formatUnits( minLiquidities[0], tokenA.decimals ) } ${ TICKER[ tokenA.address ] }\n\t\
         (minimum)${ ethers.formatUnits( minLiquidities[1], tokenB.decimals ) } ${ TICKER[ tokenB.address ] }
     `)
-
-    console.log( removeLiq )
 
     tx = await Router.burnLiquidity(
         pool,
@@ -28,7 +26,7 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
 
     receipt = await tx.wait()
         
-    console.log("Transaction valided !")
+    console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)
     console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 

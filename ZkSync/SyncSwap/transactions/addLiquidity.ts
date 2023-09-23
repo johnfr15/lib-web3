@@ -30,7 +30,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )
         
-    console.log("Transaction valided !")
+    console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)
     console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 

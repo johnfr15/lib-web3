@@ -16,8 +16,8 @@ export const get_remove_tx = async(
 
     try {
         
-        const token_a: Token     = await get_token( tokenA, network, signer )
-        const token_b: Token     = await get_token( tokenB, network, signer )
+        const token_a: Token     = await get_token( tokenA, network )
+        const token_b: Token     = await get_token( tokenB, network )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
         
         const pool: Pool = await get_pool( token0, token1, network, signer )

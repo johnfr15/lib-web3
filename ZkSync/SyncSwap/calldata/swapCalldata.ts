@@ -19,8 +19,8 @@ export const get_swap_tx = async(
     try {
 
         const balance_in        = await get_balance( path[0], signer )
-        const token_in: Token   = await get_token( path[0], network, signer )
-        const token_out: Token  = await get_token( path[1], network, signer )
+        const token_in: Token   = await get_token( path[0], network )
+        const token_out: Token  = await get_token( path[1], network )
         const pool: Pool        = await get_pool( token_in, token_out, network, signer )
         const trade: Trade      = await get_trade( signer, path, token_in, token_out, amountIn, pool, slipage, deadline, network )
 

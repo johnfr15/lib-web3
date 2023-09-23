@@ -1,20 +1,34 @@
 import { ethers, Wallet, Contract } from "ethers"
 import { ERC20_ABI, TOKENS, CHAIN_ID, TICKER, ZERO_ADDRESS, ROUTER_ABI, CLASSIC_POOL_FACTORY, CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../config/constants"
-import tokens from "../config/tokens"
+import fs from "fs"
 import { Token, Pool } from "../types";
 
 
-export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Wallet ): Promise<Token> => {
+export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET' ): Promise<Token> => {
 
-    const token: Token | undefined = tokens.find( (token: Token) => 
+    const FILE_PATH = __dirname + "/../config/tokens.json"
+    let Tokens: {[key: string]: Token } = {}
+
+    try {
+        
+        Tokens = await JSON.parse( fs.readFileSync( FILE_PATH ).toString('ascii') )
+        
+    } catch (error) {
+
+        throw(`Error: ${ FILE_PATH } do not contains the tokens datas`)    
+
+    }
+
+    const token = Object.values(Tokens).find( (token: Token) => 
     {
-        return BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ] 
+        return  ( BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ]  )
     })
+
 
     if ( token === undefined )
         throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)
     
-    if ( is_native(token.address) )
+    if ( is_native( token.address ) )
         token.address = TOKENS[ network ].weth
 
     return token

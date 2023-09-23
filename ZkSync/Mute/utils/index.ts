@@ -128,7 +128,10 @@ export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, po
 }
 
 export const is_native = ( token: string ): boolean => {
-    return BigInt( token ) === BigInt( 0 ) || BigInt( token ) === BigInt( TOKENS['TESTNET'].weth ) || BigInt( token ) === BigInt( TOKENS['MAINNET'].weth )
+    return  (BigInt( token ) === BigInt( 0 ) || 
+             BigInt( token ) === BigInt( TOKENS['TESTNET'].weth ) || 
+             BigInt( token ) === BigInt( TOKENS['MAINNET'].weth )
+            )
 }
 
 
