@@ -24,28 +24,28 @@ const main = async() => {
         
         await SyncSwap.swap(
             signer,
-            [ ZERO_ADDRESS, TOKENS[ network ].dai ],
-            "0.0000000001",
+            [ TOKENS[ network ].dai, ZERO_ADDRESS ],
+            "80939812127.654448566476392533",
             network
         )
 
-        await SyncSwap.addLiquidity( 
-            signer,
-            TOKENS[ network ].eth,
-            null,
-            TOKENS[ network ].dai,
-            null,
-            true,
-            network
-        )
+        // await SyncSwap.addLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].eth,
+        //     null,
+        //     TOKENS[ network ].dai,
+        //     null,
+        //     true,
+        //     network
+        // )
 
-        await SyncSwap.withdrawLiquidity( 
-            signer,
-            TOKENS[ network ].eth,
-            TOKENS[ network ].dai,
-            100,
-            network
-        )
+        // await SyncSwap.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].eth,
+        //     TOKENS[ network ].dai,
+        //     100,
+        //     network
+        // )
 
 
     } catch (error: any) {

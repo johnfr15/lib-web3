@@ -1,7 +1,8 @@
-import { Wallet, ethers } from "ethers";
+import { Wallet, ethers, toBeArray } from "ethers";
 import { Pool, Trade, Token, SwapStep, SwapPath, WithdrawMode } from "../types";
 import { get_quote } from ".";
 import { ZERO_ADDRESS } from "../config/constants";
+import { transaction } from "starknet";
 
 
 export const get_trade = async(
@@ -17,9 +18,14 @@ export const get_trade = async(
 ): Promise<Trade> => {
 
     try {
+
         
+        const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+        const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB 
+
+
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const amount_out: bigint = get_amount_out( amount_in, pool.reserveA, pool.reserveB )
+        const amount_out: bigint = get_amount_out( amount_in, reserveIn, reserveOut )
         const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
         // There is only 1 step (2 tokens involved in the tx)
