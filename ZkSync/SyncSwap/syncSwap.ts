@@ -31,7 +31,7 @@ export const swap = async(
     amountIn: string,
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     slipage: number = 0.5, // this represent 0.5% of slipage
-    priceImpact: number = 2, // this represent 2% of allowed price impact (default)
+    priceImpact: number = 0.5, // this represent 2% of allowed price impact (default)
     deadline?: number,
 ) => {
 
@@ -144,7 +144,7 @@ export const withdrawLiquidity = async(
     tokenB: string, 
     percent: number = 100, 
     network: 'TESTNET' | 'MAINNET' = 'TESTNET', 
-    slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
+    slipage: number = 2, // this represent 0.5% of allowed slipage (default)
     deadline: number | null = null,
 ) => {
 
