@@ -12,7 +12,6 @@ export const exec_swap = async( swapTx: Trade, signer: Wallet ): Promise<Transac
 
     let tx: TransactionResponse
     let feesPerGas: bigint
-    let txArgs: SwapExactETHForTokens | SwapExactTokensForETH | SwapExactTokensForETH
     let receipt: TransactionReceipt | null | undefined
 
     let { path, tokenFrom, tokenTo, amountIn, amountOutMin, deadline, network } = swapTx

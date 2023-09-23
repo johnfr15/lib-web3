@@ -29,11 +29,11 @@ export const swap = async(
     path: [string, string],
     amountIn: string,
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
-    slipage: number = 50, // this represent 2% of slipage
+    slipage: number = 2, // this represent 2% of slipage
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
     deadline?: number,
 ) => {
-
+    
     try {
 
         if ( slipage < 0.01 || slipage > 100 )

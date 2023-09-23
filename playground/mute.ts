@@ -22,12 +22,14 @@ const main = async() => {
         await log_balances( signer, network )
         console.log("")
 
-        await Mute.swap(
-            signer,
-            [ TOKENS[ network ].dai,  ZERO_ADDRESS ],
-            "40272.763067513332673864",
-            network
-        )
+        // await Mute.swap(
+        //     signer,
+        //     [ ZERO_ADDRESS,  TOKENS[ network ].dai ],
+        //     "0.0001",
+        //     network,
+        //     84,
+        //     84
+        // )
 
         // await  Mute.addLiquidity( 
         //     signer,

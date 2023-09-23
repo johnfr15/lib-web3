@@ -1,5 +1,5 @@
-import { ethers, Signature, Wallet } from "ethers";
-import { Pool, Trade, Token, SwapExactETHForTokens, SwapExactTokensForETH, SwapExactTokensForTokens } from "../types";
+import { ethers, Wallet } from "ethers";
+import { Pool, Trade, Token, SwapExactETHForTokens, SwapExactTokensForETH } from "../types";
 import { get_quote, is_native, get_balance } from ".";
 import { TOKENS, ZERO_ADDRESS } from "../config/constants";
 
@@ -16,10 +16,11 @@ export const get_trade = async(
 ): Promise<Trade> => {
 
     try {
-        
+        const reserve_in  = BigInt( tokenIn.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+        const reserve_out = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
+
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
-        const quote: string = get_quote( amountIn, tokenIn, tokenOut, pool )
-        const amount_out: bigint = ethers.parseUnits( quote, tokenOut.decimals )
+        const amount_out: bigint = get_amount_out( amount_in, reserve_in, reserve_out )
         const amount_out_min: bigint = amount_out * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         
         return { 
@@ -45,19 +46,24 @@ export const get_trade = async(
     }
 }
 
+
+export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): bigint => {
+    let amount_out: bigint
+
+    let amountInWithFee = amount_in * BigInt( 1000 ); // No fees
+    let numerator = amountInWithFee * reserve_out;
+    let denominator = reserve_in * BigInt( 1000 ) + amountInWithFee;
+    amount_out = numerator / denominator;
+
+    return  amount_out
+}
+
 export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
 
-    let percent: number
-
-    const reserve_in  = BigInt( trade.tokenFrom.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
-    const reserve_out = BigInt( trade.tokenTo.address   ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
-
     const quoteOut: string = get_quote( ethers.formatUnits( trade.amountIn, trade.tokenFrom.decimals), trade.tokenFrom, trade.tokenTo, pool )
-    const diffOut: bigint  = trade.amountOut * reserve_out / ethers.parseUnits( quoteOut, trade.tokenTo.decimals)
+    const amountOut: string = ethers.formatUnits( trade.amountOut, trade.tokenTo.decimals )
 
-    percent = 10000 - parseFloat( (reserve_out * BigInt( 10000 ) / diffOut).toString() )
-
-    const priceImpact = percent < 0 ? -percent / 100 : percent / 100
+    const priceImpact = 100 - parseFloat( amountOut ) * 100 / parseFloat( quoteOut )
 
     return priceImpact
 }
