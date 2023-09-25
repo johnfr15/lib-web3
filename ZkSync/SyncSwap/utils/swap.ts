@@ -18,11 +18,9 @@ export const get_trade = async(
 ): Promise<Trade> => {
 
     try {
-
         
         const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB
         const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenA.address ) ? pool.reserveA : pool.reserveB 
-
 
         const amount_in: bigint  = ethers.parseUnits( amountIn, tokenIn.decimals ) 
         const amount_out: bigint = get_amount_out( amount_in, reserveIn, reserveOut )

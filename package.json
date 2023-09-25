@@ -5,6 +5,7 @@
   "author": "John",
   "license": "MIT",
   "dependencies": {
+    "@uniswap/sdk": "^3.0.3",
     "ethers": "6.7",
     "l0k_swap-sdk": "https://github.com/10k-swap/10k_swap-sdk.git#main",
     "starknet": "^5.19.6"

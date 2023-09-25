@@ -1,15 +1,13 @@
 import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/mute_router_abi"
-import factory_abi from "./abis/mute_factory_abi"
-import pair_abi from "./abis/mute_pair_abi"
+import router_abi from "./abis/router_abi"
 import { JsonRpcProvider } from 'ethers';
 
 
 
 
 // Misc
-export const MAINNET_PROVIDER = new JsonRpcProvider( "https://1rpc.io/5MhQH7HHMtWL2dh9x/zksync2-era" ) 
-export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet.blockpi.network/v1/rpc/public" )
+export const MAINNET_PROVIDER = new JsonRpcProvider( "https://polygon-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8" ) 
+export const TESTNET_PROVIDER = new JsonRpcProvider( "https://polygon-mumbai.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8" )
 
 
 
@@ -18,9 +16,7 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet
 
 // ABIS
 export const ERC20_ABI = erc20_abi
-export const MUTE_ROUTER_ABI = router_abi
-export const MUTE_FACTORY_ABI = factory_abi
-export const MUTE_PAIR_ABI = pair_abi
+export const ROUTER_ABI = router_abi
 
 
 
@@ -29,24 +25,15 @@ export const MUTE_PAIR_ABI = pair_abi
 // Addresses
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
-export const FACTORY_ADDRESS: { [key: string]: string } = {
-  'MAINNET': '0x40be1cba6c5b47cdf9da7f963b6f761f4c60627d',
-  'TESTNET': '0xCc05E242b4A82f813a895111bCa072c8BBbA4a0e'
-}
-
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
-  'MAINNET': '0x8B791913eB07C32779a16750e3868aA8495F5964',
-  'TESTNET': '0x96c2Cf9edbEA24ce659EfBC9a6e3942b7895b5e8',
+  'MAINNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
+  'TESTNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
 }
 
-export const MULTI_CALL:  { [key: string]: string } = {
-  'MAINNET': '0xb1F9b5FCD56122CdfD7086e017ec63E50dC075e7',
-  'TESTNET': '0xd9Ee4c1e04059D4B0dd02b747282511bEE4E5fB5',
-}
 
 export const CHAIN_ID:  { [key: string]: number } = {
-  'MAINNET': 324,
-  'TESTNET': 280,
+  'MAINNET': 137,
+  'TESTNET': 80001,
 }
 
 
@@ -56,40 +43,34 @@ export const CHAIN_ID:  { [key: string]: number } = {
 // Tokens
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
-        eth: "0x0000000000000000000000000000000000000000",
-        weth: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
-        usdc:'0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
-        dai:'',
-        wbtc:'0xBBeB516fb02a01611cBBE0453Fe3c580D7281011',
-        usdt:'0x59ac51Cfb025adCE007D1EC96A21f7c7e3f32330',
+        matic: "0x0000000000000000000000000000000000000000",
+        weth: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+        usdc:'0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        dai:'0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+        wbtc:'',
+        usdt:'0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
     },
     'TESTNET': {
-        eth: "0x0000000000000000000000000000000000000000",
-        weth: '0x294cB514815CAEd9557e6bAA2947d6Cf0733f014',
-        dai: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b',
-        usdc: '0x0faF6df7054946141266420b43783387A78d82A9', 
-        usdt: '0xfcEd12dEbc831D3a84931c63687C395837D42c2B', 
-        tka: '',
-        tkb: '',
+        matic: "0x0000000000000000000000000000000000000000",
+        weth: '',
+        dai: '',
+        usdc: '', 
+        usdt: '', 
     }
 }
 
 export const TICKER: {[key: string]: string} = {
 
-    "0x0000000000000000000000000000000000000000": "ETH",
+    "0x0000000000000000000000000000000000000000": "MATIC",
 
-    "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91": "WETH",
-    "0x294cB514815CAEd9557e6bAA2947d6Cf0733f014": "WETH",
+    "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "WETH",
+    "": "WETH",
 
-    "a": "wstETH",
-    "z": "USDC",
-    "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4": "USDC",
-    "0x0faF6df7054946141266420b43783387A78d82A9": "USDC",
+    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "USDC",
+    "": "USDC",
 
-    "0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b": "DAI",
+    "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": "DAI",
+    "": "DAI",
 
-    "t": "DAI",
-    "y": "wBTC",
-    "u": "USDT",
-    "i": "LORDS",
+    "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": "USDT",
 }
