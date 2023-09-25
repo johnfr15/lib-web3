@@ -1,45 +1,7 @@
-import { Contract } from "ethers"
-
-export type Token = {
-    chainId: number
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-    logoURI: string
-}
-
-export type Pool = {
-    tokenA: Token
-    tokenB: Token
-    pair: string
-    reserveA: bigint
-    reserveB: bigint
-    fee: bigint
-}
-
-export type Trade = {
-    tokenFrom: Token
-    tokenTo: Token
-    pool: Pool
-    amountIn: bigint
-    amountOut: bigint
-    amountOutMin: bigint
-    path: [string, string]
-    to: string,
-    priceImpact: number
-    slipage: number
-    deadline: number
-    stable: boolean[]
-    network: 'TESTNET' | 'MAINNET'
-}
+import { Contract, ethers, Wallet } from "ethers"
+import { Token, Trade, Percent, JSBI } from "@uniswap/sdk"
 
 
-
-export declare enum TradeType {
-    EXACT_INPUT,
-    EXACT_OUTPUT
-}
 
 export type ApproveTx = {
     Erc20: Contract, 
@@ -48,6 +10,17 @@ export type ApproveTx = {
     decimals: number
     network: 'TESTNET' | 'MAINNET' 
 }
+
+export type SwapTx = {
+    signer: Wallet
+    Router: Contract
+    trade: Trade
+    path: [string, string]
+    slipage: Percent
+    deadline: number
+    network: 'TESTNET' | 'MAINNET' 
+}
+
 export type AddLiquidity = {
     tokenA: Token
     tokenB: Token
@@ -78,27 +51,47 @@ export type RemoveLiquidity = {
 }
 
 export type SwapExactETHForTokens = {
-    amountOutMin: bigint 
+    amountOutMin: JSBI
     path: string[] 
     to: string
     deadline: number
-    stable: boolean[]
+}
+
+export type SwapETHForExactTokens = {
+    amountOut: JSBI
+    path: string[] 
+    to: string
+    deadline: number
 }
 
 export type SwapExactTokensForETH = {
-    amountIn: bigint
-    amountOutMin: bigint 
+    amountIn: JSBI
+    amountOutMin: JSBI 
     path: string[] 
     to: string
-    deadline: bigint
-    stable: boolean[]
+    deadline: number
+}
+
+export type SwapTokensForExactETH = {
+    amountOut: JSBI
+    amountInMax: JSBI 
+    path: string[] 
+    to: string
+    deadline: number
 }
 
 export type SwapExactTokensForTokens = {
-    amountIn: bigint
-    amountOutMin: bigint 
+    amountIn: JSBI
+    amountOutMin: JSBI 
     path: string[] 
     to: string
-    deadline: bigint
-    stable: boolean[]
+    deadline: number
+}
+
+export type SwapTokensForExactTokens = {
+    amountOut: JSBI
+    amountInMax: JSBI 
+    path: string[] 
+    to: string
+    deadline: number
 }
