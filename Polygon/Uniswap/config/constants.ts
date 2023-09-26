@@ -25,6 +25,11 @@ export const ROUTER_ABI = router_abi
 // Addresses
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
+export const WMATIC: { [key: string | number]: string } = {
+  "137": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  "80001": "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"
+}
+
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
   'MAINNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
   'TESTNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',

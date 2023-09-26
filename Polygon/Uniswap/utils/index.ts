@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, CHAIN_ID } from "../config/constants"
+import { ERC20_ABI, CHAIN_ID, WMATIC } from "../config/constants"
 import fs from "fs"
 import { Token, WETH } from "@uniswap/sdk"
 
@@ -95,5 +95,5 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
 }
 
 export const is_native = ( token: string ): boolean => {
-    return  ( BigInt( token ) === BigInt( 0 ) )
+    return  ( BigInt( token ) === BigInt( 0 ) ||  BigInt( token ) === BigInt( WMATIC[ "137" ] ) ||  BigInt( token ) === BigInt( WMATIC[ "80001" ] )  )
 }

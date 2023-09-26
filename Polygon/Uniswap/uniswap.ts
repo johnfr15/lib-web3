@@ -9,6 +9,7 @@ import { exec_swap } from './transactions/swap';
 import { exec_approve } from './transactions/approve';
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_remove } from './transactions/remove';
+import { AddLiquidityTx } from './types';
 
 
 
@@ -95,20 +96,18 @@ export const addLiquidity = async(
 
         
         // Get add liquidity Tx
-        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
-        const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
-
+        const addTx: AddLiquidityTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, max, network, slipage, deadline )
 
         // Get approve token 'a' Tx
-        const approveATx = await get_approve_tx(signer, ethers.formatUnits( amountADesired, tokenA.decimals ), tokenA.address, network)
+        const approveATx = await get_approve_tx(signer, ethers.formatUnits( addTx.amountADesired, addTx.pool.token0.decimals ), addTx.pool.token0.address, network)
 
         // Get approve token 'b' Tx
-        const approveBTx = await get_approve_tx(signer, ethers.formatUnits( amountBDesired, tokenB.decimals ), tokenB.address, network)
+        const approveBTx = await get_approve_tx(signer, ethers.formatUnits( addTx.amountBDesired, addTx.pool.token1.decimals ), addTx.pool.token1.address, network)
 
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx, signer )
         await exec_approve( approveBTx, signer )
-        await exec_add_liquidity( addTx, signer )
+        await exec_add_liquidity( addTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

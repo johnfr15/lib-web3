@@ -1,5 +1,5 @@
-import { Contract, ethers, Wallet } from "ethers"
-import { Token, Trade, Percent, JSBI } from "@uniswap/sdk"
+import { Contract, Wallet } from "ethers"
+import { Token, Trade, Percent, JSBI, Pair } from "@uniswap/sdk"
 
 
 
@@ -21,7 +21,9 @@ export type SwapTx = {
     network: 'TESTNET' | 'MAINNET' 
 }
 
-export type AddLiquidity = {
+export type AddLiquidityTx = {
+    signer: Wallet
+    pool: Pair
     tokenA: Token
     tokenB: Token
     amountADesired: bigint
@@ -30,9 +32,8 @@ export type AddLiquidity = {
     amountBMin: bigint
     to: string
     deadline: number
-    feeType: number
-    stable: boolean
     network: 'TESTNET' | 'MAINNET' 
+    Router: Contract
 }
 
 export type RemoveLiquidity = {
@@ -93,5 +94,25 @@ export type SwapTokensForExactTokens = {
     amountInMax: JSBI 
     path: string[] 
     to: string
+    deadline: number
+}
+
+export type AddLiquidity = {
+    tokenA: string,
+    tokenB: string,
+    amountADesired: bigint,
+    amountBDesired: bigint,
+    amountAMin: bigint,
+    amountBMin: bigint,
+    to: string,
+    deadline: number
+}
+
+export type AddLiquidityETH = {
+    token: string,
+    amountTokenDesired: bigint,
+    amountTokenMin: bigint,
+    amountETHMin: bigint,
+    to: string,
     deadline: number
 }

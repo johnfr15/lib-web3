@@ -4,10 +4,7 @@ import { SwapTx } from "../types";
 import { swapExactETHForTokens, swapETHForExactTokens, swapExactTokensForETH, swapTokensForExactETH } from "./swapETH";
 import { swapExactTokensForTokens, swapTokensForExactTokens } from "./swapTokens"
 
-/**
- * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
- * 
- */
+
 export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {
 
     const { trade, path } = swapTx
