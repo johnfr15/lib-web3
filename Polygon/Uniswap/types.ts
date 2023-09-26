@@ -36,19 +36,19 @@ export type AddLiquidityTx = {
     Router: Contract
 }
 
-export type RemoveLiquidity = {
-    tokenA: Token,
-    tokenB: Token,
-    lp: string,
-    balanceLp: any,
-    liquidity: bigint,
-    amountAMin: bigint,
-    amountBMin: bigint,
-    to: string,
-    deadline: number,
-    stable: boolean,
-    percent: number,
-    network: 'TESTNET' | 'MAINNET' 
+export type RemoveLiquidityTx = {
+    signer: Wallet
+    pool: Pair
+    balanceLp: any
+    liquidity: bigint
+    amountAMin: bigint
+    amountBMin: bigint
+    to: string
+    deadline: number
+    stable: boolean
+    percent: number
+    network: 'TESTNET' | 'MAINNET'
+    Router: Contract
 }
 
 export type SwapExactETHForTokens = {
@@ -114,5 +114,24 @@ export type AddLiquidityETH = {
     amountTokenMin: bigint,
     amountETHMin: bigint,
     to: string,
+    deadline: number
+}
+
+export type RemoveLiquidity = {
+    tokenA: string
+    tokenB: string
+    liquidity: bigint
+    amountAMin: bigint
+    amountBMin: bigint
+    to: string
+    deadline: number
+}
+
+export type RemoveLiquidityETH = {
+    token: string
+    liquidity: bigint
+    amountTokenMin: bigint
+    amountETHMin: bigint
+    to: string
     deadline: number
 }

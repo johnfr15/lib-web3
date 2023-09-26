@@ -1,44 +1,60 @@
-import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
-import { RemoveLiquidity } from "../types";
+import { ethers, TransactionResponse, TransactionReceipt } from "ethers";
+import { RemoveLiquidity, RemoveLiquidityETH, RemoveLiquidityTx } from "../types";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
+import { TICKER } from "../config/constants"
 
-export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) => {
+export const exec_remove = async( removeLiq: RemoveLiquidityTx ) => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
-    let args: any
+    let args: RemoveLiquidity | RemoveLiquidityETH
     let fees: bigint
 
-    const { tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, stable, network, percent } = removeLiq
-    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
-
+    const { pool, liquidity, amountAMin, amountBMin, to, deadline, stable, percent, Router } = removeLiq
+    const { token0, token1 } = pool
 
     console.log(`\n\nWithdrawing ${ percent }% of liquidity for:\n\t\
-        (minimum)${ ethers.formatUnits( amountAMin, tokenA.decimals ) } ${ TICKER[ tokenA.address ] }\n\t\
-        (minimum)${ ethers.formatUnits( amountBMin, tokenB.decimals ) } ${ TICKER[ tokenB.address ] }
+        (minimum)${ ethers.formatUnits( amountAMin, token0.decimals ) } ${ TICKER[ token0.address ] }\n\t\
+        (minimum)${ ethers.formatUnits( amountBMin, token1.decimals ) } ${ TICKER[ token1.address ] }
     `)
 
-    if ( is_native( tokenA.address ) || is_native( tokenB.address ) )
+    if ( is_native( pool.token0.address ) || is_native( pool.token1.address ) )
     {
-        let token           = is_native( tokenA.address ) ? tokenB.address : tokenA.address
-        let amountTokenMin  = is_native( tokenA.address ) ? amountBMin : amountAMin
-        let amountETHMin    = is_native( tokenA.address ) ? amountAMin : amountBMin
+        let token           = is_native( token0.address ) ? token1.address : token0.address
+        let amountTokenMin  = is_native( token0.address ) ? amountBMin : amountAMin
+        let amountETHMin    = is_native( token0.address ) ? amountAMin : amountBMin
 
-        args = [ token, liquidity, amountTokenMin, amountETHMin, to, deadline, stable ]
-        fees = await Router.removeLiquidityETH.estimateGas( ...args )
+        args = { 
+            token, 
+            liquidity, 
+            amountTokenMin, 
+            amountETHMin, 
+            to, 
+            deadline 
+        } as RemoveLiquidityETH
 
-        tx = await Router.removeLiquidityETH( ...args, { maxPriorityFeePerGas: fees } )
+        fees = await Router.removeLiquidityETH.estimateGas( args )
+
+        tx = await Router.removeLiquidityETH( args, { maxPriorityFeePerGas: fees } )
     }
     else 
     {
-        args = [ tokenA.address, tokenB.address, liquidity, amountAMin, amountBMin, to, deadline, stable ]
-        fees = await Router.removeLiquidity.estimateGas( ...args )
+        args = { 
+            tokenA: token0.address, 
+            tokenB: token1.address, 
+            liquidity, 
+            amountAMin, 
+            amountBMin, 
+            to, 
+            deadline
+        } as RemoveLiquidity
 
-        tx = await Router.removeLiquidity( ...args )
+        fees = await Router.removeLiquidity.estimateGas( args )
+
+        tx = await Router.removeLiquidity( args, { maxPriorityFeePerGas: fees } )
     }
 
-    receipt = await signer.provider?.waitForTransaction( tx.hash )
+    receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)

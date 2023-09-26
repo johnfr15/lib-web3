@@ -1,7 +1,8 @@
-import { Wallet, Contract} from "ethers";
-import { MUTE_PAIR_ABI, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
-import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { Pool, RemoveLiquidity, Token } from "../types";
+import { ethers, Wallet, Contract} from "ethers";
+import { Token, Pair, Fetcher } from "@uniswap/sdk"
+import { ERC20_ABI, ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
+import { get_balance, get_token } from "../utils";
+import { RemoveLiquidityTx } from "../types";
 
 
 export const get_remove_tx = async(
@@ -12,18 +13,15 @@ export const get_remove_tx = async(
     slipage: number, 
     network: 'TESTNET' | 'MAINNET',
     deadline: number | null,
-): Promise<RemoveLiquidity> => {
+): Promise<RemoveLiquidityTx> => {
 
     try {
         
-        const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+        const token_a: Token = await get_token( tokenA, network )
+        const token_b: Token = await get_token( tokenB, network )
+        const pool: Pair     = await Fetcher.fetchPairData( token_a, token_b )
 
-        const token_a: Token     = await get_token( tokenA, network )
-        const token_b: Token     = await get_token( tokenB, network )
-        const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
-        const pool: Pool         = await get_pool( token0, token1, network, signer )
-
-        const removeTx: RemoveLiquidity = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
+        const removeTx: RemoveLiquidityTx = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
 
         if ( removeTx.balanceLp.bigint === BigInt( 0 ) )
             throw(`Error: You don't have any LP token for pool ${ TICKER[ tokenA ] }/${ TICKER[ tokenB ] }`)
@@ -41,26 +39,29 @@ export const get_remove_tx = async(
 const get_removeLiq = async(
     signer: Wallet, 
     network: 'TESTNET' | 'MAINNET',
-    pool: Pool,
+    pool: Pair,
     percent: number, 
     slipage: number, 
     deadline: number | null,
-): Promise<RemoveLiquidity> => {
+): Promise<RemoveLiquidityTx> => {
 
     try {
 
-        const Pool              = new Contract( pool.pair, MUTE_PAIR_ABI, signer )
-        const reserveLp: bigint = await Pool.totalSupply()
-        const balanceLp         = await get_balance( pool.pair, signer )
+        const Lp     = new Contract( pool.liquidityToken.address, ERC20_ABI, signer )
+        const Router = new Contract( ROUTER_ADDRESS[ network ], ROUTER_ABI, signer )
 
-        const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
-        const amount_0_min: bigint = ( pool.reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
-        const amount_1_min: bigint = ( pool.reserveB * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        const reserveLp: bigint = await Lp.totalSupply()
+        const balanceLp         = await get_balance( pool.liquidityToken.address, signer )
 
-        const removeLiq: RemoveLiquidity = {
-            tokenA: pool.tokenA,
-            tokenB: pool.tokenB,
-            lp: pool.pair,
+        const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 ) // Apply the percentage of LP we want to burn
+        const reserveA: bigint     = ethers.parseUnits( pool.reserve0.toExact(), pool.token0.decimals )
+        const reserveB: bigint     = ethers.parseUnits( pool.reserve1.toExact(), pool.token1.decimals )
+        const amount_0_min: bigint = ( reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        const amount_1_min: bigint = ( reserveB * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+
+        const removeLiq: RemoveLiquidityTx = {
+            signer: signer,
+            pool: pool,
             balanceLp: balanceLp,
             liquidity: liquidity,
             amountAMin: amount_0_min,
@@ -69,7 +70,8 @@ const get_removeLiq = async(
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
             stable: false,
             percent: percent,
-            network: network
+            network: network,
+            Router: Router
         } 
         
         return removeLiq
