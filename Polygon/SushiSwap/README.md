@@ -2,34 +2,34 @@
 Jonathan's code
 
 
-# Mute  
-![Mute](https://mute.io/web/logo_mute.png)  
+# SushiSwap  
+![SushiSwap](https://docs.sushi.com/img/sushilogo.png)  
 
 **Swap**: ✅    
 **Add liquidity**: ✅    
 **Remove liquidity**: ✅    
   
 ## url
-- Mainnet: https://app.Muteswap.xyz/
-- Docs: https://docs.Muteswap.xyz/
-- Github: https://github.com/muteio
+- Mainnet: https://www.sushi.com/swap
+- Docs: https://docs.sushi.com/
+- Github: https://github.com/sushiswap
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
 
-## Calling Mute Functions
+## Calling SushiSwap Functions
 
-To use it just import the directory named *Mute*  
+To use it just import the directory named *SushiSwap*  
 ```javascript
-import Mute from "/Mute"
+import SushiSwap from "/SushiSwap"
 ```
 
 In this module you will be able to interact with all functionnalities of the AMM
 You will then be able to interact with the mains functions
 
 ```javascript
-Mute.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
-Mute.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
-Mute.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+SushiSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
+SushiSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, true)
+SushiSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
 
 ### Swap  
@@ -42,8 +42,7 @@ export const swap = async(
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
-    maxFees?: bigint,
-    deadlineMinutes?: number,
+    deadline?: number,
 ): Promise<void>;
 ```
 The swap function need at least 3 parameters and 6 optionnal  
@@ -65,8 +64,6 @@ The swap function need at least 3 parameters and 6 optionnal
   
 `priceImpact (optional)`: The maximum impact tolerance accepted by our swap. [What is price impact ?](https://support.uniswap.org/hc/en-us/articles/8671539602317-What-is-Price-Impact-#:~:text=Price%20Impact%20is%20the%20change,size%20of%20the%20liquidity%20pool.)  
   
-`maxFees (optional)`: A custom fee limit to be include in the transaction.  
-  
 `deadlineMinutes (optional)`: The deadline for the swap in minutes.  
   
 ### Add liquidity  
@@ -81,7 +78,6 @@ export const addLiquidity = async(
     max: boolean = false,                         
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',            
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
-    maxFees?: bigint,
 ): Promise<void>
 ```
 The addLiquidiy function need at least 5 parameters and 3 optionnal  
@@ -107,7 +103,6 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
   
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
-`maxFees (optional)`: A custom fee limit to be include in the transaction.  
   
 ### Remove liquidity  
   
@@ -119,7 +114,6 @@ export const withdrawLiquidity = async(
     percent: number = 100, 
     network: 'TESTNET' | 'MAINNET' = 'TESTNET', 
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
-    maxFees?: bigint,
 ): Promise<void>
 ```
 The withdrawLiquidity function need at least 3 parameters and 4 optionnal;   
@@ -136,7 +130,6 @@ The withdrawLiquidity function need at least 3 parameters and 4 optionnal;
    
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)   
   
-`maxFees (optional)`: A custom fee limit to be include in the transaction.  
   
 ## Author
  
