@@ -1,5 +1,5 @@
 import { ethers, Wallet } from "ethers";
-import { TICKER, TOKENS, ZERO_ADDRESS } from "../config/constants";
+import { TICKER, ZERO_ADDRESS } from "../config/constants";
 import { AddLiquidityTx, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
 

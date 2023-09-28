@@ -12,7 +12,6 @@ export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<Tra
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
     let txArgs: AddLiquidityETH | AddLiquidity
-    let fees: bigint
 
     const { signer, tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline } = addLiqTx
     const Router: Contract = new Contract( V2_ROUTER, V2_ROUTER_ABI, signer ) 

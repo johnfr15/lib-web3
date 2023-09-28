@@ -38,9 +38,6 @@ export const get_swap_tx = async(
         const swapTx: SwapTx = {
             signer: signer,
             trade: trade,
-            tokenA: token_in,
-            tokenB: token_out,
-            path: path,
             Router: Router
         }
 

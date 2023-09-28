@@ -1,6 +1,6 @@
-import { ethers, TransactionReceipt, TransactionResponse, Wallet } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 import { TICKER } from './config/constants';
-import { is_balance, is_native } from './utils';
+import { is_balance } from './utils';
 import { get_swap_tx } from './calldata/swapCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
 import { get_add_liq_tx } from './calldata/addLiqCalldata';
@@ -42,7 +42,7 @@ export const swap = async(
 
 
         const swapTx    = await get_swap_tx( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
-        const approveTx = await get_approve_tx( signer, ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.tokenA.decimals), path[0], network )
+        const approveTx = await get_approve_tx( signer, ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenFrom.decimals), path[0], network )
 
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveTx, signer )

@@ -1,7 +1,7 @@
-import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
+import { ethers, Contract, TransactionResponse, TransactionReceipt } from "ethers";
 import { RemoveLiquidity, RemoveLiquidityETH, RemoveLiquidityTx } from "../types";
 import { is_native } from "../utils";
-import { V2_ROUTER, V2_ROUTER_ABI, TICKER } from "../config/constants"
+import { V2_ROUTER, V2_ROUTER_ABI } from "../config/constants"
 
 export const exec_remove = async( removeLiq: RemoveLiquidityTx ) => {
 

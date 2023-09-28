@@ -9,12 +9,12 @@ export const swapExactTokensForTokens = async( swapTx: SwapTx ): Promise<void> =
 
     try {
 
-        console.log(`\n\nSwapping exact ${ ethers.formatEther( amountIn ) } ${ tokenFrom.symbol } for ${  ethers.formatUnits( amountOut, tokenTo.decimals ) } ${ tokenTo.symbol }...`)      
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenFrom.decimals ) } ${ tokenFrom.symbol } for ${  ethers.formatUnits( amountOut, tokenTo.decimals ) } ${ tokenTo.symbol }...`)      
 
         const txArgs: SwapExactTokensForTokens = { amountIn, amountOutMin, path, to: signer.address, deadline }
+        const nonce = await signer.getNonce()
 
-        const feesPerGas = await Router.swapExactTokensForTokens.estimateGas( ...Object.values( txArgs ) )
-        const tx = await Router.swapExactTokensForTokens(  ...Object.values( txArgs ), { maxPriorityFeePerGas: feesPerGas * BigInt( 2 ) } )
+        const tx = await Router.swapExactTokensForTokens( ...Object.values( txArgs ), { nonce: nonce } )
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
@@ -35,12 +35,12 @@ export const swapTokensForExactTokens = async( swapTx: SwapTx ): Promise<void> =
 
     try {
 
-        console.log(`\n\nSwapping ${ ethers.formatEther( amountIn ) } ${ tokenFrom.symbol } for ${  ethers.formatUnits( amountOut, tokenTo.decimals ) } ${ tokenTo.symbol }...`)      
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenFrom.decimals ) } ${ tokenFrom.symbol } for ${  ethers.formatUnits( amountOut, tokenTo.decimals ) } ${ tokenTo.symbol }...`)      
 
         const txArgs: SwapTokensForExactTokens = { amountOut, amountInMax, path, to: signer.address, deadline }
+        const nonce = await signer.getNonce()
 
-        const feesPerGas = await Router.swapTokensForExactTokens.estimateGas( ...Object.values( txArgs ) )
-        const tx = await Router.swapTokensForExactTokens(  ...Object.values( txArgs ), { maxPriorityFeePerGas: feesPerGas * BigInt( 2 ) } )
+        const tx = await Router.swapTokensForExactTokens(  ...Object.values( txArgs ), { nonce: nonce } )
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")

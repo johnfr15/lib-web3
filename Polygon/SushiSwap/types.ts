@@ -52,9 +52,6 @@ export type ApproveTx = {
 export type SwapTx = {
     signer: Wallet
     trade: Trade
-    tokenA: Token
-    tokenB: Token
-    path: [string, string]
     Router: Contract
 }
 

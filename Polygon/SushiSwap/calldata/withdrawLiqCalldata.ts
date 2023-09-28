@@ -1,5 +1,5 @@
 import { Wallet, Contract} from "ethers";
-import { V2_PAIR_ABI, V2_ROUTER_ABI, V2_ROUTER, TICKER } from "../config/constants";
+import { V2_PAIR_ABI, TICKER } from "../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
 import { Pool, RemoveLiquidityTx, Token } from "../types";
 

@@ -24,29 +24,31 @@ const main = async() => {
         
         // await SushiSwap.swap(
         //     signer,
-        //     [ TOKENS[ network ].matic, TOKENS[ network ].dai ],
-        //     "0.0000000001",
+        //     [ TOKENS[ network ].weth, TOKENS[ network ].matic ],
+        //     "0.000000016634038461",
         //     null,
+        //     network,
+        //     100,
+        //     100
+        // )
+
+        // await SushiSwap.addLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].matic,
+        //     "5.935134845225700674",
+        //     TOKENS[ network ].weth,
+        //     null,
+        //     false,
         //     network
         // )
 
-        await SushiSwap.addLiquidity( 
-            signer,
-            TOKENS[ network ].matic,
-            "5.935134845225700674",
-            TOKENS[ network ].weth,
-            null,
-            false,
-            network
-        )
-
-        await SushiSwap.withdrawLiquidity( 
-            signer,
-            TOKENS[ network ].matic,
-            TOKENS[ network ].weth,
-            100,
-            network
-        )
+        // await SushiSwap.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ network ].matic,
+        //     TOKENS[ network ].weth,
+        //     100,
+        //     network
+        // )
 
 
     } catch (error: any) {
