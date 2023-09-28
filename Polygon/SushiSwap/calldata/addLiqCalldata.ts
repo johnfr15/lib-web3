@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { TICKER, MUTE_ROUTER_ABI, ROUTER_ADDRESS, TOKENS, ZERO_ADDRESS } from "../config/constants";
+import { TICKER, TOKENS, ZERO_ADDRESS } from "../config/constants";
 import { AddLiquidity, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
 
@@ -14,7 +14,7 @@ export const get_add_liq_tx = async(
     network: 'TESTNET' | 'MAINNET',
     slipage: number,
     deadline: number | null | undefined,
-): Promise<AddLiquidity> => {
+): Promise<AddLiquidity > => {
 
     let addTx: AddLiquidity;
 
@@ -25,7 +25,7 @@ export const get_add_liq_tx = async(
         const token_b: Token     = await get_token( addressB, network )
         const { token0, token1 } = sort_tokens( token_a, token_b, amountA, amountB )
 
-        const pool: Pool = await get_pool( token0, token1, network, signer )
+        const pool: Pool = await get_pool( token0, token1, signer )
 
         if ( await is_balance(signer, addressA, addressB) === 0 )
             throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)

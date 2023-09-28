@@ -1,6 +1,6 @@
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants";
+import { V2_ROUTER, V2_ROUTER_ABI, TICKER } from "../config/constants";
 import { AddLiquidity } from "../types";
 
 /**
@@ -15,7 +15,7 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
     let fees: bigint
 
     const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable, network } = addLiquidity
-    const Router: Contract = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer ) 
+    const Router: Contract = new Contract( V2_ROUTER, V2_ROUTER_ABI, signer ) 
 
 
     console.log(`\n\nAdding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     

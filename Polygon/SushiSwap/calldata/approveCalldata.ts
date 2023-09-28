@@ -1,5 +1,5 @@
-import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
-import { ERC20_ABI, ROUTER_ADDRESS } from "../config/constants";
+import { ethers, Wallet, Contract } from "ethers";
+import { ERC20_ABI, V2_ROUTER } from "../config/constants";
 import { ApproveTx } from "../types";
 import { is_native } from "../utils";
 
@@ -15,13 +15,13 @@ export const get_approve_tx = async(
         if ( is_native( tokenAddress ) ) 
             return undefined
 
-        const router_address = ROUTER_ADDRESS[ network ]
+        const router = V2_ROUTER
         const erc20 = new Contract( tokenAddress, ERC20_ABI, signer );
 
         const decimals = await erc20.decimals()
-        const big_amount =  ethers.parseUnits( amount, decimals )
+        const big_amount = ethers.parseUnits( amount, decimals )
     
-        return { Erc20: erc20, spender: router_address, amount: big_amount, decimals: decimals, network: network }
+        return { Erc20: erc20, spender: router, amount: big_amount, decimals: decimals, network: network }
 
     } catch (error: any) {
         

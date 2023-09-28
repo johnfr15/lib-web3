@@ -15,7 +15,6 @@ export type Pool = {
     pair: string
     reserveA: bigint
     reserveB: bigint
-    fee: bigint
 }
 
 export type Trade = {
@@ -24,6 +23,7 @@ export type Trade = {
     pool: Pool
     amountIn: bigint
     amountOut: bigint
+    amountInMax: bigint
     amountOutMin: bigint
     path: [string, string]
     to: string,
@@ -36,7 +36,7 @@ export type Trade = {
 
 
 
-export declare enum TradeType {
+export enum TradeType {
     EXACT_INPUT,
     EXACT_OUTPUT
 }
@@ -55,6 +55,7 @@ export type SwapTx = {
     tokenA: Token
     tokenB: Token
     path: [string, string]
+    Router: Contract
 }
 
 export type AddLiquidity = {
@@ -91,7 +92,13 @@ export type SwapExactETHForTokens = {
     path: string[] 
     to: string
     deadline: number
-    stable: boolean[]
+}
+
+export type SwapETHForExactTokens = {
+    amountOut: bigint 
+    path: string[] 
+    to: string
+    deadline: number
 }
 
 export type SwapExactTokensForETH = {
@@ -99,8 +106,15 @@ export type SwapExactTokensForETH = {
     amountOutMin: bigint 
     path: string[] 
     to: string
-    deadline: bigint
-    stable: boolean[]
+    deadline: number
+}
+
+export type SwapTokensForExactETH = {
+    amountOut: bigint
+    amountInMax: bigint 
+    path: string[] 
+    to: string
+    deadline: number
 }
 
 export type SwapExactTokensForTokens = {
@@ -108,6 +122,13 @@ export type SwapExactTokensForTokens = {
     amountOutMin: bigint 
     path: string[] 
     to: string
-    deadline: bigint
-    stable: boolean[]
+    deadline: number
+}
+
+export type SwapTokensForExactTokens = {
+    amountOut: bigint
+    amountInMax: bigint 
+    path: string[] 
+    to: string
+    deadline: number
 }

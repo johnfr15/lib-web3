@@ -27,7 +27,8 @@ import { exec_remove } from './transactions/remove';
 export const swap = async(
     signer: Wallet,
     path: [string, string],
-    amountIn: string,
+    amountIn: string | null,
+    amountOut: string | null,
     network: 'TESTNET' | 'MAINNET' = 'TESTNET',
     slipage: number = 2, // this represent 2% of slipage
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
@@ -40,12 +41,12 @@ export const swap = async(
             throw(`Slipage parameter must be a number between 0.01 and 100`)
 
 
-        const swapTx = await get_swap_tx( signer, path, amountIn, network, slipage, priceImpact, deadline )
-        const approveTx = await get_approve_tx( signer, amountIn, path[0], network )
+        const swapTx    = await get_swap_tx( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
+        const approveTx = await get_approve_tx( signer, ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.tokenA.decimals), path[0], network )
 
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveTx, signer )
-        await exec_swap( swapTx, signer )
+        await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

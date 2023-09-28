@@ -1,6 +1,6 @@
-import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, ROUTER_ADDRESS, MUTE_ROUTER_ABI } from "../config/constants"
 import fs from "fs"
+import { ethers, Wallet, Contract } from "ethers"
+import { ERC20_ABI, TOKENS, CHAIN_ID, V2_FACTORY_ABI, V2_PAIR_ABI, V2_FACTORY} from "../config/constants"
 import { Token, Pool } from "../types";
 
 
@@ -8,6 +8,9 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
 
     const FILE_PATH = __dirname + "/../config/tokens.json"
     let Tokens: {[key: string]: Token } = {}
+
+    if ( is_native( tokenAddress ) )
+        tokenAddress = TOKENS[ network ].wmatic
 
     try {
         
@@ -28,33 +31,44 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
     if ( token === undefined )
         throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)
     
-    if ( is_native( token.address ) )
-        token.address = TOKENS[ network ].weth
 
     return token
 }
 
-export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Wallet ): Promise<Pool> => {
+export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet ): Promise<Pool> => {
 
-    const Router = new Contract( ROUTER_ADDRESS[ network ], MUTE_ROUTER_ABI, signer )
+    try {
+        
+        const Factory = new Contract( V2_FACTORY, V2_FACTORY_ABI, signer )
+        const pair = await Factory.getPair( tokenA.address, tokenB.address )
 
-    const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
+        if ( BigInt( pair ) === BigInt( 0 ) )
+            throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } not created yet.`)
+    
+        const Pair = new Contract( pair, V2_PAIR_ABI, signer )
+    
+        const { _reserve0, _reserve1 } = await Pair.getReserves()
 
-    const fromToken = is_native( tokenA.address ) ? TOKENS[ network ].weth : tokenA.address
-    const toToken = tokenB.address
+        if ( BigInt( _reserve0 ) === BigInt( 0 ) )
+            throw(`Error: Reserves is empty for pair ${ tokenA.symbol }/${ tokenB.symbol }.`)
 
-    const pair = await Router.getPairInfo( [ fromToken, toToken], false )
+        const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
+    
+        const pool: Pool = {
+            tokenA: token0,
+            tokenB: token1,
+            pair: pair,
+            reserveA: _reserve0,
+            reserveB: _reserve1,
+        }
+    
+        return pool
 
-    const pool: Pool = {
-        tokenA: token0,
-        tokenB: token1,
-        pair: pair[2],
-        reserveA: token0.address === fromToken ? pair[3] : pair[4],
-        reserveB: token1.address === fromToken ? pair[3] : pair[4],
-        fee: pair[5]
+    } catch (error) {
+        
+        throw( error )
+
     }
-
-    return pool
 }
 
 export const get_balance = async(
@@ -69,7 +83,7 @@ export const get_balance = async(
 
         const erc20 = new Contract(tokenAddress, ERC20_ABI, signer);
 
-        if ( is_native( tokenAddress ))
+        if ( is_native( tokenAddress ) )
         {
             balance  = await signer.provider!.getBalance( signer.address )
             decimals = 18
@@ -129,8 +143,8 @@ export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, po
 
 export const is_native = ( token: string ): boolean => {
     return  (BigInt( token ) === BigInt( 0 ) || 
-             BigInt( token ) === BigInt( TOKENS['TESTNET'].weth ) || 
-             BigInt( token ) === BigInt( TOKENS['MAINNET'].weth )
+             BigInt( token ) === BigInt( TOKENS['TESTNET'].wmatic ) || 
+             BigInt( token ) === BigInt( TOKENS['MAINNET'].wmatic )
             )
 }
 
