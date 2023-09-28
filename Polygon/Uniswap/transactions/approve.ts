@@ -1,5 +1,5 @@
 import { TransactionResponse, TransactionReceipt, Wallet, ethers } from "ethers"
-import { ROUTER_ADDRESS, TICKER } from "../config/constants"
+import { V3_ROUTER_ADDRESS, TICKER } from "../config/constants"
 import { ApproveTx } from "../types"
 
 export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wallet ): Promise<TransactionReceipt | undefined> => {
@@ -10,13 +10,13 @@ export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wal
     if ( approveTx === undefined ) 
         return
 
-    const { Erc20, spender, amount, network, decimals } = approveTx
+    const { Erc20, spender, amount, decimals } = approveTx
 
     try {
 
-        console.log(`\n\nApproving ${ ROUTER_ADDRESS[ network ] } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] ?? 'LP' }...`)
+        console.log(`\n\nApproving ${ spender } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] ?? 'LP' }...`)
 
-        tx = await Erc20.approve( spender, amount )
+        tx = await Erc20.approve( spender, amount * BigInt( 2 ) )
         receipt = await signer.provider?.waitForTransaction( tx.hash )
 
         console.log("\nTransaction valided !")
@@ -30,3 +30,4 @@ export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wal
         throw( error )
     }
 }
+

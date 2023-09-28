@@ -1,6 +1,6 @@
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../config/constants";
+import { V3_ROUTER_ADDRESS, TICKER } from "../config/constants";
 import { AddLiquidity, AddLiquidityETH, AddLiquidityTx } from "../types";
 
 /**

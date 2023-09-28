@@ -1,5 +1,5 @@
 import { Contract, Wallet } from "ethers"
-import { Token, TradeType } from "@uniswap/sdk-core";
+import { Token, TradeType, Percent } from "@uniswap/sdk-core";
 import { Pool, Trade } from "@uniswap/v3-sdk";
 import { Pair } from "@uniswap/sdk";
 import { SwapRoute } from "@uniswap/smart-order-router";
@@ -36,6 +36,7 @@ export type SwapTx = {
     slipage: number
     deadline: number
     network: 'TESTNET' | 'MAINNET' 
+    Router: Contract
 }
 
 export type AddLiquidityTx = {

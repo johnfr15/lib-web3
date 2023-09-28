@@ -1,61 +1,117 @@
-import { ethers } from "ethers"
-import { SwapTx, SwapExactETHForTokens, SwapETHForExactTokens, SwapExactTokensForETH, SwapTokensForExactETH } from "../types";
+import { Signature, ethers } from "ethers"
+import { SwapTx } from "../types";
+import { ADDRESS_THIS, MSG_SENDER } from "../config/constants";
+import { Fraction } from "@uniswap/sdk-core";
 
 export const swapExactETHForTokens = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { signer, trade, Router, slipage, deadline } = swapTx
+    let inputs: string[] = []
+
+    const { signer, trade, deadline, Router, path, slipage } = swapTx
+    const { inputAmount, outputAmount } = trade.trade
+
+    let minAmountOut = outputAmount.multiply( new Fraction(100 - slipage, 100) ).quotient.toString()
 
     try {
 
-        console.log(`\n\nSwapping exact ${ trade.inputAmount.toExact() } ${ trade.inputAmount.currency.symbol } for (min)${ trade.minimumAmountOut( slipage ).toExact() } ${ trade.outputAmount.currency.symbol }`)      
+        console.log(`\n\nSwapping exact ${ inputAmount.toExact() } ${ inputAmount.currency.symbol } for ${ outputAmount.toExact() } ${ outputAmount.currency.symbol }...`)      
 
-        const args: SwapExactETHForTokens = { 
-            amountOutMin: trade.minimumAmountOut( slipage ).raw, 
-            path: [ trade.route.path[0].address, trade.route.path[1].address ], 
-            to: signer.address, 
-            deadline: deadline 
-        }
+        /**
+         * @commands
+         * @dev each command is 1 byte. See https://github.com/Uniswap/universal-router/blob/main/README.md?plain=1#L59 
+         *      for all the commands available
+         * 
+         * - 1) 0x0b = WRAP_ETH
+         * - 2) 0x00 = V3_SWAP_EXACT_IN
+         */
 
-        const feesPerGas = await Router.swapExactETHForTokens.estimateGas( ...Object.values( args ), { value: trade.inputAmount.raw } )
-    
-        const tx = await Router.swapExactETHForTokens( args, { value: trade.inputAmount.raw , maxPriorityFeePerGas: feesPerGas } )
+        const commands = "0x0b00"
+
+        /**
+         * @inputs
+         * @dev For all the commands specified above we need to encode their parameters respectively
+         *      see Dispatcher.sol here https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L36 
+         *      for how each commands decode your inputs 
+         * 
+         * - 1) WRAP_ETH         => https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L172C45-L172C45
+         * - 2) V3_SWAP_EXACT_IN => https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L46
+         */
+
+        inputs[0] = ethers.AbiCoder.defaultAbiCoder().encode( [ "address", "uint256" ], [ ADDRESS_THIS, inputAmount.quotient.toString() ] ) 
+        inputs[1] = encode_swap( inputAmount.quotient.toString(), minAmountOut, path )
+
+        const txArgs = [ commands, inputs, deadline ]
+        const nonce = await signer.getNonce()
+
+        console.log( "nonce: ", nonce)
+
+        const feesPerGas = await Router.execute.estimateGas( ...txArgs, { value: inputAmount.quotient.toString(), nonce: nonce } )
+        const tx = await Router.execute(  ...txArgs, { value: inputAmount.quotient.toString(), nonce: nonce, maxPriorityFeePerGas: feesPerGas * BigInt( 2 ) } )
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Total feesPerGas: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 
     } catch (error) {
         
         throw( error )
 
     }
-
 }
 
 export const swapETHForExactTokens = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { signer, trade, Router, slipage, deadline } = swapTx
+    let inputs: string[] = []
+
+    const { trade, deadline, Router, path, slipage } = swapTx
+    const { inputAmount, outputAmount, maximumAmountIn, minimumAmountOut } = trade.trade
+
+    let slipageTolerance = ( slipage  + 100 ) * 100
+    let maxIn = inputAmount.multiply( new Fraction( slipageTolerance, 100 * 100 ) ).quotient.toString()
 
     try {
 
-        console.log(`\n\nSwapping (max)${ trade.maximumAmountIn( slipage ).toExact() } ${ trade.inputAmount.currency.symbol } for exact ${ trade.outputAmount.toExact() } ${ trade.outputAmount.currency.symbol }`)
-        
-        const args: SwapETHForExactTokens = { 
-            amountOut: trade.outputAmount.raw, 
-            path: [ trade.route.path[0].address, trade.route.path[1].address ], 
-            to: signer.address, 
-            deadline: deadline 
-        }
+        console.log(`\n\nSwapping ${ inputAmount.toExact() } ${ inputAmount.currency.symbol } for exact ${ outputAmount.toExact() } ${ outputAmount.currency.symbol }...`)      
 
-        const feesPerGas = await Router.swapETHForExactTokens.estimateGas( ...Object.values( args ), { value: trade.maximumAmountIn( slipage ).raw } )
-    
-        const tx = await Router.swapETHForExactTokens( args, { value: trade.maximumAmountIn( slipage ).raw, maxPriorityFeePerGas: feesPerGas } )
+        /**
+         * @commands
+         * @dev each command is 1 byte. See https://github.com/Uniswap/universal-router/blob/main/README.md?plain=1#L59 
+         *      for all the commands available
+         * 
+         * - 1) 0x0b = WRAP_ETH
+         * - 2) 0x01 = V3_SWAP_EXACT_OUT
+         * - 3) 0x0c = UNWRAP_WETH
+         */
+
+        const commands = "0x0b010c"
+
+        /**
+         * @inputs
+         * @dev For all the commands specified above we need to encode their parameters respectively
+         *      see Dispatcher.sol here https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L36 
+         *      for how each commands decode your inputs 
+         * 
+         * - 1) WRAP_ETH          => https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L172C45-L172C45
+         * - 2) V3_SWAP_EXACT_OUT => https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L62
+         * - 2) UNWRAP_WETH       => https://github.com/Uniswap/universal-router/blob/main/contracts/base/Dispatcher.sol#L182
+         */
+
+        inputs[0] = ethers.AbiCoder.defaultAbiCoder().encode( [ "address", "uint256" ], [ ADDRESS_THIS, maxIn ] ) 
+        inputs[1] = encode_swap( outputAmount.quotient.toString(), maxIn, [ path[1], path[0] ] ) // We need to reverse the path
+        inputs[2] = ethers.AbiCoder.defaultAbiCoder().encode( [ "address", "uint256" ], [ MSG_SENDER, BigInt( 0 ) ] )
+
+        // console.log( inputs[1] )
+        // return
+        const txArgs = [ commands, inputs, deadline ]
+
+        // const feesPerGas = await Router.execute.estimateGas( ...txArgs, { value: maxIn } )
+        const tx = await Router.execute(  ...txArgs, { value: maxIn } )
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Total feesPerGas: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 
     } catch (error) {
         
@@ -64,65 +120,29 @@ export const swapETHForExactTokens = async( swapTx: SwapTx ): Promise<void> => {
     }
 }
 
-export const swapExactTokensForETH = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { signer, trade, Router, slipage, deadline } = swapTx
+const encode_swap = ( inputAmount: string, outputAmount: string, path: [string, string] ): string => {
 
-    try {
+    let input: string = ethers.AbiCoder.defaultAbiCoder().encode( 
+        [ "address", "uint256", "uint256", "bytes", "bool" ], 
+        [ MSG_SENDER, inputAmount, outputAmount, "0x", false ] 
+    ) 
 
-        console.log(`\n\nSwapping exact ${ trade.inputAmount.toExact() } ${ trade.inputAmount.currency.symbol } for (min)${ trade.minimumAmountOut( slipage ).toExact() } ${ trade.outputAmount.currency.symbol }`)      
-        
-        const args: SwapExactTokensForETH = { 
-            amountIn: trade.inputAmount.raw, 
-            amountOutMin: trade.minimumAmountOut( slipage ).raw, 
-            path: [ trade.route.path[0].address, trade.route.path[1].address ], 
-            to: signer.address, 
-            deadline: deadline 
-        }
+    // here we remove the last (32 bytes) slot and append the "encoded" path so uniswap V3Path.sol can decode it his way
+    input = input.substring( 0, input.length - 64 )
+    input = input + encode_path( path )
 
-        const feesPerGas = await Router.swapExactTokensForETH.estimateGas( ...Object.values( args ) )
-    
-        const tx = await Router.swapExactTokensForETH( args, { maxPriorityFeePerGas: feesPerGas } )
-        const receipt = await tx.wait()
-
-        console.log("\nTransaction valided !")
-        console.log("hash: ", tx.hash)
-        console.log("Total feesPerGas: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
-
-    } catch (error) {
-        
-        throw( error )
-    }
+    return input
 }
 
-export const swapTokensForExactETH = async( swapTx: SwapTx ): Promise<void> => {
+const encode_path = ( path: [string, string] ): string => {
 
-    const { signer, trade, Router, slipage, deadline } = swapTx
+    let fee: string = '000064'
+    let concat_path: string = path[0].substring(2) + fee + path[1].substring(2)
+    let length: string = "000000000000000000000000000000000000000000000000000000000000002b"
 
-    try {
-        
-        console.log(`\n\nSwapping (max)${ trade.maximumAmountIn( slipage ).toExact() } ${ trade.inputAmount.currency.symbol } for exact ${ trade.outputAmount.toExact() } ${ trade.outputAmount.currency.symbol }`)      
+    while ( concat_path.length < 128 )
+        concat_path += '0'
 
-        const args: SwapTokensForExactETH = { 
-            amountOut: trade.outputAmount.raw, 
-            amountInMax: trade.maximumAmountIn( slipage ).raw, 
-            path: [ trade.route.path[0].address, trade.route.path[1].address ], 
-            to: signer.address, 
-            deadline: deadline 
-        }
-
-        const feesPerGas = await Router.swapTokensForExactETH.estimateGas( ...Object.values( args ) )
-    
-        const tx = await Router.swapTokensForExactETH( args, { maxPriorityFeePerGas: feesPerGas } )
-        const receipt = await tx.wait()
-
-        console.log("\nTransaction valided !")
-        console.log("hash: ", tx.hash)
-        console.log("Total feesPerGas: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
-
-    } catch (error) {
-        
-        throw( error )
-
-    }
+    return length + concat_path
 }

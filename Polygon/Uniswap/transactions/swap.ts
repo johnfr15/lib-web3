@@ -1,6 +1,6 @@
 import { is_native } from "../utils";
 import { SwapTx } from "../types";
-import { swapExactETHForTokens, swapETHForExactTokens, swapExactTokensForETH, swapTokensForExactETH } from "./swapETH";
+import { swapExactETHForTokens, swapETHForExactTokens } from "./swapETH";
 import { swapExactTokensForTokens, swapTokensForExactTokens } from "./swapTokens"
 import { TradeType } from "@uniswap/sdk-core";
 
@@ -14,8 +14,6 @@ export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {
 
         if ( is_native( path[0] ) && trade.trade.tradeType === EXACT_INPUT )  return await swapExactETHForTokens( swapTx )
         if ( is_native( path[0] ) && trade.trade.tradeType === EXACT_OUTPUT ) return await swapETHForExactTokens( swapTx )
-        if ( is_native( path[1] ) && trade.trade.tradeType === EXACT_INPUT )  return await swapExactTokensForETH( swapTx )
-        if ( is_native( path[1] ) && trade.trade.tradeType === EXACT_OUTPUT ) return await swapTokensForExactETH( swapTx )
         if ( trade.trade.tradeType === EXACT_INPUT )                          return await swapExactTokensForTokens( swapTx )
         if ( trade.trade.tradeType === EXACT_OUTPUT )                         return await swapTokensForExactTokens( swapTx )
         

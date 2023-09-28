@@ -6,9 +6,11 @@ import { get_approve_tx } from './calldata/approveCalldata';
 import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 import { exec_approve } from './transactions/approve';
+import { exec_swap } from "./transactions/swap"
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_remove } from './transactions/remove';
 import { AddLiquidityTx } from './types';
+
 
 
 
@@ -18,6 +20,7 @@ import { AddLiquidityTx } from './types';
  * @param signer        - Wallet to perform the swap
  * @param path          - token swap from path[0](input) to path[1](output) 
  * @param amountIn      - The amount of exact token (in token) to be swapped for the other one **(out token)**  
+ * @param amountOut     - The amount of exact token (out token) to be receive for the other one **(int token)**  
  * @param network       - (optional) 'testnet' is the default one
  * @param slipage       - (optional) protection against price movement or to high price impact default is 0.5%
  * @param priceImpact   - (optional) protection against price movement or to high price impact default is 2%
@@ -44,7 +47,7 @@ export const swap = async(
         const approveTx = await get_approve_tx( signer, swapTx.trade.trade.inputAmount.toExact(), path[0], network )
 
         /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveTx, signer )
+        await exec_approve( approveTx, signer )
         await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
@@ -54,6 +57,7 @@ export const swap = async(
 
     }
 }
+
 
 
  

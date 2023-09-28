@@ -1,9 +1,8 @@
-import { Route } from "@uniswap/v3-sdk";
-import { Contract, Wallet, ethers } from "ethers";
+import { ethers } from "ethers";
 import { AlphaRouter, SwapOptionsSwapRouter02, SwapRoute } from "@uniswap/smart-order-router";
 import { CurrencyAmount, Token, TradeType, } from "@uniswap/sdk-core";
-import { CHAIN_ID } from "../config/constants"
-import { BaseProvider } from "@ethersproject/providers";
+import { CHAIN_ID, PROVIDER } from "../config/constants"
+import { JsonRpcProvider } from "@ethersproject/providers";
 
 export const get_trade = async(
     tokenIn: Token, 
@@ -18,8 +17,9 @@ export const get_trade = async(
 
     try {
 
-        const provider   = new BaseProvider( CHAIN_ID[ network ] )
+        const provider   = new JsonRpcProvider( PROVIDER[ network ] )
         const router     = new AlphaRouter({ chainId: CHAIN_ID[ network ], provider: provider })
+
         const trade_type = amountIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT
         
         if ( trade_type === TradeType.EXACT_INPUT )
@@ -34,10 +34,10 @@ export const get_trade = async(
         else
         {
             trade = await router.route(
-                CurrencyAmount.fromRawAmount( tokenOut, ethers.parseUnits( amountOut!, tokenOut.decimals).toString() ),
+                CurrencyAmount.fromRawAmount( tokenOut, ethers.parseUnits( amountOut!, tokenOut.decimals ).toString() ),
                 tokenIn,
                 TradeType.EXACT_OUTPUT,
-                options
+                options,
             )
         }
 
