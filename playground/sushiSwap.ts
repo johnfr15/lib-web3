@@ -33,20 +33,20 @@ const main = async() => {
         await SushiSwap.addLiquidity( 
             signer,
             TOKENS[ network ].matic,
-            null,
+            "5.935134845225700674",
             TOKENS[ network ].weth,
             null,
-            true,
+            false,
             network
         )
 
-        // await Uniswap.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].dai,
-        //     100,
-        //     network
-        // )
+        await SushiSwap.withdrawLiquidity( 
+            signer,
+            TOKENS[ network ].matic,
+            TOKENS[ network ].weth,
+            100,
+            network
+        )
 
 
     } catch (error: any) {

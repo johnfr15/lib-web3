@@ -1,4 +1,4 @@
-import { ethers, Wallet, Contract } from "ethers";
+import { ethers, Wallet } from "ethers";
 import { TICKER, TOKENS, ZERO_ADDRESS } from "../config/constants";
 import { AddLiquidityTx, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
@@ -20,9 +20,9 @@ export const get_add_liq_tx = async(
     
     try {
 
-        const token_a: Token     = await get_token( addressA, network )
-        const token_b: Token     = await get_token( addressB, network )
-        const { token0, token1 } = sort_tokens( token_a, token_b, amountA, amountB )
+        const token_a: Token = await get_token( addressA, network )
+        const token_b: Token = await get_token( addressB, network )
+        const { token0, token1, amount0, amount1 } = sort_tokens( token_a, token_b, amountA, amountB )
 
         const pool: Pool = await get_pool( token0, token1, signer )
 
@@ -35,8 +35,8 @@ export const get_add_liq_tx = async(
         }
         else
         {
-            let addr: string = amountA ? addressA : addressB
-            let amount: string = amountA ? amountA : amountB!
+            let addr: string = amount0 ? pool.tokenA.address : pool.tokenB.address
+            let amount: bigint = amount0 ? amount0 : amount1!
             addTx = await get_liq( signer, pool, addr, amount, slipage, deadline, network )
         }
 
@@ -103,7 +103,7 @@ const get_liq = async(
     signer: Wallet, 
     pool: Pool, 
     addr: string, 
-    amount: string, 
+    amount: bigint, 
     slipage: number, 
     deadline: number | null | undefined,
     network: 'TESTNET' | 'MAINNET',
@@ -111,18 +111,20 @@ const get_liq = async(
 
     try {
         
-        const token_1: Token    = pool.tokenA.address === addr ? pool.tokenA : pool.tokenB
-        const token_2: Token    = pool.tokenA.address !== addr ? pool.tokenA : pool.tokenB
+        const token_1: Token = BigInt( pool.tokenA.address ) === BigInt( addr ) ? pool.tokenA : pool.tokenB
+        const token_2: Token = BigInt( pool.tokenA.address ) !== BigInt( addr ) ? pool.tokenA : pool.tokenB
 
-        const balance_1 = await get_balance( token_1.address === TOKENS[network].weth ? ZERO_ADDRESS : token_1.address, signer )
-        const balance_2 = await get_balance( token_2.address === TOKENS[network].weth ? ZERO_ADDRESS : token_2.address, signer )
+        const balance_1 = await get_balance( token_1.address, signer )
+        const balance_2 = await get_balance( token_2.address, signer )
 
-        const amount_1: bigint = ethers.parseUnits( amount, token_1.decimals )
-        const amount_2 = ethers.parseUnits( get_quote( amount, token_1, token_2, pool ), token_2.decimals )
+        const amount_1: bigint = amount
+        const amount_2 = ethers.parseUnits( get_quote( ethers.formatUnits( amount_1, token_1.decimals ), token_1, token_2, pool ), token_2.decimals )
         
         const amount_1_min: bigint = amount_1 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
 
+        console.log("amount 1: ", ethers.formatUnits( amount_1, token_1.decimals))
+        console.log("balance 1: ", balance_1.string)
         if ( amount_1 > balance_1.bigint )
             throw new Error(`${ TICKER[ token_1.address ] }: Unsufficient balance.`)
         if ( amount_2 > balance_2.bigint )

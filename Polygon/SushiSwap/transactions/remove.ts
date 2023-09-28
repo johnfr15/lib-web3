@@ -1,22 +1,23 @@
 import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
-import { RemoveLiquidity } from "../types";
+import { RemoveLiquidity, RemoveLiquidityETH, RemoveLiquidityTx } from "../types";
 import { is_native } from "../utils";
 import { V2_ROUTER, V2_ROUTER_ABI, TICKER } from "../config/constants"
 
-export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) => {
+export const exec_remove = async( removeLiq: RemoveLiquidityTx ) => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
-    let args: any
+    let txArgs: RemoveLiquidity | RemoveLiquidityETH
     let fees: bigint
 
-    const { tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, stable, network, percent } = removeLiq
+    const { signer, tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, percent } = removeLiq
     const Router = new Contract( V2_ROUTER, V2_ROUTER_ABI, signer ) 
+    const nonce = await signer.getNonce()
 
 
     console.log(`\n\nWithdrawing ${ percent }% of liquidity for:\n\t\
-        (minimum)${ ethers.formatUnits( amountAMin, tokenA.decimals ) } ${ TICKER[ tokenA.address ] }\n\t\
-        (minimum)${ ethers.formatUnits( amountBMin, tokenB.decimals ) } ${ TICKER[ tokenB.address ] }
+        (minimum)${ ethers.formatUnits( amountAMin, tokenA.decimals ) } ${ tokenA.symbol }\n\t\
+        (minimum)${ ethers.formatUnits( amountBMin, tokenB.decimals ) } ${ tokenB.symbol }
     `)
 
     if ( is_native( tokenA.address ) || is_native( tokenB.address ) )
@@ -25,17 +26,15 @@ export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) =
         let amountTokenMin  = is_native( tokenA.address ) ? amountBMin : amountAMin
         let amountETHMin    = is_native( tokenA.address ) ? amountAMin : amountBMin
 
-        args = [ token, liquidity, amountTokenMin, amountETHMin, to, deadline, stable ]
-        fees = await Router.removeLiquidityETH.estimateGas( ...args )
+        txArgs = { token, liquidity, amountTokenMin, amountETHMin, to, deadline } as RemoveLiquidityETH
 
-        tx = await Router.removeLiquidityETH( ...args, { maxPriorityFeePerGas: fees } )
+        tx = await Router.removeLiquidityETH( ...Object.values( txArgs ), { nonce: nonce } )
     }
     else 
     {
-        args = [ tokenA.address, tokenB.address, liquidity, amountAMin, amountBMin, to, deadline, stable ]
-        fees = await Router.removeLiquidity.estimateGas( ...args )
+        txArgs = { tokenA: tokenA.address, tokenB: tokenB.address, liquidity, amountAMin, amountBMin, to, deadline } as RemoveLiquidity
 
-        tx = await Router.removeLiquidity( ...args )
+        tx = await Router.removeLiquidity( ...Object.values( txArgs ), { nonce: nonce } )
     }
 
     receipt = await signer.provider?.waitForTransaction( tx.hash )
