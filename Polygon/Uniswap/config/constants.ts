@@ -1,6 +1,9 @@
-import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/router_abi"
 import { JsonRpcProvider } from 'ethers';
+import erc20_abi from "./abis/erc20"
+import v2_router_abi from "./abis/v2_router_abi"
+import v3_factory_abi from "./abis/v3_factory_abi"
+import v3_pool_abi from "./abis/v3_pool_abi"
+import quoter from "./abis/quoter"
 
 
 
@@ -16,7 +19,10 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://polygon-mumbai.inf
 
 // ABIS
 export const ERC20_ABI = erc20_abi
-export const ROUTER_ABI = router_abi
+export const V2_ROUTER_ABI = v2_router_abi
+export const V3_FACTORY_ABI = v3_factory_abi
+export const V3_POOL_ABI = v3_pool_abi
+export const QUOTER_ABI = quoter
 
 
 
@@ -25,16 +31,14 @@ export const ROUTER_ABI = router_abi
 // Addresses
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
+export const ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+export const V3_FACTORY = "0x1f98431c8ad98523631ae4a59f267346ea31f984"
+export const QUOTER = "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
+
 export const WMATIC: { [key: string | number]: string } = {
-  "137": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-  "80001": "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"
+  'MAINNET': "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  'TESTNET': "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"
 }
-
-export const ROUTER_ADDRESS:  { [key: string]: string } = {
-  'MAINNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
-  'TESTNET': '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
-}
-
 
 export const CHAIN_ID:  { [key: string]: number } = {
   'MAINNET': 137,
@@ -49,18 +53,19 @@ export const CHAIN_ID:  { [key: string]: number } = {
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
         matic: "0x0000000000000000000000000000000000000000",
+        wmatic: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
         weth: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
         usdc:'0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         dai:'0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-        wbtc:'',
         usdt:'0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
     },
     'TESTNET': {
         matic: "0x0000000000000000000000000000000000000000",
-        weth: '',
-        dai: '',
-        usdc: '', 
-        usdt: '', 
+        wmatic: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
+        weth: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
+        dai: '0xd393b1E02dA9831Ff419e22eA105aAe4c47E1253',
+        usdc: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747', 
+        usdt: '0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832', 
     }
 }
 
@@ -68,14 +73,18 @@ export const TICKER: {[key: string]: string} = {
 
     "0x0000000000000000000000000000000000000000": "MATIC",
 
+    "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "WMATIC",
+    "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889": "WMATIC",
+
     "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "WETH",
-    "": "WETH",
+    "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa": "WETH",
 
     "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "USDC",
-    "": "USDC",
+    "0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747": "USDC",
 
     "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": "DAI",
-    "": "DAI",
+    "0xd393b1E02dA9831Ff419e22eA105aAe4c47E1253": "DAI",
 
     "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": "USDT",
+    "0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832": "USDT",
 }

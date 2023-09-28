@@ -1,7 +1,25 @@
 import { Contract, Wallet } from "ethers"
-import { Token, Trade, Percent, JSBI, Pair } from "@uniswap/sdk"
+import { Token, TradeType } from "@uniswap/sdk-core";
+import { Pool, Trade } from "@uniswap/v3-sdk";
+import { Pair } from "@uniswap/sdk";
+import { SwapRoute } from "@uniswap/smart-order-router";
 
 
+export type PoolInfo = {
+    token0: Token
+    token1: Token
+    pool: Pool
+    poolAddress: string
+    PoolContract: Contract
+}
+export type TokenJSON = {
+    chainId: number
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+    logoURI: string
+}
 
 export type ApproveTx = {
     Erc20: Contract, 
@@ -13,10 +31,9 @@ export type ApproveTx = {
 
 export type SwapTx = {
     signer: Wallet
-    Router: Contract
-    trade: Trade
+    trade: SwapRoute
     path: [string, string]
-    slipage: Percent
+    slipage: number
     deadline: number
     network: 'TESTNET' | 'MAINNET' 
 }
@@ -52,46 +69,46 @@ export type RemoveLiquidityTx = {
 }
 
 export type SwapExactETHForTokens = {
-    amountOutMin: JSBI
+    amountOutMin: bigint
     path: string[] 
     to: string
     deadline: number
 }
 
 export type SwapETHForExactTokens = {
-    amountOut: JSBI
+    amountOut: bigint
     path: string[] 
     to: string
     deadline: number
 }
 
 export type SwapExactTokensForETH = {
-    amountIn: JSBI
-    amountOutMin: JSBI 
+    amountIn: bigint
+    amountOutMin: bigint 
     path: string[] 
     to: string
     deadline: number
 }
 
 export type SwapTokensForExactETH = {
-    amountOut: JSBI
-    amountInMax: JSBI 
+    amountOut: bigint
+    amountInMax: bigint 
     path: string[] 
     to: string
     deadline: number
 }
 
 export type SwapExactTokensForTokens = {
-    amountIn: JSBI
-    amountOutMin: JSBI 
+    amountIn: bigint
+    amountOutMin: bigint 
     path: string[] 
     to: string
     deadline: number
 }
 
 export type SwapTokensForExactTokens = {
-    amountOut: JSBI
-    amountInMax: JSBI 
+    amountOut: bigint
+    amountInMax: bigint 
     path: string[] 
     to: string
     deadline: number

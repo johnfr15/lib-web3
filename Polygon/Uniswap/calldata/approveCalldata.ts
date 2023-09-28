@@ -15,7 +15,7 @@ export const get_approve_tx = async(
         if ( is_native( tokenAddress ) ) 
             return undefined
 
-        const router_address = ROUTER_ADDRESS[ network ]
+        const router_address = ROUTER_ADDRESS
         const erc20 = new Contract( tokenAddress, ERC20_ABI, signer );
 
         const decimals = await erc20.decimals()

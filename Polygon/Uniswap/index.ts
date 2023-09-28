@@ -1,4 +1,4 @@
-import { swap, addLiquidity, withdrawLiquidity } from "./mute"
+import { swap, addLiquidity, withdrawLiquidity } from "./uniswap"
 import * as Constant from "./config/constants"
 import * as Utils from "./utils"
 import * as Types from "./types"

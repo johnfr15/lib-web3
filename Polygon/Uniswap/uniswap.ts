@@ -5,12 +5,10 @@ import { get_swap_tx } from './calldata/swapCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
 import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
-import { exec_swap } from './transactions/swap';
 import { exec_approve } from './transactions/approve';
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_remove } from './transactions/remove';
 import { AddLiquidityTx } from './types';
-
 
 
 
@@ -42,11 +40,11 @@ export const swap = async(
             throw(`Slipage parameter must be a number between 0.01 and 100`)
 
 
-        const swapTx = await get_swap_tx( signer, path, amountIn, amountOut, slipage, priceImpact, network, deadline )
-        const approveTx = await get_approve_tx( signer, swapTx.trade.inputAmount.toExact(), path[0], network )
+        const swapTx    = await get_swap_tx( signer, path, amountIn, amountOut, slipage, priceImpact, network, deadline )
+        const approveTx = await get_approve_tx( signer, swapTx.trade.trade.inputAmount.toExact(), path[0], network )
 
         /*========================================= TX =================================================================================================*/
-        await exec_approve( approveTx, signer )
+        // await exec_approve( approveTx, signer )
         await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
