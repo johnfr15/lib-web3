@@ -1,6 +1,6 @@
 import { ethers, Wallet, Contract } from "ethers";
 import { TICKER, TOKENS, ZERO_ADDRESS } from "../config/constants";
-import { AddLiquidity, Pool, Token } from "../types";
+import { AddLiquidityTx, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
 
 
@@ -14,10 +14,9 @@ export const get_add_liq_tx = async(
     network: 'TESTNET' | 'MAINNET',
     slipage: number,
     deadline: number | null | undefined,
-): Promise<AddLiquidity > => {
+): Promise<AddLiquidityTx> => {
 
-    let addTx: AddLiquidity;
-
+    let addTx: AddLiquidityTx;
     
     try {
 
@@ -41,7 +40,6 @@ export const get_add_liq_tx = async(
             addTx = await get_liq( signer, pool, addr, amount, slipage, deadline, network )
         }
 
-
         return addTx
 
     } catch (error: any) {
@@ -57,7 +55,7 @@ const get_max_liq = async(
     slipage: number,
     deadline: number | null | undefined,
     network: 'TESTNET' | 'MAINNET',
-): Promise<AddLiquidity> => {
+): Promise<AddLiquidityTx> => {
 
     try {
 
@@ -81,6 +79,8 @@ const get_max_liq = async(
 
         
         return {
+            signer: signer,
+            pool: pool,
             tokenA: pool.tokenA,
             tokenB: pool.tokenB,
             amountADesired: balance_a,
@@ -89,8 +89,6 @@ const get_max_liq = async(
             amountBMin: balance_b_min,
             to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-            feeType: 0,
-            stable: false,
             network: network
         }
 
@@ -109,7 +107,7 @@ const get_liq = async(
     slipage: number, 
     deadline: number | null | undefined,
     network: 'TESTNET' | 'MAINNET',
-): Promise<AddLiquidity> => {
+): Promise<AddLiquidityTx> => {
 
     try {
         
@@ -132,6 +130,8 @@ const get_liq = async(
 
 
         return {
+            signer: signer,
+            pool: pool,
             tokenA: token_1,
             tokenB: token_2,
             amountADesired: amount_1,
@@ -140,8 +140,6 @@ const get_liq = async(
             amountBMin: amount_2_min,
             to: signer.address,
             deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-            feeType: 0,
-            stable: false,
             network: network
         }
 

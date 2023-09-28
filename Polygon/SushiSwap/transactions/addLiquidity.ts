@@ -1,26 +1,26 @@
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
 import { is_native } from "../utils";
 import { V2_ROUTER, V2_ROUTER_ABI, TICKER } from "../config/constants";
-import { AddLiquidity } from "../types";
+import { AddLiquidity, AddLiquidityETH, AddLiquidityTx } from "../types";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
  * 
  */
-export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wallet ): Promise<TransactionReceipt> => {
+export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<TransactionReceipt> => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
-    let args: any
+    let txArgs: AddLiquidityETH | AddLiquidity
     let fees: bigint
 
-    const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable, network } = addLiquidity
+    const { signer, tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline } = addLiqTx
     const Router: Contract = new Contract( V2_ROUTER, V2_ROUTER_ABI, signer ) 
+    const nonce = await signer.getNonce()
 
+    console.log(`\n\nAdding liquidity for pool ${ tokenA.symbol }/${ tokenA.symbol }` )     
 
-    console.log(`\n\nAdding liquidity for pool ${ TICKER[ tokenA.address ] }/${ TICKER[ tokenB.address ] }` )     
-
-    if ( is_native( addLiquidity.tokenA.address ) || is_native( addLiquidity.tokenB.address ) )
+    if ( is_native( addLiqTx.tokenA.address ) || is_native( addLiqTx.tokenB.address ) )
     {
         let token              = is_native( tokenA.address ) ? tokenB.address : tokenA.address
         let amountTokenDesired = is_native( tokenA.address ) ? amountBDesired : amountADesired
@@ -28,20 +28,27 @@ export const exec_add_liquidity = async( addLiquidity: AddLiquidity, signer: Wal
         let amountETHMin       = is_native( tokenA.address ) ? amountAMin : amountBMin
         let value              = is_native( tokenA.address ) ? amountADesired : amountBDesired
 
-        args = [ token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline, feeType, stable ]
-        fees = await Router.addLiquidityETH.estimateGas( ...args, { value: value } )
+        txArgs = { token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline } as AddLiquidityETH
 
-        tx = await Router.addLiquidityETH( ...args, { value: value, maxPriorityFeePerGas: fees } )
+        tx = await Router.addLiquidityETH( ...Object.values( txArgs ), { value: value, nonce: nonce } )
     }
     else 
     {
-        args = [ tokenA.address, tokenB.address, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, feeType, stable ]
-        fees = await Router.addLiquidity.estimateGas( ...args )
+        txArgs = { 
+            tokenA: tokenA.address, 
+            tokenB: tokenB.address, 
+            amountADesired, 
+            amountBDesired, 
+            amountAMin, 
+            amountBMin, 
+            to, 
+            deadline 
+        } as AddLiquidity
 
-        tx = await Router.addLiquidity( ...args, { maxPriorityFeePerGas: fees })
+        tx = await Router.addLiquidity( ...Object.values( txArgs ), { nonce: nonce })
     }
 
-    receipt = await signer.provider?.waitForTransaction( tx.hash )
+    receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)

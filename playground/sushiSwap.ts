@@ -8,7 +8,7 @@ dotenv.config()
 
 const main = async() => {
     
-    const { POLYGON_PROVIDER, ZERO_ADDRESS, TOKENS } = SushiSwap.Constant
+    const { POLYGON_PROVIDER, TOKENS } = SushiSwap.Constant
     
     try {
         // Set up
@@ -34,7 +34,7 @@ const main = async() => {
             signer,
             TOKENS[ network ].matic,
             null,
-            TOKENS[ network ].dai,
+            TOKENS[ network ].weth,
             null,
             true,
             network

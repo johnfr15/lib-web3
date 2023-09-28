@@ -58,7 +58,9 @@ export type SwapTx = {
     Router: Contract
 }
 
-export type AddLiquidity = {
+export type AddLiquidityTx = {
+    signer: Wallet
+    pool: Pool
     tokenA: Token
     tokenB: Token
     amountADesired: bigint
@@ -67,8 +69,6 @@ export type AddLiquidity = {
     amountBMin: bigint
     to: string
     deadline: number
-    feeType: number
-    stable: boolean
     network: 'TESTNET' | 'MAINNET' 
 }
 
@@ -129,6 +129,26 @@ export type SwapTokensForExactTokens = {
     amountOut: bigint
     amountInMax: bigint 
     path: string[] 
+    to: string
+    deadline: number
+}
+
+export type AddLiquidity = {
+    tokenA: string
+    tokenB: string
+    amountADesired: bigint
+    amountBDesired: bigint
+    amountAMin: bigint
+    amountBMin: bigint
+    to: string
+    deadline: number
+}
+
+export type AddLiquidityETH = {
+    token: string
+    amountTokenDesired: bigint,
+    amountTokenMin: bigint,
+    amountETHMin: bigint,
     to: string
     deadline: number
 }

@@ -108,7 +108,7 @@ export const addLiquidity = async(
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx, signer )
         await exec_approve( approveBTx, signer )
-        await exec_add_liquidity( addTx, signer )
+        await exec_add_liquidity( addTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
