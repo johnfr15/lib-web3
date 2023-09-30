@@ -1,8 +1,7 @@
-import { TransactionResponse, TransactionReceipt, Wallet, ethers } from "ethers"
-import { V3_ROUTER_ADDRESS, TICKER } from "../config/constants"
+import { TransactionResponse, TransactionReceipt, ethers } from "ethers"
 import { ApproveTx } from "../types"
 
-export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wallet ): Promise<TransactionReceipt | undefined> => {
+export const exec_approve = async( approveTx: ApproveTx | undefined ): Promise<TransactionReceipt | undefined> => {
 
     let tx: TransactionResponse
     let receipt: TransactionReceipt | null | undefined
@@ -10,18 +9,22 @@ export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wal
     if ( approveTx === undefined ) 
         return
 
-    const { Erc20, spender, amount, decimals } = approveTx
+    const { signer, Erc20, spender, amount, token } = approveTx
 
     try {
 
-        console.log(`\n\nApproving ${ spender } to spend ${ ethers.formatUnits( amount, decimals )  } ${ TICKER[ await Erc20.getAddress() ] ?? 'LP' }...`)
+        console.log(`\n\nApproving ${ spender } to spend ${ ethers.formatUnits( amount, token.decimals )  } ${ token.symbol }...`)
 
-        tx = await Erc20.approve( spender, amount * BigInt( 2 ) )
-        receipt = await signer.provider?.waitForTransaction( tx.hash )
+        const nonce = await signer.getNonce()
+        const feedata = await signer.provider?.getFeeData()
+        
+
+        tx = await Erc20.approve( spender, amount, { nonce: nonce, gasPrice: feedata!.gasPrice! * BigInt( 10 ) / BigInt( 8 ) } )
+        receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 
         return receipt as TransactionReceipt
         
@@ -30,4 +33,3 @@ export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wal
         throw( error )
     }
 }
-

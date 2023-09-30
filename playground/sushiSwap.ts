@@ -22,15 +22,13 @@ const main = async() => {
         console.log("")
 
         
-        // await SushiSwap.swap(
-        //     signer,
-        //     [ TOKENS[ network ].weth, TOKENS[ network ].matic ],
-        //     "0.000000016634038461",
-        //     null,
-        //     network,
-        //     100,
-        //     100
-        // )
+        await SushiSwap.swap(
+            signer,
+            [ TOKENS[ network ].matic, TOKENS[ network ].usdc ],
+            "0.2",
+            null,
+            network,
+        )
 
         // await SushiSwap.addLiquidity( 
         //     signer,

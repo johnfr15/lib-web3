@@ -1,17 +1,14 @@
 import fs from "fs"
-import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, CHAIN_ID, WMATIC, V3_FACTORY, V3_POOL_ABI, QUOTER_ABI, QUOTER } from "../config/constants"
-import { Token } from "@uniswap/sdk-core";
-import { FeeAmount, computePoolAddress, Pool } from "@uniswap/v3-sdk";
-import { PoolInfo, TokenJSON } from "../types"
+import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
+import { ERC20_ABI, CHAIN_ID } from "../config/constants"
+import { Chains, Token, ChainType } from "../types"
+import chains from "../config/chains"
 
-export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET' ): Promise<Token> => {
+
+export const get_token = async( tokenAddress: string, chain: Chains ): Promise<Token> => {
 
     const FILE_PATH = __dirname + "/../config/tokens.json"
-    let Tokens: TokenJSON[] = []
-
-    if ( is_native( tokenAddress ) )
-        tokenAddress = WMATIC[ network ]
+    let Tokens: { [ key in Chains ]: Token[] }
 
     try {
         
@@ -23,64 +20,20 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
 
     }
 
-    const token = Tokens.find( ( token: TokenJSON ) => 
+    const token = Tokens[ chain ].find( ( token: Token ) => 
     {
-        return  ( BigInt( token.address ) === BigInt( tokenAddress ) && token.chainId === CHAIN_ID[ network ]  )
+        if ( BigInt( token.address ) !== BigInt( tokenAddress ) ) return false
+        if ( token.chainId !== CHAIN_ID[ chain ] )                return false
+
+        return true
     })
 
 
     if ( token === undefined )
-        throw(`Error: Can't find token ${ tokenAddress } on network ${ network }, please add it to /Mute/config/tokens.ts`)
+        throw(`Error: Can't find token ${ tokenAddress } on network ${ chain }, please add it to /Mute/config/tokens.ts`)
 
 
-    return new Token( token.chainId, token.address, token.decimals, token.symbol, token.name )
-}
-
-export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet ): Promise<PoolInfo> => {
-
-    try {
-
-        const pool_address = computePoolAddress({
-            factoryAddress: V3_FACTORY,
-            tokenA: tokenA,
-            tokenB: tokenB,
-            fee: FeeAmount.MEDIUM
-        })
-
-        const PoolContract   = new ethers.Contract( pool_address, V3_POOL_ABI, signer )
-        
-        const [token0, token1, fee, liquidity, slot0 ] = await Promise.all([
-          PoolContract.token0(),
-          PoolContract.token1(),
-          PoolContract.fee(),
-          PoolContract.liquidity(),
-          PoolContract.slot0(),
-        ])
-        
-        const pool = new Pool(
-            tokenA,
-            tokenB,
-            fee,
-            slot0[0].toString(),
-            liquidity.toString(),
-            slot0[1],
-        )
-    
-        const poolInfo: PoolInfo = {
-            token0: token0,
-            token1: token1,
-            pool: pool,
-            poolAddress: pool_address,
-            PoolContract: PoolContract
-        }
-    
-        return poolInfo
-
-    } catch (error) {
-
-        throw( error )
-        
-    }
+    return  token
 }
 
 
@@ -123,25 +76,19 @@ export const get_balance = async(
 
 }
 
-export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
-
-    try {
-
-        const balanceA = await get_balance( addressA, signer )
-        const balanceB = await get_balance( addressB, signer )
-
-        if ( balanceA.string === '0.0' || balanceB.string === '0.0' )
-            return 0;
-        else
-            return 1;
-        
-    } catch (error: any) {
-        
-        throw error
-
-    }
+export const is_native = ( token: string ): boolean => {
+    return token === "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 }
 
-export const is_native = ( token: string ): boolean => {
-    return  ( BigInt( token ) === BigInt( 0 ) ||  BigInt( token ) === BigInt( WMATIC[ "TESTNET" ] ) ||  BigInt( token ) === BigInt( WMATIC[ "MAINNET" ] )  )
+/**
+ * 
+ * @param chainId   // Orbiter id 
+ */
+export const resolve_provider = ( stargateId: number ): JsonRpcProvider => {
+
+    const chain_info = <ChainType> Object.values( chains ).find(( item ) => parseInt( item.stargateId ) === stargateId )
+
+    const provider = new JsonRpcProvider( chain_info!.rpc[0] )
+
+    return provider
 }
