@@ -28,7 +28,7 @@ const main = async() => {
         await Stargate.bridge(
             signer,
             TOKENS[ fromChain ].usdc,
-            TOKENS[ toChain ].dai,
+            TOKENS[ toChain ].usdc,
             fromChain,
             toChain,
             '1',

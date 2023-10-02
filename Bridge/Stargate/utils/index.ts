@@ -144,10 +144,6 @@ export const is_path = async( fromChain: string, toChain: string, fromToken: Tok
 
     }
 
-    console.log( "tochain: ", fromChain)
-    console.log( "tochain: ", toChain)
-    console.log( "Paths: ", Paths)
-
 
     const token = Paths[ fromChain ][ fromToken.symbol ].find( ( tokenPath: string ) => 
     {
@@ -158,5 +154,5 @@ export const is_path = async( fromChain: string, toChain: string, fromToken: Tok
     if ( token === undefined )
         return false
 
-    return  token
+    return  true
 }
