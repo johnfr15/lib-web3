@@ -44,7 +44,6 @@ export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanc
 
 export type BridgeOptions = {
     max?: boolean
-    network?: 'MAINNET' | 'TESTNET'
     slipage?: number
 }
 
@@ -67,7 +66,6 @@ export type ApproveTx = {
     spender: string, 
     amount: bigint,
     token: Token
-    network: 'TESTNET' | 'MAINNET' 
 }
 
 

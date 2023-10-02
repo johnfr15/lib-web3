@@ -27,7 +27,6 @@ export const get_approve_tx = async(
             spender: router_address, 
             amount: big_amount, 
             token: token,
-            network: 'MAINNET'
         }
 
         return approveTx

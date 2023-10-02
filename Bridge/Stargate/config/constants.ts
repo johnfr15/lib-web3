@@ -123,7 +123,6 @@ export const TOKENS: { [key in Chains]: any } = {
 
 export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
   max: false,
-  network: "MAINNET",
   slipage: 2          // 2% of slipage tolerance
 }
 
