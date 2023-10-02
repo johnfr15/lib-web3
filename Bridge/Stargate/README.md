@@ -77,7 +77,14 @@ To use it just import the directory named *Stargate*
 ```javascript
 import Stargate from "/Stargate"
 
-Stargate.bridge( swap_params )
+Stargate.bridge(     
+    signer,
+    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    "polygon",
+    "avalanche",
+    '1' 
+)
 ```
 <br />
 <br />
@@ -91,12 +98,16 @@ In this module you will be able to interact with all functionnalities of the *St
 
 ```javascript
 export const bridge = async(
-    signer,
-    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-    "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    "polygon",
-    "avalanche",
-    '1',
+    signer: Wallet,
+    tokenFrom: string,
+    tokenTo: string,
+    fromChain: Chains, 
+    toChain: Chains,
+    amount: string | null,
+    options?: {
+        max?: boolean,
+        slipage?: number
+    },
 ): Promise<void>
 ```
 
