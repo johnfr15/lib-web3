@@ -81,7 +81,7 @@ Stargate.bridge( swap_params )
 ```
 <br />
 <br />
-In this module you will be able to interact with all functionnalities of the *Stargate* Bridge on all its supported network (see `/Stargate/config/maker-1.ts`)  
+In this module you will be able to interact with all functionnalities of the *Stargate* Bridge on all its supported network (see `/Stargate/config/chainPath.json`)  
     
 <br />
   
