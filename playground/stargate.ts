@@ -14,7 +14,7 @@ const main = async() => {
     try {
         // Set up
         const fromChain: Chains = "polygonTestnet"
-        const toChain: Chains = "arbitrumTestnet"
+        const toChain: Chains = "avalancheTestnet"
         const provider = POLYGON_PROVIDER[ 'TESTNET' ]
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, new JsonRpcProvider( provider ) )
@@ -26,8 +26,8 @@ const main = async() => {
         
         await Stargate.bridge(
             signer,
-            TOKENS[ fromChain ].usdc,
-            TOKENS[ toChain ].usdc,
+            TOKENS[ fromChain ].usdt,
+            TOKENS[ toChain ].usdt,
             fromChain,
             toChain,
             '1',

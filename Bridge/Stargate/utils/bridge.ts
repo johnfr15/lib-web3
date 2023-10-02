@@ -25,7 +25,7 @@ export const get_stargate_params = (
             dstNativeAmount: 0,
             dstNativeAddr: "0x",
         },
-        to: ethers.AbiCoder.defaultAbiCoder().encode( [ "address" ], [ signer.address ] ),
+        to: ethers.zeroPadBytes( signer.address, 32 ),
         payload: "0x",
 
     }
