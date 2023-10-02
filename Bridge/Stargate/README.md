@@ -90,17 +90,14 @@ In this module you will be able to interact with all functionnalities of the *St
 <br />
 
 ```javascript
-export const bridge = async( swap_params: {
-    signer: Wallet,
-    tokenFrom: string,
-    tokenTo: string,
-    fromChain: Chains, 
-    toChain: Chains,
-    options?: { 
-        max?: boolean,
-        slipage?: number = 2
-    }
-}): Promise<void>
+export const bridge = async(
+    signer,
+    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    "polygon",
+    "avalanche",
+    '1',
+): Promise<void>
 ```
 
 ## Swap
