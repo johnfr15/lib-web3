@@ -37,7 +37,7 @@ export const bridge = async(
         signer = new Wallet( signer.privateKey, provider )
 
         const bridgeTx: BridgeTx = await get_bridge_tx( signer, tokenFrom, tokenTo, fromChain, toChain, amount, options )
-        const amountString: string = ethers.formatUnits( bridgeTx.bridge.bridgeParams.amountIn, bridgeTx.tokenIn.decimals )
+        const amountString: string = ethers.formatUnits( bridgeTx.stp.amount, bridgeTx.tokenIn.decimals )
 
         const approveTx: ApproveTx | undefined = await get_approve_tx( signer, amountString, bridgeTx.tokenIn, fromChain )
 

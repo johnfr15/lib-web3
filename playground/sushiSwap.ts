@@ -12,7 +12,7 @@ const main = async() => {
     
     try {
         // Set up
-        const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
+        const network: 'TESTNET' | 'MAINNET' = "MAINNET" // Testnet | Mainnet
         const provider = POLYGON_PROVIDER[ network ]
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, new JsonRpcProvider( provider ) )

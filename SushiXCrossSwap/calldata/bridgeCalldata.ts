@@ -28,9 +28,9 @@ export const get_bridge_tx = async(
         const balance_from       = await get_balance( tokenFrom, signer )
         const big_amount: bigint = options?.max ? balance_from.bigint : ethers.parseUnits( amount!, token_from.decimals )
 
-
-        // if ( balance_from.bigint === BigInt( 0 ) )
-        //     throw( `Error: Balance of token ${ token_from.symbol } is empty.`)
+        
+        if ( balance_from.bigint === BigInt( 0 ) )
+            throw( `Error: Balance of token ${ token_from.symbol } is empty.`)
 
 
         stp                         = get_stargate_params( signer, token_from, token_to, fromChain, toChain, big_amount, options.slipage! )

@@ -64,7 +64,7 @@ export const encode_stp = ( stp: StargateTeleportParams ) => {
 export const get_bridge = ( signer: Wallet, stpEncoded: string, tokenIn: Token, chain: Chains, amount: bigint ): Bridge => {
 
     const bridge_params: BridgeParams = {
-        refId: 0,
+        refId: "0x0001",
         adapter: STARGATE_ADAPTER[ chain ],
         tokenIn: tokenIn.address,
         amountIn: amount,
@@ -72,8 +72,13 @@ export const get_bridge = ( signer: Wallet, stpEncoded: string, tokenIn: Token, 
         adapterData: stpEncoded
     }
 
+    const encoded_bridge_params: string = ethers.AbiCoder.defaultAbiCoder().encode(
+        ["bytes2", "address", "address", "uint256", "address", "bytes"], 
+        Object.values( bridge_params )
+    )
+
     const bridge: Bridge = {
-        bridgeParams: bridge_params,
+        bridgeParams: encoded_bridge_params,
         refundAddress: signer.address,
         swapPayload: "0x",
         payloadData: "0x"

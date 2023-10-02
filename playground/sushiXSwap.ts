@@ -26,11 +26,11 @@ const main = async() => {
         
         await SushiXCrossSwap.bridge(
             signer,
-            TOKENS[ toChain ].usdc,
             TOKENS[ fromChain ].usdc,
-            toChain,
+            TOKENS[ toChain ].usdc,
             fromChain,
-            '0.001',
+            toChain,
+            null,
             { max: true }
         )
 

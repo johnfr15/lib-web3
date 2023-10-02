@@ -62,7 +62,7 @@ export type ApproveTx = {
 // SUSHI X SWAP
 
 export type BridgeParams = {
-    refId: number       
+    refId: string       
     adapter: string      
     tokenIn: string     // Token's address to bridge
     amountIn: bigint
@@ -71,7 +71,7 @@ export type BridgeParams = {
 }
 
 export type Bridge = {
-    bridgeParams: BridgeParams
+    bridgeParams: string         // BridgeParams encoded
     refundAddress: string        // Should be the signer's address. The contract will send back the gas remaining
     swapPayload: string          // (optional) types of all the arguments in 'payloadData'
     payloadData: string          // (optional) extra arguments for the target chain contract
