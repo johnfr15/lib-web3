@@ -37,7 +37,7 @@ export type ChainType = {
     infoURL: string,
 }
 
-export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanche' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet'
+export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanche' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet' | 'avalancheTestnet'
 
 // functions params
 
