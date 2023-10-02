@@ -25,7 +25,7 @@ export const ROUTER_ABI = router_abi
 
 
 // Addressess
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const ROUTER: { [key in Chains]: any } = {
   polygon: "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd",
@@ -35,6 +35,7 @@ export const ROUTER: { [key in Chains]: any } = {
   optimism: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b",
   ethereum: "0x8731d54E9D02c286767d56ac03e8037C07e01e98",
   avalanche: "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd",
+  avalancheTestnet: "",
   bsc: "0x4a364f8c717cAAD9A442737Eb7b8A55cc6cf18D8",
 } 
 
@@ -46,6 +47,7 @@ export const WETH: { [key in Chains]: any } = {
   optimism: "",
   ethereum: "",
   avalanche: "",
+  avalancheTestnet: "",
   bsc: "",
 }
 
@@ -73,6 +75,13 @@ export const TOKENS: { [key in Chains]: any } = {
   ethereum: {},
 
   avalanche: {},
+
+  avalancheTestnet: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth: '',
+    usdc:'0x4A0D1092E9df255cf95D72834Ea9255132782318',
+    usdt:'0x134Dc38AE8C853D1aa2103d5047591acDAA16682',
+  },
 
   bsc: {},
 
@@ -125,7 +134,23 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     MAI: 16,
   },
 
+  arbitrumTestnet: {
+    USDC: 1,
+    USDT: 2,
+    FRAX: 7,
+    ETH: 13,
+    LUSD: 15,
+    MAI: 16,
+  },
+
   polygon: {
+    USDC: 1,
+    USDT: 2,
+    DAI: 3,
+    MAI: 16,
+  },
+
+  polygonTestnet: {
     USDC: 1,
     USDT: 2,
     DAI: 3,
@@ -164,6 +189,14 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     metisUSDT: 19,  
   },
 
+  avalancheTestnet: {
+    USDC: 1,
+    USDT: 2,
+    FRAX: 7,
+    MAI: 16,
+    metisUSDT: 19,  
+  },
+
   bsc: {
     USDT: 2,
     BUSD: 5,
@@ -172,10 +205,6 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     METIS: 17,
     metisUSDT: 19,
   },
-
-  polygonTestnet: {},
-
-  arbitrumTestnet: {},
 }
 
 export const STARGATE_CHAIN_ID = {
@@ -183,6 +212,7 @@ export const STARGATE_CHAIN_ID = {
   ethereum: 101,
   bsc: 102,
   avalanche: 106,
+  avalancheTestnet: 10106,
   polygon: 109,
   polygonTestnet: 10109,
   arbitrum: 110,
@@ -206,5 +236,6 @@ export const CHAIN_ID: { [ key in Chains ]: number } = {
   optimism: 10,
   ethereum: 1,
   avalanche: 43114,
+  avalancheTestnet: 43113,
   bsc: 56,
 }
