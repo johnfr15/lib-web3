@@ -189,7 +189,7 @@ export default [
         "networkId": "137",
         "stargateId": "109",
         "name": "Polygon",
-        "rpc": [ "https://polygon.llamarpc.com" ],
+        "rpc": [ "https://polygon-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8" ],
         "nativeCurrency": {
             "name": "MATIC",
             "symbol": "MATIC",
@@ -483,7 +483,7 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": ["https://nova.arbitrum.io/rpc"],
+        "rpc": ["https://arbitrum-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8"],
         "watch": ["api", "rpc"],
         "tokens": [
             {
@@ -753,7 +753,7 @@ export default [
       },
       "chainId": "421613",
       "networkId": "421613",
-      "stargateId": "22",
+      "stargateId": "10143",
       "name": "Arbitrum(G)",
       "features": ["EIP1559"],
       "nativeCurrency": {
@@ -762,7 +762,7 @@ export default [
         "decimals": 18,
         "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
       },
-      "rpc": [ "https://goerli-rollup.arbitrum.io/rpc" ],
+      "rpc": [ "https://arbitrum-goerli.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8" ],
       "watch": ["rpc"],
       "contracts": ["0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"],
       "tokens": [
@@ -847,10 +847,10 @@ export default [
       },
       "chainId": "80001",
       "networkId": "80001",
-      "stargateId": "66",
+      "stargateId": "10109",
       "name": "Polygon Mumbai",
       "nativeCurrency": {},
-      "rpc": [ "https://polygon-mumbai.gateway.tenderly.co" ],
+      "rpc": [ "https://polygon-mumbai.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8" ],
       "watch": ["rpc"],
       "contracts": [],
       "tokens": [

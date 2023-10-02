@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { ERC20_ABI, SUSHI_X_SWAP_V2 } from "../config/constants";
+import { ERC20_ABI, ROUTER } from "../config/constants";
 import { ApproveTx, Chains, Token } from "../types";
 import { is_native } from "../utils";
 
@@ -15,7 +15,7 @@ export const get_approve_tx = async(
         if ( is_native( token.address ) ) 
             return undefined
 
-        const router_address = SUSHI_X_SWAP_V2[ chain ]
+        const router_address = ROUTER[ chain ]
         const erc20 = new Contract( token.address, ERC20_ABI, signer );
 
         const decimals = await erc20.decimals()

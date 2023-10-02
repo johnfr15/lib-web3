@@ -1,8 +1,8 @@
 import { Wallet, ethers, Contract } from "ethers";
-import { Chains, BridgeOptions, BridgeTx, StargateTeleportParams, Token, Bridge } from "../types";
+import { Chains, BridgeOptions, BridgeTx, StargateParams, Token } from "../types";
 import { get_balance, get_token } from "../utils";
-import { getFee, get_bridge, get_stargate_params, encode_stp } from "../utils/bridge"
-import { SUSHI_X_SWAP_V2, SUSHI_X_SWAP_V2_ABI } from "../config/constants";
+import { getFee, get_stargate_params } from "../utils/bridge"
+import { ROUTER, ROUTER_ABI } from "../config/constants";
 
 
 export const get_bridge_tx = async(
@@ -14,8 +14,6 @@ export const get_bridge_tx = async(
     amount: string | null,
     options: BridgeOptions,
 ): Promise<BridgeTx> => {
-
-    let stp: StargateTeleportParams
 
     try {
 
@@ -33,23 +31,21 @@ export const get_bridge_tx = async(
             throw( `Error: Balance of token ${ token_from.symbol } is empty.`)
 
 
-        stp                         = get_stargate_params( signer, token_from, token_to, fromChain, toChain, big_amount, options.slipage! )
-        const stp_encoded: string   = encode_stp( stp )
-        const bridge: Bridge        = get_bridge( signer, stp_encoded, token_from, fromChain, big_amount )
-        const feesCost: bigint      = await getFee( signer, stp, fromChain )
+        let sp: StargateParams = get_stargate_params( signer, token_from, token_to, fromChain, toChain, big_amount, options.slipage! )
+        const messageFee: bigint = await getFee( signer, sp, fromChain )
 
-        const SushiXSwapV2 = new Contract( SUSHI_X_SWAP_V2[ fromChain ], SUSHI_X_SWAP_V2_ABI, signer )
+        const Router = new Contract( ROUTER[ fromChain ], ROUTER_ABI, signer )
 
- 
         const bridgeTx: BridgeTx = {
             signer: signer,
-            SushiXSwapV2: SushiXSwapV2,
-            fromChain: fromChain,
-            toChain: toChain,
-            bridge: bridge,
-            tokenIn: token_from,
-            stp: stp,
-            feesCost: feesCost,
+            Router: Router,
+            payload: sp,
+            messageFee: messageFee,
+            utils: {
+                tokenIn: token_from,
+                fromChain: fromChain,
+                toChain: toChain,
+            },
         }
 
         return bridgeTx
