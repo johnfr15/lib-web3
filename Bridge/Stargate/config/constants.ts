@@ -29,26 +29,30 @@ export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const ROUTER: { [key in Chains]: any } = {
   polygon: "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd",
-  polygonTestnet: '0x817436a076060D158204d955E5403b6Ed0A5fac0',
   arbitrum: "0x53Bf833A5d6c4ddA888F69c22C88C9f356a41614",
-  arbitrumTestnet: '0xb850873f4c993Ac2405A1AdD71F6ca5D4d4d6b4f',
   optimism: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b",
   ethereum: "0x8731d54E9D02c286767d56ac03e8037C07e01e98",
   avalanche: "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd",
-  avalancheTestnet: "",
   bsc: "0x4a364f8c717cAAD9A442737Eb7b8A55cc6cf18D8",
+
+  ethereumTestnet: '0x7612aE2a34E5A363E137De748801FB4c86499152',
+  polygonTestnet: '0x817436a076060D158204d955E5403b6Ed0A5fac0',
+  arbitrumTestnet: '0xb850873f4c993Ac2405A1AdD71F6ca5D4d4d6b4f',
+  avalancheTestnet: "0x13093E05Eb890dfA6DacecBdE51d24DabAb2Faa1",
 } 
 
 export const WETH: { [key in Chains]: any } = {
   polygon: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-  polygonTestnet: '',
   arbitrum: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1 ",
-  arbitrumTestnet: '',
   optimism: "",
   ethereum: "",
   avalanche: "",
-  avalancheTestnet: "",
   bsc: "",
+  
+  ethereumTestnet: '',
+  polygonTestnet: '',
+  arbitrumTestnet: '',
+  avalancheTestnet: "",
 }
 
 
@@ -76,14 +80,26 @@ export const TOKENS: { [key in Chains]: any } = {
 
   avalanche: {},
 
-  avalancheTestnet: {
+  bsc: {},
+
+
+
+  ethereumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    dai: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+    weth: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    sgeth: '0xCf1F9cD3789Fc6296f4abB11dc460067Ae1a2673',
+    usdc:'0xDf0360Ad8C5ccf25095Aa97ee5F2785c8d848620',
+    usdt:'0x5BCc22abEC37337630C0E0dd41D64fd86CaeE951',
+  },
+
+  avalancheTestnet: {
+    avax: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     weth: '',
+    dai: '0x12C135a68b7B3Cd006eDb785cB53398a5DA59613',
     usdc:'0x4A0D1092E9df255cf95D72834Ea9255132782318',
     usdt:'0x134Dc38AE8C853D1aa2103d5047591acDAA16682',
   },
-
-  bsc: {},
 
   polygonTestnet: {
     matic: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -205,6 +221,20 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     METIS: 17,
     metisUSDT: 19,
   },
+
+  ethereumTestnet: {
+    USDC: 1,
+    USDT: 2,
+    DAI: 3,
+    FRAX: 7,
+    USDD: 11,
+    ETH: 13,
+    sUSD: 14,
+    LUSD: 15,
+    MAI: 16,
+    METIS: 17,
+    metisUSDT: 19,
+  }
 }
 
 export const STARGATE_CHAIN_ID = {
@@ -212,12 +242,14 @@ export const STARGATE_CHAIN_ID = {
   ethereum: 101,
   bsc: 102,
   avalanche: 106,
-  avalancheTestnet: 10106,
   polygon: 109,
-  polygonTestnet: 10109,
   arbitrum: 110,
-  arbitrumTestnet: 10143,
   optimism: 111,
+  
+  ethereumTestnet: 10121,
+  arbitrumTestnet: 10143,
+  polygonTestnet: 10109,
+  avalancheTestnet: 10106,
 
   // fantom: 112,
   // metis: 151,
@@ -229,13 +261,15 @@ export const STARGATE_CHAIN_ID = {
 // Misc 
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
-  arbitrum: 42161,
-  arbitrumTestnet: 42170,
-  polygon: 137,
-  polygonTestnet: 80001,
-  optimism: 10,
   ethereum: 1,
+  arbitrum: 42161,
+  polygon: 137,
   avalanche: 43114,
-  avalancheTestnet: 43113,
+  optimism: 10,
   bsc: 56,
+
+  ethereumTestnet: 5,
+  arbitrumTestnet: 421613,
+  polygonTestnet: 80001,
+  avalancheTestnet: 43113,
 }

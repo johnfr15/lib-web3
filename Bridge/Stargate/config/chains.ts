@@ -169,7 +169,7 @@ export default [
       "name": 'goerli',
       "chainId": "5",
       "networkId": "5",
-      "stargateId": "5",
+      "stargateId": "10121",
       "nativeCurrency": {
         "name": 'Görli Ether',
         "symbol": 'GOR',

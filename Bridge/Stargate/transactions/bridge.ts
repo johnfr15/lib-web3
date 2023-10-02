@@ -7,14 +7,14 @@ export const exec_bridge = async( bridgeTx: BridgeTx ): Promise<TransactionRecei
     let receipt: TransactionReceipt | null | undefined
 
     const { signer, Router, payload, messageFee, utils } = bridgeTx
-    const { tokenIn, fromChain, toChain } = utils
+    const { native, tokenIn, fromChain, toChain } = utils
 
     try {
 
         console.log(`\nBridge ${ ethers.formatUnits( payload.amount, tokenIn.decimals ) } ${ tokenIn.symbol }`)
         console.log(`\tFrom ${ fromChain }`)
         console.log(`\tTo   ${ toChain }`)
-        console.log("\nMessage fees: ", ethers.formatEther( messageFee ), fromChain.startsWith('polygon') ? "MATIC" : "ETH")
+        console.log("\nMessage fees: ", ethers.formatEther( messageFee ), native.symbol)
 
         const nonce = await signer.getNonce()
         const feedata = await signer.provider?.getFeeData()
@@ -27,7 +27,7 @@ export const exec_bridge = async( bridgeTx: BridgeTx ): Promise<TransactionRecei
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), fromChain.startsWith('polygon') ? "MATIC" : "ETH")
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), native.symbol)
 
         return receipt as TransactionReceipt
         
