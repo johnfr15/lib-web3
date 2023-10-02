@@ -20,7 +20,6 @@ Jonathan's code
 ## ![ETH](assets/ethereum.png) Ethereum bridge
 | Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
 |----------|------------------------|------------------------|--------------------------|--------------------------|
-| starknet |           ✅           |           ✅            |            ✅            |             ✅           |
 | arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
 | polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
 | zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
