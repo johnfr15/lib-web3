@@ -2,7 +2,7 @@ import { Wallet, ethers, Contract } from "ethers";
 import { Chains, BridgeOptions, BridgeTx, StargateParams, Token } from "../types";
 import { get_balance, get_token } from "../utils";
 import { getFee, get_stargate_params } from "../utils/bridge"
-import { ROUTER, ROUTER_ABI } from "../config/constants";
+import { ROUTER, ROUTER_ABI, NATIVE_TOKEN } from "../config/constants";
 
 
 export const get_bridge_tx = async(
@@ -24,6 +24,7 @@ export const get_bridge_tx = async(
         const token_from: Token  = await get_token( tokenFrom, fromChain )
         const token_to: Token    = await get_token( tokenTo, toChain )
         const balance_from       = await get_balance( tokenFrom, signer )
+        const balance_nativ      = await get_balance( NATIVE_TOKEN, signer )
         const big_amount: bigint = options?.max ? balance_from.bigint : ethers.parseUnits( amount!, token_from.decimals )
 
         
@@ -33,6 +34,11 @@ export const get_bridge_tx = async(
 
         let sp: StargateParams = get_stargate_params( signer, token_from, token_to, fromChain, toChain, big_amount, options.slipage! )
         const messageFee: bigint = await getFee( signer, sp, fromChain )
+
+                
+        if ( balance_nativ.bigint < messageFee )
+            throw( `Error: Not enough balance of native token for paying message fee (${ ethers.formatEther( messageFee )} ${ fromChain === "polygon" ? "MATIC" : "ETH" }).`)
+
 
         const Router = new Contract( ROUTER[ fromChain ], ROUTER_ABI, signer )
 
