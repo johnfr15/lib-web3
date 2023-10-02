@@ -90,7 +90,7 @@ Jonathan's code
 
 To use it just import the directory named *Orbiter*  
 ```javascript
-import Orbiter from "/Orbiter"
+import Orbiter from "./Bridge/Orbiter"
 
 Orbiter.swap( swap_params )
 ```

@@ -74,7 +74,7 @@ Jonathan's code
 
 To use it just import the directory named *Stargate*  
 ```javascript
-import Stargate from "/Stargate"
+import Stargate from "./Bridge/Stargate"
 
 Stargate.bridge(     
     signer,
