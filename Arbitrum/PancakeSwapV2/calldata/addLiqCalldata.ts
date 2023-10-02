@@ -1,5 +1,5 @@
 import { ethers, Wallet } from "ethers";
-import { TICKER, ZERO_ADDRESS } from "../config/constants";
+import { TICKER, NATIVE_TOKEN } from "../config/constants";
 import { AddLiquidityTx, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
 
@@ -59,8 +59,8 @@ const get_max_liq = async(
 
     try {
 
-        const balanceA = await get_balance( is_native( pool.tokenA.address) ? ZERO_ADDRESS : pool.tokenA.address, signer )
-        const balanceB = await get_balance( is_native( pool.tokenB.address) ? ZERO_ADDRESS : pool.tokenB.address, signer )
+        const balanceA = await get_balance( is_native( pool.tokenA.address) ? NATIVE_TOKEN : pool.tokenA.address, signer )
+        const balanceB = await get_balance( is_native( pool.tokenB.address) ? NATIVE_TOKEN : pool.tokenB.address, signer )
 
         const quoteB = get_quote( balanceA.string, pool.tokenA, pool.tokenB, pool )
         const quoteA = get_quote( balanceB.string, pool.tokenB, pool.tokenA, pool )

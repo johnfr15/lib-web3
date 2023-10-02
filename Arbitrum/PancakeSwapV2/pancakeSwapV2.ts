@@ -44,6 +44,7 @@ export const swap = async(
         const swapTx    = await get_swap_tx( signer, path, amountIn, amountOut, network, slipage, priceImpact, deadline )
         const approveTx = await get_approve_tx( signer, ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenFrom.decimals), path[0], network )
 
+        
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveTx, signer )
         await exec_swap( swapTx )
@@ -57,7 +58,7 @@ export const swap = async(
 }
 
 
- 
+
 
 
 /**

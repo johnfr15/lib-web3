@@ -1,7 +1,7 @@
 import { ethers, Wallet } from "ethers";
 import { Pool, Trade, Token, TradeType, SwapExactETHForTokens, SwapTx, SwapETHForExactTokens } from "../types";
 import { get_quote, get_balance } from ".";
-import { ZERO_ADDRESS } from "../config/constants";
+import { NATIVE_TOKEN } from "../config/constants";
 
 export const get_trade = async( 
     signer: Wallet,
@@ -112,7 +112,7 @@ export const enforce_swap_fees = async(  swapTx: SwapTx, txArgs: SwapExactETHFor
         const feeDatas = await signer.provider!.getFeeData()
         const totalFees = feesPerGas * feeDatas.gasPrice!
 
-        const balance = await get_balance( ZERO_ADDRESS, swapTx.signer )
+        const balance = await get_balance( NATIVE_TOKEN, swapTx.signer )
 
         if ( balance.bigint < (amountIn + totalFees) )
         {

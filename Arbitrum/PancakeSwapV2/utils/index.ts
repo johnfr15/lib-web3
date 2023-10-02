@@ -1,6 +1,6 @@
 import fs from "fs"
 import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, V2_FACTORY_ABI, V2_PAIR_ABI, V2_FACTORY} from "../config/constants"
+import { ERC20_ABI, TOKENS, CHAIN_ID, V2_FACTORY_ABI, V2_PAIR_ABI, V2_FACTORY, NATIVE_TOKEN } from "../config/constants"
 import { Token, Pool } from "../types";
 
 
@@ -10,7 +10,7 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
     let Tokens: {[key: string]: Token } = {}
 
     if ( is_native( tokenAddress ) )
-        tokenAddress = TOKENS[ network ].wmatic
+        tokenAddress = TOKENS[ network ].weth
 
     try {
         
@@ -142,9 +142,9 @@ export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, po
 }
 
 export const is_native = ( token: string ): boolean => {
-    return  (BigInt( token ) === BigInt( 0 ) || 
-             BigInt( token ) === BigInt( TOKENS['TESTNET'].wmatic ) || 
-             BigInt( token ) === BigInt( TOKENS['MAINNET'].wmatic )
+    return  (BigInt( token ) === BigInt( NATIVE_TOKEN ) || 
+             BigInt( token ) === BigInt( TOKENS['TESTNET'].weth ) || 
+             BigInt( token ) === BigInt( TOKENS['MAINNET'].weth )
             )
 }
 

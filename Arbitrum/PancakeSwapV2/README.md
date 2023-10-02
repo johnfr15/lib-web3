@@ -2,8 +2,8 @@
 Jonathan's code
 
 
-# SushiSwap  
-![SushiSwap](https://docs.sushi.com/img/sushilogo.png)  
+# PancakeSwap  
+![PancakeSwap](https://docs.sushi.com/img/sushilogo.png)  
 
 **Swap**: ✅    
 **Add liquidity**: ✅    
@@ -12,24 +12,24 @@ Jonathan's code
 ## url
 - Mainnet: https://www.sushi.com/swap
 - Docs: https://docs.sushi.com/
-- Github: https://github.com/sushiswap
+- Github: https://github.com/PancakeSwap
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
 
-## Calling SushiSwap Functions
+## Calling PancakeSwap Functions
 
-To use it just import the directory named *SushiSwap*  
+To use it just import the directory named *PancakeSwap*  
 ```javascript
-import SushiSwap from "/SushiSwap"
+import PancakeSwap from "/PancakeSwap"
 ```
 
 In this module you will be able to interact with all functionnalities of the AMM
 You will then be able to interact with the mains functions
 
 ```javascript
-SushiSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
-SushiSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, true)
-SushiSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+PancakeSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
+PancakeSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, true)
+PancakeSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
 
 ### Swap  

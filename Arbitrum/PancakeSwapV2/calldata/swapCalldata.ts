@@ -29,11 +29,10 @@ export const get_swap_tx = async(
 
         trade.priceImpact       = await calc_price_impact( trade, pool )
         
-
         if ( trade.priceImpact > priceImpact )
             throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
-        if ( balance_in.bigint === BigInt( 0 ) )
-            throw new Error(`Error: Balance of token ${ TICKER[ path[0] ] } is empty`)
+        // if ( balance_in.bigint === BigInt( 0 ) )
+        //     throw new Error(`Error: Balance of token ${ TICKER[ path[0] ] } is empty`)
 
         const swapTx: SwapTx = {
             signer: signer,
