@@ -15,7 +15,7 @@ const main = async() => {
     try {
         // Set up
         const fromChain: Chains = "ethereumTestnet"
-        const toChain: Chains = "avalancheTestnet"
+        const toChain: Chains = "polygonTestnet"
 
         const provider = resolve_provider( STARGATE_CHAIN_ID[ fromChain ] )
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )

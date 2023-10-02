@@ -111,7 +111,7 @@ export const bridge = async(
 ): Promise<void>
 ```
 
-## Swap
+## Bridge
 The swap function need an object of at least 6 parameters and 3 optionnals  
 
 `signer`: The signer of an EVM (ethereum virtual machine) account that will sign the transaction on the evm chain  
