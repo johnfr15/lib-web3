@@ -28,12 +28,30 @@ export const V2_PAIR_ABI = v2_pair_abi
 
 // Addresses
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
-export const V2_ROUTER = "0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb"
-export const V2_FACTORY = "0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E"
+export const V3_FACTORY = '0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865'
 
+export const SWAP_ROUTER: { [key: string | number]: string } = {
+  'MAINNET': "0x1b81D678ffb9C0263b24A97847620C99d213eB14",
+  'TESTNET': "0x1b81D678ffb9C0263b24A97847620C99d213eB14"
+}
+
+export const QUOTER_V2: { [key: string | number]: string } = {
+  'MAINNET': "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997",
+  'TESTNET': "0xbC203d7f83677c7ed3F7acEc959963E7F4ECC5C2"
+}
+
+export const MASTER_CHEF: { [key: string | number]: string } = {
+  'MAINNET': "0x5e09ACf80C0296740eC5d6F643005a4ef8DaA694",
+  'TESTNET': "0x66A9870FF7707936B0B0278cF999C5f2Ac2e42F5"
+}
+
+export const SMART_ROUTER: { [key: string | number]: string } = {
+  'MAINNET': "0x32226588378236Fd0c7c4053999F88aC0e5cAc77",
+  'TESTNET': "0x9a489505a00cE272eAa5e07Dba6491314CaE3796"
+}
 
 export const WETH: { [key: string | number]: string } = {
-  'MAINNET': "0x82af49447d8a07e3bd95bd0d56f35241523fbab1 ",
+  'MAINNET': "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
   'TESTNET': "0x5B67676a984807a212b1c59eBFc9B3568a474F0a"
 }
 
