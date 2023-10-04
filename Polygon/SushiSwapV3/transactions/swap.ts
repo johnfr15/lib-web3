@@ -32,7 +32,7 @@ export const exactInputSingle = async( swapTx: SwapTx ): Promise<void> => {
 
     try {
 
-        console.log(`\n\nSwapping exact ${ ethers.formatEther( amountIn ) } ${ tokenIn.symbol } for ${ ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+        console.log(`\n\nSwapping exact ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${ ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
         const txArgs: ExactInputSingle = { 
             tokenIn: tokenIn.address, 
@@ -41,12 +41,12 @@ export const exactInputSingle = async( swapTx: SwapTx ): Promise<void> => {
             recipient: signer.address,
             deadline: deadline,
             amountIn: amountIn,
-            amountOutMinimum: amountOutMin,
+            amountOutMinimum: amountOutMin!,
             sqrtPriceLimitX96: sqrtPriceLimitX96,
         }
         const nonce = await signer.getNonce()
 
-        const tx = await SwapRouter.exactInputSingle( txArgs, { value: value, nonce: nonce } )
+        const tx = await SwapRouter.exactInputSingle.staticCall( txArgs, { value: value, nonce: nonce } )
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
@@ -68,7 +68,7 @@ export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
 
     try {
         
-        console.log(`\n\nSwapping ${ ethers.formatEther( amountIn ) } ${ tokenIn.symbol } for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
         const txArgs: ExactOutputSingle = { 
             tokenIn: tokenIn.address, 
@@ -77,12 +77,13 @@ export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
             recipient: signer.address,
             deadline: deadline,
             amountOut: amountOut,
-            amountInMaximum: amountInMax,
+            amountInMaximum: amountInMax!,
             sqrtPriceLimitX96: sqrtPriceLimitX96,
         }
         const nonce = await signer.getNonce()
 
         const tx = await SwapRouter.exactOutputSingle( txArgs, { value: value, nonce: nonce } )
+
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
@@ -112,7 +113,7 @@ export const exactInput = async( swapTx: SwapTx ): Promise<void> => {
             recipient: signer.address, 
             deadline, 
             amountIn: amountIn,
-            amountOutMinimum: amountOutMin
+            amountOutMinimum: amountOutMin!
         }
         const nonce = await signer.getNonce()
 
@@ -145,7 +146,7 @@ export const exactOutput = async( swapTx: SwapTx ): Promise<void> => {
             recipient: signer.address, 
             deadline, 
             amountOut: amountOut,
-            amountInMaximum: amountInMax
+            amountInMaximum: amountInMax!
         }
         const nonce = await signer.getNonce()
 

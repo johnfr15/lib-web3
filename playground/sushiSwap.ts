@@ -29,8 +29,8 @@ const main = async() => {
         
         await SushiSwapV3.swap(
             signer,
-            [ TOKENS[ chain ].matic, TOKENS[ chain ].usdc ],
-            "0.2",
+            [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
+            "0.0002",
             null,
             chain
         )

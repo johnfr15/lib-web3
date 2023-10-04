@@ -1,7 +1,5 @@
 import { ethers, Wallet } from "ethers";
 import { Pool, Trade, Token, TradeType, Chains, BridgeOptions, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
-import { get_balance } from ".";
-import { NATIVE_TOKEN } from "../config/constants";
 
 export const get_trade = async( 
     signer: Wallet,
@@ -14,18 +12,27 @@ export const get_trade = async(
     options: BridgeOptions
 ): Promise<Trade> => {
 
+    let amount_out_min: bigint | undefined
+    let amount_in_max: bigint | undefined
+
     try {
 
         const tradeType = amountIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT
 
         let amount_in: bigint  = ethers.parseUnits( amountIn ?? '0', tokenIn.decimals ) 
-        let amount_out: bigint = ethers.parseUnits( amountOut ?? '0', tokenIn.decimals )
+        let amount_out: bigint = ethers.parseUnits( amountOut ?? '0', tokenOut.decimals )
 
-        if ( tradeType === TradeType.EXACT_INPUT ) amount_out = await get_amount_out( tokenIn, tokenOut, amount_in, pool )
-        if ( tradeType === TradeType.EXACT_OUTPUT ) amount_in = await get_amount_in( tokenIn, tokenOut, amount_in, pool )
+        if ( tradeType === TradeType.EXACT_INPUT ) 
+        {
+            amount_out = await get_amount_out( tokenIn, tokenOut, amount_in, pool )
+            amount_out_min = amount_out * BigInt( parseInt( ((100 - options.slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
+        }
+        if ( tradeType === TradeType.EXACT_OUTPUT ) 
+        {
+            amount_in = await get_amount_in( tokenIn, tokenOut, amount_out, pool )
+            amount_in_max = amount_in * BigInt( parseInt( ((options.slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
+        }
             
-        let amount_out_min = amount_out * BigInt( parseInt( ((100 - options.slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
-        let amount_in_max = amount_in * BigInt( parseInt( ((options.slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
         
 
         const trade: Trade = { 
@@ -72,15 +79,17 @@ export const get_amount_out = async( tokenIn: Token, tokenOut: Token, amountIn: 
 
 export const get_amount_in = async( tokenIn: Token, tokenOut: Token, amountOut: bigint, pool: Pool ): Promise<bigint> => {
 
+    console.log( amountOut )
+
     const params: QuoteExactOutputSingleParams = { 
         tokenIn: tokenIn.address, 
         tokenOut: tokenOut.address, 
-        amountOut: amountOut, 
+        amount: amountOut, 
         fee: pool.fees, 
         sqrtPriceLimitX96: BigInt( 0 )
     }
 
-    const [ amountIn ] = await pool.Quoter.quoteExactInputSingle.staticCall( params )
+    const [ amountIn ] = await pool.Quoter.quoteExactOutputSingle.staticCall( params )
 
     return amountIn
 }

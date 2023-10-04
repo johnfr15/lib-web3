@@ -52,6 +52,7 @@ export const swap = async(
 
         const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, approve_amount, chain )
 
+        console.log( swapTx )
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveTx )
         await exec_swap( swapTx! )

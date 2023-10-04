@@ -28,8 +28,8 @@ export type Trade = {
     path: [string, string]
     amountIn: bigint
     amountOut: bigint
-    amountInMax: bigint
-    amountOutMin: bigint
+    amountInMax: bigint | undefined
+    amountOutMin: bigint | undefined
     sqrtPriceLimitX96: bigint
     to: string
     priceImpact: number
@@ -189,7 +189,7 @@ export type QuoteExactInputSingleParams = {
 export type QuoteExactOutputSingleParams = {
     tokenIn: string
     tokenOut: string
-    amountOut: bigint
+    amount: bigint
     fee: number
     sqrtPriceLimitX96: bigint
 }

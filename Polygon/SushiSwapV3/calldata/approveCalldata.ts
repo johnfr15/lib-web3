@@ -18,8 +18,7 @@ export const get_approve_tx = async(
         const swapRouter = SWAP_ROUTER[ chain ]
         const erc20 = new Contract( token.address, ERC20_ABI, signer );
 
-        const decimals = await erc20.decimals()
-        const big_amount = ethers.parseUnits( amount, decimals )
+        const big_amount = ethers.parseUnits( amount, token.decimals )
     
         return { signer: signer, Erc20: erc20, token: token, chain: chain, spender: swapRouter, amount: big_amount }
 
