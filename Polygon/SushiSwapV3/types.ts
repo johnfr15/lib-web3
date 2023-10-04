@@ -13,46 +13,67 @@ export type Pool = {
     tokenA: Token
     tokenB: Token
     pair: string
-    reserveA: bigint
-    reserveB: bigint
+    fees: Fees
+    tickSpacing: number,
+    liquidity: bigint,
+    sqrtPriceX96: bigint,
+    tick: bigint,
+    Quoter: Contract
+    Pool: Contract
 }
 
 export type Trade = {
-    tokenFrom: Token
-    tokenTo: Token
-    pool: Pool
+    tokenIn: Token
+    tokenOut: Token
+    path: [string, string]
     amountIn: bigint
     amountOut: bigint
     amountInMax: bigint
     amountOutMin: bigint
-    path: [string, string]
-    to: string,
+    sqrtPriceLimitX96: bigint
+    to: string
     priceImpact: number
+    pool: Pool
     slipage: number
     deadline: number
+    chain: Chains
     tradeType: number
-    network: 'TESTNET' | 'MAINNET'
 }
-
-
 
 export enum TradeType {
     EXACT_INPUT,
     EXACT_OUTPUT
 }
 
+export enum Fees {
+    SMALL = 500,
+    MEDIUM = 3000,
+    BIG = 10000
+}
+
+export type BridgeOptions = {
+    max?: boolean
+    slipage?: number
+    deadline?: number
+    chain?: Chains
+}
+
+export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanche' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet' |
+                     'avalancheTestnet' | 'ethereumTestnet'
+
 export type ApproveTx = {
-    Erc20: Contract, 
-    spender: string, 
-    amount: bigint,
-    decimals: number
-    network: 'TESTNET' | 'MAINNET' 
+    signer: Wallet
+    Erc20: Contract
+    token: Token
+    chain: Chains
+    spender: string
+    amount: bigint
 }
 
 export type SwapTx = {
     signer: Wallet
     trade: Trade
-    Router: Contract
+    SwapRouter: Contract
 }
 
 export type AddLiquidityTx = {
@@ -85,87 +106,90 @@ export type RemoveLiquidityTx = {
     network: 'TESTNET' | 'MAINNET'
 }
 
-export type SwapExactETHForTokens = {
-    amountOutMin: bigint 
-    path: string[] 
-    to: string
+export type ExactInput = {
+    path: string
+    recipient: string
     deadline: number
-}
-
-export type SwapETHForExactTokens = {
-    amountOut: bigint 
-    path: string[] 
-    to: string
-    deadline: number
-}
-
-export type SwapExactTokensForETH = {
     amountIn: bigint
-    amountOutMin: bigint 
-    path: string[] 
-    to: string
-    deadline: number
+    amountOutMinimum: bigint
 }
 
-export type SwapTokensForExactETH = {
+export type ExactOutput = {
+    path: string
+    recipient: string
+    deadline: number
     amountOut: bigint
-    amountInMax: bigint 
-    path: string[] 
-    to: string
-    deadline: number
+    amountInMaximum: bigint
 }
 
-export type SwapExactTokensForTokens = {
+export type ExactInputSingle = {
+    tokenIn: string
+    tokenOut: string
+    fee: number
+    recipient: string
+    deadline: number
     amountIn: bigint
-    amountOutMin: bigint 
-    path: string[] 
-    to: string
-    deadline: number
+    amountOutMinimum: bigint
+    sqrtPriceLimitX96: bigint
 }
 
-export type SwapTokensForExactTokens = {
+export type ExactOutputSingle = {
+    tokenIn: string
+    tokenOut: string
+    fee: number
+    recipient: string
+    deadline: number
     amountOut: bigint
-    amountInMax: bigint 
-    path: string[] 
-    to: string
-    deadline: number
+    amountInMaximum: bigint
+    sqrtPriceLimitX96: bigint
 }
 
-export type AddLiquidity = {
-    tokenA: string
-    tokenB: string
-    amountADesired: bigint
-    amountBDesired: bigint
-    amountAMin: bigint
-    amountBMin: bigint
-    to: string
-    deadline: number
+export type Mint = {
+    token0: bigint
+    token1: bigint
+    fee: bigint
+    tickLower: bigint
+    tickUpper: bigint
+    amount0Desired: bigint
+    amount1Desired: bigint
+    amount0Min: bigint
+    amount1Min: bigint
+    recipient: bigint
+    deadline: bigint
 }
 
-export type AddLiquidityETH = {
-    token: string
-    amountTokenDesired: bigint,
-    amountTokenMin: bigint,
-    amountETHMin: bigint,
-    to: string
-    deadline: number
+export type IncreaseLiquidity = {
+    tokenId: bigint
+    amount0Desired: bigint
+    amount1Desired: bigint
+    amount0Min: bigint
+    amount1Min: bigint
+    deadline: bigint
 }
 
-export type RemoveLiquidity = {
-    tokenA: string,
-    tokenB: string,
+export type DecreaseLiquidity = {
+    tokenId: bigint
     liquidity: bigint
-    amountAMin: bigint
-    amountBMin: bigint
-    to: string
-    deadline: number
+    amount0Min: bigint
+    amount1Min: bigint
+    deadline: bigint
 }
 
-export type RemoveLiquidityETH = {
-    token: string
-    liquidity: bigint
-    amountTokenMin: bigint
-    amountETHMin: bigint
-    to: string
-    deadline: number
+
+// QuoterV2
+
+export type QuoteExactInputSingleParams = {
+    tokenIn: string
+    tokenOut: string
+    amountIn: bigint
+    fee: number
+    sqrtPriceLimitX96: bigint
+}
+
+export type QuoteExactOutputSingleParams = {
+    tokenIn: string
+    tokenOut: string
+    amountOut: bigint
+    fee: number
+    sqrtPriceLimitX96: bigint
 }

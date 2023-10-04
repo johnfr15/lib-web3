@@ -1,27 +1,27 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { ERC20_ABI, V2_ROUTER } from "../config/constants";
-import { ApproveTx } from "../types";
+import { ERC20_ABI, SWAP_ROUTER } from "../config/constants";
+import { ApproveTx, Chains, Token } from "../types";
 import { is_native } from "../utils";
 
 export const get_approve_tx = async(
     signer: Wallet, 
+    token: Token,
     amount: string, 
-    tokenAddress: string, 
-    network: 'TESTNET' | 'MAINNET'
+    chain: Chains
 ): Promise<ApproveTx | undefined> => {
 
     try {
         
-        if ( is_native( tokenAddress ) ) 
+        if ( is_native( token.address, chain ) ) 
             return undefined
 
-        const router = V2_ROUTER
-        const erc20 = new Contract( tokenAddress, ERC20_ABI, signer );
+        const swapRouter = SWAP_ROUTER[ chain ]
+        const erc20 = new Contract( token.address, ERC20_ABI, signer );
 
         const decimals = await erc20.decimals()
         const big_amount = ethers.parseUnits( amount, decimals )
     
-        return { Erc20: erc20, spender: router, amount: big_amount, decimals: decimals, network: network }
+        return { signer: signer, Erc20: erc20, token: token, chain: chain, spender: swapRouter, amount: big_amount }
 
     } catch (error: any) {
         

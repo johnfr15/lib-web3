@@ -1,36 +1,41 @@
-import { JsonRpcProvider, Wallet } from "ethers"
-import SushiSwap from "../Polygon/SushiSwap"
-import { log_balances } from "../Polygon/Uniswap/log"
+import { JsonRpcProvider, Wallet, ethers } from "ethers"
+import SushiSwapV2 from "../Polygon/SushiSwapV2"
+import SushiSwapV3 from "../Polygon/SushiSwapV3"
+import { log_balances } from "../Polygon/SushiSwapV3/log"
+import { Chains } from "../Polygon/SushiSwapV3/types"
 import dotenv from "dotenv"
+import { CHAIN_ID } from "../Polygon/SushiSwapV3/config/constants"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { POLYGON_PROVIDER, TOKENS } = SushiSwap.Constant
+    const { TOKENS } = SushiSwapV3.Constant
+    const { resolve_provider } = SushiSwapV3.Utils
+
     
     try {
         // Set up
-        const network: 'TESTNET' | 'MAINNET' = "MAINNET" // Testnet | Mainnet
-        const provider = POLYGON_PROVIDER[ network ]
+        const chain: Chains = "polygon" // Testnet | Mainnet
+        const provider = resolve_provider( CHAIN_ID[ chain ] )
 
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, new JsonRpcProvider( provider ) )
+        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, network )
+        await log_balances( signer, chain )
         console.log("")
 
         
-        await SushiSwap.swap(
+        await SushiSwapV3.swap(
             signer,
-            [ TOKENS[ network ].matic, TOKENS[ network ].usdc ],
+            [ TOKENS[ chain ].matic, TOKENS[ chain ].usdc ],
             "0.2",
             null,
-            network,
+            chain
         )
 
-        // await SushiSwap.addLiquidity( 
+        // await SushiSwapV3.addLiquidity( 
         //     signer,
         //     TOKENS[ network ].matic,
         //     "5.935134845225700674",
@@ -40,7 +45,7 @@ const main = async() => {
         //     network
         // )
 
-        // await SushiSwap.withdrawLiquidity( 
+        // await SushiSwapV3.withdrawLiquidity( 
         //     signer,
         //     TOKENS[ network ].matic,
         //     TOKENS[ network ].weth,
@@ -58,3 +63,18 @@ const main = async() => {
 }
   
 main()
+
+
+
+// Example of encoding a struct 
+
+// const addr = ethers.Typed.address('0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4')
+// const str = ethers.Typed.string('Hello World')
+// const obj = {
+//     address: '0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4',
+//     message: ethers.toUtf8Bytes( 'Hello World' )
+// }
+
+
+// const encoded = ethers.AbiCoder.defaultAbiCoder().encode( [ "tuple(address,bytes)" ], [ Object.values( obj ) ]  )
+// console.log( encoded )

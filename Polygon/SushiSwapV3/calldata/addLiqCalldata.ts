@@ -1,7 +1,6 @@
 import { ethers, Wallet } from "ethers";
-import { TICKER, ZERO_ADDRESS } from "../config/constants";
 import { AddLiquidityTx, Pool, Token } from "../types";
-import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote, is_native } from "../utils";
+import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote } from "../utils";
 
 
 export const get_add_liq_tx = async(
@@ -26,8 +25,8 @@ export const get_add_liq_tx = async(
 
         const pool: Pool = await get_pool( token0, token1, signer )
 
-        if ( await is_balance(signer, addressA, addressB) === 0 )
-            throw new Error(`balance is empty for token ${TICKER[addressA]} or ${TICKER[addressB]} or both.`)
+        if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
+            throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
 
         if ( max )
         {
@@ -59,8 +58,8 @@ const get_max_liq = async(
 
     try {
 
-        const balanceA = await get_balance( is_native( pool.tokenA.address) ? ZERO_ADDRESS : pool.tokenA.address, signer )
-        const balanceB = await get_balance( is_native( pool.tokenB.address) ? ZERO_ADDRESS : pool.tokenB.address, signer )
+        const balanceA = await get_balance( pool.tokenA.address, signer )
+        const balanceB = await get_balance( pool.tokenB.address, signer )
 
         const quoteB = get_quote( balanceA.string, pool.tokenA, pool.tokenB, pool )
         const quoteA = get_quote( balanceB.string, pool.tokenB, pool.tokenA, pool )
@@ -126,9 +125,9 @@ const get_liq = async(
         console.log("amount 1: ", ethers.formatUnits( amount_1, token_1.decimals))
         console.log("balance 1: ", balance_1.string)
         if ( amount_1 > balance_1.bigint )
-            throw new Error(`${ TICKER[ token_1.address ] }: Unsufficient balance.`)
+            throw new Error(`${ token_1.symbol }: Unsufficient balance.`)
         if ( amount_2 > balance_2.bigint )
-            throw new Error(`${ TICKER[ token_2.address ] }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
+            throw new Error(`${ token_2.symbol }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
 
         return {

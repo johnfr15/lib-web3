@@ -1,13 +1,14 @@
 import { ERC20_ABI, TOKENS } from "../config/constants"
 import { Wallet, ethers, Contract } from "ethers"
+import { Chains } from "../types"
 
 
-export const log_balances = async(signer: Wallet, network: 'TESTNET' | 'MAINNET') => {
+export const log_balances = async(signer: Wallet, chain: Chains) => {
 
-    const Dai  = new Contract(TOKENS[ network ].dai, ERC20_ABI, signer)
-    const Usdc = new Contract(TOKENS[ network ].usdc, ERC20_ABI, signer)
-    const Usdt = new Contract(TOKENS[ network ].usdt, ERC20_ABI, signer)
-    const Weth = new Contract(TOKENS[ network ].weth, ERC20_ABI, signer)
+    const Dai  = new Contract(TOKENS[ chain ].dai, ERC20_ABI, signer)
+    const Usdc = new Contract(TOKENS[ chain ].usdc, ERC20_ABI, signer)
+    const Usdt = new Contract(TOKENS[ chain ].usdt, ERC20_ABI, signer)
+    const Weth = new Contract(TOKENS[ chain ].weth, ERC20_ABI, signer)
 
     const maticBalance = await signer.provider!.getBalance( signer.address ) 
     const daiBalance   = await Dai.balanceOf( signer.address ) 
