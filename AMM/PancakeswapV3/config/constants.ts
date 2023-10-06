@@ -117,16 +117,14 @@ export const TOKENS: { [key in Chains]: any } = {
 
   ethereumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    dai: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    weth: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-    sgeth: '0xCf1F9cD3789Fc6296f4abB11dc460067Ae1a2673',
-    usdc:'0xDf0360Ad8C5ccf25095Aa97ee5F2785c8d848620',
-    usdt:'0x5BCc22abEC37337630C0E0dd41D64fd86CaeE951',
+    weth9: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    dai: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
+    usdc:'0x2f3A40A3db8a7e3D09B0adfEfbCe4f6F81927557',
+    usdt:'0x509Ee0d083DdF8AC028f2a56731412edD63223B9',
   },
 
   arbitrumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    sgeth: "0xb45186E02CC4AbC0e390EdFfdc2aBC8D523ea15e",
     weth: '',
     usdc:'0x6aAd876244E7A1Ad44Ec4824Ce813729E5B6C291',
     usdt:'0x533046F316590C19d99c74eE661c6d541b64471C',

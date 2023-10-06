@@ -48,7 +48,7 @@ export enum TradeType {
 export enum Fees {
     VERY_LOW = 100, // 0.01%
     LOW = 500,      // 0.05%
-    MEDIUM = 3000,  // 0.3%
+    MEDIUM = 2500,  // 0.25%
     BIG = 10000     // 1%
 }
 

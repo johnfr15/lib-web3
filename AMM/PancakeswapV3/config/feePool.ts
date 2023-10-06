@@ -6,11 +6,11 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     ethereum: {
                   
-        WETH_USDC: Fees.MEDIUM,
+        WETH_USDC: Fees.LOW,
         WETH_USDT: Fees.LOW,
         WETH_DAI: Fees.VERY_LOW,
   
-        USDC_WETH: Fees.MEDIUM,
+        USDC_WETH: Fees.LOW,
         USDC_USDT: Fees.VERY_LOW,
         USDC_DAI: Fees.VERY_LOW,
   
@@ -88,11 +88,11 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     ethereumTestnet: {
 
-        WETH_USDC: Fees.MEDIUM,
+        WETH_USDC: Fees.LOW,
         WETH_USDT: Fees.LOW,
         WETH_DAI: Fees.VERY_LOW,
   
-        USDC_WETH: Fees.MEDIUM,
+        USDC_WETH: Fees.LOW,
         USDC_USDT: Fees.VERY_LOW,
         USDC_DAI: Fees.VERY_LOW,
   

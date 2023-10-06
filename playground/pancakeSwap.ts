@@ -1,54 +1,54 @@
-import { JsonRpcProvider, Wallet } from "ethers"
-import PancakeSwapV2 from "../Arbitrum/PancakeSwapV2"
-import { log_balances } from "../Arbitrum/PancakeSwapV2/log"
+import { Wallet, ethers } from "ethers"
 import dotenv from "dotenv"
+import PancakeSwapV3 from "../AMM/PancakeswapV3"
+import { Chains } from "../AMM/PancakeswapV3/types"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { ARBITRUM_PROVIDER, TOKENS } = PancakeSwapV2.Constant
+    const { TOKENS, CHAIN_ID } = PancakeSwapV3.Constant
+    const { resolve_provider } = PancakeSwapV3.Utils
+    const { log_balances } = PancakeSwapV3.Log
+
     
     try {
+
         // Set up
-        const network: 'TESTNET' | 'MAINNET' = "MAINNET" // Testnet | Mainnet
-        const provider = ARBITRUM_PROVIDER[ network ]
+        const chain: Chains = "ethereumTestnet" // Testnet | Mainnet
+        const provider = resolve_provider( CHAIN_ID[ chain ] )
 
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, new JsonRpcProvider( provider ) )
+        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
 
-        console.log("account: ", signer.address)
-        await log_balances( signer, network )
-        console.log("")
+        // console.log("account: ", signer.address)
+        // await log_balances( signer, chain )
+        // console.log("")
 
         
-        await PancakeSwapV2.swap(
-            signer,
-            [ TOKENS[ network ].eth, TOKENS[ network ].usdc ],
-            "0.2",
-            null,
-            network,
-            100,
-            100,
-        )
-
-        // await PancakeSwapV2.addLiquidity( 
+        // await PancakeSwapV3.swap(
         //     signer,
-        //     TOKENS[ network ].matic,
-        //     "5.935134845225700674",
-        //     TOKENS[ network ].weth,
+        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+        //     "0.00000000001",
         //     null,
-        //     false,
-        //     network
+        //     chain
         // )
 
-        // await PancakeSwapV2.withdrawLiquidity( 
+        // await PancakeSwapV3.addLiquidity( 
         //     signer,
-        //     TOKENS[ network ].matic,
-        //     TOKENS[ network ].weth,
-        //     100,
-        //     network
+        //     TOKENS[ chain ].eth,
+        //     null,
+        //     TOKENS[ chain ].usdc,
+        //     "0.001",
+        //     chain,
         // )
+
+        await PancakeSwapV3.withdrawLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            TOKENS[ chain ].usdc,
+            chain,
+        )
 
 
     } catch (error: any) {
@@ -60,3 +60,18 @@ const main = async() => {
 }
   
 main()
+
+
+
+// Example of encoding a struct 
+
+// const addr = ethers.Typed.address('0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4')
+// const str = ethers.Typed.string('Hello World')
+// const obj = {
+//     address: '0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4',
+//     message: ethers.toUtf8Bytes( 'Hello World' )
+// }
+
+
+// const encoded = ethers.AbiCoder.defaultAbiCoder().encode( [ "tuple(address,bytes)" ], [ Object.values( obj ) ]  )
+// console.log( encoded )
