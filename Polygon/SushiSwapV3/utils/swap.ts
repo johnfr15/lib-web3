@@ -1,5 +1,6 @@
 import { ethers, Wallet } from "ethers";
 import { Pool, Trade, Token, TradeType, Chains, Options, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
+import { get_quote } from ".";
 
 export const get_trade = async( 
     signer: Wallet,
@@ -78,8 +79,6 @@ export const get_amount_out = async( tokenIn: Token, tokenOut: Token, amountIn: 
 
 export const get_amount_in = async( tokenIn: Token, tokenOut: Token, amountOut: bigint, pool: Pool ): Promise<bigint> => {
 
-    console.log( amountOut )
-
     const params: QuoteExactOutputSingleParams = { 
         tokenIn: tokenIn.address, 
         tokenOut: tokenOut.address, 
@@ -93,15 +92,19 @@ export const get_amount_in = async( tokenIn: Token, tokenOut: Token, amountOut: 
     return amountIn
 }
 
-// export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
+export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
 
-//     const quoteOut: string = get_quote( ethers.formatUnits( trade.amountIn, trade.tokenFrom.decimals), trade.tokenFrom, trade.tokenTo, pool )
-//     const amountOut: string = ethers.formatUnits( trade.amountOut, trade.tokenTo.decimals )
+    const amountIn: number = parseFloat( ethers.formatUnits( trade.amountIn, trade.tokenIn.decimals) )
 
-//     const priceImpact = 100 - parseFloat( amountOut ) * 100 / parseFloat( quoteOut )
+    const quoteOut: bigint = get_quote( amountIn, trade.tokenIn, pool )
+    const quoteString: string = ethers.formatUnits( quoteOut, trade.tokenOut.decimals ) 
 
-//     return priceImpact
-// }
+    const amountOut: string = ethers.formatUnits( trade.amountOut, trade.tokenOut.decimals )
+
+    const priceImpact = 100 - parseFloat( amountOut ) * 100 / parseFloat( quoteString )
+
+    return priceImpact
+}
 
 
 /**

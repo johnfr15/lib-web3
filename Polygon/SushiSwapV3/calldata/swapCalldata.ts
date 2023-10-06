@@ -1,7 +1,7 @@
 import { Wallet, Contract } from "ethers";
 import { get_balance, get_pool, get_token } from "../utils";
 import { SWAP_ROUTER, SWAP_ROUTER_ABI } from "../config/constants";
-import { get_trade } from "../utils/swap";
+import { get_trade, calc_price_impact } from "../utils/swap";
 import { Token, Pool, Trade, SwapTx, Options, Chains } from "../types";
 
 
@@ -25,12 +25,10 @@ export const get_swap_tx = async(
         const pool: Pool        = await get_pool( token_in, token_out, signer, chain )
         const trade: Trade      = await get_trade( signer, token_in, token_out, amountIn, amountOut, pool, chain, options )
 
-
         // trade.priceImpact       = await calc_price_impact( trade, pool )
-        
-
         // if ( trade.priceImpact > options.slipage! )
         //     throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
+        
         if ( balance_in.bigint === BigInt( 0 ) )
             throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
         if ( balance_in.bigint < (trade.amountInMax ?? trade.amountIn) )

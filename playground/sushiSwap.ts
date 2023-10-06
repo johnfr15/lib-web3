@@ -28,13 +28,13 @@ const main = async() => {
         console.log("")
 
         
-        // await SushiSwapV3.swap(
-        //     signer,
-        //     [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
-        //     "0.0002",
-        //     null,
-        //     chain
-        // )
+        await SushiSwapV3.swap(
+            signer,
+            [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
+            "0.0002",
+            null,
+            chain
+        )
 
         // await SushiSwapV3.addLiquidity( 
         //     signer,
@@ -43,15 +43,14 @@ const main = async() => {
         //     TOKENS[ chain ].usdc,
         //     "0.01",
         //     chain,
-        //     { slipage: 0.5 }
         // )
 
-        await SushiSwapV3.withdrawLiquidity( 
-            signer,
-            TOKENS[ chain ].matic,
-            TOKENS[ chain ].usdc,
-            chain
-        )
+        // await SushiSwapV3.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].matic,
+        //     TOKENS[ chain ].usdc,
+        //     chain,
+        // )
 
 
     } catch (error: any) {

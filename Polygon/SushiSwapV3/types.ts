@@ -46,15 +46,23 @@ export enum TradeType {
 }
 
 export enum Fees {
-    SMALL = 500,
-    MEDIUM = 3000,
-    BIG = 10000
+    VERY_LOW = 100, // 0.01%
+    LOW = 500,      // 0.05%
+    MEDIUM = 3000,  // 0.3%
+    BIG = 10000     // 1%
 }
 
 export type Options = {
     max?: boolean
     slipage?: number
     deadline?: number
+}
+
+export type AddOptions = {
+    max?: boolean
+    slipage?: number
+    deadline?: number
+    tokenId?: number
 }
 
 export type RemoveOptions = {
@@ -105,6 +113,7 @@ export type AddLiquidityTx = {
     tokenA: Token
     tokenB: Token
     fee: Fees
+    tokenId: number | undefined
     tickLower: number
     tickUpper: number
     amountADesired: bigint
@@ -134,6 +143,9 @@ export type RemoveLiquidityTx = {
     chain: Chains
     NftManager: Contract
 }
+
+
+// NonfungiblePositionManager
 
 export type ExactInput = {
     path: string
@@ -174,26 +186,26 @@ export type ExactOutputSingle = {
 }
 
 export type Mint = {
-    token0: bigint
-    token1: bigint
-    fee: bigint
-    tickLower: bigint
-    tickUpper: bigint
+    token0: string
+    token1: string
+    fee: number
+    tickLower: number
+    tickUpper: number
     amount0Desired: bigint
     amount1Desired: bigint
     amount0Min: bigint
     amount1Min: bigint
-    recipient: bigint
-    deadline: bigint
+    recipient: string
+    deadline: number
 }
 
 export type IncreaseLiquidity = {
-    tokenId: bigint
+    tokenId: number
     amount0Desired: bigint
     amount1Desired: bigint
     amount0Min: bigint
     amount1Min: bigint
-    deadline: bigint
+    deadline: number
 }
 
 export type DecreaseLiquidity = {

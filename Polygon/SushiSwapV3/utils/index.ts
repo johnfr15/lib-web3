@@ -1,8 +1,10 @@
 import fs from "fs"
 import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
 import { ERC20_ABI, TOKENS, CHAIN_ID, QUOTER_V2, QUOTER_V2_ABI, CHAIN_ID_TO_NAME, FACTORY, FACTORY_ABI, POOL_ABI } from "../config/constants"
-import { Token, Pool, Chains, Fees } from "../types";
+import { BEST_FEE_POOL } from "../config/feePool";
+import { Token, Pool, Chains, Position, Fees } from "../types";
 import chains from "../config/chains"
+
 
 
 export const resolve_chain = ( signer: Wallet, chain: Chains ): Wallet => {
@@ -67,16 +69,17 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
         
         const QuoterV2 = new Contract( QUOTER_V2[ chain ], QUOTER_V2_ABI, signer )
         const Factory = new Contract( FACTORY[ chain ], FACTORY_ABI, signer )
-        const pair = await Factory.getPool( tokenA.address, tokenB.address, Fees.SMALL )
+
+        const bestFee = get_best_fee( tokenA, tokenB, chain )
+        const pair = await Factory.getPool( tokenA.address, tokenB.address, bestFee )
 
         
         if ( BigInt( pair ) === BigInt( 0 ) )
-        throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } not created yet.`)
+            throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } Fee: ${ bestFee } not created yet.`)
     
     
         const Pool = new Contract( pair, POOL_ABI, signer )
-        const [ fee, slot0, liquidity, tickSpacing, ] = await Promise.all([
-            Pool.fee(),
+        const [ slot0, liquidity, tickSpacing, ] = await Promise.all([
             Pool.slot0(),
             Pool.liquidity(),
             Pool.tickSpacing(),
@@ -88,7 +91,7 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
             tokenA: token0,
             tokenB: token1,
             pair: pair,
-            fees: fee,
+            fees: bestFee,
             tickSpacing: parseInt( tickSpacing.toString() ),
             liquidity: liquidity,
             sqrtPriceX96: slot0[0],
@@ -199,4 +202,57 @@ export const is_native = ( token: string, chain: Chains ): boolean => {
     if ( token === TOKENS[ chain ].weth9 )                        return true
 
     return false
+}
+
+export const is_position = ( position: Position, tokenA: Token, tokenB: Token, chain: Chains ): boolean => {
+
+
+    const pos0 = BigInt( position.token0 )
+    const pos1 = BigInt( position.token1 )
+    const tokA = BigInt( tokenA.address )
+    const tokB = BigInt( tokenB.address )
+
+    const fee = parseInt( position.fee.toString() )
+    const bestFee = get_best_fee( tokenA, tokenB, chain )
+
+    if ( pos0 === tokA && pos1 === tokB && fee === bestFee ) return true
+    if ( pos0 === tokB && pos1 === tokA && fee === bestFee ) return true
+
+    return false
+}
+
+const get_best_fee = ( tokenA: Token, tokenB: Token, chain: Chains ): number => {
+
+    const pool = tokenA.symbol + '_' + tokenB.symbol
+
+    const bestFee = BEST_FEE_POOL[ chain ][ pool ]
+
+    if ( bestFee === undefined )
+        throw(`Error: Unknown best fee for pool ${ pool } on ${ chain }`)
+
+    return bestFee
+}
+
+export const parse_position = ( position: any, tokenId: number ): Position | undefined => {
+
+    if ( position === undefined )
+        return undefined
+
+    const parsed: Position = {
+        tokenId: tokenId,
+        nonce: position['0'],
+        operator: position['1'],
+        token0: position['2'],
+        token1: position['3'],
+        fee: position['4'],
+        tickLower: position['5'],
+        tickUpper: position['6'],
+        liquidity: position['7'],
+        feeGrowthInside0LastX128: position['8'],
+        feeGrowthInside1LastX128: position['9'],
+        tokensOwed0: position['10'],
+        tokensOwed1: position['11'],
+    }
+
+    return parsed
 }

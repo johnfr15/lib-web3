@@ -48,9 +48,9 @@ const get_removeLiq = async(
 
         const liquidity = position.liquidity * BigInt( percent! * 100 ) / BigInt( 100 * 100 )
 
-        // const { amount0, amount1 } = await get_amounts( position.tokenId, liquidity, deadline!, NftManager )
-        // const amount0Min = amount0 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
-        // const amount1Min = amount1 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
+        const { amount0, amount1 } = await get_amounts( position.tokenId, liquidity, deadline!, NftManager )
+        const amount0Min = amount0 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
+        const amount1Min = amount1 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
 
 
         const removeLiq: RemoveLiquidityTx = {
@@ -61,10 +61,10 @@ const get_removeLiq = async(
             token1: pool.tokenB,
             position: position,
             liquidity: position.liquidity,
-            amount0: BigInt(0), //amount0,
-            amount1: BigInt(0), //amount1,
-            amount0Min: BigInt(0), //amount0Min,
-            amount1Min: BigInt(0), //amount1Min,
+            amount0: amount0,
+            amount1: amount1,
+            amount0Min: amount0Min,
+            amount1Min: amount1Min,
             deadline: deadline!,
             percent: percent!,
             chain: chain,

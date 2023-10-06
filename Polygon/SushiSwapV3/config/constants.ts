@@ -1,4 +1,4 @@
-import { Chains, Options, RemoveOptions } from "../types"
+import { Chains, Fees, Options, RemoveOptions } from "../types"
 import erc20_abi from "./abis/erc20"
 import swap_router_abi from "./abis/swap_router"
 import quoter_v2_abi from "./abis/quoter_v2"
@@ -156,6 +156,13 @@ export const DEFAULT_OPTION: Options = {
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
 }
 
+export const DEFAULT_ADD_OPTION: RemoveOptions = {
+  max: false,
+  slipage: 0.5, // 0.5% of slipage tolerance
+  deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+  tokenId: undefined
+}
+
 export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
   max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
@@ -163,6 +170,8 @@ export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
   percent: 100,
   tokenId: undefined
 }
+
+
 
 // Chains
 

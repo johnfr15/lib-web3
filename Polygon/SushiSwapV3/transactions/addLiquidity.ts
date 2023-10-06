@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { AddLiquidityTx } from "../types";
+import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../types";
 import { is_native } from "../utils";
 
 /**
@@ -8,36 +8,89 @@ import { is_native } from "../utils";
  */
 export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<void> => {
 
-    const { signer, tokenA, tokenB, fee, tickLower, tickUpper, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, chain, NftManager } = addLiqTx
-    const nonce = await signer.getNonce()
+    if ( addLiqTx.tokenId )
+        await increase( addLiqTx )
+    else
+        await mint( addLiqTx )
+}
+
+const mint = async( addLiqTx: AddLiquidityTx ) => {
+
+    const { signer, tokenA, tokenB, fee, tickLower, tickUpper, amountADesired, amountBDesired, amountAMin, amountBMin, deadline, chain, NftManager } = addLiqTx
     let value: bigint = BigInt( 0 )
 
     if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
         value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
 
-    console.log(`\n\nAdding liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }` )     
+    try {
 
-    const args = {
-        token0: tokenA.address,
-        token1: tokenB.address,
-        fee: fee,
-        tickLower: tickLower,
-        tickUpper: tickUpper,
-        amount0Desired: amountADesired,
-        amount1Desired: amountBDesired,
-        amount0Min: amountAMin,
-        amount1Min: amountBMin,
-        recipient: signer.address,
-        deadline: deadline,
-    }
-
-    const tx = await NftManager.mint( args, { nonce: nonce, value: value } )   
-    const receipt = await tx.wait()
+        console.log(`\n\nMinting liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }` )     
         
-    console.log("\nTransaction valided !")
-    console.log("hash: ", tx.hash)
-    console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+        const args: Mint = {
+            token0: tokenA.address,
+            token1: tokenB.address,
+            fee: fee,
+            tickLower: tickLower,
+            tickUpper: tickUpper,
+            amount0Desired: amountADesired,
+            amount1Desired: amountBDesired,
+            amount0Min: amountAMin,
+            amount1Min: amountBMin,
+            recipient: signer.address,
+            deadline: deadline,
+        }
+        const nonce = await signer.getNonce()
+    
+        const tx = await NftManager.mint( args, { nonce: nonce, value: value } )   
+        const receipt = await tx.wait()
+            
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+    
+        return receipt
 
-    return receipt
+    } catch (error) {
+        
+        throw( error )
+    }
 }
 
+const increase = async( addTx: AddLiquidityTx ) => {
+
+    const { signer, tokenA, tokenB, deadline, chain, NftManager } = addTx
+    const { tokenId, amountADesired, amountBDesired, amountAMin, amountBMin } = addTx
+
+    let value: bigint = BigInt( 0 )
+
+    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
+        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
+
+    try {
+
+        console.log(`\n\nIncreasing liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }...` )     
+        
+        const args: IncreaseLiquidity = {
+            tokenId: tokenId!,
+            amount0Desired: amountADesired,
+            amount1Desired: amountBDesired,
+            amount0Min: amountAMin,
+            amount1Min: amountBMin,
+            deadline: deadline,
+        }
+        const nonce = await signer.getNonce()
+    
+        const tx = await NftManager.increaseLiquidity( args, { nonce: nonce, value: value } )   
+        const receipt = await tx.wait()
+            
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+    
+        return receipt
+
+    } catch (error) {
+        
+        throw( error )
+    }
+}

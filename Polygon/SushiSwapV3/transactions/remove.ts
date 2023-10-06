@@ -7,7 +7,7 @@ export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
     const { signer, token0, token1, position, amount0Min, amount1Min, deadline, percent, NftManager } = removeLiq
 
 
-    console.log(`\n\nWithdrawing ${ percent }% of liquidity for:\n\t\
+    console.log(`\n\nDecreasing ${ percent }% of liquidity for:\n\t\
         (minimum)${ ethers.formatUnits( amount0Min, token0.decimals ) } ${ token0.symbol }\n\t\
         (minimum)${ ethers.formatUnits( amount1Min, token1.decimals ) } ${ token1.symbol }
     `)
@@ -20,8 +20,10 @@ export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
         deadline: deadline,
     }
     const nonce = await signer.getNonce()
+    const feedata = await signer.provider?.getFeeData()!
+    const gasPrice = feedata.gasPrice! * BigInt( 100 ) / BigInt( 90 ) 
 
-    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce })
+    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce, gasPrice: gasPrice })
     const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
@@ -33,10 +35,10 @@ export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 
 export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
 
-    const { signer, token0, token1, position, amount0, amount1, deadline, percent, NftManager } = removeLiq
+    const { signer, token0, token1, position, amount0, amount1, percent, NftManager } = removeLiq
 
 
-    console.log(`\n\Collecting ${ percent }% of liquidity for:\n\t\
+    console.log(`\n\nCollecting ${ percent }% of liquidity for:\n\t\
         ${ ethers.formatUnits( amount0, token0.decimals ) } ${ token0.symbol }\n\t\
         ${ ethers.formatUnits( amount1, token1.decimals ) } ${ token1.symbol }
     `)
@@ -50,7 +52,7 @@ export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
     }
     const nonce = await signer.getNonce()
 
-    const tx = await NftManager.collect( txArgs, { nonce: nonce })
+    const tx = await NftManager.collect( txArgs, { nonce: nonce } )
     const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
