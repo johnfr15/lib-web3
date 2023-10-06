@@ -21,9 +21,10 @@ export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
     }
     const nonce = await signer.getNonce()
     const feedata = await signer.provider?.getFeeData()!
-    const gasPrice = feedata.gasPrice! * BigInt( 100 ) / BigInt( 90 ) 
+    const gasPrice = feedata.gasPrice! * BigInt( 100 ) / BigInt( 90 )
+    const gasLimit =  await NftManager.decreaseLiquidity.estimateGas( txArgs, { nonce: nonce, gasPrice: gasPrice }) * BigInt( 2 ) 
 
-    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce, gasPrice: gasPrice })
+    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit })
     const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
