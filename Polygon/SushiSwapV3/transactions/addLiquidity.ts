@@ -1,58 +1,43 @@
-import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
+import { ethers } from "ethers";
+import { AddLiquidityTx } from "../types";
 import { is_native } from "../utils";
-import { V2_ROUTER, V2_ROUTER_ABI, TICKER } from "../config/constants";
-import { AddLiquidity, AddLiquidityETH, AddLiquidityTx } from "../types";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
  * 
  */
-export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<TransactionReceipt> => {
+export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<void> => {
 
-    let tx: TransactionResponse
-    let receipt: TransactionReceipt | null | undefined
-    let txArgs: AddLiquidityETH | AddLiquidity
-
-    const { signer, tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline } = addLiqTx
-    const Router: Contract = new Contract( V2_ROUTER, V2_ROUTER_ABI, signer ) 
+    const { signer, tokenA, tokenB, fee, tickLower, tickUpper, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline, chain, NftManager } = addLiqTx
     const nonce = await signer.getNonce()
+    let value: bigint = BigInt( 0 )
 
-    console.log(`\n\nAdding liquidity for pool ${ tokenA.symbol }/${ tokenA.symbol }` )     
+    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
+        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
 
-    if ( is_native( addLiqTx.tokenA.address ) || is_native( addLiqTx.tokenB.address ) )
-    {
-        let token              = is_native( tokenA.address ) ? tokenB.address : tokenA.address
-        let amountTokenDesired = is_native( tokenA.address ) ? amountBDesired : amountADesired
-        let amountTokenMin     = is_native( tokenA.address ) ? amountBMin : amountAMin
-        let amountETHMin       = is_native( tokenA.address ) ? amountAMin : amountBMin
-        let value              = is_native( tokenA.address ) ? amountADesired : amountBDesired
+    console.log(`\n\nAdding liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }` )     
 
-        txArgs = { token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline } as AddLiquidityETH
-
-        tx = await Router.addLiquidityETH( ...Object.values( txArgs ), { value: value, nonce: nonce } )
-    }
-    else 
-    {
-        txArgs = { 
-            tokenA: tokenA.address, 
-            tokenB: tokenB.address, 
-            amountADesired, 
-            amountBDesired, 
-            amountAMin, 
-            amountBMin, 
-            to, 
-            deadline 
-        } as AddLiquidity
-
-        tx = await Router.addLiquidity( ...Object.values( txArgs ), { nonce: nonce })
+    const args = {
+        token0: tokenA.address,
+        token1: tokenB.address,
+        fee: fee,
+        tickLower: tickLower,
+        tickUpper: tickUpper,
+        amount0Desired: amountADesired,
+        amount1Desired: amountBDesired,
+        amount0Min: amountAMin,
+        amount1Min: amountBMin,
+        recipient: signer.address,
+        deadline: deadline,
     }
 
-    receipt = await tx.wait()
+    const tx = await NftManager.mint( args, { nonce: nonce, value: value } )   
+    const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
     console.log("hash: ", tx.hash)
     console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 
-    return receipt as TransactionReceipt
+    return receipt
 }
 

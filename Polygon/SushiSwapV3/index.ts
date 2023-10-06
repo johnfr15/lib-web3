@@ -1,7 +1,7 @@
-import { swap,  } from "./sushiSwap"
+import { swap, addLiquidity, withdrawLiquidity } from "./sushiSwap"
 import * as Constant from "./config/constants"
 import * as Utils from "./utils"
 import * as Types from "./types"
 
 
-export default { swap, Constant, Utils, Types }
+export default { swap, addLiquidity, withdrawLiquidity, Constant, Utils, Types }

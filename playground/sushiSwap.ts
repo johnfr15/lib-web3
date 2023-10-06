@@ -22,36 +22,36 @@ const main = async() => {
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
 
+    
         console.log("account: ", signer.address)
         await log_balances( signer, chain )
         console.log("")
 
         
-        await SushiSwapV3.swap(
-            signer,
-            [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
-            "0.0002",
-            null,
-            chain
-        )
+        // await SushiSwapV3.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
+        //     "0.0002",
+        //     null,
+        //     chain
+        // )
 
         // await SushiSwapV3.addLiquidity( 
         //     signer,
-        //     TOKENS[ network ].matic,
-        //     "5.935134845225700674",
-        //     TOKENS[ network ].weth,
+        //     TOKENS[ chain ].matic,
         //     null,
-        //     false,
-        //     network
+        //     TOKENS[ chain ].usdc,
+        //     "0.01",
+        //     chain,
+        //     { slipage: 0.5 }
         // )
 
-        // await SushiSwapV3.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ network ].matic,
-        //     TOKENS[ network ].weth,
-        //     100,
-        //     network
-        // )
+        await SushiSwapV3.withdrawLiquidity( 
+            signer,
+            TOKENS[ chain ].matic,
+            TOKENS[ chain ].usdc,
+            chain
+        )
 
 
     } catch (error: any) {

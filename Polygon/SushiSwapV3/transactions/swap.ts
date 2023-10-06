@@ -83,7 +83,6 @@ export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
         const nonce = await signer.getNonce()
 
         const tx = await SwapRouter.exactOutputSingle( txArgs, { value: value, nonce: nonce } )
-
         const receipt = await tx.wait()
 
         console.log("\nTransaction valided !")

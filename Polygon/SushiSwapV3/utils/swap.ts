@@ -1,5 +1,5 @@
 import { ethers, Wallet } from "ethers";
-import { Pool, Trade, Token, TradeType, Chains, BridgeOptions, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
+import { Pool, Trade, Token, TradeType, Chains, Options, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
 
 export const get_trade = async( 
     signer: Wallet,
@@ -9,7 +9,7 @@ export const get_trade = async(
     amountOut: string | null,
     pool: Pool,
     chain: Chains,
-    options: BridgeOptions
+    options: Options
 ): Promise<Trade> => {
 
     let amount_out_min: bigint | undefined
@@ -32,7 +32,6 @@ export const get_trade = async(
             amount_in = await get_amount_in( tokenIn, tokenOut, amount_out, pool )
             amount_in_max = amount_in * BigInt( parseInt( ((options.slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
         }
-            
         
 
         const trade: Trade = { 

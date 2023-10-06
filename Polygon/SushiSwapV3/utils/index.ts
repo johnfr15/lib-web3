@@ -5,7 +5,7 @@ import { Token, Pool, Chains, Fees } from "../types";
 import chains from "../config/chains"
 
 
-export const get_signer = ( signer: Wallet, chain: Chains ): Wallet => {
+export const resolve_chain = ( signer: Wallet, chain: Chains ): Wallet => {
 
     const provider = resolve_provider( CHAIN_ID[ chain ] )
     signer = new Wallet( signer.privateKey, provider )
@@ -89,10 +89,10 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
             tokenB: token1,
             pair: pair,
             fees: fee,
-            tickSpacing: tickSpacing,
+            tickSpacing: parseInt( tickSpacing.toString() ),
             liquidity: liquidity,
             sqrtPriceX96: slot0[0],
-            tick: slot0[1],
+            tick: parseInt( slot0[1].toString() ),
             Quoter: QuoterV2,
             Pool: Pool
         }
@@ -145,6 +145,23 @@ export const get_balance = async(
     }
 
 }
+
+export const get_quote = ( amountA: number, tokenA: Token, pool: Pool ): bigint => {
+
+    const { tick } = pool
+
+    // see https://stackoverflow.com/questions/74555451/uniswap-v3-what-does-price-mean-at-a-given-tick
+    const token_0_price = 1.0001 ** tick * (10 ** (pool.tokenA.decimals - pool.tokenB.decimals))
+    const token_1_price = 1 / token_0_price
+    
+    const tokenB =  BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA
+    const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? token_0_price : token_1_price
+
+    const amountB: string = (amountA * (token_price * 1000) / 1000).toFixed( tokenB.decimals )
+
+    return ethers.parseUnits( amountB, tokenB.decimals )
+}
+
 
 export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
 

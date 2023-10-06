@@ -13,11 +13,11 @@ export type Pool = {
     tokenA: Token
     tokenB: Token
     pair: string
-    fees: Fees
+    fees: number
     tickSpacing: number,
     liquidity: bigint,
     sqrtPriceX96: bigint,
-    tick: bigint,
+    tick: number,
     Quoter: Contract
     Pool: Contract
 }
@@ -51,11 +51,34 @@ export enum Fees {
     BIG = 10000
 }
 
-export type BridgeOptions = {
+export type Options = {
     max?: boolean
     slipage?: number
     deadline?: number
-    chain?: Chains
+}
+
+export type RemoveOptions = {
+    max?: boolean
+    slipage?: number
+    deadline?: number
+    percent?: number
+    tokenId?: number
+}
+
+export type Position = {
+    tokenId: number
+    nonce: bigint
+    operator: string
+    token0: string
+    token1: string
+    fee: number
+    tickLower: number
+    tickUpper: number
+    liquidity: bigint
+    feeGrowthInside0LastX128: bigint
+    feeGrowthInside1LastX128: bigint
+    tokensOwed0: bigint
+    tokensOwed1: bigint
 }
 
 export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanche' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet' |
@@ -81,29 +104,35 @@ export type AddLiquidityTx = {
     pool: Pool
     tokenA: Token
     tokenB: Token
+    fee: Fees
+    tickLower: number
+    tickUpper: number
     amountADesired: bigint
     amountBDesired: bigint
     amountAMin: bigint
     amountBMin: bigint
     to: string
     deadline: number
-    network: 'TESTNET' | 'MAINNET' 
+    chain: Chains
+    NftManager: Contract
 }
 
 export type RemoveLiquidityTx = {
     signer: Wallet
     pool: Pool
-    tokenA: Token,
-    tokenB: Token,
-    lp: string,
-    balanceLp: any,
-    liquidity: bigint,
-    amountAMin: bigint,
-    amountBMin: bigint,
-    to: string,
-    deadline: number,
-    percent: number,
-    network: 'TESTNET' | 'MAINNET'
+    lp: Token
+    token0: Token
+    token1: Token
+    position: Position
+    liquidity: bigint
+    amount0: bigint
+    amount1: bigint
+    amount0Min: bigint
+    amount1Min: bigint
+    deadline: number
+    percent: number
+    chain: Chains
+    NftManager: Contract
 }
 
 export type ExactInput = {

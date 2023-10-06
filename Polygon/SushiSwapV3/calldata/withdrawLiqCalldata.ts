@@ -1,32 +1,28 @@
-import { Wallet, Contract} from "ethers";
-import { V2_PAIR_ABI, TICKER } from "../config/constants";
-import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { Pool, RemoveLiquidityTx, Token } from "../types";
+import { Wallet, Contract } from "ethers";
+import { get_pool, get_token, sort_tokens } from "../utils";
+import { get_amounts } from "../utils/remove";
+import { Pool, RemoveLiquidityTx, Token, Chains, RemoveOptions, Position } from "../types";
+import { find_position } from "../utils/remove";
+import { CHAIN_ID, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
 
 
 export const get_remove_tx = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
-    percent: number, 
-    slipage: number, 
-    network: 'TESTNET' | 'MAINNET',
-    deadline: number | null,
+    chain: Chains,
+    options: RemoveOptions
 ): Promise<RemoveLiquidityTx> => {
 
     try {
         
-        const token_a: Token     = await get_token( tokenA, network )
-        const token_b: Token     = await get_token( tokenB, network )
+        const token_a: Token     = await get_token( tokenA, chain )
+        const token_b: Token     = await get_token( tokenB, chain )
         const { token0, token1 } = sort_tokens( token_a, token_b, '0', '0' )
-        const pool: Pool         = await get_pool( token0, token1, signer )
+        const pool: Pool         = await get_pool( token0, token1, signer, chain )
 
-        const removeTx: RemoveLiquidityTx = await get_removeLiq( signer, network, pool, percent, slipage, deadline )
+        const removeTx: RemoveLiquidityTx = await get_removeLiq( signer, pool, chain, options )
 
-        if ( removeTx.balanceLp.bigint === BigInt( 0 ) )
-            throw(`Error: You don't have any LP token for pool ${ TICKER[ tokenA ] }/${ TICKER[ tokenB ] }`)
-
-        
         return removeTx
 
     } catch (error: any) {
@@ -38,37 +34,41 @@ export const get_remove_tx = async(
 
 const get_removeLiq = async(
     signer: Wallet, 
-    network: 'TESTNET' | 'MAINNET',
     pool: Pool,
-    percent: number, 
-    slipage: number, 
-    deadline: number | null,
+    chain: Chains,
+    options: RemoveOptions
 ): Promise<RemoveLiquidityTx> => {
+
+    const { tokenId, percent, slipage, deadline } = options
 
     try {
 
-        const Pool              = new Contract( pool.pair, V2_PAIR_ABI, signer )
-        const reserveLp: bigint = await Pool.totalSupply()
-        const balanceLp         = await get_balance( pool.pair, signer )
+        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const position: Position = await find_position( pool.tokenA, pool.tokenB, chain, signer, tokenId )
 
-        const liquidity: bigint    = balanceLp.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 )
-        const amount_0_min: bigint = ( pool.reserveA * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
-        const amount_1_min: bigint = ( pool.reserveB * liquidity / reserveLp ) * BigInt( 100 * 100 - (slipage * 100) ) / BigInt( 100 * 100 )
+        const liquidity = position.liquidity * BigInt( percent! * 100 ) / BigInt( 100 * 100 )
+
+        // const { amount0, amount1 } = await get_amounts( position.tokenId, liquidity, deadline!, NftManager )
+        // const amount0Min = amount0 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
+        // const amount1Min = amount1 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
+
 
         const removeLiq: RemoveLiquidityTx = {
             signer: signer,
             pool: pool,
-            tokenA: pool.tokenA,
-            tokenB: pool.tokenB,
-            lp: pool.pair,
-            balanceLp: balanceLp,
-            liquidity: liquidity,
-            amountAMin: amount_0_min,
-            amountBMin: amount_1_min,
-            to: signer.address,
-            deadline: deadline ?? Math.floor( Date.now() / 1000 ) + 60 * 20,  // 20 minutes from the current Unix time
-            percent: percent,
-            network: network
+            lp: { chainId: CHAIN_ID[ chain ], address: pool.pair, decimals: 1, symbol: "LP", name: "Sushi LP", logoURI: "" },
+            token0: pool.tokenA,
+            token1: pool.tokenB,
+            position: position,
+            liquidity: position.liquidity,
+            amount0: BigInt(0), //amount0,
+            amount1: BigInt(0), //amount1,
+            amount0Min: BigInt(0), //amount0Min,
+            amount1Min: BigInt(0), //amount1Min,
+            deadline: deadline!,
+            percent: percent!,
+            chain: chain,
+            NftManager: NftManager
         } 
         
         return removeLiq

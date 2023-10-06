@@ -1,9 +1,10 @@
-import { Chains, BridgeOptions } from "../types"
+import { Chains, Options, RemoveOptions } from "../types"
 import erc20_abi from "./abis/erc20"
 import swap_router_abi from "./abis/swap_router"
 import quoter_v2_abi from "./abis/quoter_v2"
 import factory_v3_abi from "./abis/factory_v3"
 import pool_v3_abi from "./abis/pool_v3"
+import non_fungible_manager_abi from "./abis/non_fungible_manager"
 
 
 
@@ -17,6 +18,7 @@ export const SWAP_ROUTER_ABI = swap_router_abi
 export const QUOTER_V2_ABI = quoter_v2_abi
 export const FACTORY_ABI = factory_v3_abi
 export const POOL_ABI = pool_v3_abi
+export const NFT_MANAGER_ABI = non_fungible_manager_abi
 
 
 
@@ -53,16 +55,6 @@ export const QUOTER_V2 : { [key: string]: any } = {
   polygonZkEVM: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
   avalanche: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
   bsc: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
-
-  // base: "",
-  // boba: "",
-  // core: "",
-  // fantom: "",
-  // fuse: "",
-  // gnosis: "",
-  // moonBeam: "",
-  // moonRiver: "",
-  // thunderCore: "",
 }
 
 export const FACTORY : { [key: string]: any } = {
@@ -73,16 +65,16 @@ export const FACTORY : { [key: string]: any } = {
   polygonZkEVM: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
   avalanche: "0x3e603C14aF37EBdaD31709C4f848Fc6aD5BEc715",
   bsc: "0x126555dd55a39328F69400d6aE4F782Bd4C34ABb",
+}
 
-  // base: "",
-  // boba: "",
-  // core: "",
-  // fantom: "",
-  // fuse: "",
-  // gnosis: "",
-  // moonBeam: "",
-  // moonRiver: "",
-  // thunderCore: "",
+export const NFT_MANAGER : { [key: string]: any } = {
+  ethereum: "0x2214A42d8e2A1d20635c2cb0664422c528B6A432",
+  arbitrum: "0x258f7E97149afd7D7F84fa63b10e4A3f0C38B788", // Nova
+  optimism: "0x1af415a1EbA07a4986a52B6f2e7dE7003D82231e",
+  polygon: "0xb7402ee99F0A008e461098AC3A27F4957Df89a40",
+  polygonZkEVM: "0xF4d73326C13a4Fc5FD7A064217e12780e9Bd62c3",
+  avalanche: "0x18350b048AB366ed601fFDbC669110Ecb36016f3",
+  bsc: "0xF70c086618dcf2b1A461311275e00D6B722ef914",
 }
 
 
@@ -154,14 +146,22 @@ export const TOKENS: { [key in Chains]: any } = {
 
 // Misc
 
-export const MAX_UINT256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-export const MIN_UINT256 = 0x00
+export const MAX_TICK = 887272
+export const MIN_TICK = -887272
+export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
 
-export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
+export const DEFAULT_OPTION: Options = {
   max: false,
-  slipage: 2, // 2% of slipage tolerance
+  slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-  chain: undefined
+}
+
+export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
+  max: false,
+  slipage: 0.5, // 0.5% of slipage tolerance
+  deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+  percent: 100,
+  tokenId: undefined
 }
 
 // Chains
