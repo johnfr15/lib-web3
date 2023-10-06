@@ -1,5 +1,29 @@
 [
   {
+    "address": "0x509Ee0d083DdF8AC028f2a56731412edD63223B9",
+    "chainId": 5,
+    "decimals": 6,
+    "logoURI": "",
+    "name": "USD Tether",
+    "symbol": "USDT"
+  },
+  {
+    "address": "0x2f3A40A3db8a7e3D09B0adfEfbCe4f6F81927557",
+    "chainId": 5,
+    "decimals": 6,
+    "logoURI": "",
+    "name": "USD coin",
+    "symbol": "USDC"
+  },
+  {
+    "address": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
+    "chainId": 5,
+    "decimals": 18,
+    "logoURI": "",
+    "name": "Marker DAO",
+    "symbol": "DAI"
+  },
+  {
     "address": "0x5457Cc9B34eA486eB8d3286329F3536f71fa8A8B",
     "chainId": 5,
     "decimals": 18,
