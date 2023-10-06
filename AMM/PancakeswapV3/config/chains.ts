@@ -86,8 +86,8 @@ export default [
     },
     {
         "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
-        "chainId": "zksync",
-        "networkId": "zksync",
+        "chainId": "324",
+        "networkId": "324",
         "stargateId": "3",
         "name": "zkSync Lite",
         "debug": false,
