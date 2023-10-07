@@ -14,7 +14,7 @@ const main = async() => {
     
     try {
         // Set up
-        const chain: Chains = "ethereumTestnet"
+        const chain: Chains = "polygonTestnet"
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
@@ -24,22 +24,22 @@ const main = async() => {
         console.log("")
 
         
-        // await UniswapV3.swap(
-        //     signer,
-        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
-        //     null,
-        //     '0.000001',
-        //     chain
-        // )
+        await UniswapV3.swap(
+            signer,
+            [ TOKENS[ chain ].matic, TOKENS[ chain ].usdc ],
+            '0.001',
+            null,
+            chain
+        )
 
-        // await UniswapV3.addLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].eth,
-        //     null,
-        //     TOKENS[ chain ].usdc,
-        //     '0.001',
-        //     chain
-        // )
+        await UniswapV3.addLiquidity( 
+            signer,
+            TOKENS[ chain ].matic,
+            null,
+            TOKENS[ chain ].usdc,
+            '0.00001',
+            chain
+        )
 
         // await UniswapV3.withdrawLiquidity( 
         //     signer,

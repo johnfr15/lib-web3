@@ -40,8 +40,10 @@ export const swap = async(
 
     try {
 
+        if ( path[0] === undefined || path[1] === undefined )
+            throw(`Error: token undefined path[0]: ${ path[0] }, path[1]: ${ path[1] }.`)
         if ( options.slipage! < 0.01 || options.slipage! > 100 )
-            throw(`Slipage parameter must be a number between 0.01 and 100`)
+            throw(`Slipage parameter must be a number between 0.01 and 100.`)
 
 
         const swapTx = await get_swap_tx( signer, path, amountIn, amountOut, chain, options )
@@ -111,7 +113,8 @@ export const addLiquidity = async(
 
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_tx(signer, tokenB, NFT_MANAGER[ chain ], approve_amount_b, chain)
-
+console.log( addTx )
+return
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx )
         await exec_approve( approveBTx )

@@ -1,5 +1,5 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { AddLiquidityTx, AddOptions, Chains, Options, Pool, Token } from "../types";
+import { AddLiquidityTx, AddOptions, Chains, Pool, Token } from "../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote } from "../utils";
 import { get_token_id } from "../utils/add"
 import { MAX_TICK, MIN_TICK, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
@@ -12,7 +12,7 @@ export const get_add_liq_tx = async(
     addressB: string,
     amountB: string | null,
     chain: Chains,
-    options: Options
+    options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
     let addTx: AddLiquidityTx;

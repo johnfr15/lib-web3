@@ -1,1 +1,18 @@
 0: Unknown reason
+
+1: Token address is 'undefined'
+TypeError: invalid value for Contract target (argument="target", value=null, code=INVALID_ARGUMENT, version=6.7.1)
+    at makeError (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/utils/errors.ts:678:21)
+    at assert (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/utils/errors.ts:702:25)
+    at assertArgument (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/utils/errors.ts:714:5)
+    at new BaseContract (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/contract/contract.ts:672:23)
+    at new Contract (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/contract/contract.ts:1106:1)
+    at get_balance (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/AMM/UniswapV3/utils/index.ts:122:23)
+    at get_swap_tx (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/AMM/UniswapV3/calldata/swapCalldata.ts:22:52)
+    at Object.swap (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/AMM/UniswapV3/uniSwap.ts:49:41)
+    at main (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/playground/uniswap.ts:28:25)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 'INVALID_ARGUMENT',
+  argument: 'target',
+  value: undefined
+}

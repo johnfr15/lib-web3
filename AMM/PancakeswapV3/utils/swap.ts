@@ -1,5 +1,5 @@
 import { ethers, Wallet } from "ethers";
-import { Pool, Trade, Token, TradeType, Chains, Options, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
+import { Pool, Trade, Token, TradeType, Chains, SwapOptions, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
 import { get_quote } from ".";
 
 export const get_trade = async( 
@@ -10,7 +10,7 @@ export const get_trade = async(
     amountOut: string | null,
     pool: Pool,
     chain: Chains,
-    options: Options
+    options: SwapOptions
 ): Promise<Trade> => {
 
     let amount_out_min: bigint | undefined

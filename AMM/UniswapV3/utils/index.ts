@@ -141,9 +141,9 @@ export const get_balance = async(
             decimals: decimals
         };
 
-    } catch (error: any) {
+    } catch (error) {
 
-        throw new Error(error)
+        throw( error )
 
     }
 

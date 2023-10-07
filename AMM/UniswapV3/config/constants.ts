@@ -35,8 +35,8 @@ export const SWAP_ROUTER : { [key: string]: any } = {
   bsc: "",
 
   ethereumTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  arbitrumTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564", 
-  optimismTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  arbitrumTestnet: "", 
+  optimismTestnet: "",
   polygonTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
   bscTestnet: "",
 }
@@ -49,8 +49,8 @@ export const QUOTER_V2 : { [key: string]: any } = {
   bsc: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
 
   ethereumTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  arbitrumTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e", 
-  optimismTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  arbitrumTestnet: "", 
+  optimismTestnet: "",
   polygonTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
   bscTestnet: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
 }
@@ -63,8 +63,8 @@ export const FACTORY : { [key: string]: any } = {
   bsc: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
 
   ethereumTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  arbitrumTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984", 
-  optimismTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  arbitrumTestnet: "0x4893376342d5D7b3e31d4184c08b265e5aB2A3f6", 
+  optimismTestnet: "",
   polygonTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
   bscTestnet: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
 }
@@ -77,8 +77,8 @@ export const NFT_MANAGER : { [key: string]: any } = {
   bsc: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
 
   ethereumTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  arbitrumTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88", 
-  optimismTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  arbitrumTestnet: "", 
+  optimismTestnet: "",
   polygonTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
   bscTestnet: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
 }
@@ -142,7 +142,7 @@ export const TOKENS: { [key in Chains]: any } = {
 
   polygonTestnet: {
     matic: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    wmatic: "0x5B67676a984807a212b1c59eBFc9B3568a474F0a",
+    weth9: "0x5B67676a984807a212b1c59eBFc9B3568a474F0a",
     weth: '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323',
     usdc:'0x742DfA5Aa70a8212857966D491D67B09Ce7D6ec7',
     usdt:'0x3813e82e6f7098b9583FC0F33a962D02018B6803',
@@ -151,7 +151,7 @@ export const TOKENS: { [key in Chains]: any } = {
 
   arbitrumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth: '0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f',
+    weth9: '0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f',
     usdc:'0x179522635726710Dd7D2035a81d856de4Aa7836c',
     usdt:'0xE742da76701dc9BB348EB931959DD42B9DF04Ff6',
     dai: '0x02668f5a60D637D21e39689B68B675ed4A7B696d',
