@@ -113,8 +113,6 @@ export const addLiquidity = async(
 
         // Get approve token 'b' Tx
         const approveBTx = await get_approve_tx(signer, tokenB, NFT_MANAGER[ chain ], approve_amount_b, chain)
-console.log( addTx )
-return
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveATx )
         await exec_approve( approveBTx )
