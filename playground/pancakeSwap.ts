@@ -29,19 +29,19 @@ const main = async() => {
         // await PancakeSwapV3.swap(
         //     signer,
         //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
-        //     "0.00000000001",
+        //     "0.00000000000001",
         //     null,
         //     chain
         // )
 
-        // await PancakeSwapV3.addLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].eth,
-        //     null,
-        //     TOKENS[ chain ].usdc,
-        //     "0.001",
-        //     chain,
-        // )
+        await PancakeSwapV3.addLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            null,
+            TOKENS[ chain ].usdc,
+            "0.001",
+            chain,
+        )
 
         await PancakeSwapV3.withdrawLiquidity( 
             signer,

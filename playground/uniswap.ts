@@ -1,52 +1,52 @@
 import { Wallet } from "ethers"
-import Uniswap from "../Polygon/Uniswap"
-import { log_balances } from "../Polygon/Uniswap/log"
+import UniswapV3 from "../AMM/UniswapV3"
+import { Chains } from "../AMM/UniswapV3/types"
 import dotenv from "dotenv"
-import { MAINNET_PROVIDER } from "../Polygon/Uniswap/config/constants"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TESTNET_PROVIDER, ZERO_ADDRESS, TOKENS } = Uniswap.Constant
+    const { TOKENS, CHAIN_ID } = UniswapV3.Constant
+    const { resolve_provider  } = UniswapV3.Utils
+    const { log_balances } = UniswapV3.Log
     
     try {
         // Set up
-        const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
-        const provider = network === 'TESTNET' ? TESTNET_PROVIDER : MAINNET_PROVIDER
+        const chain: Chains = "ethereumTestnet"
+        const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, network )
+        await log_balances( signer, chain )
         console.log("")
 
         
-        await Uniswap.swap(
+        // await UniswapV3.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+        //     null,
+        //     '0.000001',
+        //     chain
+        // )
+
+        await UniswapV3.addLiquidity( 
             signer,
-            [ TOKENS[ network ].matic, TOKENS[ network ].dai ],
-            "1",
-            network
+            TOKENS[ chain ].eth,
+            null,
+            TOKENS[ chain ].usdc,
+            '0.001',
+            chain
         )
 
-        // await Uniswap.addLiquidity( 
-        //     signer,
-        //     TOKENS[ network ].eth,
-        //     null,
-        //     TOKENS[ network ].dai,
-        //     null,
-        //     true,
-        //     network
-        // )
-
-        // await Uniswap.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ network ].eth,
-        //     TOKENS[ network ].dai,
-        //     100,
-        //     network
-        // )
+        await UniswapV3.withdrawLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            TOKENS[ chain ].usdc,
+            chain
+        )
 
 
     } catch (error: any) {

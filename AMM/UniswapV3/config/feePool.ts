@@ -6,28 +6,28 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     polygon: {
 
-      WMATIC_WETH: Fees.LOW,
+      WMATIC_WETH: Fees.MEDIUM,
       WMATIC_USDC: Fees.LOW,
-      WMATIC_USDT: Fees.MEDIUM,
+      WMATIC_USDT: Fees.LOW,
       WMATIC_DAI: Fees.MEDIUM,
 
-      WETH_WMATIC: Fees.LOW,
-      WETH_USDC: Fees.MEDIUM,
+      WETH_WMATIC: Fees.MEDIUM,
+      WETH_USDC: Fees.LOW,
       WETH_USDT: Fees.MEDIUM,
-      WETH_DAI: Fees.VERY_LOW,
+      WETH_DAI: Fees.MEDIUM,
 
       USDC_WMATIC: Fees.LOW,
-      USDC_WETH: Fees.MEDIUM,
+      USDC_WETH: Fees.LOW,
       USDC_USDT: Fees.VERY_LOW,
       USDC_DAI: Fees.VERY_LOW,
 
-      USDT_WMATIC: Fees.MEDIUM,
+      USDT_WMATIC: Fees.LOW,
       USDT_WETH: Fees.MEDIUM,
       USDT_USDC: Fees.VERY_LOW,
       USDT_DAI: Fees.VERY_LOW,
 
       DAI_WMATIC: Fees.MEDIUM,
-      DAI_WETH: Fees.VERY_LOW,
+      DAI_WETH: Fees.MEDIUM,
       DAI_USDC: Fees.VERY_LOW,
       DAI_USDT: Fees.VERY_LOW,
 
@@ -75,48 +75,19 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
   
     ethereum: {
                   
-        WETH_USDC: Fees.MEDIUM,
-        WETH_USDT: Fees.LOW,
-        WETH_DAI: Fees.VERY_LOW,
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.MEDIUM,
+        WETH_DAI: Fees.MEDIUM,
   
-        USDC_WETH: Fees.MEDIUM,
-        USDC_USDT: Fees.VERY_LOW,
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
         USDC_DAI: Fees.VERY_LOW,
   
-        USDT_WETH: Fees.LOW,
-        USDT_USDC: Fees.VERY_LOW,
+        USDT_WETH: Fees.MEDIUM,
+        USDT_USDC: Fees.LOW,
         USDT_DAI: Fees.VERY_LOW,
   
-        DAI_WETH: Fees.VERY_LOW,
-        DAI_USDC: Fees.VERY_LOW,
-        DAI_USDT: Fees.VERY_LOW,
-
-    },
-  
-    avalanche: {       
-        
-        AVAX_WETH: Fees.MEDIUM,
-        AVAX_USDC: Fees.LOW,
-        AVAX_USDT: Fees.MEDIUM,
-        AVAX_DAI: Fees.MEDIUM,
-
-        WETH_AVAX: Fees.MEDIUM,
-        WETH_USDC: Fees.MEDIUM,
-        WETH_USDT: Fees.LOW,
-        WETH_DAI: Fees.BIG,
-  
-        USDC_AVAX: Fees.LOW,
-        USDC_WETH: Fees.MEDIUM,
-        USDC_USDT: Fees.VERY_LOW,
-        USDC_DAI: Fees.VERY_LOW,
-  
-        USDT_AVAX: Fees.MEDIUM,
-        USDT_WETH: Fees.LOW,
-        USDT_USDC: Fees.VERY_LOW,
-        USDT_DAI: Fees.VERY_LOW,
-  
-        DAI_AVAX: Fees.MEDIUM,
-        DAI_WETH: Fees.BIG,
+        DAI_WETH: Fees.MEDIUM,
         DAI_USDC: Fees.VERY_LOW,
         DAI_USDT: Fees.VERY_LOW,
 
@@ -150,9 +121,94 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
         DAI_USDT: Fees.VERY_LOW,
 
     },
+
+    ethereumTestnet: {
+                          
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.MEDIUM,
+        WETH_DAI: Fees.MEDIUM,
   
-    ethereumTestnet: {},
-    avalancheTestnet: {},
-    polygonTestnet: {},
-    arbitrumTestnet: {},
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.VERY_LOW,
+  
+        USDT_WETH: Fees.MEDIUM,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.VERY_LOW,
+  
+        DAI_WETH: Fees.MEDIUM,
+        DAI_USDC: Fees.VERY_LOW,
+        DAI_USDT: Fees.VERY_LOW,
+
+    },
+
+    polygonTestnet: {
+
+        WMATIC_WETH: Fees.MEDIUM,
+        WMATIC_USDC: Fees.LOW,
+        WMATIC_USDT: Fees.LOW,
+        WMATIC_DAI: Fees.MEDIUM,
+  
+        WETH_WMATIC: Fees.MEDIUM,
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.MEDIUM,
+        WETH_DAI: Fees.MEDIUM,
+  
+        USDC_WMATIC: Fees.LOW,
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.VERY_LOW,
+        USDC_DAI: Fees.VERY_LOW,
+  
+        USDT_WMATIC: Fees.LOW,
+        USDT_WETH: Fees.MEDIUM,
+        USDT_USDC: Fees.VERY_LOW,
+        USDT_DAI: Fees.VERY_LOW,
+  
+        DAI_WMATIC: Fees.MEDIUM,
+        DAI_WETH: Fees.MEDIUM,
+        DAI_USDC: Fees.VERY_LOW,
+        DAI_USDT: Fees.VERY_LOW,
+
+    },
+
+    arbitrumTestnet: {
+          
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.VERY_LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.VERY_LOW,
+        USDC_DAI: Fees.VERY_LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.VERY_LOW,
+        USDT_DAI: Fees.VERY_LOW,
+  
+        DAI_WETH: Fees.VERY_LOW,
+        DAI_USDC: Fees.VERY_LOW,
+        DAI_USDT: Fees.VERY_LOW,
+
+
+    },
+    
+    optimismTestnet: {
+                  
+        WETH_USDC: Fees.MEDIUM,
+        WETH_USDT: Fees.MEDIUM,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.MEDIUM,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.MEDIUM,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.MEDIUM,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.MEDIUM,
+
+    },
 }

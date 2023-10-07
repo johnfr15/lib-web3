@@ -89,8 +89,8 @@ export type Position = {
     tokensOwed1: bigint
 }
 
-export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanche' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet' |
-                     'avalancheTestnet' | 'ethereumTestnet'
+export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'bsc' | 'polygonTestnet' | 'arbitrumTestnet' |
+                    'ethereumTestnet' | 'optimismTestnet'
 
 export type ApproveTx = {
     signer: Wallet

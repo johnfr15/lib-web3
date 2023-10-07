@@ -28,53 +28,59 @@ export const NFT_MANAGER_ABI = non_fungible_manager_abi
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const SWAP_ROUTER : { [key: string]: any } = {
-  ethereum: "0x2E6cd2d30aa43f40aa81619ff4b6E0a41479B13F",
-  arbitrum: "0x8A21F6768C1f8075791D08546Dadf6daA0bE820c", // Nova
-  optimism: "0x8c32Fd078B89Eccb06B40289A539D84A4aA9FDA6",
-  polygon: "0x0aF89E1620b96170e2a9D0b68fEebb767eD044c3",
-  polygonZkEVM: "0xc14Ee6B248787847527e11b8d7Cf257b212f7a9F",
-  bsc: "0x909662a99605382dB1E8d69cc1f182bb577d9038",
-  avalanche: "0x8E4638eefee96732C56291fBF48bBB98725c6b31",
-  
-  // base: "",
-  // boba: "",
-  // core: "",
-  // fantom: "",
-  // fuse: "",
-  // gnosis: "",
-  // moonBeam: "",
-  // moonRiver: "",
-  // thunderCore: "",
+  ethereum: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  arbitrum: "0xE592427A0AEce92De3Edee1F18E0157C05861564", 
+  optimism: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  polygon: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  bsc: "",
+
+  ethereumTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  arbitrumTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564", 
+  optimismTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  polygonTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+  bscTestnet: "",
 }
 
 export const QUOTER_V2 : { [key: string]: any } = {
-  ethereum: "0x64e8802FE490fa7cc61d3463958199161Bb608A7",
-  arbitrum: "0x0524E833cCD057e4d7A296e3aaAb9f7675964Ce1", // Nova
-  optimism: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
-  polygon: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
-  polygonZkEVM: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
-  avalanche: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
-  bsc: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
+  ethereum: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  arbitrum: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e", 
+  optimism: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  polygon: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  bsc: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
+
+  ethereumTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  arbitrumTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e", 
+  optimismTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  polygonTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  bscTestnet: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
 }
 
 export const FACTORY : { [key: string]: any } = {
-  ethereum: "0xbACEB8eC6b9355Dfc0269C18bac9d6E2Bdc29C4F",
-  arbitrum: "0xaa26771d497814E81D305c511Efbb3ceD90BF5bd", // Nova
-  optimism: "0x9c6522117e2ed1fE5bdb72bb0eD5E3f2bdE7DBe0",
-  polygon: "0x917933899c6a5F8E37F31E19f92CdBFF7e8FF0e2",
-  polygonZkEVM: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-  avalanche: "0x3e603C14aF37EBdaD31709C4f848Fc6aD5BEc715",
-  bsc: "0x126555dd55a39328F69400d6aE4F782Bd4C34ABb",
+  ethereum: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  arbitrum: "0x1F98431c8aD98523631AE4a59f267346ea31F984", 
+  optimism: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  polygon: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  bsc: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
+
+  ethereumTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  arbitrumTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984", 
+  optimismTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  polygonTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  bscTestnet: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
 }
 
 export const NFT_MANAGER : { [key: string]: any } = {
-  ethereum: "0x2214A42d8e2A1d20635c2cb0664422c528B6A432",
-  arbitrum: "0x258f7E97149afd7D7F84fa63b10e4A3f0C38B788", // Nova
-  optimism: "0x1af415a1EbA07a4986a52B6f2e7dE7003D82231e",
-  polygon: "0xb7402ee99F0A008e461098AC3A27F4957Df89a40",
-  polygonZkEVM: "0xF4d73326C13a4Fc5FD7A064217e12780e9Bd62c3",
-  avalanche: "0x18350b048AB366ed601fFDbC669110Ecb36016f3",
-  bsc: "0xF70c086618dcf2b1A461311275e00D6B722ef914",
+  ethereum: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  arbitrum: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88", 
+  optimism: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  polygon: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  bsc: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
+
+  ethereumTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  arbitrumTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88", 
+  optimismTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  polygonTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+  bscTestnet: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
 }
 
 
@@ -100,30 +106,27 @@ export const TOKENS: { [key in Chains]: any } = {
     usdt:'0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   },
   
-  optimism: {},
+  optimism: {
+    weth9: "0x4200000000000000000000000000000000000006",
+  },
 
-  ethereum: {},
+  ethereum: {
+    weth9: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    usdc: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    usdt: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+  },
 
-  avalanche: {},
-
-  bsc: {},
+  bsc: {
+    weth9: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+  },
 
 
   ethereumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    dai: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    weth: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-    sgeth: '0xCf1F9cD3789Fc6296f4abB11dc460067Ae1a2673',
-    usdc:'0xDf0360Ad8C5ccf25095Aa97ee5F2785c8d848620',
-    usdt:'0x5BCc22abEC37337630C0E0dd41D64fd86CaeE951',
-  },
-
-  avalancheTestnet: {
-    avax: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth: '',
-    dai: '0x12C135a68b7B3Cd006eDb785cB53398a5DA59613',
-    usdc:'0x4A0D1092E9df255cf95D72834Ea9255132782318',
-    usdt:'0x134Dc38AE8C853D1aa2103d5047591acDAA16682',
+    weth9: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    dai: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
+    usdc:'0x2f3A40A3db8a7e3D09B0adfEfbCe4f6F81927557',
+    usdt:'0x509Ee0d083DdF8AC028f2a56731412edD63223B9',
   },
 
   polygonTestnet: {
@@ -142,6 +145,10 @@ export const TOKENS: { [key in Chains]: any } = {
     usdc:'0x6aAd876244E7A1Ad44Ec4824Ce813729E5B6C291',
     usdt:'0x533046F316590C19d99c74eE661c6d541b64471C',
   },
+
+  optimismTestnet: {
+    weth9: "0x4200000000000000000000000000000000000006",
+  }
 }
 
 // Misc
@@ -180,14 +187,13 @@ export const CHAIN_ID: { [ key in Chains ]: number } = {
   ethereum: 1,
   arbitrum: 42161,
   polygon: 137,
-  avalanche: 43114,
   optimism: 10,
   bsc: 56,
 
   ethereumTestnet: 5,
   arbitrumTestnet: 421613,
   polygonTestnet: 80001,
-  avalancheTestnet: 43113,
+  optimismTestnet: 420,
 }
 
 export const CHAIN_ID_TO_NAME: { [ key: number ]: Chains } = {
@@ -195,12 +201,12 @@ export const CHAIN_ID_TO_NAME: { [ key: number ]: Chains } = {
   1: "ethereum", 
   42161: "arbitrum",
   137: "polygon", 
-  43114: "avalanche",
   10: "optimism",
   56: "bsc",
 
   5: "ethereumTestnet",
   421613: "arbitrumTestnet",
   80001: "polygonTestnet",
-  43113: "avalancheTestnet",
+  420: "optimismTestnet",
+
 }
