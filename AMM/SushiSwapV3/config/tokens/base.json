@@ -21,7 +21,7 @@
     "decimals": 6,
     "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/network/base/0xEB466342C4d449BC9f53A865D5Cb90586f405215.jpg",
     "name": "Axelar Wrapped USDC",
-    "symbol": "axlUSDC"
+    "symbol": "USDC"
   },
   {
     "address": "0x7c6b91D9Be155A6Db01f749217d76fF02A7227F2",
