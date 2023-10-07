@@ -26,12 +26,12 @@ Jonathan's code
 ## Chains supported
 | Chain                         | Mainnet | Testnet |
 |-------------------------------|---------|---------|
-| ![ETH](assets/ethereum.png)   |   ✅    |   ✅     |
-| ![ARB](assets/arbitrum.png)   |   ✅    |   ✅     |
-| ![MATIC](assets/polygon.png)  |   ✅    |   ✅     |
+| ![ETH](assets/ethereum.png)   |   ✅    |   ❌     |
+| ![ARB](assets/arbitrum.png)   |   ✅    |   ❌     |
+| ![MATIC](assets/polygon.png)  |   ✅    |   ❌     |
 | ![BSC](assets/bsc.png)        |   ✅    |   ❌     |
 | ![OP](assets/optimism.png)    |   ✅    |   ❌     |
-| ![AVAX](assets/avalanche.png) |   ✅    |   ✅     |
+| ![AVAX](assets/avalanche.png) |   ✅    |   ❌     |
 <br />
 <br />
 
