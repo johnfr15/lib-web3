@@ -97,12 +97,14 @@ export const NFT_MANAGER : { [key in Chains]: any } = {
 // Tokens
 export const TOKENS: { [key in Chains]: any } = {
 
-  ethereum: {},
-  zkevm: {},
-  bsc: {},
-  linea: {},
-  base: {},
-  zksync: {},
+
+  ethereum: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    usdc: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    usdt: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    dai: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  },
 
   arbitrum: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -111,6 +113,47 @@ export const TOKENS: { [key in Chains]: any } = {
     dai:'0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     usdt:'0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   },
+
+  bsc: {
+    bnb: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    dai: "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
+    usdc: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+    usdt: '0x55d398326f99059fF775485246999027B3197955',
+  },
+
+  zkevm: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9",
+    usdc:'0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035',
+    dai:'0xC5015b9d9161Dca7e18e32f6f25C4aD850731Fd4',
+    usdt:'0x1E4a5963aBFD975d8c9021ce480b42188849D41d',
+  },
+
+  linea: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f",
+    usdc:'0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+    dai:'0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+    usdt:'0xa219439258ca9da29e9cc4ce5596924745e12b93',
+  },
+
+  base: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0x4200000000000000000000000000000000000006",
+    usdc:'0xEB466342C4d449BC9f53A865D5Cb90586f405215',
+    dai:'0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb',
+    usdt:'',
+  },
+
+  zksync: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+    usdc:'0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
+    dai:'',
+    usdt:'0x493257fD37EDB34451f62EDf8D2a0C418852bA4C',
+  },
+
 
 
 
@@ -125,13 +168,24 @@ export const TOKENS: { [key in Chains]: any } = {
 
   arbitrumTestnet: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth: '',
-    usdc:'0x6aAd876244E7A1Ad44Ec4824Ce813729E5B6C291',
-    usdt:'0x533046F316590C19d99c74eE661c6d541b64471C',
+    weth: '0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f',
+    usdc:'0x179522635726710Dd7D2035a81d856de4Aa7836c',
+    usdt:'0xE742da76701dc9BB348EB931959DD42B9DF04Ff6',
+    dai: '0x02668f5a60D637D21e39689B68B675ed4A7B696d',
   },
 
-  bscTestnet: {},
-  zkSyncTestnet: {},
+
+  bscTestnet: {
+    bnb: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    wbnb: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+    weth: '',
+    usdc:'',
+    usdt:'0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
+    dai: '',
+  },
+  zkSyncTestnet: {
+    
+  },
   zkevmTestnet: {},
 }
 
