@@ -12,8 +12,8 @@
     "chainId": 80001,
     "decimals": 18,
     "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/token-logos/token/eth.jpg",
-    "name": "Ether",
-    "symbol": "ETH"
+    "name": "Wrapped Ether",
+    "symbol": "WETH"
   },
   {
     "address": "0xE03489D4E90b22c59c5e23d45DFd59Fc0dB8a025",
