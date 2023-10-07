@@ -52,8 +52,7 @@ export enum Fees {
     BIG = 10000     // 1%
 }
 
-export type Options = {
-    max?: boolean
+export type SwapOptions = {
     slipage?: number
     deadline?: number
 }
@@ -66,7 +65,6 @@ export type AddOptions = {
 }
 
 export type RemoveOptions = {
-    max?: boolean
     slipage?: number
     deadline?: number
     percent?: number

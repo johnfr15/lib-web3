@@ -2,34 +2,58 @@
 Jonathan's code
 
 
-# SushiSwap  
-![SushiSwap](https://docs.sushi.com/img/sushilogo.png)  
+# SushiSwapV3  
+![SushiSwapV3](https://pbs.twimg.com/profile_images/1622619902350688258/lFs3rTxB_400x400.png)  
 
 **Swap**: ✅    
 **Add liquidity**: ✅    
 **Remove liquidity**: ✅    
   
-## url
-- Mainnet: https://www.sushi.com/swap
+## url / resources
+- Mainnet: https://app.sushi.com/swap
 - Docs: https://docs.sushi.com/
+- Devs docs: https://dev.sushi.com/docs/Developers/Overview
 - Github: https://github.com/sushiswap
+- V3-core contracts: https://github.com/sushiswap/v3-core
+- V3-periphery contracts: https://github.com/sushiswap/v3-periphery
+
+- *V3 Tutorial*: 
+    https://uniswapv3book.com/  
+    https://blog.uniswap.org/uniswap-v3-math-primer
+<br />
+<br /> 
   
-**AMM** *Swap* / *Add liquidity* / *remove liquidity*  
+## Chains supported
+| Chain                         | Mainnet | Testnet |
+|-------------------------------|---------|---------|
+| ![ETH](assets/ethereum.png)   |   ✅    |   ✅     |
+| ![ARB](assets/arbitrum.png)   |   ✅    |   ✅     |
+| ![MATIC](assets/polygon.png)  |   ✅    |   ✅     |
+| ![BSC](assets/bsc.png)        |   ✅    |   ❌     |
+| ![OP](assets/optimism.png)    |   ✅    |   ❌     |
+| ![AVAX](assets/avalanche.png) |   ✅    |   ✅     |
+<br />
+<br />
 
-## Calling SushiSwap Functions
+## Tokens
+Basic tokens are supported on each chains but if one of yours is missing you can add it to ***./config/tokens/your-chain.json***  
+<br />
+<br />
+  
+## Calling SushiSwapV3 Functions
 
-To use it just import the directory named *SushiSwap*  
+To use it just import the directory named *SushiSwapV3*  
 ```javascript
-import SushiSwap from "/SushiSwap"
+import SushiSwapV3 from "/AMM/SushiSwapV3"
 ```
 
-In this module you will be able to interact with all functionnalities of the AMM
-You will then be able to interact with the mains functions
+In this module you will be able to interact with all functionnalities of the UniswapV3 AMM
+You will then be able to interact with the mains functions on all supported chains
 
 ```javascript
-SushiSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
-SushiSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, true)
-SushiSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+SushiSwapV3.swap( signer, [ TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS ], "23", null, "polygon" )
+SushiSwapV3.addLiquidity( signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, "arbitrum" )
+SushiSwapV3.withdrawLiquidity( signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS, "optimism" )
 ```
 
 ### Swap  
@@ -38,15 +62,14 @@ export const swap = async(
     signer: Wallet,
     path: [string, string],
     amountIn: string | null,
-    amountOut: string | null = null,
-    network: 'TESTNET' | 'MAINNET' = 'TESTNET',
-    slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
-    priceImpact: number = 2, // this represent 2% of allowed price impact (default)
-    deadline?: number,
+    amountOut: string | null,
+    chain: Chains,
+    options?: {
+        slipage: number,
+        deadline: number
+    }
 ): Promise<void>;
 ```
-The swap function need at least 3 parameters and 6 optionnal  
-
 **note:** amountIn is for *exact input*, where amountOut is for *exact output* we must specify at least one of both.  
           if amountOut *exact output* is used amountIn should be set to ***null***.  
   
@@ -58,13 +81,11 @@ The swap function need at least 3 parameters and 6 optionnal
   
 `amountOut`: The amount of exact token (out token) to be received by swapping the other one **(in token)**  
   
-`network (optional)`: The network we want to use the AMM it is set by default to **testnet**  
+`chain`: The chain's name to operate the swap  
   
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
-`priceImpact (optional)`: The maximum impact tolerance accepted by our swap. [What is price impact ?](https://support.uniswap.org/hc/en-us/articles/8671539602317-What-is-Price-Impact-#:~:text=Price%20Impact%20is%20the%20change,size%20of%20the%20liquidity%20pool.)  
-  
-`deadlineMinutes (optional)`: The deadline for the swap in minutes.  
+`deadline (optional)`: The deadline for the tx to be valided in unix time.  
   
 ### Add liquidity  
   
@@ -75,12 +96,15 @@ export const addLiquidity = async(
     amountA: string | null,     
     addressB: string,                       
     amountB: string | null,     
-    max: boolean = false,                         
-    network: 'TESTNET' | 'MAINNET' = 'TESTNET',            
-    slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
+    chain: Chains,
+    options?: {
+        max?: boolean
+        slipage?: number
+        deadline?: number
+        tokenId?: number
+    }
 ): Promise<void>
 ```
-The addLiquidiy function need at least 5 parameters and 3 optionnal  
 If **max** parameter is activated whatever amount is in *param 3* or/and *param 5* the function won't care and will fetch the max amount of tokens we can add in the pool wether its tokenA or tokenB the least quantity we own.  
 If **amountA** is set to ***null*** => **amountB** will be used to fetch the quote of **amountA**  
 If both **amountA** & **amountB** is set to a number => **amountA** will be used to fetch the quote of **amountB**  
@@ -97,12 +121,15 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
   
 `amountB`: Amount of second token. if set to null will check for amountA or max  
   
-`max (optional)`: if activated it will check for the highest amount possible from tokenA and tokenB  
+`chain`: The chain's name to operate the swap  
   
-`network (optional)`: The network we want to use the AMM it is set by default to **testnet**  
+`max (optional)`: if activated it will check for the highest amount possible from tokenA and tokenB  
   
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
+`deadline (optional)`: The deadline for the tx to be valided in unix time.  
+  
+`tokenId (optional)`: The id of the pool being used (this will faster the function and reduce the calls made to the provider)
   
 ### Remove liquidity  
   
@@ -111,9 +138,13 @@ export const withdrawLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
-    percent: number = 100, 
-    network: 'TESTNET' | 'MAINNET' = 'TESTNET', 
-    slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
+    chain: Chains,
+    options?: {
+        percent?: number
+        slipage?: number
+        deadline?: number
+        tokenId?: number
+    }
 ): Promise<void>
 ```
 The withdrawLiquidity function need at least 3 parameters and 4 optionnal;   
@@ -122,13 +153,17 @@ The withdrawLiquidity function need at least 3 parameters and 4 optionnal;
   
 `tokenA`: Address of **tokenA**  
   
-`tokenB`: Address of **tokenB**  
+`tokenB`: Address of **tokenB** 
+
+`chain`: The chain's name to operate the swap  
   
 `percent (optional)`: The percentage amount we want to withdraw by default it is set to 100%  
   
-`network (optional)`: The network we want to use the AMM it is set by default to **TESTNET**  
-   
-`slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)   
+`slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
+  
+`deadline (optional)`: The deadline for the tx to be valided in unix time.  
+  
+`tokenId (optional)`: The id of the pool being used (this will faster the function and reduce the calls made to the provider)
   
   
 ## Author

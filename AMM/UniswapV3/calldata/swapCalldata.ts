@@ -2,7 +2,7 @@ import { Wallet, Contract } from "ethers";
 import { get_balance, get_pool, get_token } from "../utils";
 import { SWAP_ROUTER, SWAP_ROUTER_ABI } from "../config/constants";
 import { get_trade, calc_price_impact } from "../utils/swap";
-import { Token, Pool, Trade, SwapTx, Options, Chains } from "../types";
+import { Token, Pool, Trade, SwapTx, SwapOptions, Chains } from "../types";
 
 
 
@@ -12,7 +12,7 @@ export const get_swap_tx = async(
     amountIn: string | null,
     amountOut: string | null,
     chain: Chains,
-    options: Options
+    options: SwapOptions
 ): Promise<SwapTx> => {
 
     try {

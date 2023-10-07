@@ -8,7 +8,7 @@ import { exec_approve } from './transactions/approve';
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_decrease, exec_collect } from './transactions/remove';
 import { DEFAULT_REMOVE_OPTION, DEFAULT_OPTION, NFT_MANAGER, SWAP_ROUTER } from "./config/constants"
-import { AddOptions, Chains, Options, RemoveOptions } from './types';
+import { AddOptions, Chains, SwapOptions, RemoveOptions } from './types';
 import { resolve_chain } from './utils';
 
 
@@ -19,11 +19,12 @@ import { resolve_chain } from './utils';
  * @name swap
  * @param signer        - Wallet to perform the swap
  * @param path          - token swap from path[0](input) to path[1](output) 
- * @param amountIn      - The amount of exact token (in token) to be swapped for the other one **(out token)**  
- * @param network       - (optional) 'testnet' is the default one
- * @param slipage       - (optional) protection against price movement or to high price impact default is 0.5%
- * @param priceImpact   - (optional) protection against price movement or to high price impact default is 2%
- * @param deadline      - (optional) Maximum amount of time (in unix time) before the trade get reverted
+ * @param amountIn      - The amount of exact token (in token) to be swapped for the other one (out token)
+ * @param amountOut     - The amount of exact token (out token) to be received for swaping the other one (in token)
+ * @param chain         - The chain's name to operate the swap
+ * @param options
+ *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
+ *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted
  */
 export const swap = async(
     signer: Wallet,
@@ -31,7 +32,7 @@ export const swap = async(
     amountIn: string | null,
     amountOut: string | null,
     chain: Chains,
-    options?: Options
+    options?: SwapOptions
 ) => {
     
     signer = resolve_chain( signer, chain )
@@ -66,15 +67,17 @@ export const swap = async(
 
 /**
  * @name addLiquidity
- * @param signer        // Wallet to perform the swap
- * @param addressA      // First token
- * @param amountA       // Amount of first token. if set to null will check for amountB or max
- * @param addressB      // Second token
- * @param amountB       // Amount of second token. if set to null will check for amountA or max
- * @param max           // (optional, recommended) if activated it will check for the highest amount possible from tokenA and tokenB
- * @param network       // (optional) 'testnet' is the default one
- * @param slipage       // (optional) protection against price movement or to high price impact default is 0.5%
- * @param deadline      - (optional) Maximum amount of time (in unix time) before the trade get reverted
+ * @param signer        - Wallet to perform the swap
+ * @param addressA      - First token
+ * @param amountA       - Amount of first token. if set to null will check for amountB or max
+ * @param addressB      - Second token
+ * @param amountB       - Amount of second token. if set to null will check for amountA or max
+ * @param chain         - The chain's name to operate the swap
+ * @param options
+ *        - max:        (optional) If activated it will check for the highest amount possible from tokenA and tokenB  
+ *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
+ *        - deadline:   (optional) Maximum amount of time (in unix time) before the trade get reverted
+ *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const addLiquidity = async(
     signer: Wallet,                        
@@ -91,9 +94,9 @@ export const addLiquidity = async(
 
     try {
 
-        if ( options.slipage! < 0.01 || options.slipage! > 100 )
+        if ( options!.slipage! < 0.01 || options!.slipage! > 100 )
             throw("Slipage need to be a number between 2 and 100");
-        if ( amountA === null && amountB === null && options.max === false )
+        if ( amountA === null && amountB === null && options!.max === false )
             throw("Need to provide at least a value for 'amountA' or 'amountB' or set max");
 
         
