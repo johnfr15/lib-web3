@@ -46,7 +46,7 @@ export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
 
 
     const txArgs = {
-        tokenId: position.tokenId,
+        tokenId: 165810,
         recipient: signer.address,
         amount0Max: MAX_UINT128,
         amount1Max: MAX_UINT128,

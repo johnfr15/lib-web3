@@ -24,13 +24,13 @@ const main = async() => {
         console.log("")
 
         
-        await UniswapV3.swap(
-            signer,
-            [ TOKENS[ chain ].usdc, TOKENS[ chain ].dai ],
-            '2',
-            null,
-            chain
-        )
+        // await UniswapV3.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].usdc, TOKENS[ chain ].dai ],
+        //     '12',
+        //     null,
+        //     chain
+        // )
 
         // await UniswapV3.addLiquidity( 
         //     signer,
@@ -41,12 +41,13 @@ const main = async() => {
         //     chain
         // )
 
-        // await UniswapV3.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].eth,
-        //     TOKENS[ chain ].usdc,
-        //     chain
-        // )
+        await UniswapV3.withdrawLiquidity( 
+            signer,
+            TOKENS[ chain ].dai,
+            TOKENS[ chain ].usdc,
+            chain,
+            { percent: 50 }
+        )
 
 
     } catch (error: any) {

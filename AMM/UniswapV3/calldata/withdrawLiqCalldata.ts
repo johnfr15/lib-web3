@@ -46,9 +46,12 @@ const get_removeLiq = async(
         const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
         const position: Position = await find_position( pool.tokenA, pool.tokenB, chain, signer, tokenId )
 
-        const liquidity = position.liquidity * BigInt( percent! * 100 ) / BigInt( 100 * 100 )
+        if ( position.liquidity === BigInt( 0 ))
+            throw( `Error: There is no liquidity in this position.`)
 
+        const liquidity = position.liquidity * BigInt( percent! * 100 ) / BigInt( 100 * 100 )
         const { amount0, amount1 } = await get_amounts( position.tokenId, liquidity, deadline!, NftManager )
+
         const amount0Min = amount0 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
         const amount1Min = amount1 * BigInt( 100 * (100 - slipage!) ) / BigInt( 100 * 100 )
 
@@ -56,11 +59,11 @@ const get_removeLiq = async(
         const removeLiq: RemoveLiquidityTx = {
             signer: signer,
             pool: pool,
-            lp: { chainId: CHAIN_ID[ chain ], address: pool.pair, decimals: 1, symbol: "LP", name: "Sushi LP", logoURI: "" },
+            lp: { chainId: CHAIN_ID[ chain ], address: pool.pair, decimals: 1, symbol: "LP", name: "Uniswap LP", logoURI: "" },
             token0: pool.tokenA,
             token1: pool.tokenB,
             position: position,
-            liquidity: position.liquidity,
+            liquidity: liquidity,
             amount0: amount0,
             amount1: amount1,
             amount0Min: amount0Min,

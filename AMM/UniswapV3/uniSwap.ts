@@ -165,7 +165,7 @@ export const withdrawLiquidity = async(
         const removeTx = await get_remove_tx( signer, tokenA, tokenB, chain, options )
 
         /*========================================= TX =================================================================================================*/        
-        await exec_decrease( removeTx )
+        // await exec_decrease( removeTx )
         await exec_collect( removeTx )
         /*=============================================================================================================================================*/
 
