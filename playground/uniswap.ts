@@ -32,14 +32,14 @@ const main = async() => {
         //     chain
         // )
 
-        // await UniswapV3.addLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].dai,
-        //     null,
-        //     TOKENS[ chain ].usdc,
-        //     '1',
-        //     chain
-        // )
+        await UniswapV3.addLiquidity( 
+            signer,
+            TOKENS[ chain ].dai,
+            null,
+            TOKENS[ chain ].usdc,
+            '1',
+            chain
+        )
 
         await UniswapV3.withdrawLiquidity( 
             signer,

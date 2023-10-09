@@ -16,3 +16,15 @@ TypeError: invalid value for Contract target (argument="target", value=null, cod
   argument: 'target',
   value: undefined
 }
+
+2: Cross nonce error.  
+solution => (just call the funtion again)
+Error: nonce has already been used (transaction="0x02f8f383013881578463bd0a558463bd0a6483017b3994c36442b4a4522e871399cd717abdd847ab11fe8880b884fc6f786500000000000000000000000000000000000000000000000000000000000287b2000000000000000000000000b208734e1df1f85fdbe99f4ffa5de3305377916300000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffffc080a0b2d4b125c8283d0ac3842b762700ff5459baa2f2aec442cbb36821dd6d240854a050289f891f8eaca5c370111596d583bb701f374e7fb139e22269499780177e6a", info={ "error": { "code": -32000, "message": "nonce too low" } }, code=NONCE_EXPIRED, version=6.7.1)
+    at makeError (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/utils/errors.ts:685:21)
+    at JsonRpcProvider.getRpcError (/Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:948:33)
+    at /Users/tondelierjonathan/Desktop/fiverr/alex_smith/jonathan/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:526:45
+    at processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 'NONCE_EXPIRED',
+  transaction: '0x02f8f383013881578463bd0a558463bd0a6483017b3994c36442b4a4522e871399cd717abdd847ab11fe8880b884fc6f786500000000000000000000000000000000000000000000000000000000000287b2000000000000000000000000b208734e1df1f85fdbe99f4ffa5de3305377916300000000000000000000000000000000ffffffffffffffffffffffffffffffff00000000000000000000000000000000ffffffffffffffffffffffffffffffffc080a0b2d4b125c8283d0ac3842b762700ff5459baa2f2aec442cbb36821dd6d240854a050289f891f8eaca5c370111596d583bb701f374e7fb139e22269499780177e6a',
+  info: { error: { code: -32000, message: 'nonce too low' } }
+}

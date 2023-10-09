@@ -4,7 +4,7 @@ import { MAX_UINT128 } from "../config/constants"
 
 export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 
-    const { signer, token0, token1, position, amount0Min, amount1Min, deadline, percent, NftManager } = removeLiq
+    const { signer, token0, token1, position, liquidity, amount0Min, amount1Min, deadline, percent, NftManager } = removeLiq
 
 
     console.log(`\n\nDecreasing ${ percent }% of liquidity for:\n\t\
@@ -14,7 +14,7 @@ export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 
     const txArgs = {
         tokenId: position.tokenId,
-        liquidity: position.liquidity,
+        liquidity: liquidity,
         amount0Min: amount0Min,
         amount1Min: amount1Min,
         deadline: deadline,
@@ -46,7 +46,7 @@ export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
 
 
     const txArgs = {
-        tokenId: 165810,
+        tokenId: position.tokenId,
         recipient: signer.address,
         amount0Max: MAX_UINT128,
         amount1Max: MAX_UINT128,
