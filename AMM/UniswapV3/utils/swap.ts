@@ -23,6 +23,7 @@ export const get_trade = async(
         let amount_in: bigint  = ethers.parseUnits( amountIn ?? '0', tokenIn.decimals ) 
         let amount_out: bigint = ethers.parseUnits( amountOut ?? '0', tokenOut.decimals )
 
+        console.log( pool )
         if ( tradeType === TradeType.EXACT_INPUT ) 
         {
             amount_out = await get_amount_out( tokenIn, tokenOut, amount_in, pool )

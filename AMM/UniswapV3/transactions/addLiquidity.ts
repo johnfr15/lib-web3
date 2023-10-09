@@ -40,7 +40,7 @@ const mint = async( addLiqTx: AddLiquidityTx ) => {
             deadline: deadline,
         }
         const nonce = await signer.getNonce()
-    
+        console.log( args )
         const tx = await NftManager.mint( args, { nonce: nonce, value: value } )   
         const receipt = await tx.wait()
             

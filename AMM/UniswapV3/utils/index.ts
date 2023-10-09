@@ -151,20 +151,23 @@ export const get_balance = async(
 
 export const get_quote = ( amountA: number, tokenA: Token, pool: Pool ): bigint => {
 
-    const { tick } = pool
+    const { sqrtPriceX96 } = pool
 
-    // see https://stackoverflow.com/questions/74555451/uniswap-v3-what-does-price-mean-at-a-given-tick
-    const token_0_price = 1.0001 ** tick * (10 ** (pool.tokenA.decimals - pool.tokenB.decimals))
-    const token_1_price = 1 / token_0_price
+    // see https://ethereum.stackexchange.com/questions/98685/computing-the-uniswap-v3-pair-price-from-q64-96-number
+    const priceX96_to_price0 = sqrtPriceX96 * sqrtPriceX96 / BigInt( 2 ** 192 )
+
+    const price0 = parseFloat( ethers.formatUnits( priceX96_to_price0, 18 - pool.tokenA.decimals ) )
+    const price1 = 1 / price0
     
-    const tokenB =  BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA
-    const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? token_0_price : token_1_price
+    const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? price0 : price1
+    
+    const token_quoted = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA
+    const quote = (token_price * amountA).toFixed( token_quoted.decimals )
 
-    const amountB: string = (amountA * (token_price * 1000) / 1000).toFixed( tokenB.decimals )
-
-    return ethers.parseUnits( amountB, tokenB.decimals )
+    const amountB = ethers.parseUnits( quote, token_quoted.decimals )
+    
+    return amountB
 }
-
 
 export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
 
@@ -190,8 +193,8 @@ export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | nul
 
     const token0 = BigInt( tokenA.address ) < BigInt( tokenB.address ) ? tokenA : tokenB
     const token1 = BigInt( tokenA.address ) > BigInt( tokenB.address ) ? tokenA : tokenB 
-    const amount0 = token0.address === tokenA.address ? ethers.parseUnits( amountA ?? '0', token0.decimals) : ethers.parseUnits( amountB ?? '0', token0.decimals)
-    const amount1 = token1.address === tokenA.address ? ethers.parseUnits( amountA ?? '0', token1.decimals) : ethers.parseUnits( amountB ?? '0', token1.decimals)
+    const amount0 = BigInt( token0.address ) === BigInt( tokenA.address ) ? ethers.parseUnits( amountA ?? '0', tokenA.decimals) : ethers.parseUnits( amountB ?? '0', tokenB.decimals)
+    const amount1 = BigInt( token1.address ) === BigInt( tokenA.address ) ? ethers.parseUnits( amountA ?? '0', tokenA.decimals) : ethers.parseUnits( amountB ?? '0', tokenB.decimals)
 
     return { token0, token1, amount0, amount1 }
 }
@@ -256,3 +259,4 @@ export const parse_position = ( position: any, tokenId: number ): Position | und
 
     return parsed
 }
+
