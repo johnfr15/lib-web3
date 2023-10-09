@@ -24,22 +24,22 @@ const main = async() => {
         console.log("")
 
         
-        // await UniswapV3.swap(
-        //     signer,
-        //     [ TOKENS[ chain ].matic, TOKENS[ chain ].usdc ],
-        //     '0.001',
-        //     null,
-        //     chain
-        // )
-
-        await UniswapV3.addLiquidity( 
+        await UniswapV3.swap(
             signer,
-            TOKENS[ chain ].dai,
+            [ TOKENS[ chain ].usdc, TOKENS[ chain ].dai ],
+            '2',
             null,
-            TOKENS[ chain ].usdc,
-            '1',
             chain
         )
+
+        // await UniswapV3.addLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].dai,
+        //     null,
+        //     TOKENS[ chain ].usdc,
+        //     '1',
+        //     chain
+        // )
 
         // await UniswapV3.withdrawLiquidity( 
         //     signer,

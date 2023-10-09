@@ -2,7 +2,7 @@ import fs from "fs"
 import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
 import { ERC20_ABI, TOKENS, CHAIN_ID, QUOTER_V2, QUOTER_V2_ABI, CHAIN_ID_TO_NAME, FACTORY, FACTORY_ABI, POOL_ABI } from "../config/constants"
 import { BEST_FEE_POOL } from "../config/feePool";
-import { Token, Pool, Chains, Position, Fees } from "../types";
+import { Token, Pool, Chains, Position } from "../types";
 import chains from "../config/chains"
 
 
