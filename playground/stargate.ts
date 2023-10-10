@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Wallet } from "ethers"
+import { Wallet } from "ethers"
 import Stargate from "../Bridge/Stargate"
 import { log_balances } from "../Bridge/Stargate/log"
 import { resolve_provider } from "../Bridge/Stargate/utils"
@@ -14,24 +14,24 @@ const main = async() => {
     
     try {
         // Set up
-        const fromChain: Chains = "ethereumTestnet"
-        const toChain: Chains = "polygonTestnet"
+        const fromChain: Chains = "arbitrum"
+        const toChain: Chains = "optimism"
 
         const provider = resolve_provider( STARGATE_CHAIN_ID[ fromChain ] )
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
+        const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
-        // console.log("account: ", signer.address)
-        // await log_balances( signer, fromChain )
-        // console.log("")
+        console.log("account: ", signer.address)
+        await log_balances( signer, fromChain )
+        console.log("")
 
         
         await Stargate.bridge(
             signer,
-            TOKENS[ fromChain ].usdc,
-            TOKENS[ toChain ].usdc,
+            TOKENS[ fromChain ].eth,
+            TOKENS[ toChain ].eth,
             fromChain,
             toChain,
-            '1',
+            "0.001",
             // { max: true }
         )
 

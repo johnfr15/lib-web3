@@ -17,38 +17,38 @@ const main = async() => {
         const chain: Chains = "polygon"
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
+        const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
 
         console.log("account: ", signer.address)
         await log_balances( signer, chain )
         console.log("")
 
-        
+        console.log("UNISWAP")
+
         // await UniswapV3.swap(
         //     signer,
-        //     [ TOKENS[ chain ].usdc, TOKENS[ chain ].dai ],
-        //     '12',
+        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+        //     '0.001',
         //     null,
         //     chain
         // )
 
-        await UniswapV3.addLiquidity( 
-            signer,
-            TOKENS[ chain ].dai,
-            "1",
-            TOKENS[ chain ].matic,
-            null,
-            chain,
-            // { max: true }
-        )
+        // await UniswapV3.addLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].eth,
+        //     null,
+        //     TOKENS[ chain ].usdc,
+        //     null,
+        //     chain,
+        //     { max: true }
+        // )
 
         // await UniswapV3.withdrawLiquidity( 
         //     signer,
-        //     TOKENS[ chain ].dai,
+        //     TOKENS[ chain ].eth,
         //     TOKENS[ chain ].usdc,
         //     chain,
-        //     { percent: 100 }
         // )
 
 

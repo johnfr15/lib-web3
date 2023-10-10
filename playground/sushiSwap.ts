@@ -1,10 +1,9 @@
-import { JsonRpcProvider, Wallet, ethers } from "ethers"
-import SushiSwapV2 from "../Polygon/SushiSwapV2"
-import SushiSwapV3 from "../Polygon/SushiSwapV3"
-import { log_balances } from "../Polygon/SushiSwapV3/log"
-import { Chains } from "../Polygon/SushiSwapV3/types"
+import { Wallet } from "ethers"
+import SushiSwapV3 from "../AMM/SushiSwapV3"
+import { log_balances } from "../AMM/SushiSwapV3/log"
+import { Chains } from "../AMM/SushiSwapV3/types"
 import dotenv from "dotenv"
-import { CHAIN_ID } from "../Polygon/SushiSwapV3/config/constants"
+import { CHAIN_ID } from "../AMM/SushiSwapV3/config/constants"
 
 dotenv.config()
 
@@ -17,40 +16,42 @@ const main = async() => {
     
     try {
         // Set up
-        const chain: Chains = "polygon" // Testnet | Mainnet
+        const chain: Chains = "arbitrum" // Testnet | Mainnet
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
+        const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
     
         console.log("account: ", signer.address)
         await log_balances( signer, chain )
         console.log("")
 
+        console.log("SUSHISWAP")
         
         await SushiSwapV3.swap(
             signer,
-            [ TOKENS[ chain ].usdc, TOKENS[ chain ].matic ],
-            "0.0002",
+            [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+            "0.000001",
             null,
             chain
         )
 
-        // await SushiSwapV3.addLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].matic,
-        //     null,
-        //     TOKENS[ chain ].usdc,
-        //     "0.01",
-        //     chain,
-        // )
+        await SushiSwapV3.addLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            null,
+            TOKENS[ chain ].usdc,
+            null,
+            chain,
+            { max: true }
+        )
 
-        // await SushiSwapV3.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].matic,
-        //     TOKENS[ chain ].usdc,
-        //     chain,
-        // )
+        await SushiSwapV3.withdrawLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            TOKENS[ chain ].usdc,
+            chain,
+        )
 
 
     } catch (error: any) {
