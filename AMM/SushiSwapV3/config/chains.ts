@@ -19,7 +19,9 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://rpc.ankr.com/eth" ],
+        "rpc": [ 
+          "https://mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16"
+        ],
         "watch": ["rpc", "api"],
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "tokens": [
@@ -58,7 +60,7 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://endpoints.omniatech.io/v1/arbitrum/one/public" ],
+        "rpc": [ "https://arbitrum-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" ],
         "watch": ["rpc", "api"],
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "tokens": [
@@ -239,7 +241,10 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://opt-mainnet.g.alchemy.com/v2/demo" ],
+        "rpc": [ 
+          "https://optimism-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16",
+          "https://opt-mainnet.g.alchemy.com/v2/demo" 
+        ],
         "watch": ["api", "rpc"],
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "debug": false,
@@ -560,6 +565,32 @@ export default [
     },
     {
         "api": {
+            "url": "https://api.basescan.org/api",
+            "key": ""
+        },
+        "chainId": "43114",
+        "networkId": "43114",
+        "stargateId": "",
+        "name": "Avalanche",
+        "debug": false,
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "features": [],
+        "nativeCurrency": {
+            "name": "AVAX",
+            "symbol": "AVAX",
+            "decimals": 18,
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+        },
+        "rpc": [ "https://avalanche-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" ],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "tokens": [],
+        "infoURL": "https://basescan.org"
+    },
+    {
+        "api": {
             "url": "http://explorer.linea.build/api",
             "key": ""
         },
@@ -575,7 +606,10 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": ["https://linea.drpc.org"],
+        "rpc": [
+          "https://linea-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16",
+          "https://linea.drpc.org"
+        ],
         "watch": ["rpc"],
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
