@@ -29,7 +29,7 @@ export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const SWAP_ROUTER : { [key: string]: any } = {
   ethereum: "0x2E6cd2d30aa43f40aa81619ff4b6E0a41479B13F",
-  arbitrum: "0x8A21F6768C1f8075791D08546Dadf6daA0bE820c", // Nova
+  arbitrum: "0x8A21F6768C1f8075791D08546Dadf6daA0bE820c", // One
   optimism: "0x8c32Fd078B89Eccb06B40289A539D84A4aA9FDA6",
   polygon: "0x0aF89E1620b96170e2a9D0b68fEebb767eD044c3",
   polygonZkEVM: "0xc14Ee6B248787847527e11b8d7Cf257b212f7a9F",
@@ -49,7 +49,7 @@ export const SWAP_ROUTER : { [key: string]: any } = {
 
 export const QUOTER_V2 : { [key: string]: any } = {
   ethereum: "0x64e8802FE490fa7cc61d3463958199161Bb608A7",
-  arbitrum: "0x0524E833cCD057e4d7A296e3aaAb9f7675964Ce1", // Nova
+  arbitrum: "0x0524E833cCD057e4d7A296e3aaAb9f7675964Ce1", // One
   optimism: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
   polygon: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
   polygonZkEVM: "0xb1E835Dc2785b52265711e17fCCb0fd018226a6e",
@@ -59,7 +59,7 @@ export const QUOTER_V2 : { [key: string]: any } = {
 
 export const FACTORY : { [key: string]: any } = {
   ethereum: "0xbACEB8eC6b9355Dfc0269C18bac9d6E2Bdc29C4F",
-  arbitrum: "0xaa26771d497814E81D305c511Efbb3ceD90BF5bd", // Nova
+  arbitrum: "0x1af415a1EbA07a4986a52B6f2e7dE7003D82231e", // One
   optimism: "0x9c6522117e2ed1fE5bdb72bb0eD5E3f2bdE7DBe0",
   polygon: "0x917933899c6a5F8E37F31E19f92CdBFF7e8FF0e2",
   polygonZkEVM: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
@@ -69,7 +69,7 @@ export const FACTORY : { [key: string]: any } = {
 
 export const NFT_MANAGER : { [key: string]: any } = {
   ethereum: "0x2214A42d8e2A1d20635c2cb0664422c528B6A432",
-  arbitrum: "0x258f7E97149afd7D7F84fa63b10e4A3f0C38B788", // Nova
+  arbitrum: "0xF0cBce1942A68BEB3d1b73F0dd86C8DCc363eF49", // One
   optimism: "0x1af415a1EbA07a4986a52B6f2e7dE7003D82231e",
   polygon: "0xb7402ee99F0A008e461098AC3A27F4957Df89a40",
   polygonZkEVM: "0xF4d73326C13a4Fc5FD7A064217e12780e9Bd62c3",
