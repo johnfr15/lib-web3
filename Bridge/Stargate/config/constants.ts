@@ -1,6 +1,7 @@
 import { BridgeOptions, Chains } from "../types"
 import erc20_abi from "./abis/erc20"
 import router_abi from "./abis/router"
+import router_eth_abi from "./abis/router_eth"
 
 
 
@@ -18,6 +19,7 @@ export const POLYGON_PROVIDER: {[key: string]: string} = {
 // ABIS
 export const ERC20_ABI = erc20_abi
 export const ROUTER_ABI = router_abi
+export const ROUTER_ETH_ABI = router_eth_abi
 
 
 
@@ -39,6 +41,20 @@ export const ROUTER: { [key in Chains]: any } = {
   polygonTestnet: '0x817436a076060D158204d955E5403b6Ed0A5fac0',
   arbitrumTestnet: '0xb850873f4c993Ac2405A1AdD71F6ca5D4d4d6b4f',
   avalancheTestnet: "0x13093E05Eb890dfA6DacecBdE51d24DabAb2Faa1",
+} 
+
+export const ROUTER_ETH: { [key in Chains]: any } = {
+  ethereum: "0x150f94B44927F078737562f0fcF3C95c01Cc2376",
+  polygon: "",
+  arbitrum: "0xbf22f0f184bCcbeA268dF387a49fF5238dD23E40",
+  optimism: "0xB49c4e680174E331CB0A7fF3Ab58afC9738d5F8b",
+  avalanche: "",
+  bsc: "0x50B6EbC2103BFEc165949CC946d739d5650d7ae4",
+
+  ethereumTestnet: '',
+  polygonTestnet: '',
+  arbitrumTestnet: '',
+  avalancheTestnet: "",
 } 
 
 export const WETH: { [key in Chains]: any } = {
@@ -69,12 +85,19 @@ export const TOKENS: { [key in Chains]: any } = {
 
   arbitrum: {
     eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    usdc:'0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    weth9: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    usdc:'0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
     dai:'0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     usdt:'0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   },
   
-  optimism: {},
+  optimism: {
+    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    weth9: "0x4200000000000000000000000000000000000006",
+    dai: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+    usdc: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+    usdt: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+  },
 
   ethereum: {},
 
@@ -141,10 +164,10 @@ export enum Stargate_func {
 export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
 
   arbitrum: {
-    USDC: 1,
+    'USDC.e': 1,
     USDT: 2,
     FRAX: 7,
-    ETH: 13,
+    SGETH: 13,
     LUSD: 15,
     MAI: 16,
   },
@@ -153,7 +176,7 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     USDC: 1,
     USDT: 2,
     FRAX: 7,
-    ETH: 13,
+    SGETH: 13,
     LUSD: 15,
     MAI: 16,
   },
@@ -176,7 +199,7 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     USDC: 1,
     DAI: 3,
     FRAX: 7,
-    ETH: 13,
+    SGETH: 13,
     sUSD: 14,
     LUSD: 15,
     MAI: 16,
@@ -188,7 +211,7 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     DAI: 3,
     FRAX: 7,
     USDD: 11,
-    ETH: 13,
+    SGETH: 13,
     sUSD: 14,
     LUSD: 15,
     MAI: 16,
@@ -227,7 +250,7 @@ export const STARGATE_POOL_IDS: { [key in Chains]: any } = {
     DAI: 3,
     FRAX: 7,
     USDD: 11,
-    ETH: 13,
+    SGETH: 13,
     sUSD: 14,
     LUSD: 15,
     MAI: 16,
@@ -271,4 +294,17 @@ export const CHAIN_ID: { [ key in Chains ]: number } = {
   arbitrumTestnet: 421613,
   polygonTestnet: 80001,
   avalancheTestnet: 43113,
+}
+
+export const CHAIN_ID_TO_NAME: { [ key: number ]: Chains } = {
+
+  1: "ethereum", 
+  42161: "arbitrum",
+  56: "bsc",
+  137: "polygon", 
+  43114: "avalanche",
+  10: "optimism",
+
+  5: "ethereumTestnet",
+  421613: "arbitrumTestnet",
 }

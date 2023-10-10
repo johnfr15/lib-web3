@@ -12,7 +12,7 @@ export const get_approve_tx = async(
 
     try {
         
-        if ( is_native( token.address ) ) 
+        if ( is_native( token.address, chain ) ) 
             return undefined
 
         const router_address = ROUTER[ chain ]

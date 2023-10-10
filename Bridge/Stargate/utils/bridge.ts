@@ -1,6 +1,7 @@
 import { Wallet, Contract, ethers } from "ethers";
-import { ROUTER, ROUTER_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS } from "../config/constants";
+import { ROUTER, ROUTER_ABI, ROUTER_ETH, ROUTER_ETH_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS } from "../config/constants";
 import { Chains, FUNCTION_TYPE, StargateParams, Token } from "../types";
+import { is_native } from ".";
 
 export const get_stargate_params = ( 
     signer: Wallet,
@@ -58,4 +59,27 @@ export const getFee = async( signer: Wallet, sp: StargateParams, chainFrom: Chai
         throw( error )
 
     }
+}
+
+export const get_router = ( token: Token, chain: Chains, signer: Wallet ): Contract => {
+
+    if ( is_router_eth( token, chain ) )
+    {
+        return new Contract( ROUTER_ETH[ chain ], ROUTER_ETH_ABI, signer )
+    }
+    else
+    {
+        return new Contract( ROUTER[ chain ], ROUTER_ABI, signer )
+    }
+}
+
+export const is_router_eth = ( token: Token, chain: Chains ): boolean => {
+
+    if ( is_native( token.address, chain ) && 
+        (chain === "ethereum" || chain === "arbitrum" || chain === "optimism" || chain === "bsc") )
+    {
+        return true
+    }
+
+    return false
 }
