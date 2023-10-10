@@ -1,4 +1,4 @@
-import { Wallet } from "ethers"
+import { Wallet, ethers } from "ethers"
 import UniswapV3 from "../AMM/UniswapV3"
 import { Chains } from "../AMM/UniswapV3/types"
 import dotenv from "dotenv"
@@ -14,10 +14,11 @@ const main = async() => {
     
     try {
         // Set up
-        const chain: Chains = "polygonTestnet"
+        const chain: Chains = "polygon"
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
+
 
         console.log("account: ", signer.address)
         await log_balances( signer, chain )
@@ -35,19 +36,20 @@ const main = async() => {
         await UniswapV3.addLiquidity( 
             signer,
             TOKENS[ chain ].dai,
+            "1",
+            TOKENS[ chain ].matic,
             null,
-            TOKENS[ chain ].usdc,
-            '1',
-            chain
+            chain,
+            // { max: true }
         )
 
-        await UniswapV3.withdrawLiquidity( 
-            signer,
-            TOKENS[ chain ].dai,
-            TOKENS[ chain ].usdc,
-            chain,
-            { percent: 50 }
-        )
+        // await UniswapV3.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].dai,
+        //     TOKENS[ chain ].usdc,
+        //     chain,
+        //     { percent: 100 }
+        // )
 
 
     } catch (error: any) {

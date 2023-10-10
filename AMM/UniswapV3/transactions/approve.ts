@@ -18,8 +18,9 @@ export const exec_approve = async( approveTx: ApproveTx | undefined): Promise<Tr
 
         const nonce = await signer.getNonce()
         const feedata = await signer.provider?.getFeeData()
+        const gasLimit = await Erc20.approve.estimateGas( spender, amount, { nonce: nonce } )
         
-        tx = await Erc20.approve( spender, amount, { nonce: nonce, gasPrice: feedata!.gasPrice! * BigInt( 10 ) / BigInt( 5 ) } )
+        tx = await Erc20.approve( spender, amount, { nonce: nonce, gasLimit: gasLimit * BigInt( 2 ), gasPrice: feedata!.gasPrice! * BigInt( 10 ) / BigInt( 5 ) } )
         receipt = await tx.wait()
 
         console.log("\nTransaction valided !")
