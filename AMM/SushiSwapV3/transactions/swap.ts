@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
-import { SwapTx, ExactInputSingle, ExactOutputSingle, ExactInput, ExactOutput } from "../types";
-import { TradeType } from "@uniswap/sdk-core";
+import { SwapTx, ExactInputSingle, ExactOutputSingle, ExactInput, ExactOutput, TradeType } from "../types";
 import { is_native } from "../utils";
 
 
