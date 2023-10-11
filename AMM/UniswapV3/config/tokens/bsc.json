@@ -8,6 +8,14 @@
     "symbol": "ADA"
   },
   {
+    "address": "0xba566a7bac1db923c56db3111e155ac9a03beeee",
+    "chainId": 56,
+    "decimals": 18,
+    "logoURI": "",
+    "name": "Wrapped ether",
+    "symbol": "WETH"
+  },
+  {
     "address": "0x12f31B73D812C6Bb0d735a218c086d44D5fe5f89",
     "chainId": 56,
     "decimals": 18,
