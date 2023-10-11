@@ -53,7 +53,7 @@
     "decimals": 6,
     "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/token-logos/token/usdt.jpg",
     "name": "Tether USD",
-    "symbol": "USDT"
+    "symbol": "metisUSDT"
   },
   {
     "address": "0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4",

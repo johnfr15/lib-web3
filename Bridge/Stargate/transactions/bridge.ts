@@ -39,7 +39,7 @@ const swap = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined
             { nonce: nonce, value: messageFee + value } 
         )
 
-        const tx = await Router.swap.staticCall( ...Object.values( payload ), 
+        const tx = await Router.swap( ...Object.values( payload ), 
             { 
                 nonce: nonce, 
                 gasPrice: feedata!.gasPrice! * BigInt( 10 ) / BigInt( 8 ),
@@ -83,12 +83,12 @@ const swapETH = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefi
             { nonce: nonce, value: messageFee + value }
         ) 
             
-        const tx = await Router.swapETH.staticCall( 
-            dstChainId, 
-            refundAddress, 
-            to, 
-            amount, 
-            amountMin, 
+        const tx = await Router.swapETH( 
+            dstChainId,
+            refundAddress,
+            to,
+            amount,
+            amountMin,
             { nonce: nonce, value: messageFee + value, gasLimit: gasLimit }
         )
         const receipt = await tx.wait()
