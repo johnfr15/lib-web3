@@ -20,7 +20,7 @@ export const exec_bridge = async( bridgeTx: BridgeTx ) => {
 const swap = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined> => {
 
     const { signer, Router, payload, messageFee, utils } = bridgeTx
-    const { native, tokenIn, fromChain, toChain } = utils
+    const { tokenIn, fromChain, toChain } = utils
 
     const value = is_native( tokenIn.address, fromChain ) ? payload.amount : BigInt( 0 )
 
@@ -29,7 +29,7 @@ const swap = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined
         console.log(`\nBridge ${ ethers.formatUnits( payload.amount, tokenIn.decimals ) } ${ tokenIn.symbol }`)
         console.log(`\tFrom ${ fromChain }`)
         console.log(`\tTo   ${ toChain }`)
-        console.log("\nMessage fees: ", ethers.formatEther( messageFee ), native.symbol)
+        console.log("\nMessage fees: ", ethers.formatEther( messageFee ), 'ETH')
 
         const nonce = await signer.getNonce()
         const feedata = await signer.provider?.getFeeData()
@@ -51,7 +51,7 @@ const swap = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), native.symbol)
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 
         return receipt as TransactionReceipt
 
@@ -65,7 +65,7 @@ const swap = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined
 const swapETH = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined> => {
 
     const { signer, Router, payload, messageFee, utils } = bridgeTx
-    const { native, tokenIn, fromChain, toChain } = utils
+    const { tokenIn, fromChain, toChain } = utils
 
     const { dstChainId, refundAddress, to, amount, amountMin } = payload
 
@@ -76,7 +76,7 @@ const swapETH = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefi
         console.log(`\nBridge ${ ethers.formatUnits( payload.amount, tokenIn.decimals ) } ${ tokenIn.symbol }`)
         console.log(`\tFrom ${ fromChain }`)
         console.log(`\tTo   ${ toChain }`)
-        console.log("\nMessage fees: ", ethers.formatEther( messageFee ), native.symbol)
+        console.log("\nMessage fees: ", ethers.formatEther( messageFee ))
 
         const nonce = await signer.getNonce()
         const gasLimit = await Router.swapETH.estimateGas( dstChainId, refundAddress, to, amount, amountMin, 
@@ -95,7 +95,7 @@ const swapETH = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefi
 
         console.log("\nTransaction valided !")
         console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ), native.symbol)
+        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 
         return receipt as TransactionReceipt
     

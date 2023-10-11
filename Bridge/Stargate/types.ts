@@ -53,7 +53,6 @@ export type BridgeTx = {
     payload: StargateParams
     messageFee: bigint        // Fees needed to pay for the cross chain message fee
     utils: {
-        native: Token
         tokenIn: Token
         fromChain: Chains
         toChain: Chains

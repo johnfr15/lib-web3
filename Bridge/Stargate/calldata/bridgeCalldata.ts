@@ -20,7 +20,6 @@ export const get_bridge_tx = async(
         if ( options?.max === false && amount === null )
             throw( `Error: in the options param you either need to specify "max" to true or set a number for 'amount'.`)
         
-        const native: Token      = await get_native( fromChain )
         const token_from: Token  = await get_token( tokenFrom, fromChain )
         const token_to: Token    = await get_token( tokenTo, toChain )
         const balance_nativ      = await get_balance( NATIVE_TOKEN, signer )
@@ -51,7 +50,6 @@ export const get_bridge_tx = async(
             payload: sp,
             messageFee: messageFee,
             utils: {
-                native: native,
                 tokenIn: token_from,
                 fromChain: fromChain,
                 toChain: toChain,
