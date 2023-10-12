@@ -163,6 +163,10 @@ export const get_quote = ( amountA: number, tokenA: Token, pool: Pool ): bigint 
     const priceX = priceX96_to_price0 * ( (10 ** x.decimals) / (10 ** y.decimals) )
     const priceY = 1 / priceX
 
+    console.log("Fee: ", pool.fees)
+    console.log(`Price of ${ x.symbol } ${ priceX }`)
+    console.log(`Price of ${ y.symbol } ${ priceY }`)
+
     const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? priceX : priceY
     
     const token_quoted = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA

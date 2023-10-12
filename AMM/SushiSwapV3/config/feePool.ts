@@ -40,11 +40,11 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
         WETH_DAI: Fees.VERY_LOW,
   
         USDC_WETH: Fees.LOW,
-        USDC_USDT: Fees.LOW,
+        USDC_USDT: Fees.VERY_LOW,
         USDC_DAI: Fees.VERY_LOW,
   
         USDT_WETH: Fees.LOW,
-        USDT_USDC: Fees.LOW,
+        USDT_USDC: Fees.VERY_LOW,
         USDT_DAI: Fees.VERY_LOW,
   
         DAI_WETH: Fees.VERY_LOW,

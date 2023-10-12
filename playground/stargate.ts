@@ -14,8 +14,8 @@ const main = async() => {
     
     try {
         // Set up
-        const fromChain: Chains = "arbitrum"
-        const toChain: Chains = "optimism"
+        const fromChain: Chains = "polygon"
+        const toChain: Chains = "arbitrum"
 
         const provider = resolve_provider( STARGATE_CHAIN_ID[ fromChain ] )
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
@@ -27,12 +27,12 @@ const main = async() => {
         
         await Stargate.bridge(
             signer,
-            TOKENS[ fromChain ].eth,
-            TOKENS[ toChain ].eth,
+            TOKENS[ fromChain ].usdc,
+            TOKENS[ toChain ].usdc,
             fromChain,
             toChain,
-            "0.001",
-            // { max: true }
+            null,
+            { max: true }
         )
 
 

@@ -25,8 +25,8 @@ export const get_add_liq_tx = async(
 
         const pool: Pool = await get_pool( token0, token1, signer, chain )
 
-        if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
-            throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
+        // if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
+            // throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
 
         if ( options.max )
         {

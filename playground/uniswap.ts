@@ -14,7 +14,7 @@ const main = async() => {
     
     try {
         // Set up
-        const chain: Chains = "polygon"
+        const chain: Chains = "optimism"
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
@@ -34,15 +34,15 @@ const main = async() => {
         //     chain
         // )
 
-        // await UniswapV3.addLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].eth,
-        //     null,
-        //     TOKENS[ chain ].usdc,
-        //     null,
-        //     chain,
-        //     { max: true }
-        // )
+        await UniswapV3.addLiquidity( 
+            signer,
+            TOKENS[ chain ].eth,
+            null,
+            TOKENS[ chain ].usdt,
+            null,
+            chain,
+            { max: true }
+        )
 
         // await UniswapV3.withdrawLiquidity( 
         //     signer,

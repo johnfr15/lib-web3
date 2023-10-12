@@ -16,7 +16,7 @@ const main = async() => {
     try {
 
         // Set up
-        const chain: Chains = "arbitrum" // Testnet | Mainnet
+        const chain: Chains = "bsc" // Testnet | Mainnet
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
@@ -27,30 +27,30 @@ const main = async() => {
 
         console.log("PANCAKESWAP")
 
-        await PancakeSwapV3.swap(
-            signer,
-            [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
-            "0.0000001",
-            null,
-            chain
-        )
+        // await PancakeSwapV3.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+        //     "0.0000001",
+        //     null,
+        //     chain
+        // )
 
         await PancakeSwapV3.addLiquidity( 
             signer,
-            TOKENS[ chain ].eth,
-            null,
             TOKENS[ chain ].usdc,
+            null,
+            TOKENS[ chain ].dai,
             null,
             chain,
             { max: true }
         )
 
-        await PancakeSwapV3.withdrawLiquidity( 
-            signer,
-            TOKENS[ chain ].eth,
-            TOKENS[ chain ].usdc,
-            chain,
-        )
+        // await PancakeSwapV3.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].eth,
+        //     TOKENS[ chain ].usdc,
+        //     chain,
+        // )
 
 
     } catch (error: any) {
@@ -63,17 +63,3 @@ const main = async() => {
   
 main()
 
-
-
-// Example of encoding a struct 
-
-// const addr = ethers.Typed.address('0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4')
-// const str = ethers.Typed.string('Hello World')
-// const obj = {
-//     address: '0xd4e42e41FCa01464d36a44ACAb98D2aA1447e8f4',
-//     message: ethers.toUtf8Bytes( 'Hello World' )
-// }
-
-
-// const encoded = ethers.AbiCoder.defaultAbiCoder().encode( [ "tuple(address,bytes)" ], [ Object.values( obj ) ]  )
-// console.log( encoded )

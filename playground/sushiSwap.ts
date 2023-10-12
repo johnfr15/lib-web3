@@ -16,7 +16,7 @@ const main = async() => {
     
     try {
         // Set up
-        const chain: Chains = "arbitrum" // Testnet | Mainnet
+        const chain: Chains = "optimism" // Testnet | Mainnet
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
@@ -28,30 +28,30 @@ const main = async() => {
 
         console.log("SUSHISWAP")
         
-        await SushiSwapV3.swap(
-            signer,
-            [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
-            "0.000001",
-            null,
-            chain
-        )
+        // await SushiSwapV3.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].eth, TOKENS[ chain ].usdc ],
+        //     "0.000001",
+        //     null,
+        //     chain
+        // )
 
         await SushiSwapV3.addLiquidity( 
             signer,
             TOKENS[ chain ].eth,
             null,
-            TOKENS[ chain ].usdc,
+            TOKENS[ chain ].usdt,
             null,
             chain,
             { max: true }
         )
 
-        await SushiSwapV3.withdrawLiquidity( 
-            signer,
-            TOKENS[ chain ].eth,
-            TOKENS[ chain ].usdc,
-            chain,
-        )
+        // await SushiSwapV3.withdrawLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].eth,
+        //     TOKENS[ chain ].usdc,
+        //     chain,
+        // )
 
 
     } catch (error: any) {
