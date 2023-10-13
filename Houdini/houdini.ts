@@ -1,39 +1,49 @@
-import axios  from "axios"
+import { Wallet } from "ethers";
+import { TokenId, Network, SwapOptions, SwapTx, Trade, Order } from "./types";
+import { resolve_chain } from "./utils"
+import { create_order } from "./api/exchange";
+import { get_trade } from "./utils/swap";
+import { exec_order } from "./transactions/swap";
+import { DEFAULT_OPTION } from "./config/constants"
 
 
-const houdini = async() => {
+/**
+ * @name swap
+ * @param signer        - Wallet to perform the swap
+ * @param tokenFrom     - Token to be brTokenIdge
+ * @param tokenTo       - Token to be received in the target chain
+ * @param fromChain     - Current chain 
+ * @param toChain       - target chain
+ * @param options
+ *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
+ */
+export const swap = async(
+    signer: Wallet,
+    amount: string,
+    tokenFrom: TokenId,
+    tokenTo: TokenId,
+    fromNetwork: Network, 
+    toNetwork: Network,
+    options?: SwapOptions
+) => {
 
-    const partnerID = '6526dd59afa7ce4444cb0795'; // Replace with your Partner ID
-    const secret = 'rDHbDqGjyNfFTmvGuBTKCo'; // Replace with your Secret
+    signer = resolve_chain( signer, fromNetwork )
+    options = { ...DEFAULT_OPTION, ...options }
+    
+    try {
 
-    // Define the URL with query parameters
-    const url = 'https://api-partner.houdiniswap.com/quote';
-    const params = {
-        amount: 1,
-        from: 'ETH',
-        to: 'USDC',
-        anonymous: false,
-    };
+        const trade: Trade = await get_trade( signer, amount, tokenFrom, tokenTo, fromNetwork, toNetwork, options )
+        const order: Order = await create_order( trade.eo )
 
+        const swapTx: SwapTx = { signer, trade, order }
 
+        /*========================================= TX =================================================================================================*/
+        await exec_order( swapTx )
+        /*==============================================================================================================================================*/
+        
+    } catch (error) {
+        
+        throw( error )
 
-    axios.get(url, {
-        params: params,
-        headers: {
-            'Authorization': `${partnerID}:${secret}`,
-            'Content-Type': 'application/json'
-        },
-    })
-    .then((response) => {
-        // Handle the response data here
-        console.log('Response data:', response.data);
-    })
-    .catch((error) => {
-        // Handle any errors that occur during the request
-        console.error('Error:', error.response.data);
-    });
+    }
 }
-
-
-
-houdini()
