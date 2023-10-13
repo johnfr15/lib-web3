@@ -20,19 +20,7 @@
 |:-------:|:----------:|:---------------------------------------------------------------|---------------------------
 | GET     | /status    | Get the status of order id                                     | { id: string }
 | GET     | /tokens    | Get list of available tokens for exchange                      | 
-| POST    | /exchange  | Create an exchange order                                       | ```json {
-  "amount": 1,
-  "from": "ETH",
-  "to": "BNB",
-  "receiverTag": "",
-  "addressTo": "0x000000000000000000000000000000000000dead",
-  "anonymous": false,
-  "fixed": false,
-  "direction": "from",
-  "ip": "0.0.0.0",
-  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-  "timezone": "UTC"
-}```
+| POST    | /exchange  | Create an exchange order                                       | { amount: number, from: string, to: string, receiverTag: string, addressTo: string, anonymous: boolean, fixed: boolean, direction: string, ip: string, userAgent: string, timezone: string }
 | GET     | /quote     | Perform a quote and returns the best price for the swap pair   | { amount: number, from: string, to: string,   nonymouq: boolean }
 <br />
 <br />
