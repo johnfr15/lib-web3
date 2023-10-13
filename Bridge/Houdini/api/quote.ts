@@ -27,7 +27,7 @@ export const get_quote = async( amount: string, tokenFrom: TokenId, tokenTo: Tok
 
     } catch ( error: any ) {
         
-        throw( error.response.data )
+        throw( error )
 
     }
 }

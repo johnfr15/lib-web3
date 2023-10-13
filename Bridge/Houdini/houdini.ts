@@ -8,16 +8,20 @@ import { DEFAULT_OPTION } from "./config/constants"
 
 
 /**
- * @name swap
+ * @name bridge
  * @param signer        - Wallet to perform the swap
- * @param tokenFrom     - Token to be brTokenIdge
+ * @param tokenFrom     - Token to be bridge
  * @param tokenTo       - Token to be received in the target chain
  * @param fromChain     - Current chain 
  * @param toChain       - target chain
  * @param options
- *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
+ *        - receiveAddress:  (optional) the wallet that will receive the funds on the target network
+ *        - slipage:         (optional) protection against price movement or to high price impact default is 0.5%
+ *        - anonymous:       (optional) if set to true houdini will perform extra swaps on Monero (increase fees by 1%)
+ *        - ip:              (optional) ip address
+ *        - userAgent:       (optional) The application agent that send request to houdini
  */
-export const swap = async(
+export const bridge = async(
     signer: Wallet,
     amount: string,
     tokenFrom: TokenId,

@@ -21,12 +21,12 @@ export const create_order = async( data: ExchangeOrder ): Promise<Order> => {
 
         console.log("\nOrder created !")
         console.log("Order id: ", order.houdiniId )
-        
+
         return order
 
     } catch ( error: any ) {
 
-        throw( error.response.data )
+        throw( error )
 
     }
 }

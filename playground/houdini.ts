@@ -1,7 +1,7 @@
 import { Wallet } from "ethers"
-import Houdini from "../Houdini"
+import Houdini from "../Bridge/Houdini"
 import dotenv from "dotenv"
-import { Network } from "../Houdini/types"
+import { Network } from "../Bridge/Houdini/types"
 
 
 dotenv.config()
@@ -14,16 +14,16 @@ const main = async() => {
     
     try {
         // Set up
-        const fromNetwork: Network = "Arbitrum"
+        const fromNetwork: Network = "BASE Base"
         const toNetwork: Network = "Ethereum Mainnet"
         const provider = resolve_provider( fromNetwork )
 
-        const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, provider )
+        const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
-        await Houdini.swap( 
+        await Houdini.bridge( 
             signer, 
             "1",
-            "ETHARB",
+            "ETHBASE",
             "ETH",
             fromNetwork,
             toNetwork,

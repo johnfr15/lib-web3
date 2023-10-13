@@ -1,4 +1,4 @@
-import { ethers, Wallet } from "ethers";
+import { Wallet } from "ethers";
 import { ExchangeOrder, TokenId, Network, SwapOptions, Trade, Token, Quote, Balance } from "../types";
 import { get_quote } from "../api/quote"
 import { get_token } from "../api/tokens";
@@ -21,7 +21,7 @@ export const get_trade = async(
         const token_to: Token       = await get_token( tokenTo, toNetwork )
         const balance_from: Balance = await get_balance( token_from, signer )
 
-        
+
         if ( parseFloat( amount ) > parseFloat( balance_from.string ) )
             throw new Error(`Error: Not enough balance. Expect to send ${ amount } ${ token_from.symbol } but balance is ${ balance_from.string } ${ token_from.symbol }`)
 

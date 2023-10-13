@@ -1,10 +1,10 @@
-import { Contract, ethers } from "ethers";
+import { Contract, ethers, TransactionResponse } from "ethers";
 import { SwapTx } from "../types";
 import { ERC20_ABI } from "../config/constants";
 
 export const exec_order = async( swapTx: SwapTx ) => {
 
-    let tx
+    let tx: TransactionResponse
     const { senderAddress, inAmount, inSymbol, outAmount, outSymbol, receiverAddress } = swapTx.order
     const { tokenFrom, tokenTo } = swapTx.trade
     

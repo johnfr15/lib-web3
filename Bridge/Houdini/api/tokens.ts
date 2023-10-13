@@ -22,7 +22,7 @@ export const get_token = async( tokenId: TokenId, network: Network ): Promise<To
         
     } catch ( error: any ) {
 
-        throw( error.response.data )    
+        throw( error )    
 
     }
 
