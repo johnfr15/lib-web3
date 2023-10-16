@@ -1,0 +1,364 @@
+{
+    "ethereum": 
+    {
+        "USDC": [ 
+            "ethereum-USDT", 
+            "bsc-USDT", 
+            "bsc-USDC", 
+            "avalanche-USDC", 
+            "avalanche-USDT", 
+            "arbitrum-USDC.e", 
+            "arbitrum-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "fantom-USDT",
+            "base-USDT",
+            "optimism-USDC"
+        ],
+        "USDT": [ 
+            "ethereum-USDT", 
+            "bsc-USDT", 
+            "bsc-USDC", 
+            "avalanche-USDC", 
+            "avalanche-USDT", 
+            "arbitrum-USDC.e", 
+            "arbitrum-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "fantom-USDT",
+            "base-USDT",
+            "optimism-USDC"
+        ],
+        "DAI": [
+            "polygon-DAI",
+            "optimism-DAI"
+        ],
+        "FRAX": [
+            "avalanche-FRAX",
+            "arbitrum-FRAX",
+            "optimism-FRAX"
+        ],
+        "USDD": [
+            "bsc-USDD"
+        ],
+        "SGETH": [
+            "arbitrum-SGETH",
+            "optimism-SGETH",
+            "base-SGETH",
+            "linea-SGETH"
+        ],
+        "SUSD": [
+            "optimism-SUSD"
+        ],
+        "LUSD": [
+            "arbitrum-LUSD",
+            "optimism-LUSD"
+        ],
+        "MAI": [
+            "bsc-MAI",
+            "avalanche-MAI",
+            "polygon-MAI",
+            "arbitrum-MAI",
+            "optimism-MAI"
+        ],
+        "METIS": [
+            "metis-METIS"
+        ],
+        "m.USDT": [
+            "metis-m.USDT"
+        ]
+    },
+
+    "arbitrum": {
+        "USDC.e": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "USDT": [
+            "ethereum-USDT",
+            "ethereum-USDC",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "FRAX": [
+            "ethereum-FRAX",
+            "avalanche-FRAX",
+            "optimism-FRAX"
+        ],
+        "SGETH": [
+            "ethereum-SGETH",
+            "optimism-SGETH",
+            "base-SGETH",
+            "linea-SGETH"
+        ],
+        "LUSD": [
+            "ethereum-LUSD",
+            "optimism-LUSD"
+        ],
+        "MAI": [
+            "ethereum-MAI",
+            "bsc-MAI",
+            "avalanche-MAI",
+            "polygon-MAI",
+            "optimism-MAI"
+        ]
+    },
+
+    "polygon": {
+        "USDC": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "USDT": [
+            "ethereum-USDT",
+            "ethereum-USDC",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "DAI": [
+            "ethereum-DAI",
+            "optimism-DAI"
+        ],
+        "MAI": [
+            "ethereum-MAI",
+            "bsc-MAI",
+            "avalanche-MAI",
+            "arbitrum-MAI",
+            "optimism-MAI"
+        ]
+    },
+
+    "avalanche": {
+        "USDC": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "USDT": [
+            "ethereum-USDT",
+            "ethereum-USDC",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "FRAX": [
+            "ethereum-FRAX",
+            "arbitrum-FRAX",
+            "optimism-FRAX"
+        ],
+        "MAI": [
+            "ethereum-MAI",
+            "bsc-MAI",
+            "polygon-MAI",
+            "arbitrum-MAI",
+            "optimism-MAI"
+        ],
+        "m.USDT": [
+            "metis-m.USDT"
+        ]
+    },
+
+    "optimism": {
+        "USDC": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "DAI": [
+            "ethereum-DAI",
+            "polygon-DAI"
+        ],
+        "FRAX": [
+            "ethereum-FRAX",
+            "avalanche-FRAX",
+            "arbitrum-FRAX"
+        ],
+        "SGETH": [
+            "ethereum-SGETH",
+            "arbitrum-SGETH",
+            "base-SGETH",
+            "linea-SGETH"
+        ],
+        "SUSD": [
+            "ethereum-SUSD"
+        ],
+        "LUSD": [
+            "ethereum-LUSD",
+            "arbitrum-LUSD"
+        ],
+        "MAI": [
+            "ethereum-MAI",
+            "bsc-MAI",
+            "avalanche-MAI",
+            "polygon-MAI",
+            "arbitrum-MAI"
+        ]
+    },
+
+    "bsc": {
+        "BUSD": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "USDT": [
+            "ethereum-USDT",
+            "ethereum-USDC",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC",
+            "fantom-USDC",
+            "base-USDC"
+        ],
+        "USDD": [
+            "ethereum-USDD"
+        ],
+        "MAI": [
+            "ethereum-MAI",
+            "avalanche-MAI",
+            "polygon-MAI",
+            "arbitrum-MAI",
+            "optimism-MAI"
+        ],
+        "m.USDT": [
+            "metis-m.USDT"
+        ]
+    },
+
+    "fantom": {
+        "USDC": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-BUSD",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC"
+        ]
+    },
+
+    "metis": {
+        "METIS": [
+            "ethereum-METIS"
+        ],
+        "m.USDT": [
+            "ethereum-m.USDT",
+            "bsc-m.USDT",
+            "avalanche-m.USDT"
+        ]
+    },
+
+    "base": {
+        "USDC": [
+            "ethereum-USDC",
+            "ethereum-USDT",
+            "bsc-USDT",
+            "avalanche-USDC",
+            "avalanche-USDT",
+            "polygon-USDC",
+            "polygon-USDT",
+            "arbitrum-USDC.e",
+            "arbitrum-USDT",
+            "optimism-USDC"
+        ],
+        "SGETH": [
+            "ethereum-SGETH",
+            "arbitrum-SGETH",
+            "optimism-SGETH",
+            "linea-SGETH"
+        ]
+    },
+
+    "linea": {
+        "SGETH": [
+            "ethereum-SGETH",
+            "arbitrum-SGETH",
+            "optimism-SGETH",
+            "base-SGETH"
+        ]
+    },
+
+    "kava": {
+        "USDT": [
+            "ethereum-USDT",
+            "bsc-USDT",
+            "avalanche-USDT",
+            "polygon-USDT",
+            "arbitrum-USDT",
+            "optimism-USDC"
+        ]
+    }
+
+}
+
