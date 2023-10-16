@@ -1,4 +1,5 @@
-import { Chains } from "../types"
+import { AddressLike } from "ethers"
+import { Chains } from "../type/types"
 import erc20_abi from "./abis/erc20"
 
 
@@ -17,60 +18,38 @@ export const ERC20_ABI = erc20_abi
 // ADDRESSES
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
-export const SWAP_ROUTER : { [key: string]: any } = {
-  ethereum: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  arbitrum: "0xE592427A0AEce92De3Edee1F18E0157C05861564", 
-  optimism: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  polygon: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  bsc: "",
-
-  ethereumTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  arbitrumTestnet: "", 
-  optimismTestnet: "",
-  polygonTestnet: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-  bscTestnet: "",
+/**
+ * @notice SocketGateway is the new version of Registry contract. This contract stores all route IDs with corresponding Implementation 
+ *         contract addresses, representing which bridge and DEX respectively will be used for a given route.
+ */
+export const SOCKET_GATEWAY: { [key in Chains]: AddressLike } = {
+  arbitrum: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5", 
+  aurora: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  avalanche: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  bsc: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  ethereum: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  fantom: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  gnosis: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  optimism: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  polygon: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  zksync: "0xaDdE7028e7ec226777e5dea5D53F6457C21ec7D6",
+  zkevm: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  base: "0x3a23f943181408eac424116af7b7790c94cb97a5",
 }
 
-export const QUOTER_V2 : { [key: string]: any } = {
-  ethereum: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  arbitrum: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e", 
-  optimism: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  polygon: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  bsc: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
-
-  ethereumTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  arbitrumTestnet: "", 
-  optimismTestnet: "",
-  polygonTestnet: "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  bscTestnet: "0x78D78E420Da98ad378D7799bE8f4AF69033EB077",
-}
-
-export const FACTORY : { [key: string]: any } = {
-  ethereum: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  arbitrum: "0x1F98431c8aD98523631AE4a59f267346ea31F984", 
-  optimism: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  polygon: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  bsc: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
-
-  ethereumTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  arbitrumTestnet: "0x4893376342d5D7b3e31d4184c08b265e5aB2A3f6", 
-  optimismTestnet: "",
-  polygonTestnet: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  bscTestnet: "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
-}
-
-export const NFT_MANAGER : { [key: string]: any } = {
-  ethereum: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  arbitrum: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88", 
-  optimism: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  polygon: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  bsc: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
-
-  ethereumTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  arbitrumTestnet: "", 
-  optimismTestnet: "",
-  polygonTestnet: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-  bscTestnet: "0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613",
+export const REGISTRY: { [key in Chains]: AddressLike } = {
+  arbitrum: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0", 
+  aurora: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  avalanche: "0x2b42AFFD4b7C14d9B7C2579229495c052672Ccd3",
+  bsc: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  ethereum: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  fantom: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  gnosis: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  optimism: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  polygon: "0xc30141B657f4216252dc59Af2e7CdB9D8792e1B0",
+  zksync: "",
+  zkevm: "",
+  base: "",
 }
 
 
@@ -122,64 +101,21 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 
   
+  aurora: {},
+  avalanche: {},
+  fantom: {},
+  gnosis: {},
+  zksync: {},
+  zkevm: {},
+  base: {},
 
-  ethereumTestnet: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth9: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-    dai: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
-    usdc:'0x2f3A40A3db8a7e3D09B0adfEfbCe4f6F81927557',
-    usdt:'0x509Ee0d083DdF8AC028f2a56731412edD63223B9',
-  },
-
-  polygonTestnet: {
-    matic: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth9: "0x5B67676a984807a212b1c59eBFc9B3568a474F0a",
-    weth: '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323',
-    usdc:'0x742DfA5Aa70a8212857966D491D67B09Ce7D6ec7',
-    usdt:'0x3813e82e6f7098b9583FC0F33a962D02018B6803',
-    dai:'0xcB1e72786A6eb3b44C2a2429e317c8a2462CFeb1',
-  },
-
-  arbitrumTestnet: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth9: '0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f',
-    usdc:'0x179522635726710Dd7D2035a81d856de4Aa7836c',
-    usdt:'0xE742da76701dc9BB348EB931959DD42B9DF04Ff6',
-    dai: '0x02668f5a60D637D21e39689B68B675ed4A7B696d',
-  },
-
-  optimismTestnet: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth9: "0x4200000000000000000000000000000000000006",
-    usdc:'0x7E07E15D2a87A24492740D16f5bdF58c16db0c4E',
-    usdt:'0x853eb4bA5D0Ba2B77a0A5329Fd2110d5CE149ECE',
-    dai: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-  }
 }
 
 // Misc
-
-export const MAX_TICK = 887272
-export const MIN_TICK = -887272
-export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
-
-export const DEFAULT_OPTION: SwapOptions = {
+export const SOCKET_V2_URL = "https://api.socket.tech/v2"
+export const DEFAULT_OPTION = {
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-}
-
-export const DEFAULT_ADD_OPTION: AddOptions = {
-  max: false,
-  slipage: 0.5, // 0.5% of slipage tolerance
-  deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-  tokenId: undefined
-}
-
-export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
-  slipage: 0.5, // 0.5% of slipage tolerance
-  deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-  percent: 100,
-  tokenId: undefined
 }
 
 
@@ -194,10 +130,13 @@ export const CHAIN_ID: { [ key in Chains ]: number } = {
   optimism: 10,
   bsc: 56,
 
-  ethereumTestnet: 5,
-  arbitrumTestnet: 421613,
-  polygonTestnet: 80001,
-  optimismTestnet: 420,
+  aurora: 0,
+  avalanche: 0,
+  fantom: 0,
+  gnosis: 0,
+  zksync: 0,
+  zkevm: 0,
+  base: 0,
 }
 
 export const CHAIN_ID_TO_NAME: { [ key: number ]: Chains } = {
@@ -208,9 +147,11 @@ export const CHAIN_ID_TO_NAME: { [ key: number ]: Chains } = {
   10: "optimism",
   56: "bsc",
 
-  5: "ethereumTestnet",
-  421613: "arbitrumTestnet",
-  80001: "polygonTestnet",
-  420: "optimismTestnet",
-
+  20: "aurora",
+  30: "avalanche",
+  40: "fantom",
+  50: "gnosis",
+  60: "zksync",
+  70: "zkevm",
+  80: "base",
 }
