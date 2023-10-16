@@ -323,7 +323,7 @@ export default [
         "chain": "ETH",
         "chainId": "1088",
         "networkId": "1088",
-        "stargateId": "151",
+        "stargateId": "10",
         "name": "Metis",
         "nativeCurrency": {
             "name": "Metis Token",
@@ -544,7 +544,7 @@ export default [
         },
         "chainId": "8453",
         "networkId": "8453",
-        "stargateId": "184",
+        "stargateId": "21",
         "name": "Base",
         "debug": false,
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
@@ -555,7 +555,7 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://mainnet.base.org" ],
+        "rpc": [ "https://developer-access-mainnet.base.org" ],
         "watch": [
             "rpc",
             "api"
@@ -570,7 +570,7 @@ export default [
         },
         "chainId": "43114",
         "networkId": "43114",
-        "stargateId": "106",
+        "stargateId": "",
         "name": "Avalanche",
         "debug": false,
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
@@ -596,7 +596,7 @@ export default [
         },
         "chainId": "59144",
         "networkId": "59144",
-        "stargateId": "183",
+        "stargateId": "23",
         "name": "Linea",
         "debug": false,
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
