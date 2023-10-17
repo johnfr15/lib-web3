@@ -10,7 +10,7 @@ const ENDPOINT = "/approval/build-tx"
 /**
  * @return Return the Approval Tx Data for the given params.
  */
-export const get_approve_tx = async(
+export const get_approval_tx = async(
     chainID: number,
     owner: AddressLike,
     allowanceTarget: AddressLike,
