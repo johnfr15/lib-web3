@@ -216,6 +216,7 @@ export const TOKENS: { [key: string]: any } = {
         },
 
         polygon: {
+            matic: '0x0000000000000000000000000000000000000000',
             eth: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
             usdc:'0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
             dai:'0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
