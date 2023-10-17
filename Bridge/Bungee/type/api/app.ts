@@ -87,9 +87,9 @@ export type BridgeStatusOptions = {
 
 export type BridgeStatus = {
     sourceTx: string,
-    sourceTxStatus: 'PENDING' | 'COMPLETED',
+    sourceTxStatus: 'READY' | 'PENDING' | 'COMPLETED' | 'FAILED',
     destinationTransactionHash: string,
-    destinationTxStatus: 'PENDING' | 'COMPLETED',
+    destinationTxStatus: 'READY' | 'PENDING' | 'COMPLETED' | 'FAILED',
     fromChainId: 1,
     toChainId: 137
 }
