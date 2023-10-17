@@ -1,22 +1,19 @@
 import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
-import { FromTokenListOptions } from "../../type/api/tokenLists"
 import { Token } from "../../type/types";
 
 dotenv.config()
 
-const ENDPOINT = "/token-lists/from-token-list"
-const DEFAULT_OPTIONS: FromTokenListOptions = {
-    isShortList: true
-}
+const ENDPOINT = "/token-lists/chain"
 
-export const get_from_token_list = async( fromChainId: number, options?: FromTokenListOptions ): Promise<Token[]> => {
-
-    options =  { ...DEFAULT_OPTIONS, ...options }
+export const get_chain_token = async( chainId: number, isShortList: boolean = true ): Promise<Token[]> => {
 
     const url = SOCKET_V2_URL + ENDPOINT
-    const params = { fromChainId, ...options }
+    const params = { 
+        chainId: chainId,
+        isShortList: isShortList 
+    }
     const headers = {
         'API-KEY': process.env.SOCKET_APIKEY!,
         'Content-Type': 'application/json'
