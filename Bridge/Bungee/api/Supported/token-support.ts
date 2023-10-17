@@ -9,7 +9,7 @@ dotenv.config()
 const ENDPOINT = "/supported/token-support"
 
 /**
- * @return Returns the status of the bridging transaction if completed or pending.
+ * @return Get if token is supported
  */
 export const get_supported_token = async( chainId: number, address: AddressLike ): Promise<{ isSupported: boolean, token: Token }> => {
 
