@@ -47,9 +47,9 @@ export type RouteOptions = {
     // Boolean variable that notifies us if refuel(dropping some native tokens on the destination chain) also has to be included in the transaction.
     bridgeWithGas?: bigint
     // Override the default swap slippage sent by the quote. If not passed default is assumed.
-    swapSlippage?: bigint
+    swapSlippage?: number
     // Override the default bridge slippage sent by the quote. NOTE - Slippage is not present for all bridges.
-    bridgeSlippage?: bigint
+    bridgeSlippage?: number
     // Destination Payload
     destinationPayload?: string
     // Destination Gas limit

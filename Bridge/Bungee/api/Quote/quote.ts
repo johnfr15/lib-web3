@@ -6,6 +6,10 @@ import { QuoteParams, QuoteOptions, Quote } from "../../type/api/quote";
 dotenv.config()
 
 const ENDPOINT = "/quote"
+const DEFAULT_OPTIONS: QuoteOptions = {
+    defaultBridgeSlippage: 2,
+    defaultSwapSlippage: 2
+}
 
 /**
  * @return Returns all the possible routes for bridging tokens from one chain to another. 
@@ -13,6 +17,8 @@ const ENDPOINT = "/quote"
  */
 export const get_quote = async( quote: QuoteParams, options?: QuoteOptions ): Promise<Quote> => {
 
+    options = { ...DEFAULT_OPTIONS, ...options }
+    
     const url = SOCKET_V2_URL + ENDPOINT
     const params = { ...quote, ...options }
     const headers = {

@@ -6,12 +6,17 @@ import { RouteOptions, Route, RouteTx } from "../../type/api/app";
 dotenv.config()
 
 const ENDPOINT = "/build-tx"
-
+const DEFAULT_OPTIONS: RouteOptions = {
+    bridgeSlippage: 2,
+    swapSlippage: 2
+}
 /**
  * @notice Get the tx details for the route.
  */
 export const get_build_tx = async( route: Route, options?: RouteOptions ): Promise<RouteTx> => {
 
+    options = { ...DEFAULT_OPTIONS, ...options }
+    
     const url = SOCKET_V2_URL + ENDPOINT
     const params = { ...route, ...options }
     const headers = {
