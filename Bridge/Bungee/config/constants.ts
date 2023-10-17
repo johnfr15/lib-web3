@@ -59,7 +59,7 @@ export const REGISTRY: { [key in Chains]: AddressLike } = {
 export const TOKENS: { [key in Chains]: any } = {
 
   ethereum: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    eth: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     weth9: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     usdc: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     usdt: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -67,7 +67,7 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 
   polygon: {
-    matic: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    matic: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     weth9: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
     weth: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
     usdc:'0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -76,7 +76,7 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 
   arbitrum: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    eth: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     weth9: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     usdc:'0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     dai:'0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
@@ -84,7 +84,7 @@ export const TOKENS: { [key in Chains]: any } = {
   },
   
   optimism: {
-    eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    eth: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     weth9: "0x4200000000000000000000000000000000000006",
     dai: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
     usdc: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
@@ -92,7 +92,7 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 
   bsc: {
-    bnb: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    bnb: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     weth9: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     weth: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
     dai: "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
