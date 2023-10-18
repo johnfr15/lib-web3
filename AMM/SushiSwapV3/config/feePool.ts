@@ -95,27 +95,27 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
   
     avalanche: {       
         
-        AVAX_WETH: Fees.MEDIUM,
-        AVAX_USDC: Fees.LOW,
-        AVAX_USDT: Fees.MEDIUM,
-        AVAX_DAI: Fees.MEDIUM,
+        WAVAX_WETH: Fees.MEDIUM,
+        WAVAX_USDC: Fees.LOW,
+        WAVAX_USDT: Fees.MEDIUM,
+        WAVAX_DAI: Fees.MEDIUM,
 
-        WETH_AVAX: Fees.MEDIUM,
+        WETH_WAVAX: Fees.MEDIUM,
         WETH_USDC: Fees.MEDIUM,
         WETH_USDT: Fees.LOW,
         WETH_DAI: Fees.BIG,
   
-        USDC_AVAX: Fees.LOW,
+        USDC_WAVAX: Fees.LOW,
         USDC_WETH: Fees.MEDIUM,
         USDC_USDT: Fees.VERY_LOW,
         USDC_DAI: Fees.VERY_LOW,
   
-        USDT_AVAX: Fees.MEDIUM,
+        USDT_WAVAX: Fees.MEDIUM,
         USDT_WETH: Fees.LOW,
         USDT_USDC: Fees.VERY_LOW,
         USDT_DAI: Fees.VERY_LOW,
   
-        DAI_AVAX: Fees.MEDIUM,
+        DAI_WAVAX: Fees.MEDIUM,
         DAI_WETH: Fees.BIG,
         DAI_USDC: Fees.VERY_LOW,
         DAI_USDT: Fees.VERY_LOW,
