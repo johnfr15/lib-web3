@@ -1,5 +1,6 @@
 import { AddressLike } from "ethers"
 import { Token } from "../types"
+import { RefuelData, RouteData } from "./quote"
 
 // start
 export type StartRoute = {
@@ -8,55 +9,8 @@ export type StartRoute = {
     fromAssetAddress: AddressLike,
     toAssetAddress: AddressLike,
     includeFirstTxDetails: boolean,
-    route: {
-      routeId: string,
-      isOnlySwapRoute: boolean,
-      fromAmount: bigint,
-      chainGasBalances: {},
-      minimumGasBalances: {},
-      toAmount: bigint,
-      usedBridgeNames: string[],
-      totalUserTx: number,
-      totalGasFeesInUsd: number,
-      recipient: AddressLike,
-      sender: AddressLike,
-      userTxs: Array<Object>
-      receivedValueInUsd: number,
-      inputValueInUsd: number,
-      outputValueInUsd: number,
-      serviceTime: number,
-      maxServiceTime: number,
-      integratorFee: {
-        feeTakerAddress: string,
-        amount: string,
-        asset: Token
-      },
-      t2bReceiverAddress: AddressLike,
-      extraData: {}
-    },
-    refuel: {
-      fromAmount: string,
-      toAmount: string,
-      gasFees: {
-        gasLimit: number,
-        feesInUsd: number,
-        asset: Token,
-        gasAmount: string
-      },
-      recipient: AddressLike,
-      serviceTime: number,
-      fromAsset: Token,
-      toAsset: Token,
-      fromChainId: number,
-      toChainId: number
-    },
-    destinationCallData: {
-      destinationPayload: string,
-      destinationGasLimit: string
-    },
-    bridgeInsuranceData: {
-      amount: string
-    }
+    route: RouteData
+    refuel: RefuelData
 }
 
 export type Route = {

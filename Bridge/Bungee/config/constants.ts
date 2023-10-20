@@ -1,5 +1,5 @@
 import { AddressLike } from "ethers"
-import { Chains } from "../type/types"
+import { BridgeOptions, Chains } from "../type/types"
 import erc20_abi from "./abis/erc20"
 
 
@@ -16,7 +16,7 @@ export const ERC20_ABI = erc20_abi
 
 
 // ADDRESSES
-export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+export const NATIVE_TOKEN = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
 /**
  * @notice SocketGateway is the new version of Registry contract. This contract stores all route IDs with corresponding Implementation 
@@ -113,9 +113,11 @@ export const TOKENS: { [key in Chains]: any } = {
 
 // Misc
 export const SOCKET_V2_URL = "https://api.socket.tech/v2"
-export const DEFAULT_OPTION = {
+export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
+  max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
-  deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
+  uniqueRoutesPerBridge: true,
+  sort: 'output'
 }
 
 
@@ -129,12 +131,12 @@ export const CHAIN_ID: { [ key in Chains ]: number } = {
   polygon: 137,
   optimism: 10,
   bsc: 56,
+  zksync: 324,
+  avalanche: 43114,
 
   aurora: 0,
-  avalanche: 0,
   fantom: 0,
   gnosis: 0,
-  zksync: 0,
   zkevm: 0,
   base: 0,
 }

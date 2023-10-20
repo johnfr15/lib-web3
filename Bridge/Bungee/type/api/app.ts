@@ -24,6 +24,8 @@ export type Route = {
     sender: AddressLike
     // Address of the recipient.
     recipient: AddressLike
+    // example => 1-6
+    routePath: string
     // Source ChainId
     fromChainId: number
     // Destination ChainId
@@ -33,9 +35,10 @@ export type Route = {
     // Address of the destination token
     toTokenAddress: AddressLike
     // Amount as Bignumber for the source token
-    fromAmount: number
+    fromAmount: string
     // Amount as Bignumber for the destination token
-    toAmount: number
+    toAmount: string
+    bridgeInputTokenAddress: AddressLike
 }
 
 export type RouteOptions = {
@@ -45,7 +48,7 @@ export type RouteOptions = {
     // Token Address that is being sent to the bridge. In case of swap, the token that you swapped into has to be passed here.
     bridgeInputTokenAddress?: AddressLike
     // Boolean variable that notifies us if refuel(dropping some native tokens on the destination chain) also has to be included in the transaction.
-    bridgeWithGas?: bigint
+    bridgeWithGas?: boolean
     // Override the default swap slippage sent by the quote. If not passed default is assumed.
     swapSlippage?: number
     // Override the default bridge slippage sent by the quote. NOTE - Slippage is not present for all bridges.
@@ -64,17 +67,17 @@ export type RouteOptions = {
 
 export type RouteTx = {
     userTxType: string,
+    txType: string,
+    txData: string,
     txTarget: AddressLike,
     chainId: number,
-    txData: string,
-    txType: string,
-    value: bigint,
-    totalUserTx: number,
+    userTxIndex: number,
+    value: string, // Hexadecimal bigint
     approvalData: {
-      minimumApprovalAmount: bigint,
-      approvalTokenAddress: AddressLike,
-      allowanceTarget: AddressLike,
-      owner: AddressLike
+        minimumApprovalAmount: bigint,
+        approvalTokenAddress: AddressLike,
+        allowanceTarget: AddressLike,
+        owner: AddressLike
     }
 }
 

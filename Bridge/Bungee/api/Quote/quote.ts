@@ -28,13 +28,14 @@ export const get_quote = async( quote: QuoteParams, options?: QuoteOptions ): Pr
 
     try {
 
+        console.log("Fetching quote...")
         const res = await axios.get( url, { params, headers } )
 
         return res.data.result
         
-    } catch (error) {
+    } catch ( error: any ) {
         
-        throw( error )
+        throw( error.response.data.error.message )
 
     }
 }

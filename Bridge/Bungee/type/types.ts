@@ -1,4 +1,6 @@
-import { Wallet, Contract } from "ethers"
+import { Wallet, Contract, AddressLike } from "ethers"
+import { Quote } from "./api/quote"
+import { Balance } from "./api/balances"
 
 export type Token = {
     chainId: number
@@ -7,14 +9,6 @@ export type Token = {
     symbol: string
     decimals: number
     logoURI: string
-}
-
-export enum FUNCTION_TYPE {
-    ZERO,
-    SWAP_REMOTE,
-    ADD_LIQUIDITY,         
-    REDEEM_LOCAL_CALL_BACK,
-    WITHDRAW_REMOTE,
 }
 
 export type ChainType = {
@@ -44,42 +38,38 @@ export type Chains = 'arbitrum' | 'polygon' | 'optimism' | 'ethereum' | 'avalanc
 export type BridgeOptions = {
     max?: boolean
     slipage?: number
+    sort?: 'output' | 'gas' | 'time'
+    uniqueRoutesPerBridge?: boolean
 }
 
 export type BridgeTx = {
     signer: Wallet
-    Router: Contract
-    payload: StargateParams
-    messageFee: bigint        // Fees needed to pay for the cross chain message fee
-    utils: {
-        tokenIn: Token
-        fromChain: Chains
-        toChain: Chains
+    fromToken: Token
+    toToken: Token
+    fromChain: Chains
+    toChain: Chains
+    amount: bigint
+    quote: Quote
+    routeTx: {
+        userTxType: string,
+        txType: string,
+        txData: string,
+        txTarget: AddressLike,
+        chainId: number,
+        userTxIndex: number,
+        value: string, // Hexadecimal bigint
+        approvalData: {
+            minimumApprovalAmount: bigint,
+            approvalTokenAddress: AddressLike,
+            allowanceTarget: AddressLike,
+            owner: AddressLike
+        }
     }
 }
 
 export type ApproveTx = {
-    signer: Wallet
-    Erc20: Contract, 
-    spender: string, 
-    amount: bigint,
-    token: Token
-}
-
-
-
-export type StargateParams = {
-    dstChainId: number    // stargate dst chain id
-    srcPoolId: bigint     // stargate src pool id
-    dstPoolId: bigint     // stargate dst pool id
-    refundAddress: string // Address to receive the remaining gas
-    amount: bigint        // amount to bridge
-    amountMin: bigint     // amount to bridge minimum
-    lzTxParams: {
-        dstGasForCall: number 
-        dstNativeAmount: number
-        dstNativeAddr: string // Encoded address
-    }
-    to: string            // Encoded address for fallback tranfers on sgReceive
-    payload: string       // Encoded data for payloas
+    signer: Wallet,
+    data: string,
+    to: AddressLike,
+    from: AddressLike,
 }

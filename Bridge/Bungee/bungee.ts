@@ -1,11 +1,10 @@
 import { Wallet, ethers } from "ethers"
-import { Chains, BridgeOptions, BridgeTx, ApproveTx } from "./types"
-import { DEFAULT_BRIDGE_OPTION, STARGATE_CHAIN_ID } from "./config/constants"
-import { resolve_provider } from "./utils"
+import { Chains, BridgeOptions, BridgeTx, ApproveTx } from "./type/types"
+import { resolve_chain } from "./utils"
 import { get_bridge_tx } from "./calldata/bridgeCalldata"
-import { get_approve_tx } from "./calldata/approveCalldata"
 import { exec_approve } from "./transactions/approve"
 import { exec_bridge } from "./transactions/bridge"
+import { DEFAULT_BRIDGE_OPTION } from "./config/constants"
 
 
 
@@ -33,22 +32,18 @@ export const bridge = async(
     
     try {
 
-        const provider = resolve_provider( STARGATE_CHAIN_ID[ fromChain ] )
-        signer = new Wallet( signer.privateKey, provider )
+        signer = resolve_chain( signer, fromChain )
 
-        const bridgeTx: BridgeTx = await get_bridge_tx( signer, tokenFrom, tokenTo, fromChain, toChain, amount, options )
-        const amountString: string = ethers.formatUnits( bridgeTx.payload.amount, bridgeTx.utils.tokenIn.decimals )
-
-        const approveTx: ApproveTx | undefined = await get_approve_tx( signer, amountString, bridgeTx.utils.tokenIn, fromChain )
+        const bridgeTx = await get_bridge_tx( signer, tokenFrom, tokenTo, fromChain, toChain, amount, options )
 
         /*========================================= TX =================================================================================================*/
-        await exec_approve( approveTx )
+        await exec_approve( bridgeTx )
         await exec_bridge( bridgeTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
 
-        throw error
+        throw( error )
 
     }
 }

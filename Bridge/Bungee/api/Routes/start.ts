@@ -1,13 +1,14 @@
 import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
-import { StartRoute, Route } from "../../type/api/routes";
+import { StartRoute } from "../../type/api/routes";
+import { RouteTx } from "../../type/api/app";
 
 dotenv.config()
 
 const ENDPOINT = "/route/start"
 
-export const start = async( route: StartRoute ): Promise<Route> => {
+export const start = async( route: StartRoute ): Promise<RouteTx> => {
 
     const url = SOCKET_V2_URL + ENDPOINT
     const headers = {

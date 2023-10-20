@@ -1,28 +1,44 @@
+import Bungee from "../Bridge/Bungee"
 import { Wallet } from "ethers"
-import { get_all_token } from "../Bridge/Bungee/api/TokenLists/all"
-import { get_from_token_list } from "../Bridge/Bungee/api/TokenLists/from-token-list"
-import { get_chain_token } from "../Bridge/Bungee/api/TokenLists/chain"
-import { get_gas_price } from "../Bridge/Bungee/api/App/gas-price"
-import { get_token_price } from "../Bridge/Bungee/api/App/token-price"
-import dotenv from "dotenv"
-import { TOKENS } from "../Bridge/Bungee/config/constants"
-
+import { Chains } from "../Bridge/Bungee/type/types"
+import { NATIVE_TOKEN } from "../Bridge/Bungee/config/constants"
 
 const main = async() => {
 
+    const { TOKENS, CHAIN_ID } = Bungee.Constant
+    const { resolve_provider } = Bungee.Utils
+    const { log_balances } = Bungee.Log
     
     try {
+
         // Set up
+        const fromChain: Chains = "polygon" 
+        const toChain: Chains = "arbitrum" 
+        const provider = resolve_provider( CHAIN_ID[ fromChain ] )
+        const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
+    
+        console.log("account: ", signer.address)
+        await log_balances( signer, fromChain )
+        console.log("")
+        
 
-        console.log( await get_token_price( TOKENS.ethereum.usdc, 1 ) )
-        // console.log( await get_gas_price( 10 ) )
+        await Bungee.bridge(
+            signer,
+            TOKENS[ fromChain ].usdc,
+            NATIVE_TOKEN,
+            fromChain,
+            toChain,
+            "1000",
+            // { max: true }
+        )
         
     } catch ( error: any ) {
 
-        throw( error )    
+        console.log( error )    
 
     }
 }
   
 main()
+

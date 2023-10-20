@@ -66,7 +66,7 @@ export type RouteData = {
     totalGasFeesInUsd: number;
     recipient: string;
     sender: string;
-    userTxs: Array<Object>; // You may need to define this type based on the actual structure
+    userTxs: UserTx[]; // You may need to define this type based on the actual structure
     receivedValueInUsd: number;
     inputValueInUsd: number;
     outputValueInUsd: number;
@@ -76,6 +76,63 @@ export type RouteData = {
     t2bReceiverAddress: string;
     extraData: Record<string, any>; // You may need to define this type based on the actual structure
 };
+
+export type UserTx =  {
+    userTxType: string;
+    txType: string;
+    chainId: number;
+    toAmount: string;
+    toAsset: Token
+    stepCount: number;
+    routePath: string;
+    sender: AddressLike;
+    approvalData: null | any; 
+    steps: UserStep[]; 
+    gasFees: {
+        gasAmount: string;
+        feesInUsd: number;
+        asset: Token;
+        gasLimit: number;
+    };
+    serviceTime: number;
+    recipient: AddressLike;
+    maxServiceTime: number;
+    bridgeSlippage: number;
+    userTxIndex: number;
+}
+
+export type UserStep = {
+    type: string;
+    protocol: {
+      name: string;
+      displayName: string;
+      icon: string;
+      securityScore: number;
+      robustnessScore: number;
+    };
+    fromChainId: number;
+    fromAsset: Token;
+    fromAmount: string;
+    toChainId: number;
+    toAsset: Token;
+    toAmount: string;
+    bridgeSlippage: number;
+    minAmountOut: string;
+    protocolFees: {
+      amount: string;
+      asset: Token; 
+      feesInUsd: number;
+    };
+    gasFees: {
+      gasAmount: string;
+      gasLimit: number;
+      asset: Token; 
+      feesInUsd: number;
+    };
+    serviceTime: number;
+    maxServiceTime: number;
+    extraData: object;
+}
 
 export type RefuelData = {
     fromAmount: bigint;

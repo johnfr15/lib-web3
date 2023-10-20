@@ -7,6 +7,8 @@ import chains from "../config/chains"
 
 export const get_token = async( tokenAddress: string, chain: Chains ): Promise<Token> => {
 
+    console.log(tokenAddress)
+
     const FILE_PATH = __dirname + "/../config/tokens/" + chain + '.json'
     let Tokens: {[key: string]: Token } = {}
 
@@ -151,6 +153,9 @@ export const is_path = async( fromChain: string, toChain: string, fromToken: Tok
         throw(`Error: ${ FILE_PATH } do not contains the chain path datas.`)    
 
     }
+    
+    if ( Paths[ fromChain ][ fromToken.symbol ] === undefined )
+        throw(`Error: No bridge for chain ${ fromChain } with token ${ fromToken.symbol }.`) 
 
     const token = Paths[ fromChain ][ fromToken.symbol ].find( ( tokenPath: string ) => 
     {

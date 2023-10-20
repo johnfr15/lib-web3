@@ -1,8 +1,14 @@
-import { Wallet, ethers, Contract } from "ethers";
-import { Chains, BridgeOptions, BridgeTx, StargateParams, Token } from "../types";
-import { is_path, get_balance, get_native, get_token } from "../utils";
-import { getFee, get_router, get_stargate_params } from "../utils/bridge"
-import { ROUTER, ROUTER_ABI, NATIVE_TOKEN } from "../config/constants";
+import { Wallet, ethers } from "ethers";
+import { Chains, BridgeOptions, BridgeTx, Token } from "../type/types";
+import { Quote } from "../type/api/quote";
+import { get_token } from "../utils";
+import { fetch_quote } from "../utils/bridge";
+import { get_balance } from "../api/Balances/token-balance" 
+import { fetch_tx } from "../utils/bridge";
+import { get_build_tx } from "../api/App/build-tx"
+import { Balance } from "../type/api/balances";
+import { CHAIN_ID, NATIVE_TOKEN, TOKENS } from "../config/constants";
+import { RouteTx } from "../type/api/app";
 
 
 export const get_bridge_tx = async(
@@ -20,47 +26,37 @@ export const get_bridge_tx = async(
         if ( options?.max === false && amount === null )
             throw( `Error: in the options param you either need to specify "max" to true or set a number for 'amount'.`)
         
-        const token_from: Token  = await get_token( tokenFrom, fromChain )
-        const token_to: Token    = await get_token( tokenTo, toChain )
-        const balance_nativ      = await get_balance( NATIVE_TOKEN, signer )
-        const balance_from       = await get_balance( tokenFrom, signer )
-        const Router: Contract   = get_router( token_from, fromChain, signer )
-        const big_amount: bigint = options?.max ? balance_from.bigint : ethers.parseUnits( amount!, token_from.decimals )
+        const token_from: Token       = await get_token( tokenFrom, fromChain )
+        const token_to: Token         = await get_token( tokenTo, toChain )
+        const balance_from: Balance   = await get_balance( tokenFrom, CHAIN_ID[ fromChain ], signer.address )
+        const balance_native: Balance = await get_balance( NATIVE_TOKEN, CHAIN_ID[ fromChain ], signer.address )
+
+        const big_amount: bigint = options.max ? balance_from.balance : ethers.parseUnits( amount!, token_from.decimals)
+        const quote: Quote = await fetch_quote( signer, token_from, token_to, fromChain, toChain, big_amount, options )
+
+
+        if ( quote.routes.length === 0 )
+            throw( `Error: No route found for ${ fromChain } ${ ethers.formatUnits( balance_from.balance, balance_from.decimals ) } ${ token_from.symbol } to ${ toChain } ${ token_to.symbol }.`)
 
         
-        if ( balance_from.bigint === BigInt( 0 ) )
-            throw( `Error: Balance of token ${ token_from.symbol } is empty.`)
+        const routeTx: RouteTx = await fetch_tx( quote )
 
-        if ( await is_path( fromChain, toChain, token_from, token_to ) === false )
-            throw( `Error: Path not supported.\n\tFrom ${ fromChain }: ${ token_from.symbol }\n\tTo ${ toChain }: ${ token_to.symbol }`)
-
-
-        let sp: StargateParams = get_stargate_params( signer, token_from, token_to, fromChain, toChain, big_amount, options.slipage! )
-        const messageFee: bigint = await getFee( signer, sp, fromChain )
-
-                
-        if ( balance_nativ.bigint < messageFee )
-            throw( `Error: Not enough balance of native token for paying message fee (${ ethers.formatEther( messageFee )} ${ fromChain === "polygon" ? "MATIC" : "ETH" }).`)
-
-
-
-        const bridgeTx: BridgeTx = {
+        const brideTx: BridgeTx = { 
             signer: signer,
-            Router: Router,
-            payload: sp,
-            messageFee: messageFee,
-            utils: {
-                tokenIn: token_from,
-                fromChain: fromChain,
-                toChain: toChain,
-            },
+            fromToken: token_from,
+            toToken: token_to,
+            fromChain: fromChain,
+            toChain: toChain,
+            amount: big_amount,
+            quote: quote,
+            routeTx: routeTx,
         }
 
-        return bridgeTx
+        return brideTx
 
     } catch (error: any) {
         
-        throw error
+        throw( error )
 
     }
 }

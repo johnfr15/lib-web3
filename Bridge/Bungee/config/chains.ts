@@ -88,7 +88,7 @@ export default [
     },
     {
         "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
-        "chainId": "zksync",
+        "chainId": "324",
         "networkId": "zksync",
         "stargateId": "3",
         "name": "zkSync Lite",
@@ -100,7 +100,7 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://mainnet.era.zksync.io" ],
+        "rpc": [ "https://1rpc.io/5MhQH7HHMtWL2dh9x/zksync2-era" ],
         "watch": ["api"],
         "contracts": [],
         "tokens": [

@@ -30,9 +30,9 @@ export const get_build_tx = async( route: Route, options?: RouteOptions ): Promi
 
         return res.data.result
         
-    } catch (error) {
+    } catch (error: any) {
         
-        throw( error )
+        throw( error.response.data.error.message )
 
     }
 }

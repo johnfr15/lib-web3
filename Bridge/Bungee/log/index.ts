@@ -1,6 +1,6 @@
 import { Wallet, ethers, Contract } from "ethers"
 import { ERC20_ABI, TOKENS } from "../config/constants"
-import { Chains } from "../types"
+import { Chains } from "../type/types"
 
 
 export const log_balances = async(signer: Wallet, chain: Chains) => {

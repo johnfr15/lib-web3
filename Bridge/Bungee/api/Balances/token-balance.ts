@@ -24,6 +24,8 @@ export const get_balance = async( tokenAddress: AddressLike, chainId: number, us
 
         const res = await axios.get( url, { params, headers } )
 
+        res.data.result.balance = BigInt( res.data.result.balance )
+
         return res.data.result
         
     } catch (error) {
