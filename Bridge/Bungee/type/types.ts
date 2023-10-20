@@ -1,6 +1,5 @@
-import { Wallet, Contract, AddressLike } from "ethers"
-import { Quote } from "./api/quote"
-import { Balance } from "./api/balances"
+import { Wallet, AddressLike } from "ethers"
+import { Quote, UserTx } from "./api/quote"
 
 export type Token = {
     chainId: number
@@ -40,6 +39,7 @@ export type BridgeOptions = {
     slipage?: number
     sort?: 'output' | 'gas' | 'time'
     uniqueRoutesPerBridge?: boolean
+    securityBridges?: 1 | 2 | 3 | 4 | 5
 }
 
 export type BridgeTx = {
@@ -50,6 +50,7 @@ export type BridgeTx = {
     toChain: Chains
     amount: bigint
     quote: Quote
+    userTx: UserTx
     routeTx: {
         userTxType: string,
         txType: string,

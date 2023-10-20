@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS: BuildNextTxOptions = {
 /**
  * @notice Get next tx details of an active route
  */
-export const start = async( activeRouteId: number, options?: BuildNextTxOptions ): Promise<ActiveRoute> => {
+export const build_next = async( activeRouteId: number, options?: BuildNextTxOptions ): Promise<ActiveRoute> => {
 
     options = { ...DEFAULT_OPTIONS, ...options }
 

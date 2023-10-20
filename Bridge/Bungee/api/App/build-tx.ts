@@ -2,6 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
 import { RouteOptions, Route, RouteTx } from "../../type/api/app";
+import { RouteData } from "../../type/api/quote";
 
 dotenv.config()
 
@@ -27,6 +28,32 @@ export const get_build_tx = async( route: Route, options?: RouteOptions ): Promi
     try {
 
         const res = await axios.get( url, { params, headers } )
+
+        return res.data.result
+        
+    } catch (error: any) {
+        
+        throw( error.response.data.error.message )
+
+    }
+}
+
+/**
+ * @notice Get the tx details for the route.
+ */
+export const post_build_tx = async( route: RouteData ): Promise<any> => {
+
+    
+    const url = SOCKET_V2_URL + ENDPOINT
+    const body = { route }
+    const headers = {
+        'API-KEY': process.env.SOCKET_APIKEY!,
+        'Content-Type': 'application/json'
+    }
+
+    try {
+
+        const res = await axios.post( url, body, { headers } )
 
         return res.data.result
         

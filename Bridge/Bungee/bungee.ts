@@ -1,5 +1,5 @@
-import { Wallet, ethers } from "ethers"
-import { Chains, BridgeOptions, BridgeTx, ApproveTx } from "./type/types"
+import { Wallet } from "ethers"
+import { Chains, BridgeOptions } from "./type/types"
 import { resolve_chain } from "./utils"
 import { get_bridge_tx } from "./calldata/bridgeCalldata"
 import { exec_approve } from "./transactions/approve"
@@ -40,7 +40,6 @@ export const bridge = async(
         await exec_approve( bridgeTx )
         await exec_bridge( bridgeTx )
         /*=============================================================================================================================================*/
-        
     } catch (error: any) {
 
         throw( error )

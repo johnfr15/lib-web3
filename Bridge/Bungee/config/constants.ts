@@ -117,13 +117,13 @@ export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
   max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
   uniqueRoutesPerBridge: true,
-  sort: 'output'
+  sort: 'output',
+  securityBridges: 3
 }
 
 
 
 // Chains
-
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
   ethereum: 1,

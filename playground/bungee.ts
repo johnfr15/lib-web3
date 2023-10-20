@@ -12,25 +12,24 @@ const main = async() => {
     try {
 
         // Set up
-        const fromChain: Chains = "polygon" 
-        const toChain: Chains = "arbitrum" 
+        const fromChain: Chains = "arbitrum" 
+        const toChain: Chains = "polygon" 
         const provider = resolve_provider( CHAIN_ID[ fromChain ] )
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
     
-        console.log("account: ", signer.address)
+        console.log( "account: ", signer.address )
         await log_balances( signer, fromChain )
         console.log("")
         
 
         await Bungee.bridge(
             signer,
-            TOKENS[ fromChain ].usdc,
             NATIVE_TOKEN,
+            TOKENS[ toChain ].usdc,
             fromChain,
             toChain,
-            "1000",
-            // { max: true }
+            "0.01",
         )
         
     } catch ( error: any ) {

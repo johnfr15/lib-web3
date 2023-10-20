@@ -1,6 +1,6 @@
 import { AddressLike } from "ethers"
 import { Token } from "../types"
-import { RefuelData, RouteData } from "./quote"
+import { RouteData } from "./quote"
 
 // start
 export type StartRoute = {
@@ -10,7 +10,6 @@ export type StartRoute = {
     toAssetAddress: AddressLike,
     includeFirstTxDetails: boolean,
     route: RouteData
-    refuel: RefuelData
 }
 
 export type Route = {
