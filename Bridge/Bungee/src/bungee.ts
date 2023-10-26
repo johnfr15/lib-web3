@@ -1,10 +1,10 @@
 import { Wallet } from "ethers"
-import { Chains, BridgeOptions } from "./type/types"
+import { Chains, BridgeOptions } from "../type/types"
 import { resolve_chain } from "./utils"
 import { get_bridge_tx } from "./calldata/bridgeCalldata"
 import { exec_approve } from "./transactions/approve"
 import { exec_bridge } from "./transactions/bridge"
-import { DEFAULT_BRIDGE_OPTION } from "./config/constants"
+import { DEFAULT_BRIDGE_OPTION } from "../config/constants"
 
 
 

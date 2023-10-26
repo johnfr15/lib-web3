@@ -6,8 +6,7 @@ import { NATIVE_TOKEN } from "../Bridge/Bungee/config/constants"
 const main = async() => {
 
     const { TOKENS, CHAIN_ID } = Bungee.Constant
-    const { resolve_provider } = Bungee.Utils
-    const { log_balances } = Bungee.Log
+    const { resolve_provider, log_balances } = Bungee.Utils
     
     try {
 

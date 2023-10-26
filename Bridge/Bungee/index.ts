@@ -1,8 +1,6 @@
-import { bridge } from "./bungee"
+import { bridge } from "./src/bungee"
 import * as Constant from "./config/constants"
-import * as Utils from "./utils"
-import * as Types from "./type/types"
-import * as Log from "./log"
+import * as Utils from "./src/utils"
 
 
-export default { bridge, Constant, Utils, Types, Log }
+export default { bridge, Constant, Utils }

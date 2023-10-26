@@ -1,6 +1,6 @@
 import { TransactionReceipt, ethers, Contract } from "ethers"
-import { BridgeTx } from "../type/types"
-import { ERC20_ABI } from "../config/constants"
+import { BridgeTx } from "../../type/types"
+import { ERC20_ABI } from "../../config/constants"
 
 export const exec_approve = async( brideTx: BridgeTx ): Promise<TransactionReceipt | undefined> => {
 

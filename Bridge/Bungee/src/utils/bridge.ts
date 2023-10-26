@@ -1,8 +1,8 @@
 import { Wallet } from "ethers";
-import { Chains, BridgeOptions, Token } from "../type/types";
-import { QuoteParams, Quote, QuoteOptions, RouteData } from "../type/api/quote";
-import { get_quote } from "../api/Quote/quote"
-import { CHAIN_ID } from "../config/constants";
+import { Chains, BridgeOptions, Token } from "../../type/types";
+import { QuoteParams, Quote, QuoteOptions, RouteData } from "../../type/api/quote";
+import { get_quote } from "../../api/Quote/quote"
+import { CHAIN_ID } from "../../config/constants";
 
 export const fetch_quote = async(
     signer: Wallet,
