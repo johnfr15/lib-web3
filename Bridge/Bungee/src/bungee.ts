@@ -15,7 +15,10 @@ import { DEFAULT_BRIDGE_OPTION } from "../config/constants"
  * @param tokenTo       - Token to be received in the target chain
  * @param fromChain     - Current chain 
  * @param toChain       - target chain
- * @param options       - (optional) extra options for the tx 
+ * @param options       
+ *        - max:          (optional) Will bridge maximum amount from balance of 'tokenFrom' of signer
+ *        - percent:      (optional) Will bridge 'percent' of amount from balance of 'tokenFrom' of signer
+ *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
  * 
  */
 export const bridge = async(
