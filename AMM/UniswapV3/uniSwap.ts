@@ -137,10 +137,12 @@ export const addLiquidity = async(
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenA         - Address of token A
  * @param tokenB         - Address of token B
- * @param percent        - (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
- * @param network        - (optional) 'testnet' is the default one
- * @param slipage        - (optional) protection against price movement or to high price impact default is 2%
- * @param deadline       - (optional) Maximum amount of time (in unix time) before the trade get reverted
+ * @param chain          - The chain's name to operate the swap
+ * @param options       
+ *        - slipage        (optional) protection against price movement or to high price impact default is 2%
+ *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
+ *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
+ *        - tokenId:       (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 
