@@ -10,7 +10,7 @@ import { Trade, SwapTx, SwapOptions } from "../../types/swap"
 export const get_swap_tx = async(
     signer: Wallet,
     path: [string, string],
-    amount: string,
+    amount: string | null,
     chain: Chains,
     options: SwapOptions
 ): Promise<SwapTx> => {
