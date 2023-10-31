@@ -1,9 +1,12 @@
 import fs from "fs"
-import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, QUOTER_V2, QUOTER_V2_ABI, CHAIN_ID_TO_NAME, FACTORY, FACTORY_ABI, POOL_ABI } from "../config/constants"
-import { BEST_FEE_POOL } from "../config/feePool";
-import { Token, Pool, Chains, Position, Fees } from "../types";
-import chains from "../config/chains"
+import * as addUtils from "./add"
+import * as swapUtils from "./swap"
+import * as removeUtils from "./remove"
+import chains from "../../config/chains"
+import { BEST_FEE_POOL } from "../../config/feePool"
+import { Token, Pool, Chains, State, Point, Fees } from "../../types"
+import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress, AddressLike } from "ethers"
+import { ERC20_ABI, TOKENS, CHAIN_ID, CONTRACTS, QUOTER_ABI, CHAIN_ID_TO_NAME, FACTORY_ABI, POOL_ABI, LIQUIDITY_MANAGER_ABI } from "../../config/constants"
 
 
 
@@ -14,9 +17,10 @@ export const resolve_chain = ( signer: Wallet, chain: Chains ): Wallet => {
 
     return signer
 }
+
 export const get_token = async( tokenAddress: string, chain: Chains ): Promise<Token> => {
 
-    const FILE_PATH = __dirname + "/../config/tokens/" + chain + '.json'
+    const FILE_PATH = __dirname + "/../../config/tokens/" + chain + '.json'
     let Tokens: {[key: string]: Token } = {}
 
     if ( is_native( tokenAddress, chain ) )
@@ -35,7 +39,7 @@ export const get_token = async( tokenAddress: string, chain: Chains ): Promise<T
     const token = Object.values(Tokens).find( (token: Token) => 
     {
         if ( BigInt( token.address ) !== BigInt( tokenAddress ) ) return false
-        if ( token.chainId !== CHAIN_ID[ chain ] )               return false
+        if ( token.chainId !== CHAIN_ID[ chain ] )                return false
 
         return true
     })
@@ -63,40 +67,35 @@ export const resolve_provider = ( chainId: number ): JsonRpcProvider => {
 }
 
 
-export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, chain: Chains ): Promise<Pool> => {
+export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, chain: Chains, fee?: Fees ): Promise<Pool> => {
 
     try {
         
-        const QuoterV2 = new Contract( QUOTER_V2[ chain ], QUOTER_V2_ABI, signer )
-        const Factory = new Contract( FACTORY[ chain ], FACTORY_ABI, signer )
+        const Quoter = new Contract( CONTRACTS[ chain ].periphery.quoterWithoutLimit, QUOTER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS[ chain ].periphery.liquidityManager, LIQUIDITY_MANAGER_ABI, signer )
 
         const bestFee = get_best_fee( tokenA, tokenB, chain )
-        const pair = await Factory.getPool( tokenA.address, tokenB.address, bestFee )
+        const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0' )
+        const pair: string = await NftManager.pool( token0.address, token1.address, fee ?? bestFee )
+        
+        const Pool = new Contract( pair, POOL_ABI, signer )
+
+
+        if ( pair === ZeroAddress )
+            throw new Error( `Error: pool ${tokenA.symbol}/${tokenB.symbol} Fee ${ fee ?? bestFee } does not exist.`)
 
         
-        if ( BigInt( pair ) === BigInt( 0 ) )
-            throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } Fee: ${ bestFee } not created yet.`)
-    
-    
-        const Pool = new Contract( pair, POOL_ABI, signer )
-        const [ slot0, liquidity, tickSpacing, ] = await Promise.all([
-            Pool.slot0(),
-            Pool.liquidity(),
-            Pool.tickSpacing(),
-        ])
-        const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
-
+        const state = await get_state( Pool )
+        const point = await get_point( Pool, state )
     
         const pool: Pool = {
-            tokenA: token0,
-            tokenB: token1,
-            pair: pair,
-            fees: bestFee,
-            tickSpacing: parseInt( tickSpacing.toString() ),
-            liquidity: liquidity,
-            sqrtPriceX96: slot0[0],
-            tick: parseInt( slot0[1].toString() ),
-            Quoter: QuoterV2,
+            tokenX: token0,
+            tokenY: token1,
+            pairAddress: pair,
+            fees: fee ?? bestFee,
+            state: state,
+            point: point,
+            Quoter: Quoter,
             Pool: Pool
         }
     
@@ -106,6 +105,41 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
         
         throw( error )
 
+    }
+}
+
+export const get_state = async( Pool: Contract ): Promise<State> => {
+
+    try {
+
+        const stateKeys = ['sqrtPrice_96', 'currentPoint', 'observationCurrentIndex', 'observationQueueLen', 
+            'observationNextQueueLen', 'locked', 'liquidity', 'liquidityX']
+        const stateValues = await Pool.state()
+
+        const state: State = Object.fromEntries( stateKeys.map( (key, index) => [key, stateValues[index]] ) ) as State
+
+        return state 
+
+    } catch (error) {
+        
+        throw( error )
+    }
+}
+
+export const get_point = async( Pool: Contract, state: State ): Promise<Point> => {
+
+    try {
+
+        const pointKeys = ['liquidSum', 'liquidDelta', 'accFeeXOut_128', 'accFeeYOut_128', 'isEndpt']
+        const pointValues = await Pool.points( state.currentPoint )
+
+        const point: Point = Object.fromEntries( pointKeys.map( (key, index) => [key, pointValues[index]] ) ) as Point
+
+        return point 
+
+    } catch (error) {
+        
+        throw( error )
     }
 }
 
@@ -151,21 +185,21 @@ export const get_balance = async(
 
 export const get_quote = ( amountA: number, tokenA: Token, pool: Pool ): bigint => {
 
-    const { sqrtPriceX96 } = pool
+    const { sqrtPrice_96 } = pool.state
 
-    const x =  pool.tokenA
-    const y =  pool.tokenB
+    const x =  pool.tokenX
+    const y =  pool.tokenY
 
     // see https://ethereum.stackexchange.com/questions/9868 5/computing-the-uniswap-v3-pair-price-from-q64-96-number
     // see https://www.youtube.com/watch?v=hKhdQl126Ys
-    const priceX96_to_price0 = (parseFloat( sqrtPriceX96.toString() ) /  2 ** 96) ** 2
+    const priceX96_to_price0 = (parseFloat( sqrtPrice_96.toString() ) /  2 ** 96) ** 2
 
     const priceX = priceX96_to_price0 * ( (10 ** x.decimals) / (10 ** y.decimals) )
     const priceY = 1 / priceX
 
-    const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? priceX : priceY
+    const token_price = BigInt( tokenA.address ) === BigInt( x.address ) ? priceX : priceY
     
-    const token_quoted = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA
+    const token_quoted = BigInt( tokenA.address ) === BigInt( x.address ) ? y : x
     const quote = (token_price * amountA).toFixed( token_quoted.decimals )
 
     const amountB = ethers.parseUnits( quote, token_quoted.decimals )
@@ -211,23 +245,6 @@ export const is_native = ( token: string, chain: Chains ): boolean => {
     return false
 }
 
-export const is_position = ( position: Position, tokenA: Token, tokenB: Token, chain: Chains ): boolean => {
-
-
-    const pos0 = BigInt( position.token0 )
-    const pos1 = BigInt( position.token1 )
-    const tokA = BigInt( tokenA.address )
-    const tokB = BigInt( tokenB.address )
-
-    const fee = parseInt( position.fee.toString() )
-    const bestFee = get_best_fee( tokenA, tokenB, chain )
-
-    if ( pos0 === tokA && pos1 === tokB && fee === bestFee ) return true
-    if ( pos0 === tokB && pos1 === tokA && fee === bestFee ) return true
-
-    return false
-}
-
 const get_best_fee = ( tokenA: Token, tokenB: Token, chain: Chains ): number => {
 
     const pool = tokenA.symbol + '_' + tokenB.symbol
@@ -240,27 +257,27 @@ const get_best_fee = ( tokenA: Token, tokenB: Token, chain: Chains ): number => 
     return bestFee
 }
 
-export const parse_position = ( position: any, tokenId: number ): Position | undefined => {
+export const log_balances = async(signer: Wallet, chain: Chains) => {
 
-    if ( position === undefined )
-        return undefined
+    const Dai  = new Contract( TOKENS[ chain ].dai   ?? ZeroAddress, ERC20_ABI, signer )
+    const Usdc = new Contract( TOKENS[ chain ].usdc  ?? ZeroAddress, ERC20_ABI, signer )
+    const Usdt = new Contract( TOKENS[ chain ].usdt  ?? ZeroAddress, ERC20_ABI, signer )
+    const Weth = new Contract( TOKENS[ chain ].weth9 ?? ZeroAddress, ERC20_ABI, signer )
 
-    const parsed: Position = {
-        tokenId: tokenId,
-        nonce: position['0'],
-        operator: position['1'],
-        token0: position['2'],
-        token1: position['3'],
-        fee: position['4'],
-        tickLower: position['5'],
-        tickUpper: position['6'],
-        liquidity: position['7'],
-        feeGrowthInside0LastX128: position['8'],
-        feeGrowthInside1LastX128: position['9'],
-        tokensOwed0: position['10'],
-        tokensOwed1: position['11'],
-    }
+    const nativeBalance = await signer.provider!.getBalance( signer.address ) 
+    
+    const daiBalance    = TOKENS[ chain ].dai   ? await Dai.balanceOf( signer.address ) : 0
+    const usdcBalance   = TOKENS[ chain ].usdc  ? await Usdc.balanceOf( signer.address ) : 0
+    const usdtBalance   = TOKENS[ chain ].usdt  ? await Usdt.balanceOf( signer.address ) : 0
+    const wethBalance   = TOKENS[ chain ].weth9 ? await Weth.balanceOf( signer.address ) : 0
 
-    return parsed
+    console.log("\n")
+    console.log( "Balance NATIVE: ", ethers.formatUnits( nativeBalance ) )
+    console.log( "Balance DAI:    ", ethers.formatUnits( daiBalance ) )
+    console.log( "Balance USDC:   ", ethers.formatUnits( usdcBalance, 6) )
+    console.log( "Balance USDT:   ", ethers.formatUnits( usdtBalance, 6) )
+    console.log( "Balance WETH:   ", ethers.formatUnits( wethBalance, 18) )
+    console.log("\n")
 }
 
+export default { swapUtils, addUtils, removeUtils }

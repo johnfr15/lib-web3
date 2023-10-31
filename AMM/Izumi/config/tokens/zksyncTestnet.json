@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "address": "0x8C3e3f2983DB650727F3e05B7a7773e4D641537B",
+    "chainId": 280,
+    "decimals": 18,
+    "logoURI": "https://tokens.pancakeswap.finance/images/zksync/0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91.png"
+  },
+  {
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "address": "0x0faF6df7054946141266420b43783387A78d82A9",
+    "chainId": 280,
+    "decimals": 6,
+    "logoURI": "https://tokens.pancakeswap.finance/images/zksync/0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4.png"
+  },
+  {
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "address": "0xfcEd12dEbc831D3a84931c63687C395837D42c2B",
+    "chainId": 280,
+    "decimals": 6,
+    "logoURI": "https://tokens.pancakeswap.finance/images/zksync/0x493257fD37EDB34451f62EDf8D2a0C418852bA4C.png"
+  },
+  {
+    "name": "Maker DAO",
+    "symbol": "DAI",
+    "address": "0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b",
+    "chainId": 280,
+    "decimals": 6,
+    "logoURI": "https://tokens.pancakeswap.finance/images/zksync/0x493257fD37EDB34451f62EDf8D2a0C418852bA4C.png"
+  }
+]

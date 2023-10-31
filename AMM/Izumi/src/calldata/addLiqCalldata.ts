@@ -1,8 +1,8 @@
 import { ethers, Wallet, Contract } from "ethers";
-import { AddLiquidityTx, AddOptions, Chains, Pool, Token } from "../types";
+import { AddLiquidityTx, AddOptions, Chains, Pool, Token } from "../../types";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote } from "../utils";
 import { get_token_id } from "../utils/add"
-import { MAX_TICK, MIN_TICK, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
+import { MAX_TICK, MIN_TICK, CONTRACTS, LIQUIDITY_MANAGER_ABI } from "../../config/constants";
 
 
 export const get_add_liq_tx = async(
@@ -13,10 +13,10 @@ export const get_add_liq_tx = async(
     amountB: string | null,
     chain: Chains,
     options: AddOptions
-): Promise<AddLiquidityTx> => {
+): Promise<AddLiquidityTx | void> => {
 
     let addTx: AddLiquidityTx;
-    
+    /*
     try {
 
         const token_a: Token = await get_token( addressA, chain )
@@ -46,6 +46,7 @@ export const get_add_liq_tx = async(
         throw error
 
     }
+    */
 }
 
 const get_max_liq = async(
@@ -53,11 +54,11 @@ const get_max_liq = async(
     pool: Pool,
     chain: Chains,
     options: AddOptions
-): Promise<AddLiquidityTx> => {
-
+): Promise<AddLiquidityTx | void> => {
+/*
     try {
 
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS[ chain ].periphery.liquidityManager, LIQUIDITY_MANAGER_ABI, signer )
 
         const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, chain, signer )
 
@@ -71,6 +72,7 @@ const get_max_liq = async(
          * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
          *      that token B is our max token to add
          */
+ /*       
         const b_is_min_balance: boolean = quote_a > balanceB.bigint 
 
         let balance_a: bigint = b_is_min_balance ? quote_b : balanceA.bigint
@@ -85,7 +87,7 @@ const get_max_liq = async(
             tokenA: pool.tokenA,
             tokenB: pool.tokenB,
             fee: pool.fees,
-            tokenId: tokenId,
+            // tokenId: tokenId,
             tickLower: MIN_TICK - (MIN_TICK % pool.tickSpacing),
             tickUpper: MAX_TICK - (MAX_TICK % pool.tickSpacing),
             amountADesired: balance_a,
@@ -105,6 +107,7 @@ const get_max_liq = async(
         throw error
         
     }
+    */
 }
 
 const get_liq = async(
@@ -114,13 +117,13 @@ const get_liq = async(
     amount: bigint, 
     chain: Chains,
     options: AddOptions
-): Promise<AddLiquidityTx> => {
-
+): Promise<AddLiquidityTx | void> => {
+/*
     try {
 
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS[ chain ].periphery.liquidityManager, LIQUIDITY_MANAGER_ABI, signer )
 
-        const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, chain, signer )
+        // const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, chain, signer )
         
         const token_1: Token = BigInt( pool.tokenA.address ) === BigInt( addr ) ? pool.tokenA : pool.tokenB
         const token_2: Token = BigInt( pool.tokenA.address ) !== BigInt( addr ) ? pool.tokenA : pool.tokenB
@@ -150,7 +153,7 @@ const get_liq = async(
             tokenA: token_1_is_min ? token_1 : token_2,
             tokenB: token_1_is_min ? token_2 : token_1,
             fee: pool.fees,
-            tokenId: tokenId,
+            // tokenId: tokenId,
             tickLower: MIN_TICK - (MIN_TICK % pool.tickSpacing),
             tickUpper: MAX_TICK - (MAX_TICK % pool.tickSpacing),
             amountADesired: token_1_is_min ? amount_1 : amount_2,
@@ -170,4 +173,5 @@ const get_liq = async(
         throw error
 
     }
+    */
 }

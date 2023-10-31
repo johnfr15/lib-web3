@@ -8,8 +8,9 @@ import { get_approve_tx } from './calldata/approveCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_decrease, exec_collect } from './transactions/remove';
-import { AddOptions, Chains, SwapOptions, RemoveOptions } from './types';
-import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, NFT_MANAGER, SWAP_ROUTER } from "./config/constants"
+import { AddOptions, Chains, RemoveOptions } from '../types';
+import { SwapOptions } from '../types/swap';
+import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, CONTRACTS } from "../config/constants"
 
 
 
@@ -19,24 +20,24 @@ import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, NFT_MAN
  * @name swap
  * @param signer        - Wallet to perform the swap
  * @param path          - token swap from path[0](input) to path[1](output) 
- * @param amountIn      - The amount of exact token (in token) to be swapped for the other one (out token)
- * @param amountOut     - The amount of exact token (out token) to be received for swaping the other one (in token)
+ * @param amount        - The amount of token to be sent or received 
  * @param chain         - The chain's name to operate the swap
  * @param options
- *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
- *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted
+ *        - tradeType     (optional) 0 = swap EXACT input, 1 = swap EXACT output (DEFAULT => 0)
+ *        - max:          (optional) If activated it will check for the highest amount possible from tokenA and tokenB 
+ *        - percent       (optional) Percentage of Liquidity Tokens (lp) to withdraw 
+ *        - slipage:      (optional) protection against price movement or to high price impact (DEFAULT => 0.5%)
+ *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted (DEFAULT => 20 minutes)
  */
 export const swap = async(
     signer: Wallet,
     path: [string, string],
-    amountIn: string | null,
-    amountOut: string | null,
+    amount: string,
     chain: Chains,
     options: SwapOptions = DEFAULT_SWAP_OPTION
 ) => {
     
     signer = resolve_chain( signer, chain )
-    options = { ...DEFAULT_REMOVE_OPTION, ...options }
 
     try {
 
@@ -46,14 +47,14 @@ export const swap = async(
             throw(`Slipage parameter must be a number between 0.01 and 100.`)
 
 
-        const swapTx = await get_swap_tx( signer, path, amountIn, amountOut, chain, options )
-        const approve_amount = ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenIn.decimals)
+        const swapTx = await get_swap_tx( signer, path, amount, chain, options )
+        const approve_amount = ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenIn.decimals )
 
-        const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, SWAP_ROUTER[ chain ], approve_amount, chain )
+        const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, CONTRACTS[ chain ].periphery.swap, approve_amount, chain )
 
         /*========================================= TX =================================================================================================*/
         await exec_approve( approveTx )
-        await exec_swap( swapTx! )
+        await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {
@@ -79,7 +80,6 @@ export const swap = async(
  *        - max:        (optional) If activated it will check for the highest amount possible from tokenA and tokenB  
  *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
  *        - deadline:   (optional) Maximum amount of time (in unix time) before the trade get reverted
- *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const addLiquidity = async(
     signer: Wallet,                        
@@ -90,7 +90,7 @@ export const addLiquidity = async(
     chain: Chains,
     options: AddOptions = DEFAULT_ADD_OPTION
 ): Promise<void> => {
-
+/*
     signer = resolve_chain( signer, chain )
 
     try {
@@ -109,22 +109,23 @@ export const addLiquidity = async(
 
 
         // Get approve token 'a' Tx
-        const approveATx = await get_approve_tx(signer, tokenA, NFT_MANAGER[ chain ], approve_amount_a, chain)
+        const approveATx = await get_approve_tx(signer, tokenA, CONTRACTS[ chain ].periphery.swap, approve_amount_a, chain)
 
         // Get approve token 'b' Tx
-        const approveBTx = await get_approve_tx(signer, tokenB, NFT_MANAGER[ chain ], approve_amount_b, chain)
-
+        const approveBTx = await get_approve_tx(signer, tokenB, CONTRACTS[ chain ].periphery.swap, approve_amount_b, chain)
+*/
         /*========================================= TX =================================================================================================*/
-        await exec_approve( approveATx )
-        await exec_approve( approveBTx )
-        await exec_add_liquidity( addTx )
+        // await exec_approve( approveATx )
+        // await exec_approve( approveBTx )
+        // await exec_add_liquidity( addTx )
         /*=============================================================================================================================================*/
-        
+ /*       
     } catch (error: any) {
 
         throw error
 
     }
+*/
 }
 
 
@@ -141,7 +142,6 @@ export const addLiquidity = async(
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%
  *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
- *        - tokenId:       (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 
@@ -165,8 +165,8 @@ export const withdrawLiquidity = async(
         const removeTx = await get_remove_tx( signer, tokenA, tokenB, chain, options )
 
         /*========================================= TX =================================================================================================*/        
-        await exec_decrease( removeTx )
-        await exec_collect( removeTx )
+        // await exec_decrease( removeTx )
+        // await exec_collect( removeTx )
         /*=============================================================================================================================================*/
 
     } catch (error: any) {

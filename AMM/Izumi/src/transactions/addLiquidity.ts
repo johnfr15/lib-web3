@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../types";
+import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../../types";
 import { is_native } from "../utils";
 
 /**

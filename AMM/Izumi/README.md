@@ -10,6 +10,8 @@
 - Docs: https://docs.izumi.finance/
 - Docs-devs: https://developer.izumi.finance/
 - Github: https://github.com/IzumiFinance/
+- Core-contract: https://github.com/izumiFinance/iZiSwap-core
+- Periphery-contract: https://github.com/izumiFinance/iZiSwap-periphery
 
 <br />
 <br />  

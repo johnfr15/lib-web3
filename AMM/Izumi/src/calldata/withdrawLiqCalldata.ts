@@ -1,9 +1,8 @@
 import { Wallet, Contract } from "ethers";
 import { get_pool, get_token, sort_tokens } from "../utils";
 import { get_amounts } from "../utils/remove";
-import { Pool, RemoveLiquidityTx, Token, Chains, RemoveOptions, Position } from "../types";
-import { find_position } from "../utils/remove";
-import { CHAIN_ID, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
+import { Pool, RemoveLiquidityTx, Token, Chains, RemoveOptions } from "../../types";
+import { CHAIN_ID, CONTRACTS, LIQUIDITY_MANAGER_ABI } from "../../config/constants";
 
 
 export const get_remove_tx = async(
@@ -12,8 +11,8 @@ export const get_remove_tx = async(
     tokenB: string, 
     chain: Chains,
     options: RemoveOptions
-): Promise<RemoveLiquidityTx> => {
-
+): Promise<RemoveLiquidityTx | void> => {
+/*
     try {
         
         const token_a: Token     = await get_token( tokenA, chain )
@@ -30,6 +29,7 @@ export const get_remove_tx = async(
         throw error
 
     }
+    */
 }
 
 const get_removeLiq = async(
@@ -37,13 +37,13 @@ const get_removeLiq = async(
     pool: Pool,
     chain: Chains,
     options: RemoveOptions
-): Promise<RemoveLiquidityTx> => {
-
+): Promise<RemoveLiquidityTx | void> => {
+/*
     const { tokenId, percent, slipage, deadline } = options
 
     try {
 
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS[ chain ].periphery.liquidityManager, LIQUIDITY_MANAGER_ABI, signer )
         const position: Position = await find_position( pool.tokenA, pool.tokenB, chain, signer, tokenId )
 
         if ( position.liquidity === BigInt( 0 ))
@@ -81,4 +81,5 @@ const get_removeLiq = async(
         throw error
 
     }
+*/
 }

@@ -1,13 +1,17 @@
-import { ethers, Wallet } from "ethers";
-import { Pool, Trade, Token, TradeType, Chains, SwapOptions, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
 import { get_quote } from ".";
+import { ethers, Wallet } from "ethers";
+import { Pool, Token, Chains, Balance, Fees } from "../../types";
+import { Trade, TradeType, SwapOptions } from "../../types/swap";
 
+/**
+ * This function will fetch all the informations we need in order to swap
+ * token 'in' for token 'out'
+ */
 export const get_trade = async( 
     signer: Wallet,
     tokenIn: Token, 
     tokenOut: Token,
-    amountIn: string | null,
-    amountOut: string | null,
+    amount: string,
     pool: Pool,
     chain: Chains,
     options: SwapOptions
@@ -18,39 +22,41 @@ export const get_trade = async(
 
     try {
 
-        const tradeType = amountIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT
+        const { EXACT_INPUT, EXACT_OUTPUT } = TradeType 
+        const { tradeType, slipage, deadline } = options
 
-        let amount_in: bigint  = ethers.parseUnits( amountIn ?? '0', tokenIn.decimals ) 
-        let amount_out: bigint = ethers.parseUnits( amountOut ?? '0', tokenOut.decimals )
+        let amount_in: bigint  = ethers.parseUnits( tradeType === EXACT_INPUT ? amount : '0', tokenIn.decimals ) 
+        let amount_out: bigint = ethers.parseUnits( tradeType === EXACT_OUTPUT ? amount : '0', tokenOut.decimals )
 
         
-        if ( tradeType === TradeType.EXACT_INPUT ) 
+        if ( tradeType === EXACT_INPUT ) 
         {
             amount_out = await get_amount_out( tokenIn, tokenOut, amount_in, pool )
-            amount_out_min = amount_out * BigInt( parseInt( ((100 - options.slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
+            amount_out_min = amount_out * BigInt( parseInt( ((100 - slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
         }
-        if ( tradeType === TradeType.EXACT_OUTPUT ) 
+        if ( tradeType === EXACT_OUTPUT ) 
         {
             amount_in = await get_amount_in( tokenIn, tokenOut, amount_out, pool )
-            amount_in_max = amount_in * BigInt( parseInt( ((options.slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
+            amount_in_max = amount_in * BigInt( parseInt( ((slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
         }
         
 
-        const trade: Trade = { 
+        const trade: Trade = {
             tokenIn: tokenIn,
             tokenOut: tokenOut,
             path: [ tokenIn.address, tokenOut.address ],
+            pathEncoded: encode_path( tokenIn, tokenOut, pool.fees ),
             amountIn: amount_in, 
             amountOut: amount_out, 
             amountInMax: amount_in_max, 
             amountOutMin: amount_out_min,
-            sqrtPriceLimitX96: BigInt( 0 ),
-            to: signer.address,
             priceImpact: 0,
+            sqrtPriceLimitX96: pool.state.sqrtPrice_96,
+            to: signer.address,
             pool: pool,
-            slipage: options.slipage!,
+            slipage: slipage!,
             tradeType: tradeType,
-            deadline: options.deadline!,
+            deadline: deadline!,
             chain: chain,
         }
 
@@ -63,34 +69,44 @@ export const get_trade = async(
     }
 }
 
+/**
+ * Mock the transaction using the 'Quoter' contract to get the output amount of this swap
+ * 
+ */
 export const get_amount_out = async( tokenIn: Token, tokenOut: Token, amountIn: bigint, pool: Pool ): Promise<bigint> => {
 
-    const params: QuoteExactInputSingleParams = { 
-        tokenIn: tokenIn.address, 
-        tokenOut: tokenOut.address, 
-        amountIn: amountIn, 
-        fee: pool.fees, 
-        sqrtPriceLimitX96: BigInt( 0 )
+    try {
+
+        const encoded_path: string = encode_path( tokenIn, tokenOut, pool.fees )
+        const [ amountOut ] = await pool.Quoter.swapAmount.staticCall( amountIn, encoded_path )
+    
+        return amountOut
+
+    } catch (error) {
+        
+        throw( error )
+
     }
-
-    const [amountOut ] = await pool.Quoter.quoteExactInputSingle.staticCall( params )
-
-    return amountOut
 }
 
+/**
+ * Mock the transaction using the 'Quoter' contract to get the input amount to get the EXACT output
+ * 
+ */
 export const get_amount_in = async( tokenIn: Token, tokenOut: Token, amountOut: bigint, pool: Pool ): Promise<bigint> => {
 
-    const params: QuoteExactOutputSingleParams = { 
-        tokenIn: tokenIn.address, 
-        tokenOut: tokenOut.address, 
-        amount: amountOut, 
-        fee: pool.fees, 
-        sqrtPriceLimitX96: BigInt( 0 )
+    try {
+
+        const encoded_path: string = encode_path( tokenIn, tokenOut, pool.fees )
+        const [ amountIn ] = await pool.Quoter.swapDesire.staticCall( amountOut, encoded_path )
+    
+        return amountIn
+
+    } catch (error) {
+
+        throw( error )
+
     }
-
-    const [ amountIn ] = await pool.Quoter.quoteExactOutputSingle.staticCall( params )
-
-    return amountIn
 }
 
 export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
@@ -107,6 +123,34 @@ export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<numb
     return priceImpact
 }
 
+/**
+ * This function will return the amount we want to send/received depending of the option specified
+ * Fix amount / max of our balance / percentage of our balance 
+ * 
+ */
+export const get_amount = ( amount: string, balance_in: Balance, balance_out: Balance, options: SwapOptions ) => {
+
+    const { max, percent, tradeType } = options
+    const balance: Balance = tradeType === TradeType.EXACT_INPUT ? balance_in : balance_out  
+
+    if ( max )
+        return balance.string
+    if ( percent )
+        return ethers.formatUnits( ( balance.bigint * BigInt( percent ) / BigInt( 100 ) ), balance.decimals )
+    
+    return amount
+}
+
+export const encode_path = ( tokenIn: Token, tokenOut: Token, fees: Fees ) => {
+
+    const fee_uint8: Uint8Array = ethers.toBeArray( ethers.getUint( fees ) );
+    const encoded_fee: string = ethers.zeroPadValue( fee_uint8, 3 ); // Ensure it's 3 bytes long
+
+    // Concatenate the encoded values
+    const encoded_path: string = ethers.concat([ tokenIn.address, encoded_fee, tokenOut.address ]);
+
+    return encoded_path
+}
 
 /**
  * @name enforce_fees
