@@ -23,20 +23,21 @@ import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, CONTRAC
  * @param amount        - The amount of token to be sent or received 
  * @param chain         - The chain's name to operate the swap
  * @param options
- *        - tradeType     (optional) 0 = swap EXACT input, 1 = swap EXACT output (DEFAULT => 0)
- *        - max:          (optional) If activated it will check for the highest amount possible from tokenA and tokenB 
- *        - percent       (optional) Percentage of Liquidity Tokens (lp) to withdraw 
+ *        - tradeType:    (optional) 0 = swap EXACT input, 1 = swap EXACT output                                       
+ *        - max:          (optional) Will swap your total balance of token in 
+ *        - percent       (optional) Percentage of your balance of token in to be swap                                  
  *        - slipage:      (optional) protection against price movement or to high price impact (DEFAULT => 0.5%)
  *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted (DEFAULT => 20 minutes)
  */
 export const swap = async(
     signer: Wallet,
     path: [string, string],
-    amount: string,
+    amount: string | null,
     chain: Chains,
-    options: SwapOptions = DEFAULT_SWAP_OPTION
+    options?: SwapOptions
 ) => {
     
+    options = { ...DEFAULT_SWAP_OPTION, ...options }
     signer = resolve_chain( signer, chain )
 
     try {
@@ -45,7 +46,8 @@ export const swap = async(
             throw(`Error: token undefined path[0]: ${ path[0] }, path[1]: ${ path[1] }.`)
         if ( options.slipage! < 0.01 || options.slipage! > 100 )
             throw(`Slipage parameter must be a number between 0.01 and 100.`)
-
+        if ( amount === null && options.max === false && options.percent === undefined )
+            throw(`Error: You need to specify an 'amount' or set options 'max' to true or pencent.`)
 
         const swapTx = await get_swap_tx( signer, path, amount, chain, options )
         const approve_amount = ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenIn.decimals )
@@ -77,6 +79,7 @@ export const swap = async(
  * @param amountB       - Amount of second token. if set to null will check for amountA or max
  * @param chain         - The chain's name to operate the swap
  * @param options
+ *        - percent     (optional) Percentage of Liquidity Tokens (lp) to withdraw 
  *        - max:        (optional) If activated it will check for the highest amount possible from tokenA and tokenB  
  *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
  *        - deadline:   (optional) Maximum amount of time (in unix time) before the trade get reverted

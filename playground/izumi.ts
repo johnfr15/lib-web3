@@ -29,7 +29,8 @@ const main = async() => {
             signer,
             [ TOKENS[ chain ].usdc, TOKENS[ chain ].eth ],
             '1',
-            chain
+            chain,
+            { percent: 66 }
         )
 
         // await Izumi.addLiquidity( 

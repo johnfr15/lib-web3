@@ -55,7 +55,7 @@ export const get_trade = async(
             to: signer.address,
             pool: pool,
             slipage: slipage!,
-            tradeType: tradeType,
+            tradeType: tradeType!,
             deadline: deadline!,
             chain: chain,
         }
@@ -128,7 +128,7 @@ export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<numb
  * Fix amount / max of our balance / percentage of our balance 
  * 
  */
-export const get_amount = ( amount: string, balance_in: Balance, balance_out: Balance, options: SwapOptions ) => {
+export const get_amount = ( amount: string | null, balance_in: Balance, balance_out: Balance, options: SwapOptions ): string => {
 
     const { max, percent, tradeType } = options
     const balance: Balance = tradeType === TradeType.EXACT_INPUT ? balance_in : balance_out  
@@ -136,9 +136,9 @@ export const get_amount = ( amount: string, balance_in: Balance, balance_out: Ba
     if ( max )
         return balance.string
     if ( percent )
-        return ethers.formatUnits( ( balance.bigint * BigInt( percent ) / BigInt( 100 ) ), balance.decimals )
+        return ethers.formatUnits( ( balance.bigint * BigInt( percent * 100 ) / BigInt( 100 * 100 ) ), balance.decimals )
     
-    return amount
+    return amount!
 }
 
 export const encode_path = ( tokenIn: Token, tokenOut: Token, fees: Fees ) => {

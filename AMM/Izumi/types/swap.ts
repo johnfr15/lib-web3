@@ -3,7 +3,7 @@ import { Token, Pool, Chains, Fees } from "."
 
 
 export type SwapOptions = {
-    tradeType: TradeType
+    tradeType?: TradeType
     percent?: number  // A number: 0.00 < percent <= 100.00
     max?: boolean
     slipage?: number
