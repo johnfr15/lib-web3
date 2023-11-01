@@ -128,12 +128,18 @@ export const addLiquidity = async(
     }
 ): Promise<void>
 ```
-If **percent** parameter is activated whatever amount is in *param 3* or/and *param 5* the function won't care and will fetch the 'percent' amount of tokens we can add in the pool wether its tokenA or tokenB the least quantity we own.  
-If **max** parameter is activated whatever amount is in *param 3* or/and *param 5* or if `percent` param is activated the function won't care and will fetch the max amount of tokens we can add in the pool wether its tokenA or tokenB the least quantity we own.  
-If **amountA** is set to ***null*** => **amountB** will be used to fetch the quote of **amountA**  
-If both **amountA** & **amountB** is set to a number => **amountA** will be used to fetch the quote of **amountB**  
-If both **amountA** & **amountB** is set to ***null*** => **max** param will be used   
-If the three **amountA** & **amountB** & **max** is set to ***null*** => throw error  
+**NOTE**: If `percent` parameter is activated whatever amount is in *param 3* or/and *param 5* the function won't care and will fetch the 'percent' amount of tokens we can add in the pool wether its tokenA or tokenB the least quantity we own.  
+  
+**NOTE**: If `max` parameter is activated whatever amount is in *param 3* or/and *param 5* or if `percent` param is activated the function won't care and will fetch the max amount of tokens we can add in the pool wether its tokenA or tokenB the least quantity we own.  
+  
+**NOTE**: If `amountA` is set to *null* => `amountB` will be used to fetch the quote of `amountA`  
+  
+**NOTE**: If both `amountA` & `amountB` is set to a number => `amountA` will be used to fetch the quote of `amountB`  
+  
+**NOTE**: If both `amountA` & `amountB` is set to ***null*** => `max` param will be used   
+  
+**NOTE**: If the three `amountA` & `amountB` & `max` is set to ***null*** => throw error  
+  
   
 `signer`: The signer acount that will sign the transaction  
   
