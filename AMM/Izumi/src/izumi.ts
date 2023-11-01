@@ -149,6 +149,8 @@ export const addLiquidity = async(
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%
  *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
+ *        - fee:        (optional) The applied fee for the pool TokenIn/TokenOut 
+ *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 

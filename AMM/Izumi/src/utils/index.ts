@@ -5,8 +5,8 @@ import * as removeUtils from "./remove"
 import chains from "../../config/chains"
 import { BEST_FEE_POOL } from "../../config/feePool"
 import { Token, Pool, Chains, State, Point, Fees } from "../../types"
-import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress, AddressLike } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, CONTRACTS, QUOTER_ABI, CHAIN_ID_TO_NAME, FACTORY_ABI, POOL_ABI, LIQUIDITY_MANAGER_ABI } from "../../config/constants"
+import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress} from "ethers"
+import { ERC20_ABI, TOKENS, CHAIN_ID, CONTRACTS, QUOTER_ABI, CHAIN_ID_TO_NAME, POOL_ABI, LIQUIDITY_MANAGER_ABI } from "../../config/constants"
 
 
 
@@ -54,8 +54,7 @@ export const get_token = async( tokenAddress: string, chain: Chains ): Promise<T
 
 
 /**
- * 
- * @param chainId   // Orbiter id 
+ * @notice Will set the signer with the right provider for the transaction 
  */
 export const resolve_provider = ( chainId: number ): JsonRpcProvider => {
 
@@ -66,7 +65,9 @@ export const resolve_provider = ( chainId: number ): JsonRpcProvider => {
     return provider
 }
 
-
+/**
+ * @notice Will fetch the pool related to tokenA and tokenB and fee
+ */
 export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, chain: Chains, fee?: Fees ): Promise<Pool> => {
 
     try {
@@ -74,8 +75,10 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
         const Quoter = new Contract( CONTRACTS[ chain ].periphery.quoterWithoutLimit, QUOTER_ABI, signer )
         const NftManager = new Contract( CONTRACTS[ chain ].periphery.liquidityManager, LIQUIDITY_MANAGER_ABI, signer )
 
+        // Fetch best fee from our config
         const bestFee = get_best_fee( tokenA, tokenB, chain )
         const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0' )
+        // This wil fetch and return the address of the pool
         const pair: string = await NftManager.pool( token0.address, token1.address, fee ?? bestFee )
         
         const Pool = new Contract( pair, POOL_ABI, signer )
@@ -86,6 +89,7 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
 
         
         const state = await get_state( Pool )
+        // Here point refer to the current Tick of the pool 
         const point = await get_point( Pool, state )
     
         const pool: Pool = {
@@ -216,8 +220,8 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
 
         if ( balanceA.string === '0.0' || balanceB.string === '0.0' )
             return 0;
-        else
-            return 1;
+        
+        return 1;
         
     } catch (error: any) {
         
@@ -266,10 +270,10 @@ export const log_balances = async(signer: Wallet, chain: Chains) => {
 
     const nativeBalance = await signer.provider!.getBalance( signer.address ) 
     
-    const daiBalance    = TOKENS[ chain ].dai   ? await Dai.balanceOf( signer.address ) : 0
-    const usdcBalance   = TOKENS[ chain ].usdc  ? await Usdc.balanceOf( signer.address ) : 0
-    const usdtBalance   = TOKENS[ chain ].usdt  ? await Usdt.balanceOf( signer.address ) : 0
-    const wethBalance   = TOKENS[ chain ].weth9 ? await Weth.balanceOf( signer.address ) : 0
+    const daiBalance   = TOKENS[ chain ].dai   ? await Dai.balanceOf( signer.address ) : 'undefined'
+    const usdcBalance  = TOKENS[ chain ].usdc  ? await Usdc.balanceOf( signer.address ) : 'undefined'
+    const usdtBalance  = TOKENS[ chain ].usdt  ? await Usdt.balanceOf( signer.address ) : 'undefined'
+    const wethBalance  = TOKENS[ chain ].weth9 ? await Weth.balanceOf( signer.address ) : 'undefined'
 
     console.log("\n")
     console.log( "Balance NATIVE: ", ethers.formatUnits( nativeBalance ) )

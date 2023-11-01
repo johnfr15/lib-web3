@@ -11,7 +11,9 @@ import { Chains, ChainConfig, RemoveOptions, AddOptions } from "../types"
 
 
 
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const SWAP_ABI = swap_abi
 export const POOL_ABI = pool_abi
@@ -23,7 +25,9 @@ export const LIQUIDITY_MANAGER_ABI = liquidity_manager_abi
 
 
 
-// CONTRACTS
+/***********************************|
+|             CONTRACTS             |
+|__________________________________*/
 export const CONTRACTS: ChainConfig = {
 
     bsc: {
@@ -363,7 +367,9 @@ export const CONTRACTS: ChainConfig = {
 
 
 
-// TOKENS
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const TOKENS: { [key in Chains]: any } = {
@@ -442,7 +448,9 @@ export const TOKENS: { [key in Chains]: any } = {
 
 
 
-// MISC
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const RIGHT_MOST_PT = 800000
 export const LEFT_MOST_PT = -800000
 export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
@@ -463,14 +471,16 @@ export const DEFAULT_ADD_OPTION: AddOptions = {
 export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
-  percent: 100,
+  percent: 100, // 100% of the pool
 }
 
 
 
 
 
-// CHAINS
+/***********************************|
+|              CHAINS               |
+|__________________________________*/
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
   'bsc': 56,
