@@ -103,18 +103,245 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     },
 
-    aurora: {},
-    meter: {},
-    ontology: {},
-    mantle: {},
-    linea: {},
-    ethereumClassic: {},
-    base: {},
-    opbnb: {},
-    kroma: {},
-    manta: {},
-    scroll: {},
-    bscTestnet: {},
+    aurora: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    meter: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    ontology: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    mantle: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    linea: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    ethereumClassic: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    base: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    opbnb: {
+
+         WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    kroma: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    manta: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    scroll: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    bscTestnet: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
 
     zksyncTestnet: {
 
@@ -138,7 +365,63 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     },
 
-    scrollTestnet: {},
-    mantleTestnet: {},
-    lineaTestnet: {}
+    scrollTestnet: {
+
+         WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+
+    mantleTestnet: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    },
+    
+    lineaTestnet: {
+
+        WETH_USDC: Fees.LOW,
+        WETH_USDT: Fees.LOW,
+        WETH_DAI: Fees.LOW,
+  
+        USDC_WETH: Fees.LOW,
+        USDC_USDT: Fees.LOW,
+        USDC_DAI: Fees.LOW,
+  
+        USDT_WETH: Fees.LOW,
+        USDT_USDC: Fees.LOW,
+        USDT_DAI: Fees.LOW,
+  
+        DAI_WETH: Fees.LOW,
+        DAI_USDC: Fees.LOW,
+        DAI_USDT: Fees.LOW,
+
+    }
 }
