@@ -176,7 +176,6 @@ export const withdrawLiquidity = async(
     }
 ): Promise<void>
 ```
-The withdrawLiquidity function need at least 3 parameters and 4 optionnal;   
   
 `signer`: The signer acount that will sign the transaction  
   
