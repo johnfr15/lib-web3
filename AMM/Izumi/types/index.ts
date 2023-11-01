@@ -33,15 +33,20 @@ export enum Fees {
 }
 
 export type AddOptions = {
+    percent?: number
     max?: boolean
     slipage?: number
     deadline?: number
+    fee?: Fees
+    tokenId?: number
 }
 
 export type RemoveOptions = {
     slipage?: number
     deadline?: number
     percent?: number
+    fee?: Fees
+    tokenId?: number
 }
 
 export type State = {
@@ -103,7 +108,8 @@ export type ChainConfig = {
             tapProxy?: string;
         };
     };
-};
+}
+
 export type ApproveTx = {
     signer: Wallet
     Erc20: Contract
@@ -112,76 +118,3 @@ export type ApproveTx = {
     spender: string
     amount: bigint
 }
-
-
-
-export type AddLiquidityTx = {
-    signer: Wallet
-    pool: Pool
-    tokenA: Token
-    tokenB: Token
-    fee: Fees
-    tokenId: number | undefined
-    tickLower: number
-    tickUpper: number
-    amountADesired: bigint
-    amountBDesired: bigint
-    amountAMin: bigint
-    amountBMin: bigint
-    to: string
-    deadline: number
-    chain: Chains
-    NftManager: Contract
-}
-
-export type RemoveLiquidityTx = {
-    signer: Wallet
-    pool: Pool
-    lp: Token
-    token0: Token
-    token1: Token
-    position: State
-    liquidity: bigint
-    amount0: bigint
-    amount1: bigint
-    amount0Min: bigint
-    amount1Min: bigint
-    deadline: number
-    percent: number
-    chain: Chains
-    NftManager: Contract
-}
-
-
-export type Mint = {
-    token0: string
-    token1: string
-    fee: number
-    tickLower: number
-    tickUpper: number
-    amount0Desired: bigint
-    amount1Desired: bigint
-    amount0Min: bigint
-    amount1Min: bigint
-    recipient: string
-    deadline: number
-}
-
-export type IncreaseLiquidity = {
-    tokenId: number
-    amount0Desired: bigint
-    amount1Desired: bigint
-    amount0Min: bigint
-    amount1Min: bigint
-    deadline: number
-}
-
-export type DecreaseLiquidity = {
-    tokenId: bigint
-    liquidity: bigint
-    amount0Min: bigint
-    amount1Min: bigint
-    deadline: bigint
-}
-
-

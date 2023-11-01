@@ -443,8 +443,8 @@ export const TOKENS: { [key in Chains]: any } = {
 
 
 // MISC
-export const MAX_TICK = 887272
-export const MIN_TICK = -887272
+export const RIGHT_MOST_PT = 800000
+export const LEFT_MOST_PT = -800000
 export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
 
 export const DEFAULT_SWAP_OPTION: SwapOptions = {

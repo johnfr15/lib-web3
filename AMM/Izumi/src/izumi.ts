@@ -28,6 +28,7 @@ import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, CONTRAC
  *        - percent       (optional) Percentage of your balance of token in to be swap                                  
  *        - slipage:      (optional) protection against price movement or to high price impact (DEFAULT => 0.5%)
  *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted (DEFAULT => 20 minutes)
+ *        - fee:          (optional) The applied fee for the pool TokenIn/TokenOut 
  */
 export const swap = async(
     signer: Wallet,
@@ -80,9 +81,11 @@ export const swap = async(
  * @param chain         - The chain's name to operate the swap
  * @param options
  *        - percent     (optional) Percentage of Liquidity Tokens (lp) to withdraw 
- *        - max:        (optional) If activated it will check for the highest amount possible from tokenA and tokenB  
+ *        - max:        (optional) If activated it will check for the highest amount possible from tokenX and tokenY  
  *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
  *        - deadline:   (optional) Maximum amount of time (in unix time) before the trade get reverted
+ *        - fee:        (optional) The applied fee for the pool TokenIn/TokenOut 
+ *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const addLiquidity = async(
     signer: Wallet,                        
@@ -91,44 +94,45 @@ export const addLiquidity = async(
     addressB: string,                       
     amountB: string | null,     
     chain: Chains,
-    options: AddOptions = DEFAULT_ADD_OPTION
+    options?: AddOptions
 ): Promise<void> => {
-/*
+
+    options = { ...DEFAULT_ADD_OPTION, ...options }
     signer = resolve_chain( signer, chain )
 
     try {
 
         if ( options!.slipage! < 0.01 || options!.slipage! > 100 )
             throw("Slipage need to be a number between 2 and 100");
-        if ( amountA === null && amountB === null && options!.max === false )
-            throw("Need to provide at least a value for 'amountA' or 'amountB' or set max");
+        if ( amountA === null && amountB === null && options!.max === false && options.percent === undefined )
+            throw("Need to provide at least a value for 'amountA' or 'amountB' or set max or percent");
 
         
         // Get add liquidity Tx
         const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, chain, options )
-        const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
-        const approve_amount_a = ethers.formatUnits( amountADesired, tokenA.decimals )
-        const approve_amount_b = ethers.formatUnits( amountBDesired, tokenB.decimals )
+        const { tokenX, tokenY, amountADesired, amountBDesired } = addTx
+        const approve_amount_a = ethers.formatUnits( amountADesired, tokenX.decimals )
+        const approve_amount_b = ethers.formatUnits( amountBDesired, tokenY.decimals )
 
 
         // Get approve token 'a' Tx
-        const approveATx = await get_approve_tx(signer, tokenA, CONTRACTS[ chain ].periphery.swap, approve_amount_a, chain)
+        const approveATx = await get_approve_tx(signer, tokenX, CONTRACTS[ chain ].periphery.liquidityManager, approve_amount_a, chain)
 
         // Get approve token 'b' Tx
-        const approveBTx = await get_approve_tx(signer, tokenB, CONTRACTS[ chain ].periphery.swap, approve_amount_b, chain)
-*/
+        const approveBTx = await get_approve_tx(signer, tokenY, CONTRACTS[ chain ].periphery.liquidityManager, approve_amount_b, chain)
+
         /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveATx )
-        // await exec_approve( approveBTx )
-        // await exec_add_liquidity( addTx )
+        await exec_approve( approveATx )
+        await exec_approve( approveBTx )
+        await exec_add_liquidity( addTx )
         /*=============================================================================================================================================*/
- /*       
+       
     } catch (error: any) {
 
         throw error
 
     }
-*/
+
 }
 
 
@@ -138,8 +142,8 @@ export const addLiquidity = async(
 /**
  * @name withdrawLiquidity
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
- * @param tokenA         - Address of token A
- * @param tokenB         - Address of token B
+ * @param tokenX         - Address of token A
+ * @param tokenY         - Address of token B
  * @param chain          - The chain's name to operate the swap
  * @param options       
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%
@@ -148,12 +152,13 @@ export const addLiquidity = async(
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 
-    tokenA: string, 
-    tokenB: string, 
+    tokenX: string, 
+    tokenY: string, 
     chain: Chains,
-    options: RemoveOptions = DEFAULT_REMOVE_OPTION
+    options?: RemoveOptions
 ) => {
 
+    options = { ...DEFAULT_ADD_OPTION, ...options }
     signer = resolve_chain( signer, chain )
 
     try {
@@ -165,7 +170,7 @@ export const withdrawLiquidity = async(
 
 
         // Get widthdraw liquidity Tx
-        const removeTx = await get_remove_tx( signer, tokenA, tokenB, chain, options )
+        const removeTx = await get_remove_tx( signer, tokenX, tokenY, chain, options )
 
         /*========================================= TX =================================================================================================*/        
         // await exec_decrease( removeTx )
