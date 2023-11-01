@@ -25,22 +25,22 @@ const main = async() => {
 
         console.log("IZUMI")
 
-        await Izumi.swap(
-            signer,
-            [ TOKENS[ chain ].usdc, TOKENS[ chain ].eth ],
-            '1',
-            chain,
-            { percent: 66 }
-        )
+        // await Izumi.swap(
+        //     signer,
+        //     [ TOKENS[ chain ].weth9, TOKENS[ chain ].eth ],
+        //     '1',
+        //     chain,
+        //     { max: true }
+        // )
 
         // await Izumi.addLiquidity( 
         //     signer,
         //     TOKENS[ chain ].eth,
         //     null,
-        //     TOKENS[ chain ].usdt,
+        //     TOKENS[ chain ].usdc,
         //     null,
         //     chain,
-        //     { max: true }
+        //     { percent: 50 }
         // )
 
         // await Izumi.withdrawLiquidity( 

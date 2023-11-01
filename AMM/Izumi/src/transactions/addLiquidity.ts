@@ -9,7 +9,7 @@ import { MintParam, AddLiquidityParam, AddLiquidityTx } from "../../types/add";
 export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<void> => {
 
     if ( addLiqTx.liquidity )
-        await increase( addLiqTx )
+        await addLiquidity( addLiqTx )
     else
         await mint( addLiqTx )
 }
@@ -52,12 +52,12 @@ const mint = async( addLiqTx: AddLiquidityTx ) => {
 
     } catch (error) {
         
-        console.log( error )
+        throw( error )
 
     }
 }
 
-const increase = async( addTx: AddLiquidityTx ) => {
+const addLiquidity = async( addTx: AddLiquidityTx ) => {
 
     const { signer, tokenX, tokenY, deadline, chain, NftManager } = addTx
     const { liquidity, amountADesired, amountBDesired, amountAMin, amountBMin } = addTx
@@ -72,7 +72,7 @@ const increase = async( addTx: AddLiquidityTx ) => {
         console.log(`\n\nIncreasing liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }...` )     
         
         const args: AddLiquidityParam = {
-            lid: liquidity!.poolId,
+            lid: liquidity!.tokenId,
             xLim: amountADesired,
             yLim: amountBDesired,
             amountXMin: amountAMin,
@@ -81,7 +81,7 @@ const increase = async( addTx: AddLiquidityTx ) => {
         }
         const nonce = await signer.getNonce()
     
-        const tx = await NftManager.increaseLiquidity( args, { nonce: nonce, value: value } )   
+        const tx = await NftManager.addLiquidity( args, { nonce: nonce, value: value } )   
         const receipt = await tx.wait()
             
         console.log("\nTransaction valided !")
@@ -92,7 +92,7 @@ const increase = async( addTx: AddLiquidityTx ) => {
 
     } catch (error) {
         
-        console.log( error )
+        throw( error )
 
     }
 }

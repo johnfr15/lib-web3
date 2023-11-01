@@ -22,6 +22,7 @@ export type Liquidity = {
     remainTokenY: bigint
     // id of pool in which this liquidity is added
     poolId: number
+    tokenId: number
 }
 
 export type PoolMeta = {

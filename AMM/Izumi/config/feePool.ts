@@ -118,6 +118,8 @@ export const BEST_FEE_POOL: { [key in Chains]: any } = {
 
     zksyncTestnet: {
 
+        WETH_WETH: Fees.BIG, 
+
         WETH_USDC: Fees.BIG,
         WETH_USDT: Fees.LOW,
         WETH_DAI: Fees.LOW,

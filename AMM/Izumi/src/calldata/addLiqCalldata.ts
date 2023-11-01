@@ -94,7 +94,7 @@ const get_max_liq = async(
         to: signer.address,
         deadline: options.deadline!,
         chain: chain,
-        NftManager: NftManager
+        NftManager: NftManager,
     }
 
     return add_liquidity 
@@ -156,7 +156,7 @@ const get_liq = async(
             to: signer.address,
             deadline: options.deadline!,
             chain: chain,
-            NftManager: NftManager
+            NftManager: NftManager,
         }
 
         return add_liquidity

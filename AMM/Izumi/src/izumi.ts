@@ -158,7 +158,7 @@ export const withdrawLiquidity = async(
     options?: RemoveOptions
 ) => {
 
-    options = { ...DEFAULT_ADD_OPTION, ...options }
+    options = { ...DEFAULT_REMOVE_OPTION, ...options }
     signer = resolve_chain( signer, chain )
 
     try {
@@ -171,10 +171,10 @@ export const withdrawLiquidity = async(
 
         // Get widthdraw liquidity Tx
         const removeTx = await get_remove_tx( signer, tokenX, tokenY, chain, options )
-
+        
         /*========================================= TX =================================================================================================*/        
-        // await exec_decrease( removeTx )
-        // await exec_collect( removeTx )
+        await exec_decrease( removeTx )
+        await exec_collect( removeTx )
         /*=============================================================================================================================================*/
 
     } catch (error: any) {

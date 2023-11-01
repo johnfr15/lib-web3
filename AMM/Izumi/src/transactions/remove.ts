@@ -1,30 +1,31 @@
 import { ethers } from "ethers";
-import { RemoveLiquidityTx } from "../types";
-import { MAX_UINT128 } from "../config/constants"
+import { RemoveLiquidityTx, DecreaseLiquidity, Collect } from "../../types/remove";
+import { MAX_UINT128 } from "../../config/constants"
 
 export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 
-    const { signer, token0, token1, position, liquidity, amount0Min, amount1Min, deadline, percent, NftManager } = removeLiq
+    const { signer, token0, token1, position, amountXMin, amountYMin, deadline, percent, NftManager } = removeLiq
 
 
     console.log(`\n\nDecreasing ${ percent }% of liquidity for:\n\t\
-        (minimum)${ ethers.formatUnits( amount0Min, token0.decimals ) } ${ token0.symbol }\n\t\
-        (minimum)${ ethers.formatUnits( amount1Min, token1.decimals ) } ${ token1.symbol }
+        (minimum)${ ethers.formatUnits( amountXMin, token0.decimals ) } ${ token0.symbol }\n\t\
+        (minimum)${ ethers.formatUnits( amountYMin, token1.decimals ) } ${ token1.symbol }
     `)
 
-    const txArgs = {
-        tokenId: position.tokenId,
-        liquidity: liquidity,
-        amount0Min: amount0Min,
-        amount1Min: amount1Min,
+    const txArgs: DecreaseLiquidity = {
+        lid: position.tokenId,
+        liquidDelta: position.liquidity,
+        amountXMin: amountXMin,
+        amountYMin: amountYMin,
         deadline: deadline,
     }
+
     const nonce = await signer.getNonce()
     const feedata = await signer.provider?.getFeeData()!
     const gasPrice = feedata.gasPrice! * BigInt( 100 ) / BigInt( 90 )
-    const gasLimit =  await NftManager.decreaseLiquidity.estimateGas( txArgs, { nonce: nonce, gasPrice: gasPrice }) * BigInt( 2 )
+    const gasLimit = await NftManager.decLiquidity.estimateGas( ...Object.values( txArgs ), { nonce: nonce, gasPrice: gasPrice }) * BigInt( 2 )
 
-    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit })
+    const tx = await NftManager.decLiquidity( ...Object.values( txArgs ), { nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit })
     const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
@@ -44,16 +45,15 @@ export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
         ${ ethers.formatUnits( amount1, token1.decimals ) } ${ token1.symbol }
     `)
 
-
-    const txArgs = {
-        tokenId: position.tokenId,
+    const txArgs: Collect = {
         recipient: signer.address,
-        amount0Max: MAX_UINT128,
-        amount1Max: MAX_UINT128,
+        lid: position.tokenId,
+        amountXLim: MAX_UINT128,
+        amountYLim: MAX_UINT128,
     }
     const nonce = await signer.getNonce()
 
-    const tx = await NftManager.collect( txArgs, { nonce: nonce } )
+    const tx = await NftManager.collect( ...Object.values( txArgs ), { nonce: nonce } )
     const receipt = await tx.wait()
         
     console.log("\nTransaction valided !")
