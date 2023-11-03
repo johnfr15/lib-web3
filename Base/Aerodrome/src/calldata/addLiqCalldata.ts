@@ -1,6 +1,6 @@
 import { ethers, Wallet, Contract } from "ethers";
 import { AddOptions, Balance, Pool, Token } from "../../types";
-import { get_token, get_balance, get_pool, sort_tokens, get_quote } from "../utils";
+import { get_token, get_balance, get_pool, sort_tokens, get_quote, is_balance } from "../utils";
 import { get_amounts } from "../utils/add"
 import { CONTRACTS, ROUTER_ABI } from "../../config/constants";
 import { AddLiquidityTx } from "../../types/add";
@@ -23,8 +23,8 @@ export const get_add_liq_tx = async(
 
     const pool: Pool = await get_pool( token0, token1, signer, options )
 
-    // if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
-    //     throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
+    if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
+        throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
 
     if ( options.max || options.percent )
     {
@@ -107,10 +107,10 @@ const get_liq = async(
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (options.slipage! * 100) ) / BigInt( 100 * 100 )
 
 
-        // if ( amount_1 > balance_1.bigint )
-        //     throw new Error(`${ token_1.symbol }: Unsufficient balance.`)
-        // if ( amount_2 > balance_2.bigint )
-        //     throw new Error(`${ token_2.symbol }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
+        if ( amount_1 > balance_1.bigint )
+            throw new Error(`${ token_1.symbol }: Unsufficient balance.`)
+        if ( amount_2 > balance_2.bigint )
+            throw new Error(`${ token_2.symbol }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
         const token_1_is_min = BigInt( pool.tokenX.address ) === BigInt( token_1.address )
         const [ tokenX, tokenY ] = token_1_is_min ? [token_1, token_2] : [token_2, token_1]

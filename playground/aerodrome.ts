@@ -30,21 +30,20 @@ const main = async() => {
         //     "0.000001",
         // )
 
-        await Aerodrome.addLiquidity( 
+        // await Aerodrome.addLiquidity( 
+        //     signer,
+        //     TOKENS.eth,
+        //     "0.001",
+        //     TOKENS.usdc,
+        //     null,
+        //     // { max: true }
+        // )
+
+        await Aerodrome.withdrawLiquidity( 
             signer,
             TOKENS.eth,
-            "0.001",
             TOKENS.usdc,
-            null,
-            // { max: true }
         )
-
-        // await Aerodrome.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS[ chain ].eth,
-        //     TOKENS[ chain ].usdc,
-        //     chain,
-        // )
 
 
     } catch (error: any) {

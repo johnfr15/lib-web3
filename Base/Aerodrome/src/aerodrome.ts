@@ -2,6 +2,7 @@ import { ethers, Wallet } from 'ethers';
 import { resolve_chain } from './utils';
 import { SwapOptions } from '../types/swap';
 import { exec_swap } from './transactions/swap';
+import { exec_remove } from './transactions/remove';
 import { AddOptions, RemoveOptions } from '../types';
 import { get_swap_tx } from './calldata/swapCalldata';
 import { exec_approve } from './transactions/approve';
@@ -9,7 +10,6 @@ import { get_add_liq_tx } from './calldata/addLiqCalldata';
 import { get_approve_tx } from './calldata/approveCalldata';
 import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 import { exec_add_liquidity } from './transactions/addLiquidity';
-import { exec_decrease, exec_collect } from './transactions/remove';
 import { DEFAULT_REMOVE_OPTION, DEFAULT_ADD_OPTION, DEFAULT_SWAP_OPTION, CONTRACTS } from "../config/constants"
 
 
@@ -77,12 +77,11 @@ export const swap = async(
  * @param amountB       - Amount of second token. if set to null will check for amountA or max
  * @param chain         - The chain's name to operate the swap
  * @param options
+ *        - stable      (optional) Fetch stable or unstable pool
  *        - percent     (optional) Percentage of Liquidity Tokens (lp) to withdraw 
  *        - max:        (optional) If activated it will check for the highest amount possible from tokenX and tokenY  
  *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
  *        - deadline:   (optional) Maximum amount of time (in unix time) before the trade get reverted
- *        - fee:        (optional) The applied fee for the pool TokenIn/TokenOut 
- *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const addLiquidity = async(
     signer: Wallet,                        
@@ -141,12 +140,11 @@ export const addLiquidity = async(
  * @param tokenX         - Address of token A
  * @param tokenY         - Address of token B
  * @param chain          - The chain's name to operate the swap
- * @param options       
+ * @param options
+ *        - stable         (optional) Fetch stable or unstable pool       
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%
  *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
- *        - fee:        (optional) The applied fee for the pool TokenIn/TokenOut 
- *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
 export const withdrawLiquidity = async(
     signer: Wallet, 
@@ -160,19 +158,22 @@ export const withdrawLiquidity = async(
 
     try {
 
-        // if ( options.slipage! < 0 || options.slipage! > 100 )
-        //     throw new Error("Slipage need to be a number between 0 and 100");
-        // if ( options.percent! <= 0 || options.percent! > 100 )
-        //     throw new Error("Percent need to be set between 0 to 100")
+        if ( options.slipage! < 0 || options.slipage! > 100 )
+            throw new Error("Slipage need to be a number between 0 and 100");
+        if ( options.percent! <= 0 || options.percent! > 100 )
+            throw new Error("Percent need to be set between 0 to 100")
 
 
-        // // Get widthdraw liquidity Tx
-        // const removeTx = await get_remove_tx( signer, tokenX, tokenY, options )
-        
-        // /*========================================= TX =================================================================================================*/        
-        // await exec_decrease( removeTx )
-        // await exec_collect( removeTx )
-        // /*=============================================================================================================================================*/
+        // Get widthdraw liquidity Tx
+        const removeTx = await get_remove_tx( signer, tokenX, tokenY, options )
+
+        // Get approve token 'a' Tx
+        const approveLpTx = await get_approve_tx( signer, removeTx.lp, CONTRACTS.Router, removeTx.liquidity.string )
+
+        /*========================================= TX =================================================================================================*/        
+        await exec_approve( approveLpTx )
+        await exec_remove( removeTx )
+        /*=============================================================================================================================================*/
 
     } catch (error: any) {
 

@@ -46,6 +46,9 @@ export const CONTRACTS: { [ key: string]: string } = {
 
 }
 
+export const DEFAULT_FACTORY = "0x420DD381b31aEf6683db6B902084cB0FFECe40Da"
+
+
 
 
 
