@@ -53,7 +53,7 @@ export const swap = async(
         const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, CONTRACTS.Router, approve_amount )
 
         /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveTx )
+        await exec_approve( approveTx )
         await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
@@ -98,30 +98,30 @@ export const addLiquidity = async(
 
     try {
 
-        // if ( options!.slipage! < 0.01 || options!.slipage! > 100 )
-        //     throw("Slipage need to be a number between 2 and 100");
-        // if ( amountA === null && amountB === null && options!.max === false && options.percent === undefined )
-        //     throw("Need to provide at least a value for 'amountA' or 'amountB' or set max or percent");
+        if ( options!.slipage! < 0.01 || options!.slipage! > 100 )
+            throw("Slipage need to be a number between 2 and 100");
+        if ( amountA === null && amountB === null && options!.max === false && options.percent === undefined )
+            throw("Need to provide at least a value for 'amountA' or 'amountB' or set max or percent");
 
         
-        // // Get add liquidity Tx
-        // const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, options )
-        // const { tokenX, tokenY, amountADesired, amountBDesired } = addTx
-        // const approve_amount_a = ethers.formatUnits( amountADesired, tokenX.decimals )
-        // const approve_amount_b = ethers.formatUnits( amountBDesired, tokenY.decimals )
+        // Get add liquidity Tx
+        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, options )
+        const { tokenX, tokenY, amountXDesired, amountYDesired } = addTx
+        const approve_amount_a = ethers.formatUnits( amountXDesired, tokenX.decimals )
+        const approve_amount_b = ethers.formatUnits( amountYDesired, tokenY.decimals )
 
 
-        // // Get approve token 'a' Tx
-        // const approveATx = await get_approve_tx(signer, tokenX, CONTRACTS[ chain ].periphery.liquidityManager, approve_amount_a, chain)
+        // Get approve token 'a' Tx
+        const approveATx = await get_approve_tx(signer, tokenX, CONTRACTS.Router, approve_amount_a)
 
-        // // Get approve token 'b' Tx
-        // const approveBTx = await get_approve_tx(signer, tokenY, CONTRACTS[ chain ].periphery.liquidityManager, approve_amount_b, chain)
+        // Get approve token 'b' Tx
+        const approveBTx = await get_approve_tx(signer, tokenY, CONTRACTS.Router, approve_amount_b)
 
-        // /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveATx )
-        // await exec_approve( approveBTx )
-        // await exec_add_liquidity( addTx )
-        // /*=============================================================================================================================================*/
+        /*========================================= TX =================================================================================================*/
+        await exec_approve( approveATx )
+        await exec_approve( approveBTx )
+        await exec_add_liquidity( addTx )
+        /*=============================================================================================================================================*/
        
     } catch (error: any) {
 

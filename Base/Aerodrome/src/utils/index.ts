@@ -1,7 +1,6 @@
 import fs from "fs"
 import * as addUtils from "./add"
 import * as swapUtils from "./swap"
-import * as removeUtils from "./remove"
 import chains from "../../config/chains"
 import { Token, Pool } from "../../types"
 import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress} from "ethers"
@@ -219,4 +218,4 @@ export const log_balances = async( signer: Wallet ) => {
     console.log("\n")
 }
 
-export default { swapUtils, addUtils, removeUtils }
+export default { swapUtils, addUtils }

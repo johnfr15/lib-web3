@@ -32,10 +32,10 @@ export const get_swap_tx = async(
         
         if ( trade.priceImpact > options.slipage! )
             throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
-        // if ( balance_in.bigint === BigInt( 0 ) )
-        //     throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
-        // if ( balance_in.bigint < trade.amountIn )
-        //     throw new Error(`Error: Not enough balance require ${ trade.amountIn } ${ token_in.symbol } for this trade`)
+        if ( balance_in.bigint === BigInt( 0 ) )
+            throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
+        if ( balance_in.bigint < trade.amountIn )
+            throw new Error(`Error: Not enough balance require ${ trade.amountIn } ${ token_in.symbol } for this trade`)
 
             
         const swapTx: SwapTx = {

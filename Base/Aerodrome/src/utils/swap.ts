@@ -113,5 +113,5 @@ export const enforce_swap_fees = async(  swapTx: SwapTx, txArgs: SwapExactETHFor
         swapTx.trade = await get_trade( signer, tokenIn, tokenOut, ethers.formatEther( amountIn ), pool, route, options )
     }
 
-    return { value: amountIn, tx: { amountOutMin: swapTx.trade.amountOutMin, path, to, deadline } }
+    return { value: amountIn, tx: { amountOutMin: swapTx.trade.amountOutMin, routes: [ route ], to, deadline } }
 }

@@ -24,20 +24,20 @@ const main = async() => {
 
         console.log("AERODROME")
         
-        await Aerodrome.swap(
-            signer,
-            [ TOKENS.eth, TOKENS.usdc ],
-            "0.000001",
-        )
-
-        // await Aerodrome.addLiquidity( 
+        // await Aerodrome.swap(
         //     signer,
-        //     TOKENS.eth,
-        //     null,
-        //     TOKENS.usdt,
-        //     null,
-        //     { max: true }
+        //     [ TOKENS.eth, TOKENS.usdc ],
+        //     "0.000001",
         // )
+
+        await Aerodrome.addLiquidity( 
+            signer,
+            TOKENS.eth,
+            "0.001",
+            TOKENS.usdc,
+            null,
+            // { max: true }
+        )
 
         // await Aerodrome.withdrawLiquidity( 
         //     signer,
