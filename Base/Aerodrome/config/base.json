@@ -24,11 +24,11 @@
     "symbol": "USDC"
   },
   {
-    "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+    "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
     "chainId": 8453,
     "decimals": 6,
     "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/network/base/0xEB466342C4d449BC9f53A865D5Cb90586f405215.jpg",
-    "name": " USD Base Coin",
+    "name": " USD Coin",
     "symbol": "USDC"
   },
   {
@@ -72,7 +72,7 @@
     "symbol": "COMP"
   },
   {
-    "address": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+    "address": "0x50c5725949a6f0c72e6c4a641f24049a917db0cb",
     "chainId": 8453,
     "decimals": 18,
     "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/token-logos/network/base/0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb.jpg",

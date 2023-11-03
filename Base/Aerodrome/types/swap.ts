@@ -1,59 +1,63 @@
 import { Wallet, Contract } from "ethers"
-import { Token, Pool, Chains, Fees } from "."
+import { Token, Pool } from "."
 
 
 export type SwapOptions = {
-    tradeType?: TradeType
+    stable?: boolean
     percent?: number  // A number: 0.00 < percent <= 100.00
     max?: boolean
     slipage?: number
     deadline?: number
-    fee?: Fees
 }
 
 export type Trade = {
     tokenIn: Token
     tokenOut: Token
     path: string[]
-    pathEncoded: string
     amountIn: bigint
     amountOut: bigint
-    amountInMax: bigint | undefined
-    amountOutMin: bigint | undefined
+    amountOutMin: bigint
     priceImpact: number
-    sqrtPriceLimitX96: bigint
     to: string
     pool: Pool
+    route: Route
     slipage: number
     deadline: number
-    chain: Chains
-    tradeType: TradeType
 }
 
-export enum TradeType {
-    EXACT_INPUT,
-    EXACT_OUTPUT
+export type Route = {
+    from: string
+    to: string
+    stable: boolean
+    factory: string
 }
 
 export type SwapTx = {
     signer: Wallet
     trade: Trade
-    Swap: Contract
+    Router: Contract
+    options: SwapOptions
 }
 
-// Quoter
-export type SwapAmountParams = {
-    path: string
-    recipient: string
-    amount: bigint
-    minAcquired: bigint
+export type SwapExactETHForTokens = {
+    amountOutMin: bigint
+    routes: Route[],
+    to: string
     deadline: number
 }
 
-export type SwapDesireParams = {
-    path: string
-    recipient: string
-    desire: bigint
-    maxPayed: bigint
+export type SwapExactTokensForETH = {
+    amountIn: bigint
+    amountOutMin: bigint
+    routes: Route[],
+    to: string
+    deadline: number
+}
+
+export type SwapExactTokensForTokens = {
+    amountIn: bigint
+    amountOutMin: bigint
+    routes: Route[],
+    to: string
     deadline: number
 }

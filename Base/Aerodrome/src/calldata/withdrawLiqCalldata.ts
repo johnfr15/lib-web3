@@ -1,8 +1,8 @@
 import { Wallet, Contract } from "ethers";
 import { get_pool, get_token, sort_tokens } from "../utils";
 import { get_amounts } from "../utils/remove";
-import { Pool, Token, Chains, RemoveOptions } from "../../types";
-import { CHAIN_ID, CONTRACTS, LIQUIDITY_MANAGER_ABI } from "../../config/constants";
+import { Pool, Token, RemoveOptions } from "../../types";
+import { CHAIN_ID, CONTRACTS } from "../../config/constants";
 import { Liquidity } from "../../types/add";
 import { RemoveLiquidityTx } from "../../types/remove";
 import { get_liquidity, find_liquidity } from "../utils/add";

@@ -18,12 +18,16 @@ export type Balance = {
 export type Pool = {
     tokenX: Token
     tokenY: Token
-    pairAddress: string
+    reserveX: bigint
+    reserveY: bigint
+    poolAddress: string
+    stable: boolean
     Pool: Contract
 }
 
 
 export type AddOptions = {
+    stable?: boolean
     percent?: number
     max?: boolean
     slipage?: number
@@ -31,6 +35,7 @@ export type AddOptions = {
 }
 
 export type RemoveOptions = {
+    stable?: boolean
     slipage?: number
     deadline?: number
     percent?: number

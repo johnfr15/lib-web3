@@ -1,5 +1,5 @@
 import { Contract, Wallet } from "ethers"
-import { Pool, Token, Fees, Chains } from "."
+import { Pool, Token } from "."
 
 
 // infomation of liquidity provided by miner
@@ -76,7 +76,6 @@ export type AddLiquidityTx = {
     pool: Pool
     tokenX: Token
     tokenY: Token
-    fee: Fees
     liquidity: Liquidity | undefined
     pl: number
     pr: number
@@ -86,6 +85,5 @@ export type AddLiquidityTx = {
     amountBMin: bigint
     to: string
     deadline: number
-    chain: Chains
     NftManager: Contract
 }

@@ -1,11 +1,10 @@
 import pool_abi from "./abis/pool"
 import erc20_abi from "./abis/erc20"
-import { AddressLike } from "ethers"
 import router_abi from "./abis/router"
 import factory_abi from "./abis/factory"
 import poolFees_abi from "./abis/poolFees"
 import { RemoveOptions, AddOptions } from "../types"
-import { SwapOptions, TradeType } from "../types/swap"
+import { SwapOptions } from "../types/swap"
 
 
 
@@ -28,7 +27,7 @@ export const POOLFEES_ABI = poolFees_abi
 |             CONTRACTS             |
 |__________________________________*/
 // see https://aerodrome.finance/security#contracts
-export const CONTRACTS: { [ key: string]: AddressLike } = {
+export const CONTRACTS: { [ key: string]: string } = {
   
   AERO: '0x940181a94A35A4569E4529A3CDfB74e38FD98631',
   AirdropDistributor: '0xE4c69af018B2EA9e575026c0472B6531A2bC382F',
@@ -58,11 +57,11 @@ export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 export const TOKENS = {
 
   eth: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-  weth9: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
-  usdc:'0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
-  dai: undefined,
-  wbtc:'0xBBeB516fb02a01611cBBE0453Fe3c580D7281011',
-  usdt:'0x59ac51Cfb025adCE007D1EC96A21f7c7e3f32330',
+  weth9: '0x4200000000000000000000000000000000000006',
+  usdc:'0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  dai: "0x50c5725949a6f0c72e6c4a641f24049a917db0cb",
+  wbtc: undefined,
+  usdt: undefined,
 
 }
 
@@ -74,7 +73,6 @@ export const TOKENS = {
 |              MISC                 |
 |__________________________________*/
 export const DEFAULT_SWAP_OPTION: SwapOptions = {
-  tradeType: TradeType.EXACT_INPUT,
   max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
@@ -90,4 +88,72 @@ export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
   percent: 100, // 100% of the pool
+}
+
+export const POOL_STABLE: { [key: string]: boolean } = {
+
+  WETH_USDC: false,
+  WETH_DAI: false,
+
+  USDC_WETH: false,
+  USDC_DAI: true,
+
+  DAI_WETH: false,
+  DAI_USDC: true,
+
+}
+
+
+
+/***********************************|
+|              CHAINS               |
+|__________________________________*/
+export const CHAIN_ID: { [ key: string ]: number } = {
+
+  'bsc': 56,
+  'aurora': 1313161554,
+  'arbitrum': 42161,
+  'polygon': 137,
+  'meter': 82,
+  'zksync': 324,
+  'ontology': 58,
+  'mantle': 5000,
+  'linea': 59144,
+  'ethereumClassic': 61,
+  'base': 8453,
+  'opbnb': 204,
+  'kroma': 255,
+  'manta': 169,
+  'scroll': 169,
+  'bscTestnet': 97,
+  'zksyncTestnet': 280,
+  'scrollTestnet': 534351,
+  'mantleTestnet': 5001,
+  'lineaTestnet': 59140
+
+}
+
+export const CHAIN_ID_TO_NAME: { [ key: number ]: string } = {
+
+  56: 'bsc',
+  1313161554: 'aurora',
+  42161: 'arbitrum',
+  137: 'polygon',
+  82: 'meter',
+  324: 'zksync',
+  58: 'ontology',
+  5000: 'mantle',
+  59144: 'linea',
+  61: 'ethereumClassic',
+  8453: 'base',
+  204: 'opbnb',
+  255: 'kroma',
+  169: 'manta',
+  169.1: 'scroll',
+  97: 'bscTestnet',
+  280: 'zksyncTestnet',
+  534351: 'scrollTestnet',
+  5001: 'mantleTestnet',
+  59140: 'lineaTestnet',
+
 }
