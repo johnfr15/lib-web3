@@ -139,6 +139,17 @@ export const get_amount = ( amount: string | null, balance: Balance, options: Sw
     return amount!
 }
 
+export const check_swap_inputs = ( amount: string | null, path: string[], options: SwapOptions ) => {
+
+    if ( path[0] === undefined || path[1] === undefined )
+        throw(`Error: token undefined path[0]: ${ path[0] }, path[1]: ${ path[1] }.`)
+    if ( options.slipage! < 0.01 || options.slipage! > 100 )
+        throw(`Slipage parameter must be a number between 0.01 and 100.`)
+    if ( options.percent && (options.percent! <= 0 || options.percent! > 100) )
+        throw("Percent need to be set between 0 to 100")
+    if ( amount === null && options.max === false && options.percent === undefined )
+        throw(`Error: You need to specify an 'amount' or set options 'max' to true or pencent.`)
+}
 
 /**
  * @name enforce_fees

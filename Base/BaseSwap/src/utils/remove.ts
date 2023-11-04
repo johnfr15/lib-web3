@@ -1,12 +1,12 @@
 import { Contract, Wallet } from "ethers";
+import { RemoveOptions } from "../../types";
+import { Token, Position } from "../../types";
 import { is_position, parse_position } from ".";
-import { Token, Chains, Position } from "../../types";
-import { NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
+import { CONTRACTS, NFT_MANAGER_ABI } from "../../config/constants";
 
 export const find_position = async( 
     tokenA: Token, 
     tokenB: Token, 
-    chain: Chains, 
     signer: Wallet, 
     tokenId?: number 
 ): Promise<Position> => {
@@ -14,7 +14,7 @@ export const find_position = async(
     try {
         
         let pos: any
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS.NFT_MANAGER, NFT_MANAGER_ABI, signer )
         const balance = await NftManager.balanceOf( signer.address )
 
         if ( tokenId )
@@ -30,7 +30,7 @@ export const find_position = async(
                 let position = await NftManager.positions( id )
                 position = parse_position( position, id )
 
-                if ( is_position( position, tokenA, tokenB, chain ) )
+                if ( is_position( position, tokenA, tokenB ) )
                 {
                     pos = position
                     break
@@ -39,7 +39,7 @@ export const find_position = async(
         }
 
         if ( pos === undefined )
-            throw(`Error: can't find position for token ${ tokenA.symbol }/${ tokenB.symbol }`)
+            throw(`Error: No position minted yet for pool ${ tokenA.symbol }/${ tokenB.symbol }`)
 
 
         return pos
@@ -72,4 +72,12 @@ export const get_amounts = async( tokenId: number, liquidity: bigint, deadline: 
         throw( error )
 
     }
+}
+
+export const check_remove_inputs = ( options: RemoveOptions ) => {
+
+    if ( options.slipage! < 0 || options.slipage! > 100 )
+        throw new Error("Slipage need to be a number between 0 and 100");
+    if ( options.percent! <= 0 || options.percent! > 100 )
+        throw new Error("Percent need to be set between 0 to 100")
 }

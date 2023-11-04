@@ -1,7 +1,7 @@
 import { get_token_id } from "../utils/add"
 import { ethers, Wallet, Contract } from "ethers";
-import { AddLiquidityTx, AddOptions, Chains, Pool, Token } from "../../types";
-import { MAX_TICK, MIN_TICK, NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
+import { AddLiquidityTx, AddOptions, Pool, Token } from "../../types";
+import { MAX_TICK, MIN_TICK, CONTRACTS, NFT_MANAGER_ABI } from "../../config/constants";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote } from "../utils";
 
 
@@ -11,7 +11,6 @@ export const get_add_liq_tx = async(
     amountA: string | null,
     addressB: string,
     amountB: string | null,
-    chain: Chains,
     options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
@@ -19,24 +18,24 @@ export const get_add_liq_tx = async(
     
     try {
 
-        const token_a: Token = await get_token( addressA, chain )
-        const token_b: Token = await get_token( addressB, chain )
+        const token_a: Token = await get_token( addressA )
+        const token_b: Token = await get_token( addressB )
         const { token0, token1, amount0, amount1 } = sort_tokens( token_a, token_b, amountA, amountB )
 
-        const pool: Pool = await get_pool( token0, token1, signer, chain )
+        const pool: Pool = await get_pool( token0, token1, signer )
 
         if ( await is_balance(signer, token_a.address, token_b.address) === 0 )
             throw new Error(`balance is empty for token ${ token_a.symbol } or ${ token_b.symbol } or both.`)
 
         if ( options.max )
         {
-            addTx = await get_max_liq( signer, pool, chain, options )
+            addTx = await get_max_liq( signer, pool, options )
         }
         else
         {
             let addr: string = amount0 ? pool.tokenA.address : pool.tokenB.address
             let amount: bigint = amount0 ? amount0 : amount1!
-            addTx = await get_liq( signer, pool, addr, amount, chain, options )
+            addTx = await get_liq( signer, pool, addr, amount, options )
         }
 
         return addTx
@@ -51,15 +50,14 @@ export const get_add_liq_tx = async(
 const get_max_liq = async(
     signer: Wallet, 
     pool: Pool,
-    chain: Chains,
     options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
     try {
 
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS.NFT_MANAGER, NFT_MANAGER_ABI, signer )
 
-        const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, chain, signer )
+        const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, signer )
 
         const balanceA = await get_balance( pool.tokenA.address, signer )
         const balanceB = await get_balance( pool.tokenB.address, signer )
@@ -94,7 +92,6 @@ const get_max_liq = async(
             amountBMin: balance_b_min,
             to: signer.address,
             deadline: options.deadline!,
-            chain: chain,
             NftManager: NftManager
         }
 
@@ -112,15 +109,14 @@ const get_liq = async(
     pool: Pool, 
     addr: string, 
     amount: bigint, 
-    chain: Chains,
     options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
     try {
 
-        const NftManager = new Contract( NFT_MANAGER[ chain ], NFT_MANAGER_ABI, signer )
+        const NftManager = new Contract( CONTRACTS.NFT_MANAGER, NFT_MANAGER_ABI, signer )
 
-        const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, chain, signer )
+        const tokenId = options.tokenId ?? await get_token_id( pool.tokenA, pool.tokenB, signer )
         
         const token_1: Token = BigInt( pool.tokenA.address ) === BigInt( addr ) ? pool.tokenA : pool.tokenB
         const token_2: Token = BigInt( pool.tokenA.address ) !== BigInt( addr ) ? pool.tokenA : pool.tokenB
@@ -159,7 +155,6 @@ const get_liq = async(
             amountBMin: token_1_is_min ? amount_2_min : amount_1_min,
             to: signer.address,
             deadline: options.deadline!,
-            chain: chain,
             NftManager: NftManager
         }
 

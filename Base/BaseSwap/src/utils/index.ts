@@ -1,11 +1,14 @@
 import fs from "fs";
 import chains from "../../config/chains";
-import { Token, Pool, Chains, Position } from "../../types";
+import { Token, Pool, Position } from "../../types";
 import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress } from "ethers";
 import { ERC20_ABI, TOKENS, CHAIN_ID, CONTRACTS, FACTORY_V3_ABI, POOL_ABI, BEST_FEE_POOL } from "../../config/constants"
 
 
-
+/**
+ * @notice Will set the Signer to the right chain RPC
+ * @notice If you want to add your private RPC see ../../config/chains.ts
+ */
 export const resolve_chain = ( signer: Wallet ): Wallet => {
 
     const provider = resolve_provider( CHAIN_ID[ "base" ] )

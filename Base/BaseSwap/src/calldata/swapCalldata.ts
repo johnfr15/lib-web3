@@ -3,7 +3,7 @@ import { SwapOptions } from "../../types/swap";
 import { get_balance, get_pool, get_token } from "../utils";
 import { Token, Pool, Trade, SwapTx, Balance } from "../../types";
 import { CONTRACTS, SWAP_ROUTER_ABI } from "../../config/constants";
-import { get_trade, calc_price_impact, get_amount } from "../utils/swap";
+import { get_trade,  get_amount } from "../utils/swap";
 
 
 

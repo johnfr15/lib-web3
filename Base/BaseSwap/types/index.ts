@@ -57,6 +57,7 @@ export enum Fees {
 }
 
 export type AddOptions = {
+    percent?: number
     max?: boolean
     slipage?: number
     deadline?: number
@@ -118,7 +119,6 @@ export type AddLiquidityTx = {
     amountBMin: bigint
     to: string
     deadline: number
-    chain: Chains
     NftManager: Contract
 }
 
@@ -136,7 +136,6 @@ export type RemoveLiquidityTx = {
     amount1Min: bigint
     deadline: number
     percent: number
-    chain: Chains
     NftManager: Contract
 }
 

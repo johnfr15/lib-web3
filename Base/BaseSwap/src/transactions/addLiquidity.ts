@@ -16,11 +16,13 @@ export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<voi
 
 const mint = async( addLiqTx: AddLiquidityTx ) => {
 
-    const { signer, tokenA, tokenB, fee, tickLower, tickUpper, amountADesired, amountBDesired, amountAMin, amountBMin, deadline, chain, NftManager } = addLiqTx
+    const { signer, fee, tickLower, tickUpper, deadline,  NftManager } = addLiqTx
+    const { tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin } = addLiqTx
+
     let value: bigint = BigInt( 0 )
 
-    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
-        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
+    if ( is_native( tokenA.address ) || is_native( tokenB.address ) )
+        value = is_native( tokenA.address ) ? amountADesired : amountBDesired
 
     try {
 
@@ -58,13 +60,13 @@ const mint = async( addLiqTx: AddLiquidityTx ) => {
 
 const increase = async( addTx: AddLiquidityTx ) => {
 
-    const { signer, tokenA, tokenB, deadline, chain, NftManager } = addTx
+    const { signer, tokenA, tokenB, deadline, NftManager } = addTx
     const { tokenId, amountADesired, amountBDesired, amountAMin, amountBMin } = addTx
 
     let value: bigint = BigInt( 0 )
 
-    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
-        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
+    if ( is_native( tokenA.address ) || is_native( tokenB.address ) )
+        value = is_native( tokenA.address) ? amountADesired : amountBDesired
 
     try {
 

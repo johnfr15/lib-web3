@@ -36,7 +36,7 @@ export const swap = async(
     path: [string, string],
     amount: string | null,
     options?: {
-        stable?: boolean
+        tradeType?: TradeType
         percent?: number | undefined;
         max?: boolean | undefined;
         slipage?: number | undefined;
@@ -54,7 +54,7 @@ export const swap = async(
   
 `amount`: The amount of exact token to be swapped for the other one (default is **(in token)**) 
   
-`stable (optional)`: Fetch stable or unstable pool  
+`tradeType (optional)`: EXACT IN => 0, EXACT OUTPUT => 1 (default is EXACT IN)
   
 `percent (optional)`: The percentage amount we want to swap (default is undefined)
   
@@ -75,7 +75,6 @@ export const addLiquidity = async(
     addressB: string,                       
     amountB: string | null,     
     options?: {
-        stable?: boolean
         percent?: number
         max?: boolean
         slipage?: number
@@ -105,8 +104,6 @@ export const addLiquidity = async(
 `addressB`: Address of **tokenB**  
   
 `amountB`: Amount of second token. if set to null will check for amountA or max  
-  
-`stable (optional)`: Fetch stable or unstable pool  
   
 `percent (optional)`: The percentage amount of our least balance we want to add (default is undefined) 
   

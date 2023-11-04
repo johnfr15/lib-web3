@@ -10,10 +10,10 @@ export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {
 
     try {
 
-        if ( path.length > 2 && tradeType === EXACT_INPUT )  await exactInput( swapTx )
-        if ( path.length > 2 && tradeType === EXACT_OUTPUT ) await exactOutput( swapTx )
-        if ( tradeType === EXACT_INPUT )                     await exactInputSingle( swapTx )
-        if ( tradeType === EXACT_OUTPUT )                    await exactOutputSingle( swapTx )
+        if ( path.length > 2 && tradeType === EXACT_INPUT )    await exactInput( swapTx )
+        if ( path.length > 2 && tradeType === EXACT_OUTPUT )   await exactOutput( swapTx )
+        if ( path.length === 2 && tradeType === EXACT_INPUT )  await exactInputSingle( swapTx )
+        if ( path.length === 2 && tradeType === EXACT_OUTPUT ) await exactOutputSingle( swapTx )
         
     } catch (error) {
 
@@ -26,8 +26,8 @@ export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {
 export const exactInputSingle = async( swapTx: SwapTx ): Promise<void> => {
     
     const { signer, trade, SwapRouter } = swapTx
-    const { pool, amountIn, amountOut, amountOutMin, tokenIn, tokenOut, sqrtPriceLimitX96, deadline, chain } = trade
-    const value = is_native( tokenIn.address, chain ) ? amountIn : BigInt( 0 )
+    const { pool, amountIn, amountOut, amountOutMin, tokenIn, tokenOut, sqrtPriceLimitX96, deadline } = trade
+    const value = is_native( tokenIn.address ) ? amountIn : BigInt( 0 )
 
     try {
 
@@ -62,8 +62,8 @@ export const exactInputSingle = async( swapTx: SwapTx ): Promise<void> => {
 export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, SwapRouter } = swapTx
-    const { amountIn, amountInMax, amountOut, tokenIn, tokenOut, sqrtPriceLimitX96, deadline, chain, pool } = trade
-    const value = is_native( tokenIn.address, chain ) ? amountInMax : BigInt( 0 )
+    const { amountIn, amountInMax, amountOut, tokenIn, tokenOut, sqrtPriceLimitX96, deadline, pool } = trade
+    const value = is_native( tokenIn.address ) ? amountInMax : BigInt( 0 )
 
     try {
         
@@ -99,8 +99,8 @@ export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
 export const exactInput = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, SwapRouter } = swapTx
-    const { amountIn, amountOut, amountOutMin, path, tokenIn, tokenOut, deadline, chain } = trade
-    const value = is_native( tokenIn.address, chain ) ? amountIn : BigInt( 0 )
+    const { amountIn, amountOut, amountOutMin, path, tokenIn, tokenOut, deadline } = trade
+    const value = is_native( tokenIn.address ) ? amountIn : BigInt( 0 )
 
     try {
 
@@ -132,8 +132,8 @@ export const exactInput = async( swapTx: SwapTx ): Promise<void> => {
 export const exactOutput = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, SwapRouter } = swapTx
-    const { amountIn, amountInMax, amountOut, path, tokenIn, tokenOut, deadline, chain } = trade
-    const value = is_native( tokenIn.address, chain ) ? amountInMax : BigInt( 0 )
+    const { amountIn, amountInMax, amountOut, path, tokenIn, tokenOut, deadline } = trade
+    const value = is_native( tokenIn.address ) ? amountInMax : BigInt( 0 )
 
     try {
 

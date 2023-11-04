@@ -11,6 +11,9 @@ import { exec_decrease, exec_collect } from './transactions/remove';
 import { AddOptions, RemoveOptions } from '../types';
 import { SwapOptions } from '../types/swap';
 import { DEFAULT_SWAP_OPTION, DEFAULT_ADD_OPTION, DEFAULT_REMOVE_OPTION, CONTRACTS } from "../config/constants"
+import { check_swap_inputs } from './utils/swap';
+import { check_add_inputs } from './utils/add';
+import { check_remove_inputs } from './utils/remove';
 
 
 
@@ -23,6 +26,9 @@ import { DEFAULT_SWAP_OPTION, DEFAULT_ADD_OPTION, DEFAULT_REMOVE_OPTION, CONTRAC
  * @param amountIn      - The amount of exact token (in token) to be swapped for the other one (out token)
  * @param amountOut     - The amount of exact token (out token) to be received for swaping the other one (in token)
  * @param options
+ *        - tradeType:    (optional) EXACT IN => 0, EXACT OUTPUT => 1 (default is EXACT IN)
+ *        - percent:      (optional) The percentage amount we want to swap (default is undefined)
+ *        - max:          (optional) if activated it will check for the highest amount possible from tokenA and tokenB (default is false)
  *        - slipage:      (optional) protection against price movement or to high price impact default is 0.5%
  *        - deadline:     (optional) Maximum amount of time (in unix time) before the trade get reverted
  */
@@ -38,11 +44,7 @@ export const swap = async(
 
     try {
 
-        if ( path[0] === undefined || path[1] === undefined )
-            throw(`Error: token undefined path[0]: ${ path[0] }, path[1]: ${ path[1] }.`)
-        if ( options.slipage! < 0.01 || options.slipage! > 100 )
-            throw(`Slipage parameter must be a number between 0.01 and 100.`)
-
+        check_swap_inputs( amount, path, options )
 
         const swapTx = await get_swap_tx( signer, path, amount, options )
         const approve_amount = ethers.formatUnits( swapTx.trade.amountInMax ?? swapTx.trade.amountIn, swapTx.trade.tokenIn.decimals)
@@ -92,30 +94,26 @@ export const addLiquidity = async(
 
     try {
 
-        // if ( options!.slipage! < 0.01 || options!.slipage! > 100 )
-        //     throw("Slipage need to be a number between 2 and 100");
-        // if ( amountA === null && amountB === null && options!.max === false )
-        //     throw("Need to provide at least a value for 'amountA' or 'amountB' or set max");
-
+        check_add_inputs( amountA, amountB, options )
         
-        // // Get add liquidity Tx
-        // const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, options )
-        // const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
-        // const approve_amount_a = ethers.formatUnits( amountADesired, tokenA.decimals )
-        // const approve_amount_b = ethers.formatUnits( amountBDesired, tokenB.decimals )
+        // Get add liquidity Tx
+        const addTx = await get_add_liq_tx( signer, addressA, amountA, addressB, amountB, options )
+        const { tokenA, tokenB, amountADesired, amountBDesired } = addTx
+        const approve_amount_a = ethers.formatUnits( amountADesired, tokenA.decimals )
+        const approve_amount_b = ethers.formatUnits( amountBDesired, tokenB.decimals )
 
 
-        // // Get approve token 'a' Tx
-        // const approveATx = await get_approve_tx(signer, tokenA, CONTRACTS.NFT_MANAGER, approve_amount_a )
+        // Get approve token 'a' Tx
+        const approveATx = await get_approve_tx(signer, tokenA, CONTRACTS.NFT_MANAGER, approve_amount_a )
 
-        // // Get approve token 'b' Tx
-        // const approveBTx = await get_approve_tx(signer, tokenB, CONTRACTS.NFT_MANAGER, approve_amount_b )
+        // Get approve token 'b' Tx
+        const approveBTx = await get_approve_tx(signer, tokenB, CONTRACTS.NFT_MANAGER, approve_amount_b )
 
-        // /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveATx )
-        // await exec_approve( approveBTx )
-        // await exec_add_liquidity( addTx )
-        // /*=============================================================================================================================================*/
+        /*========================================= TX =================================================================================================*/
+        await exec_approve( approveATx )
+        await exec_approve( approveBTx )
+        await exec_add_liquidity( addTx )
+        /*=============================================================================================================================================*/
         
     } catch (error: any) {
 
@@ -152,19 +150,15 @@ export const withdrawLiquidity = async(
 
     try {
 
-        // if ( options.slipage! < 0 || options.slipage! > 100 )
-        //     throw new Error("Slipage need to be a number between 0 and 100");
-        // if ( options.percent! <= 0 || options.percent! > 100 )
-        //     throw new Error("Percent need to be set between 0 to 100")
+        check_remove_inputs( options )
 
-
-        // // Get widthdraw liquidity Tx
-        // const removeTx = await get_remove_tx( signer, tokenA, tokenB, chain, options )
-
-        // /*========================================= TX =================================================================================================*/        
+        // Get widthdraw liquidity Tx
+        const removeTx = await get_remove_tx( signer, tokenA, tokenB, options )
+console.log( removeTx )
+        /*========================================= TX =================================================================================================*/        
         // await exec_decrease( removeTx )
         // await exec_collect( removeTx )
-        // /*=============================================================================================================================================*/
+        /*=============================================================================================================================================*/
 
     } catch (error: any) {
 
