@@ -36,12 +36,11 @@ export const swap = async(
     path: [string, string],
     amount: string | null,
     options?: {
-        tradeType?: TradeType | undefined;
+        stable?: boolean
         percent?: number | undefined;
         max?: boolean | undefined;
         slipage?: number | undefined;
         deadline?: number | undefined;
-        fee?: Fees | undefined;
     }
 ): Promise<void>;
 ```
@@ -55,7 +54,7 @@ export const swap = async(
   
 `amount`: The amount of exact token to be swapped for the other one (default is **(in token)**) 
   
-`tradeType (optional)`: This parameter will define which token we want to be `EXACT`. ***0*** => **EXACT INPUT**, ***1*** => **EXACT OUTPUT** (default is 0)
+`stable (optional)`: Fetch stable or unstable pool  
   
 `percent (optional)`: The percentage amount we want to swap (default is undefined)
   
@@ -65,12 +64,6 @@ export const swap = async(
   
 `deadline (optional)`: The deadline for the tx to be valided in unix time. (default is 20 minutes)
   
-`fee (optional)`: You can manually specify which fee the pool will operate but mostly pools are 
-- LOW = 400 (0.04%)
-- MEDIUM = 2000 (0.2%)
-- BIG = 10000 (1%)  
-
-(Default will fetch for the best liquidity)
   
 ### Add liquidity  
   
@@ -82,12 +75,11 @@ export const addLiquidity = async(
     addressB: string,                       
     amountB: string | null,     
     options?: {
+        stable?: boolean
         percent?: number
         max?: boolean
         slipage?: number
         deadline?: number
-        fee?: Fees
-        tokenId?: number
     }
 ): Promise<void>
 ```
@@ -114,6 +106,8 @@ export const addLiquidity = async(
   
 `amountB`: Amount of second token. if set to null will check for amountA or max  
   
+`stable (optional)`: Fetch stable or unstable pool  
+  
 `percent (optional)`: The percentage amount of our least balance we want to add (default is undefined) 
   
 `max (optional)`: if activated it will check for the highest amount possible from tokenA and tokenB  
@@ -121,10 +115,7 @@ export const addLiquidity = async(
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
 `deadline (optional)`: The deadline for the tx to be valided in unix time.  
-  
-`fee (optional)`: The applied fee for the pool addressA/addressB  
-  
-`tokenId (optional)`: The id of the pool being used (this will faster the function and reduce the calls made to the provider)
+
   
 ### Remove liquidity  
   
@@ -134,11 +125,10 @@ export const withdrawLiquidity = async(
     tokenA: string, 
     tokenB: string, 
     options?: {
+        stable?: boolean
         percent?: number
         slipage?: number
         deadline?: number
-        fee?: Fees
-        tokenId?: number
     }
 ): Promise<void>
 ```
@@ -149,15 +139,13 @@ export const withdrawLiquidity = async(
   
 `tokenB`: Address of **tokenB** 
 
+`stable (optional)`: Fetch stable or unstable pool  
+  
 `percent (optional)`: The percentage amount we want to withdraw by (default is 100%)   
   
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
 `deadline (optional)`: The deadline for the tx to be valided in unix time.  
-  
-`fee (optional)`: The applied fee for the pool tokenA/tokenB   
-  
-`tokenId (optional)`: The id of the pool being used (this will faster the function and reduce the calls made to the provider)
   
   
 ## Author

@@ -75,7 +75,6 @@ export const swap = async(
  * @param amountA       - Amount of first token. if set to null will check for amountB or max
  * @param addressB      - Second token
  * @param amountB       - Amount of second token. if set to null will check for amountA or max
- * @param chain         - The chain's name to operate the swap
  * @param options
  *        - stable      (optional) Fetch stable or unstable pool
  *        - percent     (optional) Percentage of Liquidity Tokens (lp) to withdraw 
@@ -139,7 +138,6 @@ export const addLiquidity = async(
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenX         - Address of token A
  * @param tokenY         - Address of token B
- * @param chain          - The chain's name to operate the swap
  * @param options
  *        - stable         (optional) Fetch stable or unstable pool       
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%

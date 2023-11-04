@@ -47,7 +47,7 @@ const get_removeLiq = async(
     const removeLiq: RemoveLiquidityTx = {
         signer: signer,
         pool: pool,
-        lp: { chainId: CHAIN_ID[ 'base' ], address: pool.poolAddress, decimals: 12, symbol: "LP", name: "Aerodrome LP", logoURI: "" },
+        lp: { chainId: CHAIN_ID[ 'base' ], address: pool.poolAddress, decimals: liq_balance.decimals, symbol: "LP", name: "Aerodrome LP", logoURI: "" },
         tokenX: pool.tokenX,
         tokenY: pool.tokenY,
         liquidity: liq_balance,
