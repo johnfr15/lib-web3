@@ -1,10 +1,11 @@
-import pool_abi from "./abis/pool"
 import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/router"
-import factory_abi from "./abis/factory"
-import poolFees_abi from "./abis/poolFees"
-import { RemoveOptions, AddOptions } from "../types"
+import pool_v3_abi from "./abis/pool_v3"
 import { SwapOptions } from "../types/swap"
+import quoter_v2_abi from "./abis/quoter_v2"
+import factory_v3_abi from "./abis/factory_v3"
+import swap_router_abi from "./abis/swap_router"
+import { RemoveOptions, AddOptions, Fees, TradeType } from "../types"
+import non_fungible_manager_abi from "./abis/non_fungible_manager"
 
 
 
@@ -13,11 +14,12 @@ import { SwapOptions } from "../types/swap"
 /***********************************|
 |              ABIS                 |
 |__________________________________*/
-export const POOL_ABI = pool_abi
 export const ERC20_ABI = erc20_abi
-export const ROUTER_ABI = router_abi
-export const FACTORY_ABI = factory_abi
-export const POOLFEES_ABI = poolFees_abi
+export const SWAP_ROUTER_ABI = swap_router_abi
+export const QUOTER_V2_ABI = quoter_v2_abi
+export const FACTORY_V3_ABI = factory_v3_abi
+export const POOL_ABI = pool_v3_abi
+export const NFT_MANAGER_ABI = non_fungible_manager_abi
 
 
 
@@ -37,9 +39,9 @@ export const CONTRACTS: { [ key: string]: string } = {
   FACTORY: '0xFDa619b6d20975be80A10332cD39b9a4b0FAa8BB',
   ROUTER: '0x327Df1E6de05895d2ab08513aaDD9313Fe505d86' ,
   OLD_MASTERCHEF: '0x2B0A43DCcBD7d42c18F6A83F86D1a19fA58d541A',
-  BASEX_V3_FACTORY: '0x38015D05f4fEC8AFe15D7cc0386a126574e8077B' ,
-  BASEX_V3_SWAPROUTER: '0x1B8eea9315bE495187D873DA7773a874545D9D48' ,
-  BASEX_V3_NONFUNGIBLE_POSITION_MANAGER: '0xDe151D5c92BfAA288Db4B67c21CD55d5826bCc93',
+  FACTORY_V3: '0x38015D05f4fEC8AFe15D7cc0386a126574e8077B' ,
+  SWAP_ROUTER_V3: '0x1B8eea9315bE495187D873DA7773a874545D9D48' ,
+  NFT_MANAGER: '0xDe151D5c92BfAA288Db4B67c21CD55d5826bCc93',
 
 }
 
@@ -71,6 +73,7 @@ export const TOKENS = {
 |              MISC                 |
 |__________________________________*/
 export const DEFAULT_SWAP_OPTION: SwapOptions = {
+  tradeType: TradeType.EXACT_INPUT,
   max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time
@@ -88,16 +91,21 @@ export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
   percent: 100, // 100% of the pool
 }
 
-export const POOL_STABLE: { [key: string]: boolean } = {
+export const MAX_TICK = 887272
+export const MIN_TICK = -887272
+export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
+export const MAX_UINT256 = "0xffffffffffffffffffffffffffffffffff";
 
-  WETH_USDC: false,
-  WETH_DAI: false,
+export const BEST_FEE_POOL: { [key: string]: Fees } = {
 
-  USDC_WETH: false,
-  USDC_DAI: true,
+  WETH_USDC: Fees.LOW,
+  WETH_DAI: Fees.MEDIUM,
 
-  DAI_WETH: false,
-  DAI_USDC: true,
+  USDC_WETH: Fees.MEDIUM,
+  USDC_DAI: Fees.VERY_LOW,
+
+  DAI_WETH: Fees.MEDIUM,
+  DAI_USDC: Fees.VERY_LOW,
 
 }
 

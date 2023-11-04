@@ -1,97 +1,163 @@
 import { ethers } from "ethers";
 import { is_native } from "../utils";
-import { enforce_swap_fees } from "../utils/swap";
-import { SwapTx, SwapExactETHForTokens, SwapExactTokensForETH, SwapExactTokensForTokens } from "../../types/swap";
+import { SwapTx, ExactInputSingle, ExactOutputSingle, ExactInput, ExactOutput, TradeType } from "../../types";
+
 
 export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { tokenIn, tokenOut } = swapTx.trade
+    const { path, tradeType } = swapTx.trade
+    const { EXACT_INPUT, EXACT_OUTPUT } = TradeType
 
-    if ( is_native( tokenIn.address )  === true  && 
-         is_native( tokenOut.address ) === false ) await swapExactETHForTokens( swapTx )
+    try {
 
-    if ( is_native( tokenIn.address )  === false && 
-         is_native( tokenOut.address ) === true )  await swapExactTokensForETH( swapTx )
+        if ( path.length > 2 && tradeType === EXACT_INPUT )  await exactInput( swapTx )
+        if ( path.length > 2 && tradeType === EXACT_OUTPUT ) await exactOutput( swapTx )
+        if ( tradeType === EXACT_INPUT )                     await exactInputSingle( swapTx )
+        if ( tradeType === EXACT_OUTPUT )                    await exactOutputSingle( swapTx )
+        
+    } catch (error) {
 
-    if ( is_native( tokenIn.address )  === false && 
-         is_native( tokenOut.address ) === false ) await swapExactTokensForTokens( swapTx )
+       throw( error )
+
+    }
 }
 
-export const swapExactETHForTokens = async( swapTx: SwapTx ): Promise<void> => {
+
+export const exactInputSingle = async( swapTx: SwapTx ): Promise<void> => {
     
-    const { signer, trade, Router, options } = swapTx
-    let { amountIn, amountOut, amountOutMin, route, tokenIn, tokenOut, deadline } = trade
+    const { signer, trade, SwapRouter } = swapTx
+    const { pool, amountIn, amountOut, amountOutMin, tokenIn, tokenOut, sqrtPriceLimitX96, deadline, chain } = trade
+    const value = is_native( tokenIn.address, chain ) ? amountIn : BigInt( 0 )
 
-    console.log(`\n\nSwapping exact ${ ethers.formatEther( amountIn ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    try {
 
-    let txArgs: SwapExactETHForTokens = { 
-        amountOutMin: amountOutMin, 
-        routes: [ route ], 
-        to: signer.address, 
-        deadline: deadline 
+        console.log(`\n\nSwapping exact ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${ ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+
+        const txArgs: ExactInputSingle = { 
+            tokenIn: tokenIn.address, 
+            tokenOut: tokenOut.address, 
+            fee: pool.fees,
+            recipient: signer.address,
+            deadline: deadline,
+            amountIn: amountIn,
+            amountOutMinimum: amountOutMin!,
+            sqrtPriceLimitX96: sqrtPriceLimitX96,
+        }
+        const nonce = await signer.getNonce()
+
+        const tx = await SwapRouter.exactInputSingle( txArgs, { value: value, nonce: nonce } )
+        const receipt = await tx.wait()
+
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+
+    } catch (error) {
+        
+        throw( error )
+
     }
-    const { value, tx: enforce_args } = await enforce_swap_fees( swapTx, txArgs, options )
-
-    const nonce = await signer.getNonce()
-
-    const tx = await Router.swapExactETHForTokens(  ...Object.values( enforce_args ), { value: value, nonce: nonce } )
-    const receipt = await tx.wait()
-
-    console.log("\nTransaction valided !")
-    console.log("hash: ", tx.hash)
-    console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
-
 }
 
-export const swapExactTokensForETH = async( swapTx: SwapTx ): Promise<void> => {
+export const exactOutputSingle = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { signer, trade, Router } = swapTx
-    const { amountIn, amountOut, amountOutMin, route, tokenIn, tokenOut, deadline } = trade
+    const { signer, trade, SwapRouter } = swapTx
+    const { amountIn, amountInMax, amountOut, tokenIn, tokenOut, sqrtPriceLimitX96, deadline, chain, pool } = trade
+    const value = is_native( tokenIn.address, chain ) ? amountInMax : BigInt( 0 )
 
+    try {
+        
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+        const txArgs: ExactOutputSingle = { 
+            tokenIn: tokenIn.address, 
+            tokenOut: tokenOut.address, 
+            fee: pool.fees,
+            recipient: signer.address,
+            deadline: deadline,
+            amountOut: amountOut,
+            amountInMaximum: amountInMax!,
+            sqrtPriceLimitX96: sqrtPriceLimitX96,
+        }
+        const nonce = await signer.getNonce()
 
-    const txArgs: SwapExactTokensForETH = { 
-        amountIn: amountIn, 
-        amountOutMin: amountOutMin, 
-        routes: [ route ], 
-        to: signer.address, 
-        deadline: deadline 
+        const tx = await SwapRouter.exactOutputSingle( txArgs, { value: value, nonce: nonce } )
+        const receipt = await tx.wait()
+
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+
+    } catch (error) {
+        
+        throw( error )
+
     }
-    const nonce = await signer.getNonce()
-
-    const tx = await Router.swapExactTokensForETH( ...Object.values( txArgs ), { nonce: nonce } )
-    const receipt = await tx.wait()
-
-    console.log("\nTransaction valided !")
-    console.log("hash: ", tx.hash)
-    console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 }
 
 
-export const swapExactTokensForTokens = async( swapTx: SwapTx ): Promise<void> => {
+export const exactInput = async( swapTx: SwapTx ): Promise<void> => {
 
-    const { signer, trade, Router } = swapTx
-    const { amountIn, amountOut, amountOutMin, route, tokenIn, tokenOut, deadline } = trade
+    const { signer, trade, SwapRouter } = swapTx
+    const { amountIn, amountOut, amountOutMin, path, tokenIn, tokenOut, deadline, chain } = trade
+    const value = is_native( tokenIn.address, chain ) ? amountIn : BigInt( 0 )
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    try {
 
-    const txArgs: SwapExactTokensForTokens = { 
-        amountIn: amountIn, 
-        amountOutMin: amountOutMin!, 
-        routes: [ route ], 
-        to: signer.address, 
-        deadline 
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+
+        const txArgs: ExactInput = { 
+            path: ethers.AbiCoder.defaultAbiCoder().encode( [ "address", "address"], path ),
+            recipient: signer.address, 
+            deadline, 
+            amountIn: amountIn,
+            amountOutMinimum: amountOutMin!
+        }
+        const nonce = await signer.getNonce()
+
+        const tx = await SwapRouter.exactInput( txArgs, { value: value, nonce: nonce } )
+        const receipt = await tx.wait()
+
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+
+    } catch (error) {
+        
+        throw( error )
+
     }
-    const nonce = await signer.getNonce()
+}
 
-    const tx = await Router.swapExactTokensForTokens( ...Object.values( txArgs ), { nonce: nonce } )
-    const receipt = await tx.wait()
+export const exactOutput = async( swapTx: SwapTx ): Promise<void> => {
 
-    console.log("\nTransaction valided !")
-    console.log("hash: ", tx.hash)
-    console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+    const { signer, trade, SwapRouter } = swapTx
+    const { amountIn, amountInMax, amountOut, path, tokenIn, tokenOut, deadline, chain } = trade
+    const value = is_native( tokenIn.address, chain ) ? amountInMax : BigInt( 0 )
+
+    try {
+
+        console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+
+        const txArgs: ExactOutput = { 
+            path: ethers.AbiCoder.defaultAbiCoder().encode( [ "address", "address"], path ),
+            recipient: signer.address, 
+            deadline, 
+            amountOut: amountOut,
+            amountInMaximum: amountInMax!
+        }
+        const nonce = await signer.getNonce()
+
+        const tx = await SwapRouter.exactOutput( txArgs, { value: value, nonce: nonce } )
+        const receipt = await tx.wait()
+
+        console.log("\nTransaction valided !")
+        console.log("hash: ", tx.hash)
+        console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
+
+    } catch (error) {
+        
+        throw( error )
+
+    }
 }

@@ -1,9 +1,9 @@
 import { Wallet, Contract } from "ethers";
-import { Token, Pool, Balance } from "../../types";
+import { SwapOptions } from "../../types/swap";
 import { get_balance, get_pool, get_token } from "../utils";
-import { Trade, SwapTx, SwapOptions, Route } from "../../types/swap";
-import { CONTRACTS, ROUTER_ABI } from "../../config/constants";
-import { get_trade, calc_price_impact, get_amount, get_route } from "../utils/swap";
+import { Token, Pool, Trade, SwapTx, Balance } from "../../types";
+import { CONTRACTS, SWAP_ROUTER_ABI } from "../../config/constants";
+import { get_trade, calc_price_impact, get_amount } from "../utils/swap";
 
 
 
@@ -14,42 +14,27 @@ export const get_swap_tx = async(
     options: SwapOptions
 ): Promise<SwapTx> => {
 
-    try {
+    const SwapRouter = new Contract( CONTRACTS.SWAP_ROUTER_V3, SWAP_ROUTER_ABI, signer )
 
-        const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
+    const balance_in: Balance = await get_balance( path[0], signer )
+    const token_in: Token     = await get_token( path[0] )
+    const token_out: Token    = await get_token( path[1] )
+    const pool: Pool          = await get_pool( token_in, token_out, signer )
 
-        const balance_in: Balance  = await get_balance( path[0], signer )
-        const token_in: Token      = await get_token( path[0] )
-        const token_out: Token     = await get_token( path[1] )
-        const pool: Pool           = await get_pool( token_in, token_out, signer, options )
-        const route: Route         = get_route( token_in, token_out, pool )
+    const amount_in: string = get_amount( amount, balance_in, options )
+    const trade: Trade = await get_trade( signer, token_in, token_out, amount_in, pool, options )
 
-        amount = get_amount( amount, balance_in, options )
-        const trade: Trade = await get_trade( signer, token_in, token_out, amount, pool, route, options )
-
-        trade.priceImpact = await calc_price_impact( trade, pool )
+    if ( balance_in.bigint === BigInt( 0 ) )
+        throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
+    if ( balance_in.bigint < (trade.amountInMax ?? trade.amountIn) )
+        throw new Error(`Error: Not enough balance require ${ trade.amountInMax ?? trade.amountIn } ${ token_in.symbol } for this trade`)
 
         
-        if ( trade.priceImpact > options.slipage! )
-            throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
-        if ( balance_in.bigint === BigInt( 0 ) )
-            throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
-        if ( balance_in.bigint < trade.amountIn )
-            throw new Error(`Error: Not enough balance require ${ trade.amountIn } ${ token_in.symbol } for this trade`)
-
-            
-        const swapTx: SwapTx = {
-            signer: signer,
-            trade: trade,
-            Router: Router,
-            options: options
-        }
-
-        return swapTx 
-
-    } catch (error: any) {
-        
-        throw error
-
+    const swapTx: SwapTx = {
+        signer: signer,
+        trade: trade,
+        SwapRouter: SwapRouter
     }
+
+    return swapTx 
 }

@@ -1,10 +1,8 @@
-import fs from "fs"
-import * as addUtils from "./add"
-import * as swapUtils from "./swap"
-import chains from "../../config/chains"
-import { Token, Pool } from "../../types"
-import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress} from "ethers"
-import { ERC20_ABI, TOKENS, CONTRACTS, POOL_ABI, CHAIN_ID, CHAIN_ID_TO_NAME, ROUTER_ABI, POOL_STABLE } from "../../config/constants"
+import fs from "fs";
+import chains from "../../config/chains";
+import { Token, Pool, Chains, Position } from "../../types";
+import { ethers, Wallet, Contract, JsonRpcProvider, ZeroAddress } from "ethers";
+import { ERC20_ABI, TOKENS, CHAIN_ID, CONTRACTS, FACTORY_V3_ABI, POOL_ABI, BEST_FEE_POOL } from "../../config/constants"
 
 
 
@@ -52,7 +50,8 @@ export const get_token = async( tokenAddress: string ): Promise<Token> => {
 
 
 /**
- * @notice Will set the signer with the right provider for the transaction 
+ * 
+ * @param chainId   // Orbiter id 
  */
 export const resolve_provider = ( chainId: number ): JsonRpcProvider => {
 
@@ -63,31 +62,39 @@ export const resolve_provider = ( chainId: number ): JsonRpcProvider => {
     return provider
 }
 
-/**
- * @notice Will fetch the pool related to tokenA and tokenB and fee
- */
-export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, options: any ): Promise<Pool> => {
+
+export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet ): Promise<Pool> => {
 
     try {
         
-        const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
+        const Factory = new Contract( CONTRACTS.FACTORY_V3, FACTORY_V3_ABI, signer )
 
-        const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0' )
-        const stable = options.stable ?? is_stable_pool( tokenA, tokenB )
+        const bestFee = get_best_fee( tokenA, tokenB )
+        const pair = await Factory.getPool( tokenA.address, tokenB.address, bestFee )
 
-        // This wil fetch and return the address of the pool
-        // By specifying zeroAddress it will use default factory 
-        const poolAddress: string = await Router.poolFor( token0.address, token1.address, stable, ZeroAddress )
-        const Pool = new Contract( poolAddress, POOL_ABI, signer )
-        const [ reserveA, reserveB ] = await Router.getReserves( token0.address, token1.address, stable, ZeroAddress ) 
+        
+        if ( BigInt( pair ) === BigInt( 0 ) )
+            throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } Fee: ${ bestFee } not created yet.`)
+    
+    
+        const Pool = new Contract( pair, POOL_ABI, signer )
+        const [ slot0, liquidity, tickSpacing, ] = await Promise.all([
+            Pool.slot0(),
+            Pool.liquidity(),
+            Pool.tickSpacing(),
+        ])
+        const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0')
 
+    
         const pool: Pool = {
-            tokenX: token0,
-            tokenY: token1,
-            reserveX: reserveA,
-            reserveY: reserveB,
-            poolAddress: poolAddress,
-            stable: stable,
+            tokenA: token0,
+            tokenB: token1,
+            pair: pair,
+            fees: bestFee,
+            tickSpacing: parseInt( tickSpacing.toString() ),
+            liquidity: liquidity,
+            sqrtPriceX96: slot0[0],
+            tick: parseInt( slot0[1].toString() ),
             Pool: Pool
         }
     
@@ -100,7 +107,6 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, opt
     }
 }
 
-
 export const get_balance = async(
     tokenAddress: string, 
     signer: Wallet,
@@ -109,43 +115,60 @@ export const get_balance = async(
     let balance: bigint;
     let decimals: number
 
-    const erc20 = new Contract(tokenAddress, ERC20_ABI, signer);
-    const network = await signer.provider?.getNetwork()
+    try {
 
-    if ( is_native( tokenAddress ) )
-    {
-        balance  = await signer.provider!.getBalance( signer.address )
-        decimals = 18
-    }
-    else
-    {
-        balance = await erc20.balanceOf( signer.address );
-        decimals = await erc20.decimals();
+        const erc20 = new Contract(tokenAddress, ERC20_ABI, signer);
+        const network = await signer.provider?.getNetwork()
+
+        if ( is_native( tokenAddress ) )
+        {
+            balance  = await signer.provider!.getBalance( signer.address )
+            decimals = 18
+        }
+        else
+        {
+            balance = await erc20.balanceOf( signer.address );
+            decimals = await erc20.decimals();
+        }
+
+        let formated = ethers.formatUnits( balance , decimals );
+        
+        return { 
+            bigint: balance,
+            string: formated, 
+            decimals: decimals
+        };
+
+    } catch (error) {
+
+        throw( error )
+
     }
 
-    let formated = ethers.formatUnits( balance , decimals );
-    
-    return { 
-        bigint: balance,
-        string: formated, 
-        decimals: decimals
-    };
 }
 
-/**
- * @notice Fetch the quote for tokenIn with amountIn 
- * @returns amountOut of tokenOut
- */
-export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, pool: Pool): string => {
+export const get_quote = ( amountA: number, tokenA: Token, pool: Pool ): bigint => {
 
-    const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenX.address ) ? pool.reserveX : pool.reserveY
-    const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenX.address ) ? pool.reserveX : pool.reserveY 
+    const { sqrtPriceX96 } = pool
 
-    const amount_in   = parseFloat( amountIn )
-    const reserve_in  = parseFloat( ethers.formatUnits( reserveIn, tokenIn.decimals ) )
-    const reserve_out = parseFloat( ethers.formatUnits( reserveOut, tokenOut.decimals ) )
+    const x =  pool.tokenA
+    const y =  pool.tokenB
 
-    return (amount_in * reserve_out / reserve_in).toFixed( tokenOut.decimals )
+    // see https://ethereum.stackexchange.com/questions/9868 5/computing-the-uniswap-v3-pair-price-from-q64-96-number
+    // see https://www.youtube.com/watch?v=hKhdQl126Ys
+    const priceX96_to_price0 = (parseFloat( sqrtPriceX96.toString() ) /  2 ** 96) ** 2
+
+    const priceX = priceX96_to_price0 * ( (10 ** x.decimals) / (10 ** y.decimals) )
+    const priceY = 1 / priceX
+
+    const token_price = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? priceX : priceY
+    
+    const token_quoted = BigInt( tokenA.address ) === BigInt( pool.tokenA.address ) ? pool.tokenB : pool.tokenA
+    const quote = (token_price * amountA).toFixed( token_quoted.decimals )
+
+    const amountB = ethers.parseUnits( quote, token_quoted.decimals )
+    
+    return amountB
 }
 
 export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
@@ -157,8 +180,8 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
 
         if ( balanceA.string === '0.0' || balanceB.string === '0.0' )
             return 0;
-        
-        return 1;
+        else
+            return 1;
         
     } catch (error: any) {
         
@@ -186,14 +209,59 @@ export const is_native = ( token: string ): boolean => {
     return false
 }
 
-const is_stable_pool = ( tokenA: Token, tokenB: Token ): boolean => {
+export const is_position = ( position: Position, tokenA: Token, tokenB: Token ): boolean => {
+
+
+    const pos0 = BigInt( position.token0 )
+    const pos1 = BigInt( position.token1 )
+    const tokA = BigInt( tokenA.address )
+    const tokB = BigInt( tokenB.address )
+
+    const fee = parseInt( position.fee.toString() )
+    const bestFee = get_best_fee( tokenA, tokenB )
+
+    if ( pos0 === tokA && pos1 === tokB && fee === bestFee ) return true
+    if ( pos0 === tokB && pos1 === tokA && fee === bestFee ) return true
+
+    return false
+}
+
+const get_best_fee = ( tokenA: Token, tokenB: Token ): number => {
 
     const pool = tokenA.symbol + '_' + tokenB.symbol
 
-    const is_stable = POOL_STABLE[ pool ] ?? false
+    const bestFee = BEST_FEE_POOL[ pool ]
 
-    return is_stable
+    if ( bestFee === undefined )
+        throw(`Error: Unknown best fee for pool ${ pool }`)
+
+    return bestFee
 }
+
+export const parse_position = ( position: any, tokenId: number ): Position | undefined => {
+
+    if ( position === undefined )
+        return undefined
+
+    const parsed: Position = {
+        tokenId: tokenId,
+        nonce: position['0'],
+        operator: position['1'],
+        token0: position['2'],
+        token1: position['3'],
+        fee: position['4'],
+        tickLower: position['5'],
+        tickUpper: position['6'],
+        liquidity: position['7'],
+        feeGrowthInside0LastX128: position['8'],
+        feeGrowthInside1LastX128: position['9'],
+        tokensOwed0: position['10'],
+        tokensOwed1: position['11'],
+    }
+
+    return parsed
+}
+
 
 export const log_balances = async( signer: Wallet ) => {
 
@@ -217,5 +285,3 @@ export const log_balances = async( signer: Wallet ) => {
     console.log( "Balance WETH:   ", wethBalance !== undefined ? ethers.formatUnits( wethBalance, 18) : 'undefined' )
     console.log("\n")
 }
-
-export default { swapUtils, addUtils }

@@ -1,63 +1,82 @@
-import { Wallet, Contract } from "ethers"
-import { Token, Pool } from "."
+import { Token, Pool, TradeType } from "."
 
 
 export type SwapOptions = {
-    stable?: boolean
+    tradeType?: TradeType
     percent?: number  // A number: 0.00 < percent <= 100.00
     max?: boolean
     slipage?: number
     deadline?: number
 }
 
+
 export type Trade = {
     tokenIn: Token
     tokenOut: Token
-    path: string[]
+    path: [string, string]
     amountIn: bigint
     amountOut: bigint
-    amountOutMin: bigint
-    priceImpact: number
+    amountInMax: bigint | undefined
+    amountOutMin: bigint | undefined
+    sqrtPriceLimitX96: bigint
     to: string
+    priceImpact: number
     pool: Pool
-    route: Route
     slipage: number
     deadline: number
+    tradeType: number
 }
 
-export type Route = {
-    from: string
-    to: string
-    stable: boolean
-    factory: string
+export type Position = {
+    tokenId: number
+    nonce: bigint
+    operator: string
+    token0: string
+    token1: string
+    fee: number
+    tickLower: number
+    tickUpper: number
+    liquidity: bigint
+    feeGrowthInside0LastX128: bigint
+    feeGrowthInside1LastX128: bigint
+    tokensOwed0: bigint
+    tokensOwed1: bigint
 }
 
-export type SwapTx = {
-    signer: Wallet
-    trade: Trade
-    Router: Contract
-    options: SwapOptions
-}
-
-export type SwapExactETHForTokens = {
-    amountOutMin: bigint
-    routes: Route[],
-    to: string
+export type ExactInput = {
+    path: string
+    recipient: string
     deadline: number
-}
-
-export type SwapExactTokensForETH = {
     amountIn: bigint
-    amountOutMin: bigint
-    routes: Route[],
-    to: string
-    deadline: number
+    amountOutMinimum: bigint
 }
 
-export type SwapExactTokensForTokens = {
-    amountIn: bigint
-    amountOutMin: bigint
-    routes: Route[],
-    to: string
+export type ExactOutput = {
+    path: string
+    recipient: string
     deadline: number
+    amountOut: bigint
+    amountInMaximum: bigint
+}
+
+export type ExactInputSingle = {
+    tokenIn: string
+    tokenOut: string
+    fee: number
+    recipient: string
+    deadline: number
+    amountIn: bigint
+    amountOutMinimum: bigint
+    sqrtPriceLimitX96: bigint
+}
+
+export type ExactOutputSingle = {
+    tokenIn: string
+    tokenOut: string
+    fee: number
+    recipient: string
+    deadline: number
+    amountOut: bigint
+    amountInMaximum: bigint
+    sqrtPriceLimitX96: bigint
 }

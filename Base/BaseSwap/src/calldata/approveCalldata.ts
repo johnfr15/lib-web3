@@ -19,12 +19,12 @@ export const get_approve_tx = async(
 
         const big_amount = ethers.parseUnits( amount, token.decimals )
     
-        const approveTx: ApproveTx = { 
+        const approveTx: ApproveTx = {
             signer: signer, 
             Erc20: erc20, 
             token: token, 
             spender: spender, 
-            amount: big_amount 
+            amount: big_amount
         }
 
         return approveTx

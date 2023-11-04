@@ -1,92 +1,64 @@
 import { ethers } from "ethers";
-import { is_native } from "../utils";
-import { RemoveLiquidity, RemoveLiquidityETH, RemoveLiquidityTx } from "../../types/remove";
+import { RemoveLiquidityTx } from "../../types";
+import { MAX_UINT128 } from "../../config/constants";
 
-/**
- * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
- * 
- */
-export const exec_remove = async( removeTx: RemoveLiquidityTx ): Promise<void> => {
+export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 
-    const { tokenX, tokenY } = removeTx
+    const { signer, token0, token1, position, liquidity, amount0Min, amount1Min, deadline, percent, NftManager } = removeLiq
 
-    if ( is_native( tokenX.address ) || is_native( tokenY.address ) )
-        await removeLiquidityETH( removeTx )
-    else
-        await removeLiquidity( removeTx )
+
+    console.log(`\n\nDecreasing ${ percent }% of liquidity for:\n\t\
+        (minimum)${ ethers.formatUnits( amount0Min, token0.decimals ) } ${ token0.symbol }\n\t\
+        (minimum)${ ethers.formatUnits( amount1Min, token1.decimals ) } ${ token1.symbol }
+    `)
+
+    const txArgs = {
+        tokenId: position.tokenId,
+        liquidity: liquidity,
+        amount0Min: amount0Min,
+        amount1Min: amount1Min,
+        deadline: deadline,
+    }
+    const nonce = await signer.getNonce()
+    const feedata = await signer.provider?.getFeeData()!
+    const gasPrice = feedata.gasPrice! * BigInt( 100 ) / BigInt( 90 )
+    const gasLimit =  await NftManager.decreaseLiquidity.estimateGas( txArgs, { nonce: nonce, gasPrice: gasPrice }) * BigInt( 2 )
+
+    const tx = await NftManager.decreaseLiquidity( txArgs, { nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit })
+    const receipt = await tx.wait()
+        
+    console.log("\nTransaction valided !")
+    console.log("hash: ", tx.hash)
+    console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
+
+    return receipt
 }
 
-const removeLiquidityETH = async( removeTx: RemoveLiquidityTx ) => {
+export const exec_collect = async( removeLiq: RemoveLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = removeTx
-    const { liquidity, amountXMin, amountYMin } = removeTx
+    const { signer, token0, token1, position, amount0, amount1, percent, NftManager } = removeLiq
 
-    try {
 
-        console.log(`\n\nMinting liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }` )     
-        
-        const x_native = is_native( tokenX.address )
+    console.log(`\n\nCollecting ${ percent }% of liquidity for:\n\t\
+        ${ ethers.formatUnits( amount0, token0.decimals ) } ${ token0.symbol }\n\t\
+        ${ ethers.formatUnits( amount1, token1.decimals ) } ${ token1.symbol }
+    `)
 
-        const args: RemoveLiquidityETH = {
-            token: x_native ? tokenY.address : tokenX.address,
-            stable: pool.stable,
-            liquidity: liquidity.bigint,
-            amountTokenMin: x_native ? amountYMin : amountXMin,
-            amountETHMin: x_native ? amountXMin : amountYMin,
-            to: signer.address,
-            deadline: deadline,
-        }
-        const nonce = await signer.getNonce()
-        
-        const tx = await Router.removeLiquidityETH( ...Object.values( args ), { nonce: nonce } )   
-        const receipt = await tx.wait()
-            
-        console.log("\nTransaction valided !")
-        console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
-    
-        return receipt
 
-    } catch (error) {
-        
-        throw( error )
-
+    const txArgs = {
+        tokenId: position.tokenId,
+        recipient: signer.address,
+        amount0Max: MAX_UINT128,
+        amount1Max: MAX_UINT128,
     }
-}
+    const nonce = await signer.getNonce()
 
-const removeLiquidity = async( removeTx: RemoveLiquidityTx ) => {
-
-    const { signer, tokenX, tokenY, deadline, pool, Router } = removeTx
-    const { liquidity, amountXMin, amountYMin } = removeTx
-
-    try {
-
-        console.log(`\n\nIncreasing liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }...` )     
+    const tx = await NftManager.collect( txArgs, { nonce: nonce } )
+    const receipt = await tx.wait()
         
-        const args: RemoveLiquidity = {
-            tokenA: tokenX.address,
-            tokenB: tokenY.address,
-            stable: pool.stable,
-            liquidity: liquidity.bigint,
-            amountAMin: amountXMin,
-            amountBMin: amountYMin,
-            to: signer.address,
-            deadline: deadline,
-        }
-        const nonce = await signer.getNonce()
-    
-        const tx = await Router.removeLiquidity( ...Object.values( args ), { nonce: nonce } )   
-        const receipt = await tx.wait()
-            
-        console.log("\nTransaction valided !")
-        console.log("hash: ", tx.hash)
-        console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
-    
-        return receipt
+    console.log("\nTransaction valided !")
+    console.log("hash: ", tx.hash)
+    console.log("Fees: ", ethers.formatEther( receipt?.fee ?? '0' ))
 
-    } catch (error) {
-        
-        throw( error )
-
-    }
+    return receipt
 }

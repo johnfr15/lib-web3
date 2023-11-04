@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { is_native } from "../utils";
-import { AddLiquidityTx, AddLiquidity, AddLiquidityETH } from "../../types/add";
+import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../../types";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 
@@ -8,42 +8,40 @@ import { AddLiquidityTx, AddLiquidity, AddLiquidityETH } from "../../types/add";
  */
 export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<void> => {
 
-    const { tokenX, tokenY } = addLiqTx
-
-    if ( is_native( tokenX.address ) || is_native( tokenY.address ) )
-        await addLiquidityETH( addLiqTx )
+    if ( addLiqTx.tokenId )
+        await increase( addLiqTx )
     else
-        await addLiquidity( addLiqTx )
+        await mint( addLiqTx )
 }
 
-const addLiquidityETH = async( addTx: AddLiquidityTx ) => {
+const mint = async( addLiqTx: AddLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = addTx
-    const { amountXDesired, amountYDesired, amountXMin, amountYMin } = addTx
-
+    const { signer, tokenA, tokenB, fee, tickLower, tickUpper, amountADesired, amountBDesired, amountAMin, amountBMin, deadline, chain, NftManager } = addLiqTx
     let value: bigint = BigInt( 0 )
 
-    if ( is_native( tokenX.address ) || is_native( tokenY.address ) )
-        value = is_native( tokenX.address ) ? amountXDesired : amountYDesired
+    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
+        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
 
     try {
 
-        console.log(`\n\nMinting liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }` )     
+        console.log(`\n\nMinting liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }` )     
         
-        const x_native = is_native( tokenX.address )
-
-        const args: AddLiquidityETH = {
-            token: x_native ? tokenY.address : tokenX.address,
-            stable: pool.stable,
-            amountTokenDesired: x_native ? amountYDesired : amountXDesired,
-            amountTokenMin: x_native ? amountYMin : amountXMin,
-            amountETHMin: x_native ? amountXMin : amountYMin,
-            to: signer.address,
+        const args: Mint = {
+            token0: tokenA.address,
+            token1: tokenB.address,
+            fee: fee,
+            tickLower: tickLower,
+            tickUpper: tickUpper,
+            amount0Desired: amountADesired,
+            amount1Desired: amountBDesired,
+            amount0Min: amountAMin,
+            amount1Min: amountBMin,
+            recipient: signer.address,
             deadline: deadline,
         }
         const nonce = await signer.getNonce()
-        
-        const tx = await Router.addLiquidityETH( ...Object.values( args ), { nonce: nonce, value: value } )   
+        console.log( args )
+        const tx = await NftManager.mint( args, { nonce: nonce, value: value } )   
         const receipt = await tx.wait()
             
         console.log("\nTransaction valided !")
@@ -55,38 +53,34 @@ const addLiquidityETH = async( addTx: AddLiquidityTx ) => {
     } catch (error) {
         
         throw( error )
-
     }
 }
 
-const addLiquidity = async( addTx: AddLiquidityTx ) => {
+const increase = async( addTx: AddLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = addTx
-    const { amountXDesired, amountYDesired, amountXMin, amountYMin } = addTx
+    const { signer, tokenA, tokenB, deadline, chain, NftManager } = addTx
+    const { tokenId, amountADesired, amountBDesired, amountAMin, amountBMin } = addTx
 
     let value: bigint = BigInt( 0 )
 
-    if ( is_native( tokenX.address ) || is_native( tokenY.address ) )
-        value = is_native( tokenX.address ) ? amountXDesired : amountYDesired
+    if ( is_native( tokenA.address, chain ) || is_native( tokenB.address, chain ) )
+        value = is_native( tokenA.address, chain ) ? amountADesired : amountBDesired
 
     try {
 
-        console.log(`\n\nIncreasing liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }...` )     
+        console.log(`\n\nIncreasing liquidity for pool ${ tokenA.symbol }/${ tokenB.symbol }...` )     
         
-        const args: AddLiquidity = {
-            tokenA: tokenX.address,
-            tokenB: tokenY.address,
-            stable: pool.stable,
-            amountADesired: amountXDesired,
-            amountBDesired: amountYDesired,
-            amountAMin: amountXMin,
-            amountBMin: amountYMin,
-            to: signer.address,
+        const args: IncreaseLiquidity = {
+            tokenId: tokenId!,
+            amount0Desired: amountADesired,
+            amount1Desired: amountBDesired,
+            amount0Min: amountAMin,
+            amount1Min: amountBMin,
             deadline: deadline,
         }
         const nonce = await signer.getNonce()
     
-        const tx = await Router.addLiquidity( ...Object.values( args ), { nonce: nonce, value: value } )   
+        const tx = await NftManager.increaseLiquidity( args, { nonce: nonce, value: value } )   
         const receipt = await tx.wait()
             
         console.log("\nTransaction valided !")
@@ -98,6 +92,5 @@ const addLiquidity = async( addTx: AddLiquidityTx ) => {
     } catch (error) {
         
         throw( error )
-
     }
 }
