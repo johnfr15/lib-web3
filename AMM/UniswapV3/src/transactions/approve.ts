@@ -1,6 +1,5 @@
-import { TransactionResponse, TransactionReceipt, Wallet, ethers } from "ethers"
-import { SWAP_ROUTER } from "../config/constants"
-import { ApproveTx } from "../types"
+import { ApproveTx } from "../../types"
+import { TransactionResponse, TransactionReceipt, ethers } from "ethers"
 
 export const exec_approve = async( approveTx: ApproveTx | undefined): Promise<TransactionReceipt | undefined> => {
 
