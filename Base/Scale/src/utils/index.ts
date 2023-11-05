@@ -77,9 +77,9 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, opt
 
         // This wil fetch and return the address of the pool
         // By specifying zeroAddress it will use default factory 
-        const poolAddress: string = await Router.poolFor( token0.address, token1.address, stable, ZeroAddress )
+        const poolAddress: string = await Router.pairFor( token0.address, token1.address, stable )
         const Pool = new Contract( poolAddress, POOL_ABI, signer )
-        const [ reserveA, reserveB ] = await Router.getReserves( token0.address, token1.address, stable, ZeroAddress ) 
+        const [ reserveA, reserveB ] = await Router.getReserves( token0.address, token1.address, stable ) 
 
         const pool: Pool = {
             tokenX: token0,

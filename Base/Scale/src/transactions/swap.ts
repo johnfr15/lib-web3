@@ -22,8 +22,8 @@ export const swapExactETHForTokens = async( swapTx: SwapTx ): Promise<void> => {
     const { signer, trade, Router, options } = swapTx
     let { amountIn, amountOut, amountOutMin, route, tokenIn, tokenOut, deadline } = trade
 
-    console.log(`\n\nSwapping exact ${ ethers.formatEther( amountIn ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    console.log(`\n\nSwapping exact ${ ethers.formatEther( amountIn ) } ${ tokenIn.symbol } ` +
+    `for ${ ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
     let txArgs: SwapExactETHForTokens = { 
         amountOutMin: amountOutMin, 

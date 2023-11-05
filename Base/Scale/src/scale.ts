@@ -50,10 +50,10 @@ export const swap = async(
         const approve_amount = ethers.formatUnits( swapTx.trade.amountIn, swapTx.trade.tokenIn.decimals )
 
         const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, CONTRACTS.Router, approve_amount )
-console.log( swapTx )
+
         /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveTx )
-        // await exec_swap( swapTx )
+        await exec_approve( approveTx )
+        await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
     } catch (error: any) {

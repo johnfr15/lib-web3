@@ -113,6 +113,7 @@ const get_liq = async(
         if ( amount_2 > balance_2.bigint )
             throw new Error(`${ token_2.symbol }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
+
         const token_1_is_min = BigInt( pool.tokenX.address ) === BigInt( token_1.address )
         const [ tokenX, tokenY ] = token_1_is_min ? [token_1, token_2] : [token_2, token_1]
         const [ amountX, amountY ] = token_1_is_min ? [amount_1, amount_2] : [amount_2, amount_1]

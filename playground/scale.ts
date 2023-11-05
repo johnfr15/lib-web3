@@ -24,11 +24,11 @@ const main = async() => {
 
         console.log("Scale")
         
-        await Scale.swap(
-            signer,
-            [ TOKENS.eth, TOKENS.usdc ],
-            "0.000001",
-        )
+        // await Scale.swap(
+        //     signer,
+        //     [ TOKENS.eth, TOKENS.usdc ],
+        //     "0.000001",
+        // )
 
         // await Scale.addLiquidity( 
         //     signer,
@@ -36,7 +36,7 @@ const main = async() => {
         //     "0.001",
         //     TOKENS.usdc,
         //     null,
-        //     // { max: true }
+        //     { percent: 50 }
         // )
 
         await Scale.withdrawLiquidity( 
