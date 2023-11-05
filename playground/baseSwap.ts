@@ -1,15 +1,15 @@
 import dotenv from "dotenv"
 import { Wallet } from "ethers"
-import BaseSwap from "../Base/BaseSwap"
-import { CHAIN_ID } from "../Base/BaseSwap/config/constants"
+import BaseSwapV3 from "../Base/BaseSwapV3"
+import { CHAIN_ID } from "../Base/BaseSwapV3/config/constants"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TOKENS } = BaseSwap.Constant
-    const { resolve_provider, log_balances } = BaseSwap.Utils
+    const { TOKENS } = BaseSwapV3.Constant
+    const { resolve_provider, log_balances } = BaseSwapV3.Utils
 
     
     try {
@@ -22,15 +22,15 @@ const main = async() => {
         await log_balances( signer )
         console.log("")
 
-        console.log("BaseSwap")
+        console.log("BaseSwapV3")
         
-        // await BaseSwap.swap(
+        // await BaseSwapV3.swap(
         //     signer,
         //     [ TOKENS.eth, TOKENS.usdc ],
         //     "0.0001",
         // )
 
-        // await BaseSwap.addLiquidity( 
+        // await BaseSwapV3.addLiquidity( 
         //     signer,
         //     TOKENS.eth,
         //     "0.001",
@@ -39,7 +39,7 @@ const main = async() => {
         //     { max: true }
         // )
 
-        await BaseSwap.withdrawLiquidity( 
+        await BaseSwapV3.withdrawLiquidity( 
             signer,
             TOKENS.eth,
             TOKENS.usdc,
