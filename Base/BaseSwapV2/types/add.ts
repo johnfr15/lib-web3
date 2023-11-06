@@ -3,7 +3,6 @@ import { Pool, Token } from "."
 
 
 export type AddOptions = {
-    stable?: boolean
     percent?: number
     max?: boolean
     slipage?: number

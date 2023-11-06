@@ -52,7 +52,7 @@ export const swap = async(
         const approveTx = await get_approve_tx( signer, swapTx.trade.tokenIn, CONTRACTS.Router, approve_amount )
 
         /*========================================= TX =================================================================================================*/
-        // await exec_approve( approveTx )
+        await exec_approve( approveTx )
         await exec_swap( swapTx )
         /*=============================================================================================================================================*/
         
@@ -75,7 +75,6 @@ export const swap = async(
  * @param addressB      - Second token
  * @param amountB       - Amount of second token. if set to null will check for amountA or max
  * @param options
- *        - stable      (optional) Fetch stable or unstable pool
  *        - percent     (optional) Percentage of Liquidity Tokens (lp) to withdraw 
  *        - max:        (optional) If activated it will check for the highest amount possible from tokenX and tokenY  
  *        - slipage:    (optional) Protection against price movement or to high price impact default is 0.5%
@@ -134,7 +133,6 @@ export const addLiquidity = async(
  * @param tokenX         - Address of token A
  * @param tokenY         - Address of token B
  * @param options
- *        - stable         (optional) Fetch stable or unstable pool       
  *        - slipage        (optional) protection against price movement or to high price impact default is 2%
  *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
@@ -157,7 +155,7 @@ export const withdrawLiquidity = async(
         const removeTx = await get_remove_tx( signer, tokenX, tokenY, options )
 
         // Get approve token 'a' Tx
-        const approveLpTx = await get_approve_tx( signer, removeTx.lp, CONTRACTS.Router, removeTx.liquidity.string )
+        const approveLpTx = await get_approve_tx( signer, removeTx.lp, CONTRACTS.Router, removeTx.balanceLp.string )
 
         /*========================================= TX =================================================================================================*/        
         await exec_approve( approveLpTx )

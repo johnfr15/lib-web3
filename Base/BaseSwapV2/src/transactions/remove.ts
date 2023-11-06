@@ -18,18 +18,20 @@ export const exec_remove = async( removeTx: RemoveLiquidityTx ): Promise<void> =
 
 const removeLiquidityETH = async( removeTx: RemoveLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = removeTx
-    const { liquidity, amountXMin, amountYMin } = removeTx
+    const { signer, tokenX, tokenY, deadline, percent, Router } = removeTx
+    const { liquidity, amountX, amountY, amountXMin, amountYMin } = removeTx
 
     try {
 
-        console.log(`\n\nMinting liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }` )     
+        console.log(`\n\nRemoving ${ percent }% liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }` )     
+        console.log(`\t ${ amountX } ${ tokenX.symbol }`)
+        console.log(`\t ${ amountY } ${ tokenY.symbol }`)
         
         const x_native = is_native( tokenX.address )
 
         const args: RemoveLiquidityETH = {
             token: x_native ? tokenY.address : tokenX.address,
-            liquidity: liquidity.bigint,
+            liquidity: liquidity,
             amountTokenMin: x_native ? amountYMin : amountXMin,
             amountETHMin: x_native ? amountXMin : amountYMin,
             to: signer.address,
@@ -55,17 +57,19 @@ const removeLiquidityETH = async( removeTx: RemoveLiquidityTx ) => {
 
 const removeLiquidity = async( removeTx: RemoveLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = removeTx
-    const { liquidity, amountXMin, amountYMin } = removeTx
+    const { signer, tokenX, tokenY, deadline, percent, Router } = removeTx
+    const { liquidity, amountX, amountY, amountXMin, amountYMin } = removeTx
 
     try {
 
-        console.log(`\n\nIncreasing liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }...` )     
+        console.log(`\n\nRemoving ${ percent }% liquidity for pool ${ tokenX.symbol }/${ tokenY.symbol }` )     
+        console.log(`\t ${ amountX } ${ tokenX.symbol }`)
+        console.log(`\t ${ amountY } ${ tokenY.symbol }`)     
         
         const args: RemoveLiquidity = {
             tokenA: tokenX.address,
             tokenB: tokenY.address,
-            liquidity: liquidity.bigint,
+            liquidity: liquidity,
             amountAMin: amountXMin,
             amountBMin: amountYMin,
             to: signer.address,

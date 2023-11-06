@@ -47,7 +47,7 @@ const get_max_liq = async(
     options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
-    const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
+    const Router = new Contract( CONTRACTS.ROUTER, ROUTER_ABI, signer )
     
     const balanceX: Balance = await get_balance( pool.tokenX.address, signer )
     const balanceY: Balance = await get_balance( pool.tokenY.address, signer )
@@ -93,7 +93,7 @@ const get_liq = async(
     options: AddOptions
 ): Promise<AddLiquidityTx> => {
 
-        const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
+        const Router = new Contract( CONTRACTS.ROUTER, ROUTER_ABI, signer )
 
         const token_1: Token = BigInt( pool.tokenX.address ) === BigInt( addr ) ? pool.tokenX : pool.tokenY
         const token_2: Token = BigInt( pool.tokenX.address ) !== BigInt( addr ) ? pool.tokenX : pool.tokenY

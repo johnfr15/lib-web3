@@ -6,8 +6,8 @@
 **Remove liquidity**: ✅  
 
 ## url
-- Mainnet: https://BaseSwapV2.fi/
-- Docs: https://docs.BaseSwapV2.fi/BaseSwapV2/
+- Mainnet: https://BaseSwap.fi/
+- Docs: https://docs.BaseSwap.fi/BaseSwapV2/
 - Github: 
 
 <br />

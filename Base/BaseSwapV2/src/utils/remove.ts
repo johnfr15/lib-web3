@@ -1,18 +1,17 @@
-import { Contract } from "ethers";
-import { Pool } from "../../types";
+import { Balance, Pool } from "../../types";
 import { RemoveOptions } from "../../types/remove";
 
-export const get_amounts = async( pool: Pool, liquidity: bigint, Router: Contract ): Promise<[ bigint, bigint ]> => {
+export const get_amounts = async( pool: Pool, liquidityBalance: Balance, options: RemoveOptions ): Promise<[ bigint, bigint, bigint ]> => {
 
-    const { tokenX, tokenY } = pool
+    const { reserveX, reserveY, Pool } = pool
 
-    const amounts: [ bigint, bigint ] = await Router.quoteRemoveLiquidity(
-        tokenY.address,
-        tokenX.address,
-        liquidity
-    )
+    const total_liquidity: bigint = await Pool.totalSupply()
+    const liquidity: bigint = liquidityBalance.bigint * BigInt( options.percent! * 100 ) / BigInt( 100 * 100 )
 
-    return amounts
+    const amountX = reserveX * liquidity / total_liquidity
+    const amountY = reserveY * liquidity / total_liquidity
+
+    return [ amountX, amountY, liquidity ]
 }
 
 export const check_remove_inputs = ( options: RemoveOptions ) => {

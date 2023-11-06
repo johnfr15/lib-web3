@@ -8,8 +8,8 @@ export const swapExactTokensForETH = async( swapTx: SwapTx ): Promise<void> => {
     const { amountIn, amountOut, amountOutMin, path, tokenIn, tokenOut, deadline } = trade
 
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol }` +
+    `for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
     const txArgs: SwapExactTokensForETH = { 
         amountIn: amountIn, 
@@ -29,13 +29,16 @@ export const swapExactTokensForETH = async( swapTx: SwapTx ): Promise<void> => {
 }
 
 
+
+
+
 export const swapExactTokensForTokens = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, Router } = swapTx
     const { amountIn, amountOut, amountOutMin, path, tokenIn, tokenOut, deadline } = trade
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol }` + 
+    `for ${ ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
     const txArgs: SwapExactTokensForTokens = { 
         amountIn: amountIn, 
@@ -54,14 +57,18 @@ export const swapExactTokensForTokens = async( swapTx: SwapTx ): Promise<void> =
     console.log("fees: ", ethers.formatEther( receipt?.fee ?? '0' ), 'ETH')
 }
 
+
+
+
+
 export const swapTokensForExactETH = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, Router } = swapTx
     const { amountIn, amountOut, amountInMax, path, tokenIn, tokenOut, deadline } = trade
 
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol }` +
+    `for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
     const txArgs: SwapTokensForExactETH = { 
         amountOut: amountOut, 
@@ -81,13 +88,16 @@ export const swapTokensForExactETH = async( swapTx: SwapTx ): Promise<void> => {
 }
 
 
+
+
+
 export const swapTokensForExactTokens = async( swapTx: SwapTx ): Promise<void> => {
 
     const { signer, trade, Router } = swapTx
     const { amountIn, amountOut, amountInMax, path, tokenIn, tokenOut, deadline } = trade
 
-    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol } 
-    for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
+    console.log(`\n\nSwapping ${ ethers.formatUnits( amountIn, tokenIn.decimals ) } ${ tokenIn.symbol }` + 
+    `for ${  ethers.formatUnits( amountOut, tokenOut.decimals ) } ${ tokenOut.symbol }...`)      
 
     const txArgs: SwapTokensForExactTokens = { 
         amountOut: amountOut, 

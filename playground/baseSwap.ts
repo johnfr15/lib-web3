@@ -25,11 +25,11 @@ const main = async() => {
 
         console.log("BaseSwapV2")
         
-        await BaseSwapV2.swap(
-            signer,
-            [ TOKENS.eth, TOKENS.usdc ],
-            "0.01",
-        )
+        // await BaseSwapV2.swap(
+        //     signer,
+        //     [ TOKENS.eth, TOKENS.usdc ],
+        //     "0.01",
+        // )
 
         // await BaseSwapV2.addLiquidity( 
         //     signer,
@@ -40,11 +40,11 @@ const main = async() => {
         //     { max: true }
         // )
 
-        // await BaseSwapV2.withdrawLiquidity( 
-        //     signer,
-        //     TOKENS.eth,
-        //     TOKENS.usdc,
-        // )
+        await BaseSwapV2.withdrawLiquidity( 
+            signer,
+            TOKENS.eth,
+            TOKENS.usdc,
+        )
 
 
     } catch (error: any) {

@@ -6,7 +6,6 @@ import { Trade, SwapOptions, SwapTx, SwapExactETHForTokens, SwapETHForExactToken
 
 /**
  * @notice This function will fetch all the informations we need in order to swap
- * token 'in' for token 'out'
  */
 export const get_trade = async( 
     signer: Wallet,
@@ -17,8 +16,6 @@ export const get_trade = async(
     options: SwapOptions
 ): Promise<Trade> => {
 
-
-    
     const { EXACT_INPUT, EXACT_OUTPUT } = TradeType
     const { slipage, deadline, tradeType } = options
     

@@ -2,7 +2,6 @@ import { Contract, Wallet } from "ethers"
 import { Balance, Pool, Token } from "."
 
 export type RemoveOptions = {
-    stable?: boolean
     slipage?: number
     deadline?: number
     percent?: number
@@ -12,9 +11,10 @@ export type RemoveLiquidityTx = {
     signer: Wallet
     pool: Pool
     lp: Token
+    balanceLp: Balance
     tokenX: Token
     tokenY: Token
-    liquidity: Balance
+    liquidity: bigint
     amountX: bigint
     amountY: bigint
     amountXMin: bigint

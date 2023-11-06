@@ -1,8 +1,8 @@
 import { Wallet, Contract } from "ethers";
 import { Token, Pool, Balance } from "../../types";
 import { get_balance, get_pool, get_token } from "../utils";
-import { CONTRACTS, ROUTER_ABI } from "../../config/constants";
 import { Trade, SwapTx, SwapOptions } from "../../types/swap";
+import { CONTRACTS, ROUTER_ABI } from "../../config/constants";
 import { get_trade, calc_price_impact, get_amount } from "../utils/swap";
 
 
@@ -29,12 +29,12 @@ export const  get_swap_tx = async(
         trade.priceImpact = await calc_price_impact( trade, pool )
 
         
-        // if ( trade.priceImpact > options.slipage! )
-        //     throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
-        // if ( balance_in.bigint === BigInt( 0 ) )
-        //     throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
-        // if ( balance_in.bigint < trade.amountIn )
-        //     throw new Error(`Error: Not enough balance require ${ trade.amountIn } ${ token_in.symbol } for this trade`)
+        if ( trade.priceImpact > options.slipage! )
+            throw new Error(`Price impact tolerance exceeded: ${ trade.priceImpact }% of impact caused with this trade`)
+        if ( balance_in.bigint === BigInt( 0 ) )
+            throw new Error(`Error: Balance of token ${ token_in.symbol } is empty`)
+        if ( balance_in.bigint < trade.amountIn )
+            throw new Error(`Error: Not enough balance require ${ trade.amountIn } ${ token_in.symbol } for this trade`)
 
             
         const swapTx: SwapTx = {

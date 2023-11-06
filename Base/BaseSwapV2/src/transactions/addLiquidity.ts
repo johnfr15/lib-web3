@@ -18,7 +18,7 @@ export const exec_add_liquidity = async( addLiqTx: AddLiquidityTx ): Promise<voi
 
 const addLiquidityETH = async( addTx: AddLiquidityTx ) => {
 
-    const { signer, tokenX, tokenY, deadline, pool, Router } = addTx
+    const { signer, tokenX, tokenY, deadline, Router } = addTx
     const { amountXDesired, amountYDesired, amountXMin, amountYMin } = addTx
 
     let value: bigint = BigInt( 0 )
