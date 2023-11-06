@@ -29,7 +29,6 @@ const removeLiquidityETH = async( removeTx: RemoveLiquidityTx ) => {
 
         const args: RemoveLiquidityETH = {
             token: x_native ? tokenY.address : tokenX.address,
-            stable: pool.stable,
             liquidity: liquidity.bigint,
             amountTokenMin: x_native ? amountYMin : amountXMin,
             amountETHMin: x_native ? amountXMin : amountYMin,
@@ -66,7 +65,6 @@ const removeLiquidity = async( removeTx: RemoveLiquidityTx ) => {
         const args: RemoveLiquidity = {
             tokenA: tokenX.address,
             tokenB: tokenY.address,
-            stable: pool.stable,
             liquidity: liquidity.bigint,
             amountAMin: amountXMin,
             amountBMin: amountYMin,

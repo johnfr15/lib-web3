@@ -12,7 +12,6 @@ export type AddOptions = {
 
 export type AddLiquidityETH = {
     token: string
-    stable: boolean
     amountTokenDesired: bigint
     amountTokenMin: bigint
     amountETHMin: bigint
@@ -23,7 +22,6 @@ export type AddLiquidityETH = {
 export type AddLiquidity = {
     tokenA: string
     tokenB: string
-    stable: boolean
     amountADesired: bigint
     amountBDesired: bigint
     amountAMin: bigint

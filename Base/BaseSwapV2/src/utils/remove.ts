@@ -4,12 +4,11 @@ import { RemoveOptions } from "../../types/remove";
 
 export const get_amounts = async( pool: Pool, liquidity: bigint, Router: Contract ): Promise<[ bigint, bigint ]> => {
 
-    const { tokenX, tokenY, stable } = pool
+    const { tokenX, tokenY } = pool
 
     const amounts: [ bigint, bigint ] = await Router.quoteRemoveLiquidity(
         tokenY.address,
         tokenX.address,
-        stable,
         liquidity
     )
 

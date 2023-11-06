@@ -1,8 +1,8 @@
 import { get_quote, get_balance } from ".";
-import { Pool, Token, Balance } from "../../types";
+import { Pool, Token, Balance, TradeType } from "../../types";
 import { CONTRACTS, ROUTER_ABI } from "../../config/constants";
 import { ethers, Wallet, Contract, ZeroAddress } from "ethers";
-import { Trade, SwapOptions, SwapTx, SwapExactETHForTokens, Route } from "../../types/swap";
+import { Trade, SwapOptions, SwapTx, SwapExactETHForTokens, SwapETHForExactTokens } from "../../types/swap";
 
 /**
  * @notice This function will fetch all the informations we need in order to swap
@@ -14,16 +14,33 @@ export const get_trade = async(
     tokenOut: Token,
     amount: string,
     pool: Pool,
-    route: Route,
     options: SwapOptions
 ): Promise<Trade> => {
 
-    const { slipage, deadline } = options
-    const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
 
-    const amount_in: bigint = ethers.parseUnits( amount, tokenIn.decimals )
-    const [ amountIn, amountOut ]: bigint[] = await Router.getAmountsOut( amount_in, [ route ] )
-    const amountOutMin: bigint = amountOut * BigInt( parseInt( ((100 - slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
+    
+    const { EXACT_INPUT, EXACT_OUTPUT } = TradeType
+    const { slipage, deadline, tradeType } = options
+    
+    const Router = new Contract( CONTRACTS.ROUTER, ROUTER_ABI, signer )
+
+    let amount_in: bigint      = tradeType === EXACT_INPUT ? ethers.parseUnits( amount, tokenIn.decimals ) : BigInt( 0 )
+    let amount_in_max: bigint  = BigInt( 0 )
+    let amount_out: bigint     = tradeType === EXACT_OUTPUT ? ethers.parseUnits( amount, tokenOut.decimals ) : BigInt( 0 )
+    let amount_out_min: bigint = BigInt( 0 )
+    const reserve_in: bigint   = BigInt( pool.tokenX.address ) === BigInt( tokenIn.address ) ? pool.reserveX : pool.reserveY
+    const reserve_out: bigint  = BigInt( pool.tokenX.address ) === BigInt( tokenIn.address ) ? pool.reserveY : pool.reserveX
+
+    if ( tradeType === EXACT_INPUT ) 
+    {
+        amount_out = await Router.getAmountOut( amount_in, reserve_in, reserve_out )
+        amount_out_min = amount_out * BigInt( parseInt( ((100 - options.slipage!) * 100).toString() ) ) / BigInt( 100 * 100 )
+    }
+    if ( tradeType === EXACT_OUTPUT ) 
+    {
+        amount_in =  await Router.getAmountIn( amount_out, reserve_in, reserve_out )
+        amount_in_max = amount_in * BigInt( parseInt( ((options.slipage! + 100) * 100).toString() ) ) / BigInt( 100 * 100 )
+    }
     
 
     const trade: Trade = { 
@@ -31,10 +48,10 @@ export const get_trade = async(
         tokenOut: tokenOut,
         path: [ tokenIn.address, tokenOut.address ],
         pool: pool,
-        route: route,
-        amountIn: amountIn, 
-        amountOut: amountOut, 
-        amountOutMin: amountOutMin,
+        amountIn: amount_in, 
+        amountOut: amount_out, 
+        amountInMax: amount_in_max,
+        amountOutMin: amount_out_min,
         priceImpact: 0,
         to: signer.address,
         slipage: slipage!,
@@ -47,12 +64,11 @@ export const get_trade = async(
 /**
  * @notice Calculate the price impact caused by our trade 
  * @returns The price impact in percent 
- */
+ */  
 export const calc_price_impact = async( trade: Trade, pool: Pool ): Promise<number> => {
 
-    const amountIn: string = ethers.formatUnits( trade.amountIn, trade.tokenIn.decimals )
-
-    const quoteOut: string = get_quote( amountIn, trade.tokenIn, trade.tokenOut, pool )
+    const big_quote: bigint = get_quote( trade.amountIn, trade.tokenIn, trade.tokenOut, pool )
+    const quoteOut: string  = ethers.formatUnits(big_quote, trade.tokenOut.decimals )
     const amountOut: string = ethers.formatUnits( trade.amountOut, trade.tokenOut.decimals )
 
     const priceImpact = 100 - parseFloat( amountOut ) * 100 / parseFloat( quoteOut )
@@ -77,17 +93,6 @@ export const get_amount = ( amount: string | null, balance: Balance, options: Sw
     return amount!
 }
 
-export const get_route = ( tokenIn: Token, tokenOut: Token, pool: Pool ) => {
-
-    const route: Route = {
-        from: tokenIn.address,
-        to: tokenOut.address,
-        stable: pool.stable,
-        factory: ZeroAddress,
-    }
-
-    return route
-}
 
 export const check_swap_inputs = ( amount: string | null, path: string[], options: SwapOptions ) => {
 
@@ -106,10 +111,18 @@ export const check_swap_inputs = ( amount: string | null, path: string[], option
  * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
  *      of this transaction
  */
-export const enforce_swap_fees = async(  swapTx: SwapTx, txArgs: SwapExactETHForTokens, options: SwapOptions ): Promise<{ value: bigint, tx: SwapExactETHForTokens }> => {
+export const enforce_swap_fees = async( 
+    swapTx: SwapTx, 
+    txArgs: SwapExactETHForTokens | SwapETHForExactTokens, 
+    options: SwapOptions 
+): Promise<{ 
+    value: bigint, 
+    tx: SwapExactETHForTokens | SwapETHForExactTokens 
+}> => {
 
     let { signer, trade, Router } = swapTx 
-    let { amountIn, tokenIn, tokenOut, pool, route, deadline, path, to } = trade
+    let { amountIn, tokenIn, tokenOut, pool, deadline, to, path } = trade
+    let { tradeType } = options
     
 
     const feesPerGas =  await Router.swapExactETHForTokens.estimateGas( ...Object.values( txArgs ), { value: amountIn })
@@ -122,8 +135,12 @@ export const enforce_swap_fees = async(  swapTx: SwapTx, txArgs: SwapExactETHFor
     if ( balance.bigint < (amountIn + totalFees) )
     {
         amountIn = amountIn - totalFees * BigInt( 10 )
-        swapTx.trade = await get_trade( signer, tokenIn, tokenOut, ethers.formatEther( amountIn ), pool, route, options )
+        swapTx.trade = await get_trade( signer, tokenIn, tokenOut, ethers.formatEther( amountIn ), pool, options )
     }
 
-    return { value: amountIn, tx: { amountOutMin: swapTx.trade.amountOutMin, routes: [ route ], to, deadline } }
+    if ( tradeType === TradeType.EXACT_INPUT )
+        return { value: amountIn, tx: { amountOutMin: swapTx.trade.amountOutMin, path: path, to, deadline } }
+
+    // Exact output
+    return { value: amountIn, tx: { amountOut: swapTx.trade.amountOut, path: path, to, deadline } }
 }

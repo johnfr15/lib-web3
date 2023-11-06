@@ -16,20 +16,13 @@ export type Trade = {
     path: string[]
     amountIn: bigint
     amountOut: bigint
+    amountInMax: bigint
     amountOutMin: bigint
     priceImpact: number
     to: string
     pool: Pool
-    route: Route
     slipage: number
     deadline: number
-}
-
-export type Route = {
-    from: string
-    to: string
-    stable: boolean
-    factory: string
 }
 
 export type SwapTx = {
@@ -41,7 +34,14 @@ export type SwapTx = {
 
 export type SwapExactETHForTokens = {
     amountOutMin: bigint
-    routes: Route[],
+    path: string[]
+    to: string
+    deadline: number
+}
+
+export type SwapETHForExactTokens = {
+    amountOut: bigint
+    path: string[]
     to: string
     deadline: number
 }
@@ -49,7 +49,15 @@ export type SwapExactETHForTokens = {
 export type SwapExactTokensForETH = {
     amountIn: bigint
     amountOutMin: bigint
-    routes: Route[],
+    path: string[]
+    to: string
+    deadline: number
+}
+
+export type SwapTokensForExactETH = {
+    amountOut: bigint
+    amountInMax: bigint
+    path: string[]
     to: string
     deadline: number
 }
@@ -57,7 +65,15 @@ export type SwapExactTokensForETH = {
 export type SwapExactTokensForTokens = {
     amountIn: bigint
     amountOutMin: bigint
-    routes: Route[],
+    path: string[]
+    to: string
+    deadline: number
+}
+
+export type SwapTokensForExactTokens = {
+    amountOut: bigint
+    amountInMax: bigint
+    path: string[]
     to: string
     deadline: number
 }

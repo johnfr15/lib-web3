@@ -34,7 +34,6 @@ const addLiquidityETH = async( addTx: AddLiquidityTx ) => {
 
         const args: AddLiquidityETH = {
             token: x_native ? tokenY.address : tokenX.address,
-            stable: pool.stable,
             amountTokenDesired: x_native ? amountYDesired : amountXDesired,
             amountTokenMin: x_native ? amountYMin : amountXMin,
             amountETHMin: x_native ? amountXMin : amountYMin,
@@ -76,7 +75,6 @@ const addLiquidity = async( addTx: AddLiquidityTx ) => {
         const args: AddLiquidity = {
             tokenA: tokenX.address,
             tokenB: tokenY.address,
-            stable: pool.stable,
             amountADesired: amountXDesired,
             amountBDesired: amountYDesired,
             amountAMin: amountXMin,

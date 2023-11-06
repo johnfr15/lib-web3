@@ -70,8 +70,7 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, opt
 
     try {
 
-        const Factory = new Contract( CONTRACTS.Factory, FACTORY_ABI, signer )
-        const Router = new Contract( CONTRACTS.Router, ROUTER_ABI, signer )
+        const Factory = new Contract( CONTRACTS.FACTORY, FACTORY_ABI, signer )
 
         const { token0, token1 } = sort_tokens( tokenA, tokenB, '0', '0' )
 
@@ -79,13 +78,13 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, opt
         // By specifying zeroAddress it will use default factory 
         const poolAddress: string = await Factory.getPair( token0.address, token1.address )
         const Pool = new Contract( poolAddress, POOL_ABI, signer )
-        const [ reserveA, reserveB ] = await Router.getReserves( token0.address, token1.address ) 
+        const [ reserveX, reserveY ] = await Pool.getReserves() 
 
         const pool: Pool = {
             tokenX: token0,
             tokenY: token1,
-            reserveX: reserveA,
-            reserveY: reserveB,
+            reserveX: reserveX,
+            reserveY: reserveY,
             poolAddress: poolAddress,
             Pool: Pool
         }
@@ -132,19 +131,21 @@ export const get_balance = async(
 }
 
 /**
- * @notice Fetch the quote for tokenIn with amountIn 
- * @returns amountOut of tokenOut
+ * @notice Fetch the quote for tokenA with amountA in term of tokenB 
+ * @returns amountB 
  */
-export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, pool: Pool): string => {
+export const get_quote = ( amountA: bigint, tokenA: Token, tokenB: Token, pool: Pool): bigint => {
 
-    const reserveIn: bigint  = BigInt( tokenIn.address )  === BigInt( pool.tokenX.address ) ? pool.reserveX : pool.reserveY
-    const reserveOut: bigint = BigInt( tokenOut.address ) === BigInt( pool.tokenX.address ) ? pool.reserveX : pool.reserveY 
+    const reserveA: bigint = BigInt( tokenA.address ) === BigInt( pool.tokenX.address ) ? pool.reserveX : pool.reserveY
+    const reserveB: bigint = BigInt( tokenA.address ) === BigInt( pool.tokenX.address ) ? pool.reserveY : pool.reserveX 
 
-    const amount_in   = parseFloat( amountIn )
-    const reserve_in  = parseFloat( ethers.formatUnits( reserveIn, tokenIn.decimals ) )
-    const reserve_out = parseFloat( ethers.formatUnits( reserveOut, tokenOut.decimals ) )
+    const amount_a: number = parseFloat( ethers.formatUnits( amountA, tokenA.decimals ) )
+    const reserve_a: number = parseFloat( ethers.formatUnits( reserveA, tokenA.decimals ) )
+    const reserve_b: number = parseFloat( ethers.formatUnits( reserveB, tokenB.decimals ) )
 
-    return (amount_in * reserve_out / reserve_in).toFixed( tokenOut.decimals )
+    const amountB = (amount_a * reserve_b / reserve_a).toFixed( tokenB.decimals )
+
+    return ethers.parseUnits( amountB, tokenB.decimals )
 }
 
 export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
@@ -183,15 +184,6 @@ export const is_native = ( token: string ): boolean => {
     if ( token === TOKENS.weth9 )                                 return true
 
     return false
-}
-
-const is_stable_pool = ( tokenA: Token, tokenB: Token ): boolean => {
-
-    const pool = tokenA.symbol + '_' + tokenB.symbol
-
-    const is_stable = POOL_STABLE[ pool ] ?? false
-
-    return is_stable
 }
 
 export const log_balances = async( signer: Wallet ) => {

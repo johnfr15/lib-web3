@@ -5,6 +5,7 @@ import factory_abi from "./abis/factory"
 import { AddOptions } from "../types/add"
 import { SwapOptions } from "../types/swap"
 import { RemoveOptions } from "../types/remove"
+import { TradeType } from "../types"
 
 
 
@@ -70,6 +71,7 @@ export const TOKENS = {
 |              MISC                 |
 |__________________________________*/
 export const DEFAULT_SWAP_OPTION: SwapOptions = {
+  tradeType: TradeType.EXACT_INPUT,
   max: false,
   slipage: 0.5, // 0.5% of slipage tolerance
   deadline: Math.floor( Date.now() / 1000 ) + 60 * 20, // 20 minutes from the current Unix time

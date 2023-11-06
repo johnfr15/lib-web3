@@ -53,17 +53,17 @@ const get_max_liq = async(
     const balanceY: Balance = await get_balance( pool.tokenY.address, signer )
     const { amountX, amountY } = get_amounts( balanceX, balanceY, options )
     
-    const quote_a = get_quote( ethers.formatUnits( amountX, balanceX.decimals ), pool.tokenX, pool.tokenY, pool )
-    const quote_b = get_quote( ethers.formatUnits( amountY, balanceY.decimals ), pool.tokenY, pool.tokenX, pool )
+    const quote_a = get_quote( amountX, pool.tokenX, pool.tokenY, pool )
+    const quote_b = get_quote( amountY, pool.tokenY, pool.tokenX, pool )
 
     /*
     * @dev If the amount of token B we can buy is bigger than our actual balance of token B that means
     *      that token B is our max token to add
     */
-    const b_is_min_balance: boolean = ethers.parseUnits( quote_a, balanceX.decimals ) > amountY 
+    const b_is_min_balance: boolean = quote_a > amountY 
 
-    const amountA: bigint = b_is_min_balance ? ethers.parseUnits( quote_b, balanceY.decimals ) : amountX
-    const amountB: bigint = b_is_min_balance ? amountY : ethers.parseUnits( quote_a, balanceX.decimals )
+    const amountA: bigint = b_is_min_balance ? quote_b : amountX
+    const amountB: bigint = b_is_min_balance ? amountY : quote_a
     const amountAMin: bigint = amountA * BigInt( 100 * 100 - (options.slipage! * 100) ) / BigInt( 100 * 100 )
     const amountBMin: bigint = amountB * BigInt( 100 * 100 - (options.slipage! * 100) ) / BigInt( 100 * 100 )
 
@@ -102,7 +102,7 @@ const get_liq = async(
         const balance_2 = await get_balance( token_2.address, signer )
 
         const amount_1 = amount
-        const amount_2 = ethers.parseUnits( get_quote( ethers.formatUnits( amount_1, token_1.decimals ), token_1, token_2, pool ), token_2.decimals)
+        const amount_2 = get_quote( amount_1, token_1, token_2, pool )
         
         const amount_1_min: bigint = amount_1 * BigInt( 100 * 100 - (options.slipage! * 100) ) / BigInt( 100 * 100 )
         const amount_2_min: bigint = amount_2 * BigInt( 100 * 100 - (options.slipage! * 100) ) / BigInt( 100 * 100 )

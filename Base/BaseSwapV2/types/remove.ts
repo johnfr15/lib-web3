@@ -26,7 +26,6 @@ export type RemoveLiquidityTx = {
 
 export type RemoveLiquidityETH = {
     token: string
-    stable: boolean
     liquidity: bigint
     amountTokenMin: bigint
     amountETHMin: bigint
@@ -37,7 +36,6 @@ export type RemoveLiquidityETH = {
 export type RemoveLiquidity = {
     tokenA: string
     tokenB: string
-    stable: boolean
     liquidity: bigint
     amountAMin: bigint
     amountBMin: bigint
