@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { SwapTx, ExactInputSingle, ExactOutputSingle, ExactInput, ExactOutput, TradeType } from "../types";
 import { is_native } from "../utils";
+import { SwapTx, ExactInputSingle, ExactOutputSingle, ExactInput, ExactOutput, TradeType } from "../../types";
 
 
 export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {

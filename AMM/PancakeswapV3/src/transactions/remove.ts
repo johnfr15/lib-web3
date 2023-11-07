@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { RemoveLiquidityTx } from "../types";
-import { MAX_UINT128 } from "../config/constants"
+import { RemoveLiquidityTx } from "../../types";
+import { MAX_UINT128 } from "../../config/constants"
 
 export const exec_decrease = async( removeLiq: RemoveLiquidityTx ) => {
 

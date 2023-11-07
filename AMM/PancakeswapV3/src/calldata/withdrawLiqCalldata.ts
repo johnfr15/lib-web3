@@ -1,9 +1,9 @@
 import { Wallet, Contract } from "ethers";
-import { get_pool, get_token, sort_tokens } from "../utils";
 import { get_amounts } from "../utils/remove";
-import { Pool, RemoveLiquidityTx, Token, Chains, RemoveOptions, Position } from "../types";
 import { find_position } from "../utils/remove";
-import { CHAIN_ID, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
+import { get_pool, get_token, sort_tokens } from "../utils";
+import { CHAIN_ID, NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
+import { Pool, RemoveLiquidityTx, Token, Chains, RemoveOptions, Position } from "../../types";
 
 
 export const get_remove_tx = async(
