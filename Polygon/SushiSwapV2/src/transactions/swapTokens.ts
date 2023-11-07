@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { SwapExactTokensForTokens, SwapTokensForExactTokens, SwapTx } from "../types";
+import { SwapExactTokensForTokens, SwapTokensForExactTokens, SwapTx } from "../../types";
 
 
 export const swapExactTokensForTokens = async( swapTx: SwapTx ): Promise<void> => {

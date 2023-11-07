@@ -1,6 +1,6 @@
+import { ApproveTx } from "../../types"
+import { V2_ROUTER, TICKER } from "../../config/constants"
 import { TransactionResponse, TransactionReceipt, Wallet, ethers } from "ethers"
-import { V2_ROUTER, TICKER } from "../config/constants"
-import { ApproveTx } from "../types"
 
 export const exec_approve = async( approveTx: ApproveTx | undefined, signer: Wallet ): Promise<TransactionReceipt | undefined> => {
 

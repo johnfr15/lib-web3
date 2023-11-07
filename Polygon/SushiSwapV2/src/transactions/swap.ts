@@ -1,8 +1,8 @@
 import { is_native } from "../utils";
-import { SwapTx } from "../types";
-import { swapExactETHForTokens, swapETHForExactTokens, swapExactTokensForETH, swapTokensForExactETH } from "./swapETH";
-import { swapExactTokensForTokens, swapTokensForExactTokens } from "./swapTokens";
+import { SwapTx } from "../../types";
 import { TradeType } from "@uniswap/sdk-core";
+import { swapExactTokensForTokens, swapTokensForExactTokens } from "./swapTokens";
+import { swapExactETHForTokens, swapETHForExactTokens, swapExactTokensForETH, swapTokensForExactETH } from "./swapETH";
 
 
 export const exec_swap = async( swapTx: SwapTx ): Promise<void> => {

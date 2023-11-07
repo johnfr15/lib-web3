@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { SwapExactETHForTokens, SwapETHForExactTokens, SwapExactTokensForETH, SwapTokensForExactETH, SwapTx } from "../types";
 import { enforce_swap_fees } from "../utils/swap";
+import { SwapExactETHForTokens, SwapETHForExactTokens, SwapExactTokensForETH, SwapTokensForExactETH, SwapTx } from "../../types";
 
 export const swapExactETHForTokens = async( swapTx: SwapTx ): Promise<void> => {
     

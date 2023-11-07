@@ -1,12 +1,15 @@
-import erc20_abi from "./abis/erc20"
-import v2_router_abi from "./abis/v2_router" 
-import v2_factory_abi from "./abis/v2_factory" 
-import v2_pair_abi from "./abis/v2_pair"
+import erc20_abi from "./abis/erc20";
+import v2_pair_abi from "./abis/v2_pair";
+import v2_router_abi from "./abis/v2_router" ;
+import v2_factory_abi from "./abis/v2_factory" ;
 
 
 
 
-// Misc
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const POLYGON_PROVIDER: {[key: string]: string} = {
   "MAINNET": "https://polygon-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
   "TESTNET": "https://polygon-mumbai.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
@@ -16,7 +19,9 @@ export const POLYGON_PROVIDER: {[key: string]: string} = {
 
 
 
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const V2_ROUTER_ABI = v2_router_abi
 export const V2_FACTORY_ABI = v2_factory_abi
@@ -26,16 +31,20 @@ export const V2_PAIR_ABI = v2_pair_abi
 
 
 
-// Addresses
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const V2_ROUTER = "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
 export const V2_FACTORY = "0xc35DADB65012eC5796536bD9864eD8773aBc74C4"
 
 
-export const WMATIC: { [key: string | number]: string } = {
-  'MAINNET': "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-  'TESTNET': "0x5B67676a984807a212b1c59eBFc9B3568a474F0a"
-}
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 export const CHAIN_ID: { [key: string]: number } = {
   'MAINNET': 137,
@@ -45,7 +54,10 @@ export const CHAIN_ID: { [key: string]: number } = {
 
 
 
-// Tokens
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
 
   'MAINNET': {
@@ -64,6 +76,11 @@ export const TOKENS: { [key: string]: any } = {
       usdc: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747', 
       usdt: '0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832', 
   }
+}
+
+export const WMATIC: { [key: string | number]: string } = {
+  'MAINNET': "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  'TESTNET': "0x5B67676a984807a212b1c59eBFc9B3568a474F0a"
 }
 
 export const TICKER: {[key: string]: string} = {

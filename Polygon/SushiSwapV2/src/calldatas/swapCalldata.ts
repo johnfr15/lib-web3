@@ -1,8 +1,8 @@
 import { Wallet, Contract } from "ethers";
+import { Token, Pool, Trade, SwapTx } from "../../types";
 import { get_balance, get_pool, get_token } from "../utils";
-import { TICKER, V2_ROUTER_ABI, V2_ROUTER } from "../config/constants";
 import { calc_price_impact, get_trade } from "../utils/swap";
-import { Token, Pool, Trade, SwapTx } from "../types";
+import { TICKER, V2_ROUTER_ABI, V2_ROUTER } from "../../config/constants";
 
 
 

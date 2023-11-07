@@ -1,7 +1,7 @@
 import { Wallet, Contract} from "ethers";
-import { V2_PAIR_ABI, TICKER } from "../config/constants";
+import { Pool, RemoveLiquidityTx, Token } from "../../types";
+import { V2_PAIR_ABI, TICKER } from "../../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { Pool, RemoveLiquidityTx, Token } from "../types";
 
 
 export const get_remove_tx = async(
