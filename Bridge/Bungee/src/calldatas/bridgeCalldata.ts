@@ -1,13 +1,13 @@
 import { Wallet, ethers } from "ethers";
-import { Chains, BridgeOptions, BridgeTx, Token } from "../../type/types";
-import { Quote, RouteData } from "../../type/api/quote";
+import { Chains, BridgeOptions, BridgeTx, Token } from "../../types/types";
+import { Quote, RouteData } from "../../types/api/quote";
 import { get_token } from "../utils";
 import { fetch_quote } from "../utils/bridge";
 import { get_balance } from "../../api/Balances/token-balance" 
 import { post_build_tx } from "../../api/App/build-tx"
-import { Balance } from "../../type/api/balances";
+import { Balance } from "../../types/api/balances";
 import { CHAIN_ID, NATIVE_TOKEN } from "../../config/constants";
-import { RouteTx } from "../../type/api/app";
+import { RouteTx } from "../../types/api/app";
 import { get_route } from "../utils/bridge";
 
 

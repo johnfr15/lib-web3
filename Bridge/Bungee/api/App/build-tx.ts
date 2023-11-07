@@ -1,8 +1,8 @@
 import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
-import { RouteOptions, Route, RouteTx } from "../../type/api/app";
-import { RouteData } from "../../type/api/quote";
+import { RouteOptions, Route, RouteTx } from "../../types/api/app";
+import { RouteData } from "../../types/api/quote";
 
 dotenv.config()
 

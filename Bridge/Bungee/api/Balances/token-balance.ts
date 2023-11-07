@@ -2,7 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
 import { AddressLike } from "ethers";
-import { Balance } from "../../type/api/balances";
+import { Balance } from "../../types/api/balances";
 
 dotenv.config()
 

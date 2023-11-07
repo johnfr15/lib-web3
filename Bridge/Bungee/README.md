@@ -1,82 +1,28 @@
-# jonathan
-Jonathan's code
-
-# Stargate  
-![Stargate](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi2m_v63Hhte_X_8cyAWKE6iHMTaOGiBxLeqRGsc6_&s)  
+# Bungee  
+![Bungee](https://multitx.bungee.exchange/bungee-logo.svg)  
   
 **Bridge**: *DONE* ✅  
   
 **urls**
-- mainnet:          https://stargate.finance/
-- documentation:    https://stargateprotocol.gitbook.io/stargate/v/user-docs/
-- developer docs:   https://stargateprotocol.gitbook.io/stargate/
+- mainnet:          https://www.bungee.exchange/
+- documentation:    https://docs.socket.tech/socket-overview/what-is-socket
+- dev docs:         https://docs.socket.tech/socket-liquidity-layer/how-socketll-works
   
-**Bridge** *arbitrum* / *polygon* / *ethereum* / *optimism* / *metis* / *bsc* / *arbitrum* / *polygon_zkevm* / *base* / *linea* / *kava*  
+**Bridge** *arbitrum* / *polygon* / *optimism* / *ethereum* / *avalanche* / *bsc* / *base* / *aurora* / *fantom* / *gnosis* / *zksync* / *zkevm*  
   
-**Tokens** *ETH* / *USDC* / *DAI* / *USDT*
+**Tokens** ***ANY***
 <br />
 <br />
 
-## ![ETH](assets/ethereum.png) Ethereum bridge
-| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
-|----------|------------------------|------------------------|--------------------------|--------------------------|
-| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
-| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
-| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
-<br />
+
+## Calling Bungee Functions
 <br />
 
-## ![ARB](assets/arbitrum.png) Arbitrum bridge
-| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
-|----------|------------------------|------------------------|--------------------------|--------------------------|
-| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
-| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
-| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
-<br />
-<br />
-
-## ![MATIC](assets/polygon.png) Polygon bridge
-| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
-|----------|------------------------|------------------------|--------------------------|--------------------------|
-| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
-| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
-| optimism |           ✅           |           ✅            |            ✅            |             ✅           |
-<br />
-<br />
-
-## ![OP](assets/optimism.png) Optimism bridge
-| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
-|----------|------------------------|------------------------|--------------------------|--------------------------|
-| ethereum |           ✅           |           ✅            |            ✅            |             ✅           |
-| arbitrum |           ✅           |           ✅            |            ✅            |             ✅           |
-| zksync2  |           ❌           |           ✅            |            ✅            |             ❌           |
-| polygon  |           ✅           |           ✅            |            ✅            |             ✅           |
-<br />
-<br />
-
-## ![ZK](assets/zkSync.png) zkSync2 bridge
-| Chain    | ![DAI](assets/dai.png) | ![ETH](assets/eth.png) | ![USDC](assets/usdc.png) | ![USDT](assets/usdt.png) |
-|----------|------------------------|------------------------|--------------------------|--------------------------|
-| ethereum |           ❌           |           ✅            |            ✅            |             ❌           |
-| arbitrum |           ❌           |           ✅            |            ✅            |             ❌           |
-| optimism |           ❌           |           ✅            |            ✅            |             ❌           |
-| polygon  |           ❌           |           ✅            |            ✅            |             ❌           |
-<br />
-<br />
-<br />
-<br />
-
-## Calling Stargate Functions
-<br />
-
-To use it just import the directory named *Stargate*  
+To use it just import the directory named *Bungee*  
 ```javascript
-import Stargate from "./Bridge/Stargate"
+import Bungee from "./Bridge/Bungee"
 
-Stargate.bridge(     
+Bungee.bridge(     
     signer,
     "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
@@ -87,12 +33,12 @@ Stargate.bridge(
 ```
 <br />
 <br />
-In this module you will be able to interact with all functionnalities of the *Stargate* Bridge on all its supported network (see `/Stargate/config/chainPath.json`)  
+In this module you will be able to interact with all functionnalities of the *Bungee* Bridge on all its supported network (see `/Bungee/config/chainPath.json`)  
     
 <br />
   
 > [!NOTE]
-> For each chains (see `/Stargate/config/chains.ts`) a default public ***RPC*** has been set up but feel free to put your own ones.  
+> For each chains (see `/Bungee/config/chains.ts`) a default public ***RPC*** has been set up but feel free to put your own ones.  
 <br />
 
 ```javascript
@@ -104,8 +50,11 @@ export const bridge = async(
     toChain: Chains,
     amount: string | null,
     options?: {
-        max?: boolean,
+        max?: boolean
         slipage?: number
+        sort?: 'output' | 'gas' | 'time'
+        uniqueRoutesPerBridge?: boolean
+        securityBridges?: 1 | 2 | 3 | 4 | 5
     },
 ): Promise<void>
 ```
@@ -123,9 +72,17 @@ The swap function need an object of at least 6 parameters and 3 optionnals
   
 `toChain`: Name of the target chain   
   
-`amount (optional)`: The amount to be bridge it is worth noting that makers have 'minimum' amount to be send otherwise it will revert the function (see `/Orbital/config/makerListMainnet` to know the details). If you use the `max` params to true, no need to specify an amount.  
+`amount`: The amount of `tokenFrom` to be bridge   
   
-`max (optional)`: if activated it will send the total balance of `token` param from the `fromChain` chain. It is worth noting that makers have a 'maximum' amount ceiling, if your balance is above the function will throw an error.
+`max (optional)`: If activated it will send the total balance of `tokenFrom` param from the `fromChain` chain. (DEFAULT => *false*)
+  
+`slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  (DEFAULT => *0.5*)  
+  
+`sort (optional)`: Which kind of transactions we would priotirize (DEFAULT => *output*) 
+  
+`uniqueRoutesPerBridge (optional)`: If we plan to bundle everything in a single transaction (DEFAULT => *true*) 
+  
+`securityBridges (optional)`: It is the minimum security score (defined by https://l2beat.com/bridges/risk) of a brige we allow to use (DEFAULT => *3*) 
   
 
 ## Author

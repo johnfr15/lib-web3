@@ -1,6 +1,6 @@
 import { Wallet } from "ethers";
-import { Chains, BridgeOptions, Token } from "../../type/types";
-import { QuoteParams, Quote, QuoteOptions, RouteData } from "../../type/api/quote";
+import { Chains, BridgeOptions, Token } from "../../types/types";
+import { QuoteParams, Quote, QuoteOptions, RouteData } from "../../types/api/quote";
 import { get_quote } from "../../api/Quote/quote"
 import { CHAIN_ID } from "../../config/constants";
 

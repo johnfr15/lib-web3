@@ -2,7 +2,7 @@ import { ethers, Contract } from "ethers"
 import chains from "../../config/chains"
 import { Wallet, JsonRpcProvider } from "ethers"
 import { CHAIN_ID, TOKENS, ERC20_ABI } from "../../config/constants"
-import { Chains, Token, ChainType } from "../../type/types"
+import { Chains, Token, ChainType } from "../../types/types"
 import { get_supported_token } from "../../api/Supported/token-support"
 
 

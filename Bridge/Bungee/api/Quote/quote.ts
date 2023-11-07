@@ -1,7 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv"
 import { SOCKET_V2_URL } from "../../config/constants";
-import { QuoteParams, QuoteOptions, Quote } from "../../type/api/quote";
+import { QuoteParams, QuoteOptions, Quote } from "../../types/api/quote";
 
 dotenv.config()
 

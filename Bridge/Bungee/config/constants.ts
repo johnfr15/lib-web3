@@ -1,23 +1,24 @@
 import { AddressLike } from "ethers"
-import { BridgeOptions, Chains } from "../type/types"
+import { BridgeOptions, Chains } from "../types/types"
 import erc20_abi from "./abis/erc20"
 
 
 
 
 
-
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 
 
 
 
 
-// ADDRESSES
-export const NATIVE_TOKEN = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-
+/***********************************|
+|             CONTRACTS             |
+|__________________________________*/
+// see https://docs.socket.tech/socket-api/contract-addresses
 /**
  * @notice SocketGateway is the new version of Registry contract. This contract stores all route IDs with corresponding Implementation 
  *         contract addresses, representing which bridge and DEX respectively will be used for a given route.
@@ -55,7 +56,12 @@ export const REGISTRY: { [key in Chains]: AddressLike } = {
 
 
 
-// Tokens
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
+export const NATIVE_TOKEN = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+
 export const TOKENS: { [key in Chains]: any } = {
 
   ethereum: {
@@ -111,7 +117,13 @@ export const TOKENS: { [key in Chains]: any } = {
 
 }
 
-// Misc
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const SOCKET_V2_URL = "https://api.socket.tech/v2"
 export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
   max: false,
@@ -123,7 +135,11 @@ export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
 
 
 
-// Chains
+
+
+/***********************************|
+|              CHAINS               |
+|__________________________________*/
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
   ethereum: 1,

@@ -1,5 +1,5 @@
 import { TransactionReceipt, ethers } from "ethers"
-import { BridgeTx } from "../../type/types"
+import { BridgeTx } from "../../types/types"
 
 export const exec_bridge = async( bridgeTx: BridgeTx ) => {
 
