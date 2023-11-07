@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
 import { Account, Contract, uint256, Uint256 } from 'starknet';
-import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI, TOKENS } from './constant';
-import { get_share_rate, Uint256_to_string, get_balance, enforce_swap_fees, quote, enforce_add_liq_fees } from './utils';
-import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './callData';
+import { TESTNET_MYSWAP, TICKER, MYSWAP_ABI, TOKENS } from '../config/constants';
+import { get_share_rate, Uint256_to_string, get_balance, enforce_swap_fees, enforce_add_liq_fees } from './utils';
+import { get_add_liq_calldata, get_approve_calldata, get_swap_calldata, get_widthdraw_calldata } from './calldatas/callData';
 
 
 

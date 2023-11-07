@@ -1,8 +1,11 @@
-import { Network, ethers } from "ethers";
-import { Contract, Uint256, uint256, Account, ProviderInterface, CallData } from "starknet";
-import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP, MAINNET_PROVIDER, TOKENS, TICKER, Pool_mainnet, Pool_testnet, MYSWAP_ABI, ERC20_ABI } from "./constant";
-import { AddLiquidityArgs, WidthdrawLiquidityArgs, AddLiquidityCallData } from "./types";
-import { get_add_liq_calldata } from "./callData"
+import { ethers } from "ethers";
+import { get_add_liq_calldata } from "../calldatas/callData";
+import { Contract, Uint256, uint256, Account } from "starknet";
+import { TESTNET_MYSWAP, TESTNET_PROVIDER, MAINNET_MYSWAP } from "../../config/constants";
+import { MAINNET_PROVIDER, TOKENS, TICKER,  MYSWAP_ABI, ERC20_ABI } from "../../config/constants";
+import { AddLiquidityArgs, WidthdrawLiquidityArgs, AddLiquidityCallData, Pool_mainnet, Pool_testnet, } from "../../types";
+
+
 
 export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_out: bigint ): Uint256 => {
     let amount_out: bigint
@@ -15,6 +18,8 @@ export const get_amount_out = (amount_in: bigint, reserve_in: bigint, reserve_ou
     return uint256.bnToUint256( amount_out )
 }
 
+
+
 export const calc_price_impact = (amount_min: bigint, amount_out: bigint) => {
     let min = amount_min
     let out = amount_out
@@ -24,6 +29,8 @@ export const calc_price_impact = (amount_min: bigint, amount_out: bigint) => {
 
     return price_impact
 }
+
+
 
 export const sortTokens = (pool: {[key: string]: any}): { tokenA: string, tokenB: string } => {
     const pool_a_addr = "0x0" + pool.token_a_address.toString(16)
@@ -453,4 +460,23 @@ export const enforce_add_liq_fees = async( addTx: AddLiquidityCallData, utils: {
         throw( error )
 
     }
+}
+
+export const log_balances = async(signer: Account, network: 'TESTNET' | 'MAINNET') => {
+
+    const Dai = new Contract(ERC20_ABI, TOKENS[ network ].dai, signer)
+    const Eth = new Contract(ERC20_ABI, TOKENS[ network ].eth, signer)
+    const Usdc = new Contract(ERC20_ABI, TOKENS[ network ].usdc, signer)
+    const Usdt = new Contract(ERC20_ABI, TOKENS[ network ].usdt, signer)
+
+    const { balance: daiBalance }  = await Dai.balanceOf( signer.address ) 
+    const { balance: ethBalance }  = await Eth.balanceOf( signer.address ) 
+    const { balance: usdcBalance } = await Usdc.balanceOf( signer.address ) 
+    const { balance: usdtBalance } = await Usdt.balanceOf( signer.address ) 
+
+    console.log( "Balance DAI:  ", Uint256_to_string( daiBalance ) )
+    console.log( "Balance ETH:  ", Uint256_to_string( ethBalance ) )
+    console.log( "Balance USDC: ", Uint256_to_string( usdcBalance, 6) )
+    console.log( "Balance USDT: ", Uint256_to_string( usdtBalance, 6) )
+    console.log("\n")
 }

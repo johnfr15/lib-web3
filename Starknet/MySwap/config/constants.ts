@@ -1,17 +1,44 @@
-import { Provider, constants, RpcProvider } from 'starknet';
-import { mySwap_abi } from './abis/mySwap';
 import { erc20_abi } from './abis/erc20';
+import { mySwap_abi } from './abis/mySwap';
+import { Provider, constants, RpcProvider } from 'starknet';
 
+
+
+
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
 export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
-export const TESTNET_MYSWAP = "0x018a439bcbb1b3535a6145c1dc9bc6366267d923f60a84bd0c7618f33c81d334"
-export const MAINNET_MYSWAP = "0x010884171baf1914edc28d7afb619b40a4051cfae78a094a55d230f19e944a28"
 
+
+
+
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const MYSWAP_ABI = mySwap_abi
 export const ERC20_ABI = erc20_abi
 
-// Tokens
+
+
+
+
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
+export const TESTNET_MYSWAP = "0x018a439bcbb1b3535a6145c1dc9bc6366267d923f60a84bd0c7618f33c81d334"
+export const MAINNET_MYSWAP = "0x010884171baf1914edc28d7afb619b40a4051cfae78a094a55d230f19e944a28"
+
+
+
+
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
         eth: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
@@ -32,6 +59,13 @@ export const TOKENS: { [key: string]: any } = {
     }
 }
 
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const TICKER: {[key: string]: string} = {
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7": "ETH",
     "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7": "ETH",
@@ -55,21 +89,3 @@ export const TICKER: {[key: string]: string} = {
     "0x124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49": "LORDS",
 }
 
-export enum Pool_testnet {
-    NONE,
-    USDC_ETH,
-    DAI_ETH,
-    USDC_DAI,
-    wstETH_ETH,
-}
-export enum Pool_mainnet {
-    NONE,
-    ETH_USDC,
-    DAI_ETH,
-    wBTC_USDC,
-    ETH_USDT,
-    USDC_USDT,
-    DAI_USDC,
-    wstETH_ETH,
-    LORDS_ETH,
-}

@@ -52,3 +52,23 @@ export type WidthdrawLiquidityCallData = {
         addrLp: string,
     }
 }
+
+export enum Pool_testnet {
+    NONE,
+    USDC_ETH,
+    DAI_ETH,
+    USDC_DAI,
+    wstETH_ETH,
+}
+
+export enum Pool_mainnet {
+    NONE,
+    ETH_USDC,
+    DAI_ETH,
+    wBTC_USDC,
+    ETH_USDT,
+    USDC_USDT,
+    DAI_USDC,
+    wstETH_ETH,
+    LORDS_ETH,
+}

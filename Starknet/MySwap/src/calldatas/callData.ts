@@ -1,8 +1,12 @@
 import { ethers } from "ethers";
-import { CallData, Contract, Account, uint256, Uint256 } from "starknet"
-import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote, get_amount_out, Uint256_to_string, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq, get_balance, string_to_Uint256, string_to_bigint } from './utils';
-import { ERC20_ABI, TICKER } from "./constant";
-import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs, WidthdrawLiquidityCallData } from "./types";
+import { ERC20_ABI, TICKER } from "../../config/constants";
+import { CallData, Contract, Account, uint256, Uint256 } from "starknet";
+import { get_balance, string_to_Uint256, string_to_bigint } from '../utils';
+import { calc_price_impact, resolve_network_contract, resolve_pool, get_reserves, quote } from "../utils";
+import { get_amount_out, is_balance, fetch_add_liq, fetch_max_add_liq, fetch_withdraw_liq } from "../utils"; 
+import { ApproveCallData, SwapCallData, AddLiquidityCallData, AddLiquidityArgs, WidthdrawLiquidityCallData } from "../../types";
+
+
 
 export const get_approve_calldata = async(
     signer: Account, 
@@ -15,7 +19,8 @@ export const get_approve_calldata = async(
         const MySwap = resolve_network_contract(network, signer)
         const erc20 = new Contract(ERC20_ABI, token_address, signer);
         const { decimals } = await erc20.decimals()
-        const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * ethers.toBigInt( 10 ) /  ethers.toBigInt( 8 ) )
+        const big_amount = uint256.bnToUint256( ethers.parseUnits( amount, decimals ) * 
+                                                ethers.toBigInt( 10 ) /  ethers.toBigInt( 8 ) )
         
         const raw: ApproveCallData = {
             contractAddress: erc20.address,
@@ -37,6 +42,8 @@ export const get_approve_calldata = async(
     }
 
 }
+
+
 
 export const get_swap_calldata = async(
     signer: Account, 
@@ -93,6 +100,8 @@ export const get_swap_calldata = async(
 
     }
 }
+
+
 
 export const get_add_liq_calldata = async(
     signer: Account, 
@@ -154,6 +163,8 @@ export const get_add_liq_calldata = async(
 
     }
 }
+
+
 
 export const get_widthdraw_calldata = async(
     signer: Account, 
