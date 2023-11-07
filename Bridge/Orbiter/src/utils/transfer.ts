@@ -1,5 +1,6 @@
-import { CrossAddressExt } from "../types"
-import { ethers } from "ethers"
+import { ethers } from "ethers";
+import { CrossAddressExt } from "../../types";
+
 export const is_native_token = ( tokenAddress: string ): boolean => {
 
     // polygon matic token

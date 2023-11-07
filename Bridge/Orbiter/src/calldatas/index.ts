@@ -1,5 +1,5 @@
-import { ethers } from "ethers"
-import { BridgeToken, MarkerType } from "../types"
+import { ethers } from "ethers";
+import { BridgeToken, MarkerType } from "../../types";
 
 
 

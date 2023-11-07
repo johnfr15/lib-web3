@@ -1,9 +1,9 @@
-import { Provider, Contract as StarkContract, Account, RpcProvider } from "starknet"
-import { Contract as SolContract, JsonRpcProvider, Wallet } from "ethers"
-import maker1 from "../config/maker-1"
-import makerTest1 from "../config/makerTest-1"
-import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../config/constant"
-import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt } from "../types"
+import maker1 from "../../config/maker-1";
+import makerTest1 from "../../config/makerTest-1";
+import { Contract as SolContract, JsonRpcProvider, Wallet } from "ethers";
+import { Provider, Contract as StarkContract, Account, RpcProvider } from "starknet";
+import { MarkerType, BridgeChain, Chains, BridgeToken, CrossAddressExt } from "../../types";
+import { ERC20_SOL_ABI, ERC20_STARK_ABI, NETWORK_NAME_TO_ID, NETWORK_NAME_TO_ORBITERID, TICKER } from "../../config/constant";
 
 export const get_chain = ( chain: Chains, network: string ): BridgeChain => {
 
@@ -68,51 +68,8 @@ export const resolve_maker = ( token: string, fromChain: BridgeChain, toChain: B
     }
 }
 
-/*
-export const expand = ( makerListItem: typeof t_makers.t_starknet_arbitrum_eth | typeof m_makers.m_starknet_arbitrum_eth ): [ MarkerType, MarkerType ] => {
-    return [
-        {
-          makerAddress: makerListItem.makerAddress,
-          fromChainId: makerListItem.c1ID,
-          toChainId: makerListItem.c2ID,
-          fromChainName: makerListItem.c1Name,
-          toChainName: makerListItem.c2Name,
-          fromTokenAddress: makerListItem.t1Address,
-          toTokenAddress: makerListItem.t2Address,
-          tokenName: makerListItem.tName,
-          minPrice: makerListItem.c1MinPrice,
-          maxPrice: makerListItem.c1MaxPrice,
-          precision: makerListItem.precision,
-          avalibleDeposit: makerListItem.c1AvalibleDeposit,
-          tradingFee: makerListItem.c1TradingFee,
-          gasFee: makerListItem.c1GasFee,
-          avalibleTimes: makerListItem.c1AvalibleTimes,
-        },
-        {
-          makerAddress: makerListItem.makerAddress,
-          fromChainId: makerListItem.c2ID,
-          toChainId: makerListItem.c1ID,
-          fromChainName: makerListItem.c2Name,
-          toChainName: makerListItem.c1Name,
-          fromTokenAddress: makerListItem.t2Address,
-          toTokenAddress: makerListItem.t1Address,
-          tokenName: makerListItem.tName,
-          minPrice: makerListItem.c2MinPrice,
-          maxPrice: makerListItem.c2MaxPrice,
-          precision: makerListItem.precision,
-          avalibleDeposit: makerListItem.c2AvalibleDeposit,
-          tradingFee: makerListItem.c2TradingFee,
-          gasFee: makerListItem.c2GasFee,
-          avalibleTimes: makerListItem.c2AvalibleTimes,
-        },
-    ]
-}
-*/
-
 /**
- * 
- * @dev
- *  If the exit address on the other chain is not the same we need to specify it as cross address
+ * @dev If the exit address on the other chain is not the same we need to specify it as cross address
  * 
  */
 export const resolve_cross_address = ( evmSigner: Wallet, starkSigner: Account, fromChain: BridgeChain, toChain: BridgeChain ): CrossAddressExt | undefined => {

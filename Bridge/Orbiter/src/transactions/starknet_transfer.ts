@@ -1,9 +1,9 @@
-import { ethers } from "ethers"
-import { CROSS_ADDRESS } from "../config/constant";
-import { TxTransferArgs } from "../types";
-import { ApproveCallData, CrossTransferCalldata } from "../types";
-import { TICKER } from "../config/constant";
+import { ethers } from "ethers";
 import { Uint256, uint256 } from "starknet";
+import { TxTransferArgs } from "../../types";
+import { TICKER } from "../../config/constant";
+import { CROSS_ADDRESS } from "../../config/constant";
+import { ApproveCallData, CrossTransferCalldata } from "../../types";
 
 export const starknet_transfer = async ( txArgs: TxTransferArgs ) => {
     

@@ -1,9 +1,9 @@
-import { Account, Contract as StarkContract, uint256, Provider, RpcProvider } from "starknet";
-import { JsonRpcProvider, Contract as SolContract , Wallet, ethers } from "ethers";
-import { BridgeToken, ChainType, TxTransferArgs } from "../types";
-import chains from "../config/chains"
-import { MAINNET_PROVIDER, STARKNET_TESTNET_PROVIDER } from "../config/constant";
+import chains from "../../config/chains";
 import { is_native_token } from "./transfer";
+import { BridgeToken, ChainType, TxTransferArgs } from "../../types";
+import { JsonRpcProvider, Contract as SolContract , Wallet, ethers } from "ethers";
+import { MAINNET_PROVIDER, STARKNET_TESTNET_PROVIDER } from "../../config/constant";
+import { Account, Contract as StarkContract, uint256, Provider, RpcProvider } from "starknet";
 
 export const get_balance = async( signer: Account | Wallet, token: BridgeToken ): Promise<string> => 
 {

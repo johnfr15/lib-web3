@@ -1,15 +1,69 @@
-import { Provider, constants, RpcProvider } from "starknet"
-import { erc20_sol_abi } from "./abis/erc20Sol"
-import { erc20_stark_abi } from "./abis/erc20Stark"
-import { cross_address_abi } from "./abis/crossAddress"
+import { erc20_sol_abi } from "./abis/erc20Sol";
+import { erc20_stark_abi } from "./abis/erc20Stark";
+import { cross_address_abi } from "./abis/crossAddress";
+import { Provider, constants, RpcProvider } from "starknet";
 
-export const STARKNET_TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet "TESTNET" 1
-export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
+
+
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
+ // for starknet "TESTNET" 1
+export const STARKNET_TESTNET_PROVIDER = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } })
+// for starknet mainnet
+export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) 
+
+
+
+
+
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_SOL_ABI = erc20_sol_abi
 export const ERC20_STARK_ABI = erc20_stark_abi
 export const CROSS_ADDRESS_ABI = cross_address_abi
 
+
+
+
+
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
+export const CROSS_ADDRESS: { [key: string]: string } = {
+    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    4: '0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b',
+    5: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    6: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    7: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    14: '0xbf3922a0cebbcd718e715e83d9187cc4bba23f11',
+    16: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    17: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    21: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    22: '0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a',
+    23: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    24: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    25: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    30: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
+    44: '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
+    66: '0x40eC19690ebEd534e9b9C58e341727028cF143c0',
+    77: '0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54',
+    514: '0x9147eE8678C27a2E677A84aB14F7303E451E99Fb',
+    517: '0x99c0b2B824D7291E832DC9018B24CaA6B68673E2',
+    524: '0xf1e276a6518dff455fdabfdc582591fda35797ea',
+}
+
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const ORBITER_CHAINID_TO_NETWORKID: { [key: number]: string } = {
     1: '1',         // "MAINNET"
     2: '42161',     // Arbitrum
@@ -88,33 +142,6 @@ export const CHAIN_INDEX: any = {
     599: "orbiter",
 };
 
-  
-
-
-export const CROSS_ADDRESS: { [key: string]: string } = {
-    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    4: '0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b',
-    5: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    6: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    7: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    14: '0xbf3922a0cebbcd718e715e83d9187cc4bba23f11',
-    16: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    17: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    21: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    22: '0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a',
-    23: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    24: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    25: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    30: '0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc',
-    44: '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
-    66: '0x40eC19690ebEd534e9b9C58e341727028cF143c0',
-    77: '0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54',
-    514: '0x9147eE8678C27a2E677A84aB14F7303E451E99Fb',
-    517: '0x99c0b2B824D7291E832DC9018B24CaA6B68673E2',
-    524: '0xf1e276a6518dff455fdabfdc582591fda35797ea',
-}
-
 export const NETWORK_NAME_TO_ORBITERID: { [key: string]: any } = {
     "MAINNET": 
     {
@@ -189,7 +216,13 @@ export const NETWORK_NAME_TO_ID: { [key: string]: any } = {
     }
 }
 
-// Tokens
+
+
+
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
 
     'MAINNET': {

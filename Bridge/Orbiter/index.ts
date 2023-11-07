@@ -1,7 +1,7 @@
-import { swap } from "./orbiter";
-import * as Constant from "./config/constant"
-import * as Utils from "./utils"
-import * as Bridge from "./bridge"
-import * as Transfer from "./transfer"
+import * as Utils from "./src/utils";
+import { bridge } from "./src/orbiter";
+import * as Transfer from "./transfer";
+import * as Bridge from "./src/orbiter";
+import * as Constant from "./config/constant";
 
-export default { swap, Constant, Utils, Bridge, Transfer }
+export default { bridge, Constant, Utils, Bridge, Transfer }

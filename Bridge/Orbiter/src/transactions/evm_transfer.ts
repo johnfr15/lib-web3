@@ -1,9 +1,9 @@
-import { Contract, JsonRpcProvider, Wallet, ethers } from "ethers";
-import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_SOL_ABI } from "../config/constant";
-import { is_native_token } from "../utils/transfer"
-import { BridgeToken, TxTransferArgs } from "../types";
+import { TICKER } from "../../config/constant";
 import { encode_ext } from "../utils/transfer";
-import { TICKER } from "../config/constant";
+import { is_native_token } from "../utils/transfer";
+import { BridgeToken, TxTransferArgs } from "../../types";
+import { Contract, JsonRpcProvider, Wallet, ethers } from "ethers";
+import { CROSS_ADDRESS, CROSS_ADDRESS_ABI, ERC20_SOL_ABI } from "../../config/constant";
 
 export const evm_transfer = async( txArgs: TxTransferArgs ) => {
     
