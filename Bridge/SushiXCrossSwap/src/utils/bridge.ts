@@ -1,6 +1,6 @@
 import { Wallet, Contract, ethers } from "ethers";
-import { MINIMUM_GAS, STARGATE_ADAPTER, STARGATE_ADAPTER_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS, Stargate_func } from "../config/constants";
-import { Chains, StargateTeleportParams, Token, Bridge, BridgeParams } from "../types";
+import { Chains, StargateTeleportParams, Token, Bridge, BridgeParams } from "../../types";
+import { STARGATE_ADAPTER, STARGATE_ADAPTER_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS, Stargate_func } from "../../config/constants";
 
 export const get_stargate_params = ( 
     signer: Wallet,

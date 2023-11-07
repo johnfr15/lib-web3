@@ -1,13 +1,13 @@
-import fs from "fs"
-import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
-import { ERC20_ABI, CHAIN_ID } from "../config/constants"
-import { Chains, Token, ChainType } from "../types"
-import chains from "../config/chains"
+import fs from "fs";
+import chains from "../../config/chains";
+import { Chains, Token, ChainType } from "../../types";
+import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers";
+import { ERC20_ABI, CHAIN_ID, TOKENS } from "../../config/constants";
 
 
 export const get_token = async( tokenAddress: string, chain: Chains ): Promise<Token> => {
 
-    const FILE_PATH = __dirname + "/../config/tokens.json"
+    const FILE_PATH = __dirname + "/../../config/tokens.json"
     let Tokens: { [ key in Chains ]: Token[] }
 
     try {
@@ -91,4 +91,26 @@ export const resolve_provider = ( stargateId: number ): JsonRpcProvider => {
     const provider = new JsonRpcProvider( chain_info!.rpc[0] )
 
     return provider
+}
+
+export const log_balances = async(signer: Wallet, network: 'TESTNET' | 'MAINNET') => {
+
+    const Dai  = new Contract(TOKENS[ network ].dai, ERC20_ABI, signer)
+    const Usdc = new Contract(TOKENS[ network ].usdc, ERC20_ABI, signer)
+    const Usdt = new Contract(TOKENS[ network ].usdt, ERC20_ABI, signer)
+    const Weth = new Contract(TOKENS[ network ].weth, ERC20_ABI, signer)
+
+    const maticBalance = await signer.provider!.getBalance( signer.address ) 
+    const daiBalance   = await Dai.balanceOf( signer.address ) 
+    const usdcBalance  = await Usdc.balanceOf( signer.address ) 
+    const usdtBalance  = await Usdt.balanceOf( signer.address ) 
+    const wethBalance  = await Weth.balanceOf( signer.address ) 
+
+    console.log("\n")
+    console.log( "Balance MATIC: ", ethers.formatUnits( maticBalance ) )
+    console.log( "Balance DAI:   ", ethers.formatUnits( daiBalance ) )
+    console.log( "Balance USDC:  ", ethers.formatUnits( usdcBalance, 6) )
+    console.log( "Balance USDT:  ", ethers.formatUnits( usdtBalance, 6) )
+    console.log( "Balance WETH:  ", ethers.formatUnits( wethBalance, 18) )
+    console.log("\n")
 }

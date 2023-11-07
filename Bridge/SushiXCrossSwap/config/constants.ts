@@ -5,7 +5,11 @@ import stargate_adapter from "./abis/stargate_adapter"
 
 
 
-// Misc
+
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const POLYGON_PROVIDER: {[key: string]: string} = {
   "MAINNET": "https://polygon-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
   "TESTNET": "https://polygon-mumbai.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
@@ -15,8 +19,9 @@ export const POLYGON_PROVIDER: {[key: string]: string} = {
 
 
 
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const SUSHI_X_SWAP_V2_ABI = sushiXSwap_v2
 export const STARGATE_ADAPTER_ABI = stargate_adapter
@@ -25,10 +30,9 @@ export const STARGATE_ADAPTER_ABI = stargate_adapter
 
 
 
-
-// Addressess
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
-
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const SUSHI_X_SWAP_V2: { [key in Chains]: any } = {
   polygon: "0xc45a496bcc9ba69ffb45303f7515739c3f6ff921",
   arbitrum: "0xec4a1bf5738841456054bd720bedf18be2e3f8f0",
@@ -57,6 +61,12 @@ export const WETH: { [key in Chains]: any } = {
 }
 
 
+
+
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key in Chains]: any } = {
 
   polygon: {
@@ -85,15 +95,20 @@ export const TOKENS: { [key in Chains]: any } = {
 
 }
 
-// Function
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
   max: false,
   network: "MAINNET",
   slipage: 2          // 2% of slipage tolerance
 }
-
-// STARGATE
 
 export const MINIMUM_GAS: bigint = BigInt( 100000 )
 
@@ -181,7 +196,6 @@ export const STARGATE_CHAIN_ID = {
 
 }
 
-// Misc 
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
   arbitrum: 42161,

@@ -1,8 +1,8 @@
 import { Wallet, ethers, Contract } from "ethers";
-import { Chains, BridgeOptions, BridgeTx, StargateTeleportParams, Token, Bridge } from "../types";
 import { get_balance, get_token } from "../utils";
+import { SUSHI_X_SWAP_V2, SUSHI_X_SWAP_V2_ABI } from "../../config/constants";
 import { getFee, get_bridge, get_stargate_params, encode_stp } from "../utils/bridge"
-import { SUSHI_X_SWAP_V2, SUSHI_X_SWAP_V2_ABI } from "../config/constants";
+import { Chains, BridgeOptions, BridgeTx, StargateTeleportParams, Token, Bridge } from "../../types";
 
 
 export const get_bridge_tx = async(

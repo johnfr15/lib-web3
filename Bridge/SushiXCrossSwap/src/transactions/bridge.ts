@@ -1,5 +1,5 @@
-import { TransactionResponse, TransactionReceipt, ethers } from "ethers"
-import { BridgeTx } from "../types"
+import { BridgeTx } from "../../types";
+import { TransactionResponse, TransactionReceipt, ethers } from "ethers";
 
 export const exec_bridge = async( bridgeTx: BridgeTx ): Promise<TransactionReceipt | undefined> => {
 

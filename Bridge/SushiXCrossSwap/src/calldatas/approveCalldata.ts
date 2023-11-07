@@ -1,7 +1,7 @@
-import { ethers, Wallet, Contract } from "ethers";
-import { ERC20_ABI, SUSHI_X_SWAP_V2 } from "../config/constants";
-import { ApproveTx, Chains, Token } from "../types";
 import { is_native } from "../utils";
+import { ethers, Wallet, Contract } from "ethers";
+import { ApproveTx, Chains, Token } from "../../types";
+import { ERC20_ABI, SUSHI_X_SWAP_V2 } from "../../config/constants";
 
 export const get_approve_tx = async(
     signer: Wallet, 
