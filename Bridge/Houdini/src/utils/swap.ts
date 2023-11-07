@@ -1,8 +1,8 @@
-import { Wallet } from "ethers";
-import { ExchangeOrder, TokenId, Network, SwapOptions, Trade, Token, Quote, Balance } from "../types";
-import { get_quote } from "../api/quote"
-import { get_token } from "../api/tokens";
 import { get_balance } from ".";
+import { Wallet } from "ethers";
+import { get_quote } from "../../api/quote";
+import { get_token } from "../../api/tokens";
+import { ExchangeOrder, TokenId, Network, SwapOptions, Trade, Token, Quote, Balance } from "../../types";
 
 
 export const get_trade = async(    

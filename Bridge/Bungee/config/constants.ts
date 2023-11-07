@@ -1,6 +1,6 @@
-import { AddressLike } from "ethers"
-import { BridgeOptions, Chains } from "../types/types"
-import erc20_abi from "./abis/erc20"
+import { AddressLike } from "ethers";
+import erc20_abi from "./abis/erc20";
+import { BridgeOptions, Chains } from "../types/types";
 
 
 

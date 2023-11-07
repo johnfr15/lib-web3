@@ -1,7 +1,7 @@
+import chains from "../../config/chains"
+import { ERC20_ABI  } from "../../config/constants"
+import { Balance, Network, Token } from "../../types"
 import { ethers, Wallet, Contract, JsonRpcProvider } from "ethers"
-import { ERC20_ABI  } from "../config/constants"
-import { Balance, Network, Token } from "../types";
-import chains from "../config/chains"
 
 /**
  * @dev Will fetch the RPC endpoint of the network specified in argument and connect the signer to that network

@@ -1,10 +1,10 @@
 import { Wallet } from "ethers";
-import { TokenId, Network, SwapOptions, SwapTx, Trade, Order } from "./types";
-import { resolve_chain } from "./utils"
-import { create_order } from "./api/exchange";
+import { resolve_chain } from "./utils";
 import { get_trade } from "./utils/swap";
+import { create_order } from "../api/exchange";
 import { exec_order } from "./transactions/swap";
-import { DEFAULT_OPTION } from "./config/constants"
+import { DEFAULT_OPTION } from "../config/constants";
+import { TokenId, Network, SwapOptions, SwapTx, Trade, Order } from "../types";
 
 
 /**

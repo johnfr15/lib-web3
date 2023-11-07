@@ -1,28 +1,34 @@
-import { Network, SwapOptions } from "../types"
 import erc20_abi from "./abis/erc20"
+import { Network, SwapOptions } from "../types"
 
 
 
 
 
-
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 
 
 
 
 
-// CREDENTIALS 
-
+/***********************************|
+|           CREDENTIALS             |
+|__________________________________*/ 
 export const HOUDINI_URL = "https://api-partner.houdiniswap.com"
-export const PARTNER_ID = '6526dd59afa7ce4444cb0795'
-export const SECRET = 'rDHbDqGjyNfFTmvGuBTKCo'
+export const PARTNER_ID = process.env.PARTNER_ID!
+export const SECRET = process.env.HOUDINI_SECRET!
 
-// ADDRESSES
+
+
+
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
-
 
 export const TOKENS: { [key in Network]: any } = {
 
@@ -60,6 +66,12 @@ export const TOKENS: { [key in Network]: any } = {
 }
 
 
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const DEFAULT_OPTION: SwapOptions = {
   slipage: 0.5, // 0.5% of slipage tolerance
   anonymous: true,
