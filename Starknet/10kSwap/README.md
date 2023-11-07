@@ -1,14 +1,25 @@
-# jonathan
-Jonathan's code
-
 # 10kSwap  
+![10kSwap](https://avatars.githubusercontent.com/u/111331802?s=200&v=4) 
+
 **Swap**: ✅    
 **Add liquidity**: ✅    
 **Remove liquidity**: ✅    
+      
+<br>
+<br>
+
+## url
+- Mainnet:   https://10kswap.com/swap
+- Doc:       https://docs.10kx.com/
+- Github:    https://github.com/10k-swap
+- Contracts: https://github.com/10k-swap/10k_swap-contracts
   
-**url** https://www.l0kSwap.xyz/  
-  
-**AMM** *Swap* / *Add liquidity* / *remove liquidity*  
+<br>
+<br> 
+
+**AMM**: *Swap* / *Add liquidity* / *remove liquidity*  
+
+<br>
 
 ## Calling l0kSwap Functions
 
@@ -25,6 +36,9 @@ l0kSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
 l0kSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
 l0kSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
+  
+<br>
+<br>
 
 ### Swap  
 ```javascript
@@ -63,6 +77,9 @@ The swap function need at least 3 parameters and 6 optionnal
   
 `deadlineMinutes (optional)`: The deadline for the swap in minutes.  
   
+<br>
+<br>
+
 ### Add liquidity  
   
 ```javascript
@@ -102,7 +119,10 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
 `maxFees (optional)`: A custom fee limit to be include in the transaction.  
-  
+    
+<br>
+<br>
+
 ### Remove liquidity  
   
 ```javascript
@@ -131,7 +151,10 @@ The withdrawLiquidity function need at least 3 parameters and 4 optionnal;
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)   
   
 `maxFees (optional)`: A custom fee limit to be include in the transaction.  
-  
+      
+<br>
+<br>
+
 ## Author
  
 Tondelier Jonathan

@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { Account, Contract, uint256 } from "starknet"
 import { Fetcher, Token, Pair } from "l0k_swap-sdk";
-import { ERC20_ABI, ROUTER_ADDRESSES, TICKER } from "../constant";
+import { Account, Contract, uint256 } from "starknet";
 import { get_balance, get_token, sort_tokens_2 } from "../utils";
-import { RemoveLiquidityTx, RemoveLiquidityCallData } from "../types";
+import { RemoveLiquidityTx, RemoveLiquidityCallData } from "../../types";
+import { ERC20_ABI, ROUTER_ADDRESSES, TICKER } from "../../config/constants";
 
 
 export const get_remove_calldata = async(

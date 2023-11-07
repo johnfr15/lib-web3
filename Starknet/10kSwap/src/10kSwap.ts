@@ -1,13 +1,12 @@
 import { ethers } from 'ethers';
-import { Account, Uint, Uint256 } from 'starknet';
-import { ROUTER_ADDRESSES, TICKER } from './constant';
+import { TradeType } from "l0k_swap-sdk";
+import { Account, Uint256 } from 'starknet';
+import { get_swap_calldata } from './calldatas/swapCalldata';
+import { get_add_liq_calldata } from './calldatas/addLiqCalldata';
+import { get_approve_calldata } from './calldatas/approveCalldata';
+import { get_remove_calldata } from './calldatas/withdrawLiqCalldata';
+import { ROUTER_ADDRESSES, TICKER, TOKENS } from '../config/constants';
 import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees, enforce_add_liq_fees } from './utils';
-import { TradeType } from "l0k_swap-sdk"
-import { get_swap_calldata } from './calldata/swapCalldata';
-import { get_approve_calldata } from './calldata/approveCalldata';
-import { get_add_liq_calldata } from './calldata/addLiqCalldata';
-import { get_remove_calldata } from './calldata/withdrawLiqCalldata';
-import { TOKENS } from './constant';
 
 
 

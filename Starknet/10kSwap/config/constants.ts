@@ -1,28 +1,27 @@
+import erc20_abi from "./abis/erc20";
+import pair_abi from "./abis/l0k_pair_abi";
+import naming_abi from "./abis/naming_abi";
+import router_abi from "./abis/l0k_router_abi";
+import factory_abi from "./abis/l0k_factory_abi";
 import { Provider, constants, RpcProvider } from 'starknet';
-import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/l0k_router_abi"
-import factory_abi from "./abis/l0k_factory_abi"
-import pair_abi from "./abis/l0k_pair_abi"
-import naming_abi from "./abis/naming_abi"
 
 
 
 
-// Misc
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const TESTNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
 export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
-export const MAX_FEE = BigInt( 0 ); // Devnet
-export const MINIMUM_LIQUIDITY = BigInt( 1000 )
-export const FEES_NUMERATOR = BigInt( 9970 )
-export const FEES_DENOMINATOR = BigInt( 10000 )
-export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
 
 
 
 
-
-// ABI
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const l0K_ROUTER_ABI = router_abi
 export const l0K_FACTORY_ABI = factory_abi
@@ -33,7 +32,9 @@ export const NAMING_ABI = naming_abi
 
 
 
-// Addresses
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const ROUTER_ADDRESSES:  { [key: string]: string } = {
   'TESTNET': '0x00975910cd99bc56bd289eaaa5cee6cd557f0ddafdb2ce6ebea15b158eb2c664',
   'MAINNET': '0x07a6f98c03379b9513ca84cca1373ff452a7462a3b61598f0af5bb27ad7f76d1',
@@ -48,7 +49,9 @@ export const STARKNET_ID_ADDRESSES: { [key: string]: string } = {
 
 
 
-// Tokens
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
   'MAINNET': {
       eth:   '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
@@ -68,6 +71,19 @@ export const TOKENS: { [key: string]: any } = {
       tkb: '0x0250a29c8cd4d07a4db0516798fe86225e362439e769c9a0e1640d4a8ec12883',
   }
 }
+
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const MAX_FEE = BigInt( 0 ); // Devnet
+export const MINIMUM_LIQUIDITY = BigInt( 1000 )
+export const FEES_NUMERATOR = BigInt( 9970 )
+export const FEES_DENOMINATOR = BigInt( 10000 )
+export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
 
 export const TICKER: {[key: string]: string} = {
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7": "ETH",

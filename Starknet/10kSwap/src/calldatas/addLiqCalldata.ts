@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
-import { Account, Contract, Uint256, uint256 } from "starknet"
-import { TICKER, l0K_ROUTER_ABI, ROUTER_ADDRESSES } from "../constant";
-import { AddLiquidityCallData, AddLiquidityTx } from "../types";
-import { get_token, sort_tokens, get_balance, sort_tokens_2, Uint256_to_string } from "../utils";
-import { Fetcher, Fraction, Pair, Token } from "l0k_swap-sdk";
+import { Fetcher, Pair, Token } from "l0k_swap-sdk";
+import { Account, Contract, uint256 } from "starknet";
+import { get_token, get_balance, sort_tokens_2 } from "../utils";
+import { AddLiquidityCallData, AddLiquidityTx } from "../../types";
+import { TICKER, l0K_ROUTER_ABI, ROUTER_ADDRESSES } from "../../config/constants";
+
 
 
 export const get_add_liq_calldata = async(

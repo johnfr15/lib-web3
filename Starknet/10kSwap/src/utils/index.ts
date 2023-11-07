@@ -1,9 +1,10 @@
-import { ethers } from "ethers"
-import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI, TOKENS } from "../constant"
-import { JSBI, StarknetChainId, Token, Pair, Trade, TradeType, Percent, TokenAmount } from "l0k_swap-sdk"
-import { get_add_liq_calldata } from "../calldata/addLiqCalldata"
-import { SwapCallData, AddLiquidityTx } from "../types"
+import { ethers } from "ethers";
+import { SwapCallData, AddLiquidityTx } from "../../types";
+import { ERC20_ABI, TOKENS } from "../../config/constants";
+import { Account, Contract, Uint256, uint256 } from "starknet";
+import { get_add_liq_calldata } from "../calldatas/addLiqCalldata";
+import { JSBI, StarknetChainId, Token, Pair, Trade, TradeType, Percent, TokenAmount } from "l0k_swap-sdk";
+
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
@@ -17,6 +18,8 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
 
     return token
 }
+
+
 
 export const get_balance = async(
     account_address: string, 
@@ -136,6 +139,8 @@ export const enforce_swap_fees = async( swapTx: SwapCallData, fees: bigint,  sig
     }
 }
 
+
+
 /**
  * @name enforce_fees
  * @dev If ETH token is about to be swapped ensure that we will keep enough ETH token to pay the fees
@@ -169,4 +174,25 @@ export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key:
         throw( error )
 
     }
+}
+
+
+
+export const log_balances = async(signer: Account, network: 'TESTNET' | 'MAINNET') => {
+
+    const Dai = new Contract(ERC20_ABI, TOKENS[ network ].dai, signer)
+    const Eth = new Contract(ERC20_ABI, TOKENS[ network ].eth, signer)
+    const Usdc = new Contract(ERC20_ABI, TOKENS[ network ].usdc, signer)
+    const Usdt = new Contract(ERC20_ABI, TOKENS[ network ].usdt, signer)
+
+    const { balance: daiBalance }  = await Dai.balanceOf( signer.address ) 
+    const { balance: ethBalance }  = await Eth.balanceOf( signer.address ) 
+    const { balance: usdcBalance } = await Usdc.balanceOf( signer.address ) 
+    const { balance: usdtBalance } = await Usdt.balanceOf( signer.address ) 
+
+    console.log( "Balance DAI:  ", Uint256_to_string( daiBalance ) )
+    console.log( "Balance ETH:  ", Uint256_to_string( ethBalance ) )
+    console.log( "Balance USDC: ", Uint256_to_string( usdcBalance, 6) )
+    console.log( "Balance USDT: ", Uint256_to_string( usdtBalance, 6) )
+    console.log("\n")
 }

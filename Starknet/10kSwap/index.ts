@@ -1,8 +1,6 @@
-import { swap, addLiquidity, withdrawLiquidity } from "./10kSwap"
-import * as Constant from "./constant"
-import * as Utils from "./utils"
-import * as Types from "./types"
-import * as Log from "./log"
+import * as Utils from "./src/utils"
+import * as Constant from "./config/constants"
+import { swap, addLiquidity, withdrawLiquidity } from "./src/10kSwap"
 
 
-export default { swap, addLiquidity, withdrawLiquidity, Constant, Utils, Types, Log }
+export default { swap, addLiquidity, withdrawLiquidity, Constant, Utils }
