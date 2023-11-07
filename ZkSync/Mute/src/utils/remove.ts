@@ -1,6 +1,6 @@
-import { Contract } from "ethers";
-import { RemoveLiquidity } from "../types";
 import { is_native } from ".";
+import { Contract } from "ethers";
+import { RemoveLiquidity } from "../../types";
 
 export const encode_remove_datas = ( removeLiq: RemoveLiquidity, Router: Contract ) => {
 

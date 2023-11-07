@@ -1,7 +1,9 @@
 import { ethers, Wallet } from "ethers";
-import { Pool, Trade, Token, SwapExactETHForTokens, SwapExactTokensForETH } from "../types";
 import { get_quote, is_native, get_balance } from ".";
-import { TOKENS, ZERO_ADDRESS } from "../config/constants";
+import { TOKENS, ZERO_ADDRESS } from "../../config/constants";
+import { Pool, Trade, Token, SwapExactETHForTokens, SwapExactTokensForETH } from "../../types";
+
+
 
 export const get_trade = async( 
     signer: Wallet,

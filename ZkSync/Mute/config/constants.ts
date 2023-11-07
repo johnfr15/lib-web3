@@ -1,13 +1,16 @@
-import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/mute_router_abi"
-import factory_abi from "./abis/mute_factory_abi"
-import pair_abi from "./abis/mute_pair_abi"
+import erc20_abi from "./abis/erc20";
 import { JsonRpcProvider } from 'ethers';
+import pair_abi from "./abis/mute_pair_abi";
+import router_abi from "./abis/mute_router_abi";
+import factory_abi from "./abis/mute_factory_abi";
 
 
 
 
-// Misc
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const MAINNET_PROVIDER = new JsonRpcProvider( "https://1rpc.io/5MhQH7HHMtWL2dh9x/zksync2-era" ) 
 export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet.blockpi.network/v1/rpc/public" )
 
@@ -15,8 +18,9 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet
 
 
 
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const MUTE_ROUTER_ABI = router_abi
 export const MUTE_FACTORY_ABI = factory_abi
@@ -26,9 +30,9 @@ export const MUTE_PAIR_ABI = pair_abi
 
 
 
-// Addresses
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
-
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const FACTORY_ADDRESS: { [key: string]: string } = {
   'MAINNET': '0x40be1cba6c5b47cdf9da7f963b6f761f4c60627d',
   'TESTNET': '0xCc05E242b4A82f813a895111bCa072c8BBbA4a0e'
@@ -44,16 +48,13 @@ export const MULTI_CALL:  { [key: string]: string } = {
   'TESTNET': '0xd9Ee4c1e04059D4B0dd02b747282511bEE4E5fB5',
 }
 
-export const CHAIN_ID:  { [key: string]: number } = {
-  'MAINNET': 324,
-  'TESTNET': 280,
-}
 
 
 
 
-
-// Tokens
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
         eth: "0x0000000000000000000000000000000000000000",
@@ -72,6 +73,19 @@ export const TOKENS: { [key: string]: any } = {
         tka: '',
         tkb: '',
     }
+}
+
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+export const CHAIN_ID:  { [key: string]: number } = {
+  'MAINNET': 324,
+  'TESTNET': 280,
 }
 
 export const TICKER: {[key: string]: string} = {

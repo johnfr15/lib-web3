@@ -1,8 +1,8 @@
-import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt, Provider } from "ethers";
-import { MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../config/constants";
 import { is_native } from "../utils";
-import { Trade, SwapExactETHForTokens, SwapExactTokensForETH, SwapExactTokensForTokens } from "../types";
 import { enforce_swap_fees } from "../utils/swap";
+import { Trade, SwapExactETHForTokens } from "../../types";
+import { MUTE_ROUTER_ABI, ROUTER_ADDRESS, TICKER } from "../../config/constants";
+import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 

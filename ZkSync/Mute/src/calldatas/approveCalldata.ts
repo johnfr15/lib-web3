@@ -1,7 +1,7 @@
-import { ethers, Wallet, Contract, TransactionRequest } from "ethers";
-import { ERC20_ABI, ROUTER_ADDRESS } from "../config/constants";
-import { ApproveTx } from "../types";
 import { is_native } from "../utils";
+import { ApproveTx } from "../../types";
+import { ethers, Wallet, Contract } from "ethers";
+import { ERC20_ABI, ROUTER_ADDRESS } from "../../config/constants";
 
 export const get_approve_tx = async(
     signer: Wallet, 

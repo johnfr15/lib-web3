@@ -1,7 +1,7 @@
-import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
-import { RemoveLiquidity } from "../types";
 import { is_native } from "../utils";
-import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../config/constants"
+import { RemoveLiquidity } from "../../types";
+import { ROUTER_ADDRESS, MUTE_ROUTER_ABI, TICKER } from "../../config/constants";
+import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
 
 export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) => {
 
