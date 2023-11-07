@@ -1,6 +1,6 @@
+import { RemoveLiquidity } from "../../types";
+import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../../config/constants"
 import { ethers, Wallet, Contract, TransactionResponse, TransactionReceipt } from "ethers";
-import { RemoveLiquidity } from "../types";
-import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../config/constants"
 
 export const exec_remove = async( removeLiq: RemoveLiquidity, signer: Wallet ) => {
 

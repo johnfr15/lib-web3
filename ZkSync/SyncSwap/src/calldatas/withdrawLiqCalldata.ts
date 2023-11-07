@@ -1,7 +1,7 @@
 import { Wallet, Contract, ethers } from "ethers";
-import { CLASSIC_POOL_ABI, ROUTER_ABI, ROUTER_ADDRESS, TICKER, ZERO_ADDRESS } from "../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { Pool, RemoveLiquidity, Token, WithdrawMode } from "../types";
+import { Pool, RemoveLiquidity, Token, WithdrawMode } from "../../types";
+import { CLASSIC_POOL_ABI, TICKER, ZERO_ADDRESS } from "../../config/constants";
 
 
 export const get_remove_tx = async(

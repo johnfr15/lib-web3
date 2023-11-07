@@ -1,14 +1,14 @@
 import { ethers, Wallet } from 'ethers';
-import { TICKER } from './config/constants';
+import { TICKER } from '../config/constants';
 import { is_balance, is_native } from './utils';
-import { get_swap_tx } from './calldata/swapCalldata';
-import { get_approve_tx } from './calldata/approveCalldata';
-import { get_add_liq_tx } from './calldata/addLiqCalldata';
-import { get_remove_tx } from './calldata/withdrawLiqCalldata';
 import { exec_swap } from './transactions/swap';
-import { exec_approve } from './transactions/approve';
-import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_remove } from './transactions/remove';
+import { exec_approve } from './transactions/approve';
+import { get_swap_tx } from './calldatas/swapCalldata';
+import { get_add_liq_tx } from './calldatas/addLiqCalldata';
+import { get_approve_tx } from './calldatas/approveCalldata';
+import { get_remove_tx } from './calldatas/withdrawLiqCalldata';
+import { exec_add_liquidity } from './transactions/addLiquidity';
 
 
 
@@ -23,7 +23,6 @@ import { exec_remove } from './transactions/remove';
  * @param slipage       - (optional) protection against price movement or to high price impact default is 0.5%
  * @param priceImpact   - (optional) protection against price movement or to high price impact default is 2%
  * @param deadline      - (optional) Maximum amount of time (in unix time) before the trade get reverted
- * @param maxFees       - (optional) max fees signer is ready to pay for executing transaction
  */
 export const swap = async(
     signer: Wallet,

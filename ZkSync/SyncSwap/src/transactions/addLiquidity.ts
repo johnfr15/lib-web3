@@ -1,6 +1,6 @@
+import { AddLiquidity } from "../../types";
+import { ROUTER_ADDRESS, ROUTER_ABI, TICKER } from "../../config/constants";
 import { ethers, Contract, Wallet, TransactionResponse, TransactionReceipt } from "ethers";
-import { ROUTER_ADDRESS, ROUTER_ABI, TICKER, TOKENS } from "../config/constants";
-import { AddLiquidity } from "../types";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 

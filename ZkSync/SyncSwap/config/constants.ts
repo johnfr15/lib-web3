@@ -1,18 +1,19 @@
-import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/router_abi"
-import vault from "./abis/vault_abi"
-import classic_pair_abi from "./abis/classic_pool_abi"
-import classic_pair_factory_abi from "./abis/classic_pool_factory_abi"
-import stable_pair_abi from "./abis/SyncSwap_stable_pool_abi"
-import stable_pair_factory_abi from "./abis/SyncSwap_stable_pool_factory_abi"
-
+import erc20_abi from "./abis/erc20";
+import vault from "./abis/vault_abi";
 import { JsonRpcProvider } from 'ethers';
-import { WithdrawMode } from "../types"
+import router_abi from "./abis/router_abi";
+import classic_pair_abi from "./abis/classic_pool_abi";
+import stable_pair_abi from "./abis/SyncSwap_stable_pool_abi";
+import classic_pair_factory_abi from "./abis/classic_pool_factory_abi";
+import stable_pair_factory_abi from "./abis/SyncSwap_stable_pool_factory_abi";
 
 
 
 
-// Misc
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const MAINNET_PROVIDER = new JsonRpcProvider( "https://mainnet.era.zksync.io" ) 
 export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet.blockpi.network/v1/rpc/public" )
 
@@ -20,8 +21,9 @@ export const TESTNET_PROVIDER = new JsonRpcProvider( "https://zksync-era-testnet
 
 
 
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const ROUTER_ABI = router_abi
 export const VAULT_ABI = vault
@@ -34,9 +36,9 @@ export const STABLE_POOL_FACTORY_ABI = stable_pair_factory_abi
 
 
 
-// Addresses
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
-
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const ROUTER_ADDRESS:  { [key: string]: string } = {
   'MAINNET': '0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295',
   'TESTNET': '0xB3b7fCbb8Db37bC6f572634299A58f51622A847e',
@@ -64,17 +66,12 @@ export const STABLE_POOL_FACTORY:  { [key: string]: string } = {
 
 
 
-export const CHAIN_ID:  { [key: string]: number } = {
-  'MAINNET': 324,
-  'TESTNET': 280,
-}
 
 
 
-
-
-
-// Tokens
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
       eth: "0x0000000000000000000000000000000000000000",
@@ -94,6 +91,17 @@ export const TOKENS: { [key: string]: any } = {
 }
 
 
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+export const CHAIN_ID:  { [key: string]: number } = {
+  'MAINNET': 324,
+  'TESTNET': 280,
+}
 
 export const TICKER: {[key: string]: string} = {
 

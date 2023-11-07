@@ -1,7 +1,9 @@
-import { ethers, Wallet, Contract } from "ethers"
-import { ERC20_ABI, TOKENS, CHAIN_ID, TICKER, ZERO_ADDRESS, ROUTER_ABI, CLASSIC_POOL_FACTORY, CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../config/constants"
-import fs from "fs"
-import { Token, Pool } from "../types";
+import fs from "fs";
+import { Token, Pool } from "../../types";
+import { ethers, Wallet, Contract } from "ethers";
+import { CLASSIC_POOL_FACTORY_ABI, CLASSIC_POOL_ABI } from "../../config/constants";
+import { ERC20_ABI, TOKENS, CHAIN_ID, ZERO_ADDRESS, CLASSIC_POOL_FACTORY } from "../../config/constants";
+
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET' ): Promise<Token> => {
@@ -34,6 +36,8 @@ export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAIN
     return token
 }
 
+
+
 export const get_pool = async( tokenA: Token, tokenB: Token, network: string, signer: Wallet ): Promise<Pool> => {
 
     const Classic_pool_factory: Contract = new Contract( CLASSIC_POOL_FACTORY[ network ], CLASSIC_POOL_FACTORY_ABI, signer );
@@ -59,6 +63,8 @@ export const get_pool = async( tokenA: Token, tokenB: Token, network: string, si
 
     return pool
 }
+
+
 
 export const get_balance = async(
     tokenAddress: string, 
@@ -99,6 +105,8 @@ export const get_balance = async(
 
 }
 
+
+
 export const is_balance = async(signer: Wallet, addressA: string, addressB: string): Promise<number> => {
 
     try {
@@ -117,6 +125,8 @@ export const is_balance = async(signer: Wallet, addressA: string, addressB: stri
 
     }
 }
+
+
 
 export const get_quote = ( amountIn: string, tokenIn: Token, tokenOut: Token, pool: Pool): string => {
 
@@ -143,4 +153,24 @@ export const sort_tokens = ( tokenA: Token, tokenB: Token, amountA: string | nul
     const amount1 = token1.address === tokenA.address ? ethers.parseUnits( amountA ?? '0', token1.decimals) : ethers.parseUnits( amountB ?? '0', token1.decimals)
 
     return { token0, token1, amount0, amount1 }
+}
+
+
+
+export const log_balances = async(signer: Wallet, network: 'TESTNET' | 'MAINNET') => {
+
+    const Dai = new Contract(TOKENS[ network ].dai, ERC20_ABI, signer)
+    const Usdc = new Contract(TOKENS[ network ].usdc, ERC20_ABI, signer)
+    const Usdt = new Contract(TOKENS[ network ].usdt, ERC20_ABI, signer)
+
+    const daiBalance  = await Dai.balanceOf( signer.address ) 
+    const ethBalance  = await signer.provider!.getBalance( signer.address ) 
+    const usdcBalance = await Usdc.balanceOf( signer.address ) 
+    const usdtBalance = await Usdt.balanceOf( signer.address ) 
+
+    console.log( "Balance DAI:  ", ethers.formatUnits( daiBalance ) )
+    console.log( "Balance ETH:  ", ethers.formatUnits( ethBalance ) )
+    console.log( "Balance USDC: ", ethers.formatUnits( usdcBalance, 6) )
+    console.log( "Balance USDT: ", ethers.formatUnits( usdtBalance, 6) )
+    console.log("\n")
 }
