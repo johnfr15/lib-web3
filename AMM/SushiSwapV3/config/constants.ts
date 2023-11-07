@@ -11,8 +11,9 @@ import non_fungible_manager_abi from "./abis/non_fungible_manager"
 
 
 
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const SWAP_ROUTER_ABI = swap_router_abi
 export const QUOTER_V2_ABI = quoter_v2_abi
@@ -24,7 +25,9 @@ export const NFT_MANAGER_ABI = non_fungible_manager_abi
 
 
 
-// ADDRESSES
+/***********************************|
+|             CONTRACTS             |
+|__________________________________*/
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const SWAP_ROUTER : { [key: string]: any } = {
@@ -80,7 +83,10 @@ export const NFT_MANAGER : { [key: string]: any } = {
 
 
 
-// Tokens
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key in Chains]: any } = {
 
   ethereum: {
@@ -172,8 +178,13 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 }
 
-// Misc
 
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const MAX_TICK = 887272
 export const MIN_TICK = -887272
 export const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
@@ -199,8 +210,11 @@ export const DEFAULT_REMOVE_OPTION: RemoveOptions = {
 
 
 
-// Chains
 
+
+/***********************************|
+|              CHAINS               |
+|__________________________________*/
 export const CHAIN_ID: { [ key in Chains ]: number } = {
 
   ethereum: 1,

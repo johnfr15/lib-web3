@@ -1,6 +1,7 @@
-import { ethers, Wallet } from "ethers";
-import { Pool, Trade, Token, TradeType, Chains, SwapOptions, QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../types";
 import { get_quote } from ".";
+import { ethers, Wallet } from "ethers";
+import { Pool, Trade, Token, TradeType, Chains, SwapOptions } from "../../types";
+import { QuoteExactInputSingleParams, QuoteExactOutputSingleParams } from "../../types";
 
 export const get_trade = async( 
     signer: Wallet,

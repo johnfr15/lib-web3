@@ -1,7 +1,3 @@
-# jonathan
-Jonathan's code
-
-
 # SushiSwapV3  
 ![SushiSwapV3](https://pbs.twimg.com/profile_images/1622619902350688258/lFs3rTxB_400x400.png)  
 

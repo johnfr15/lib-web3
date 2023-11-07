@@ -1,7 +1,7 @@
 import { Contract, Wallet } from "ethers";
-import { Token, Chains } from "../types";
-import { NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
+import { Token, Chains } from "../../types";
 import { is_position, parse_position } from ".";
+import { NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
 
 export const get_token_id = async( 
     tokenA: Token, 

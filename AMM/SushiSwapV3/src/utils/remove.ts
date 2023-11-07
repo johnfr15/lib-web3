@@ -1,7 +1,7 @@
 import { Contract, Wallet } from "ethers";
-import { Token, Chains, Position } from "../types";
-import { NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
 import { is_position, parse_position } from ".";
+import { Token, Chains, Position } from "../../types";
+import { NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
 
 export const find_position = async( 
     tokenA: Token, 

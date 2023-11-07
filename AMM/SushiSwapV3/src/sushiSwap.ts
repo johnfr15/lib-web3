@@ -7,8 +7,8 @@ import { exec_swap } from './transactions/swap';
 import { exec_approve } from './transactions/approve';
 import { exec_add_liquidity } from './transactions/addLiquidity';
 import { exec_decrease, exec_collect } from './transactions/remove';
-import { DEFAULT_REMOVE_OPTION, DEFAULT_OPTION, NFT_MANAGER, SWAP_ROUTER } from "./config/constants"
-import { AddOptions, Chains, SwapOptions, RemoveOptions } from './types';
+import { DEFAULT_REMOVE_OPTION, DEFAULT_OPTION, NFT_MANAGER, SWAP_ROUTER } from "../config/constants"
+import { AddOptions, Chains, SwapOptions, RemoveOptions } from '../types';
 import { resolve_chain } from './utils';
 
 

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../types";
 import { is_native } from "../utils";
+import { AddLiquidityTx, Mint, IncreaseLiquidity } from "../../types";
 
 /**
  * @dev This function will check if native ETH token is in the path and encode the swap data the right way 

@@ -1,8 +1,8 @@
+import { get_token_id } from "../utils/add";
 import { ethers, Wallet, Contract } from "ethers";
-import { AddLiquidityTx, AddOptions, Chains, SwapOptions, Pool, Token } from "../types";
+import { AddLiquidityTx, AddOptions, Chains, Pool, Token } from "../../types";
+import { MAX_TICK, MIN_TICK, NFT_MANAGER, NFT_MANAGER_ABI } from "../../config/constants";
 import { get_token, get_balance, get_pool, sort_tokens, is_balance, get_quote } from "../utils";
-import { get_token_id } from "../utils/add"
-import { MAX_TICK, MIN_TICK, NFT_MANAGER, NFT_MANAGER_ABI } from "../config/constants";
 
 
 export const get_add_liq_tx = async(
