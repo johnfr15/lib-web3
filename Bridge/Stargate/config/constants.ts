@@ -5,7 +5,11 @@ import router_eth_abi from "./abis/router_eth"
 
 
 
-// Misc
+
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const POLYGON_PROVIDER: {[key: string]: string} = {
   "MAINNET": "https://polygon-mainnet.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
   "TESTNET": "https://polygon-mumbai.infura.io/v3/78581dc93b6d43088baba2bb1606d0c8",
@@ -16,7 +20,9 @@ export const POLYGON_PROVIDER: {[key: string]: string} = {
 
 
 
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const ROUTER_ABI = router_abi
 export const ROUTER_ETH_ABI = router_eth_abi
@@ -25,10 +31,9 @@ export const ROUTER_ETH_ABI = router_eth_abi
 
 
 
-
-// Addressess
-export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
-
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const ROUTER: { [key in Chains]: any } = {
   polygon: "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd",
   arbitrum: "0x53Bf833A5d6c4ddA888F69c22C88C9f356a41614",
@@ -64,6 +69,15 @@ export const ROUTER_ETH: { [key in Chains]: any } = {
   arbitrumTestnet: '',
   avalancheTestnet: "",
 } 
+
+
+
+
+
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
+export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 
 export const WETH: { [key in Chains]: any } = {
   polygon: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -203,14 +217,17 @@ export const TOKENS: { [key in Chains]: any } = {
   },
 }
 
-// Function
 
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
 export const DEFAULT_BRIDGE_OPTION: BridgeOptions = {
   max: false,
   slipage: 2          // 2% of slipage tolerance
 }
-
-// STARGATE
 
 export const MINIMUM_GAS: bigint = BigInt( 100000 )
 

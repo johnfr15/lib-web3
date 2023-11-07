@@ -123,9 +123,11 @@ The swap function need an object of at least 6 parameters and 3 optionnals
   
 `toChain`: Name of the target chain   
   
-`amount (optional)`: The amount to be bridge it is worth noting that makers have 'minimum' amount to be send otherwise it will revert the function (see `/Orbital/config/makerListMainnet` to know the details). If you use the `max` params to true, no need to specify an amount.  
+`amount`: The amount of `tokenFrom` to be bridge.  
   
-`max (optional)`: if activated it will send the total balance of `token` param from the `fromChain` chain. It is worth noting that makers have a 'maximum' amount ceiling, if your balance is above the function will throw an error.
+`max (optional)`: if activated it will send the total balance of `token` param from the `fromChain` chain.  
+  
+`slipage (optional)`: The slipage tolerance will protect us from price movement during the validation of the block. It is set by default to 0.5% of slipage tolerance. What is slipage ?
   
 
 ## Author

@@ -1,5 +1,5 @@
+import { ApproveTx } from "../../types"
 import { TransactionResponse, TransactionReceipt, ethers } from "ethers"
-import { ApproveTx } from "../types"
 
 export const exec_approve = async( approveTx: ApproveTx | undefined ): Promise<TransactionReceipt | undefined> => {
 

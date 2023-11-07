@@ -1,7 +1,7 @@
-import { Wallet, Contract, ethers } from "ethers";
-import { ROUTER, ROUTER_ABI, ROUTER_ETH, ROUTER_ETH_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS } from "../config/constants";
-import { Chains, FUNCTION_TYPE, StargateParams, Token } from "../types";
 import { is_native } from ".";
+import { Wallet, Contract, ethers } from "ethers";
+import { Chains, FUNCTION_TYPE, StargateParams, Token } from "../../types";
+import { ROUTER, ROUTER_ABI, ROUTER_ETH, ROUTER_ETH_ABI, STARGATE_CHAIN_ID, STARGATE_POOL_IDS } from "../../config/constants";
 
 export const get_stargate_params = ( 
     signer: Wallet,

@@ -1,7 +1,7 @@
-import { TransactionResponse, TransactionReceipt, ethers } from "ethers"
-import { BridgeTx } from "../types"
-import { is_native } from "../utils"
-import { is_router_eth } from "../utils/bridge"
+import { is_native } from "../utils";
+import { BridgeTx } from "../../types";
+import { is_router_eth } from "../utils/bridge";
+import { TransactionReceipt, ethers } from "ethers";
 
 export const exec_bridge = async( bridgeTx: BridgeTx ) => {
 

@@ -1,8 +1,8 @@
 import { Wallet, ethers, Contract } from "ethers";
-import { Chains, BridgeOptions, BridgeTx, StargateParams, Token } from "../types";
-import { is_path, get_balance, get_native, get_token } from "../utils";
+import { NATIVE_TOKEN } from "../../config/constants";
+import { is_path, get_balance, get_token } from "../utils";
 import { getFee, get_router, get_stargate_params } from "../utils/bridge"
-import { ROUTER, ROUTER_ABI, NATIVE_TOKEN } from "../config/constants";
+import { Chains, BridgeOptions, BridgeTx, StargateParams, Token } from "../../types";
 
 
 export const get_bridge_tx = async(
