@@ -1,9 +1,7 @@
-import { ethers } from "ethers";
-import { Account, Contract, uint256 } from "starknet"
-import { Token, JSBI } from "l0k_swap-sdk";
-import { ERC20_ABI, ROUTER_ADDRESS } from "../constant";
+import { Account, uint256 } from "starknet"
+import { ROUTER_ADDRESS } from "../../config/constants";
 import { get_balance, get_pool, get_token, sort_tokens } from "../utils";
-import { RemoveLiquidityTx, RemoveLiquidityCallData, Pool } from "../types";
+import { RemoveLiquidityTx, RemoveLiquidityCallData, Pool } from "../../types";
 
 
 export const get_remove_calldata = async(

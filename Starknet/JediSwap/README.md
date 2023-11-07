@@ -1,17 +1,22 @@
-# jonathan
-Jonathan's code
-
 # jediSwap  
+![jediSwap](https://uploads-ssl.webflow.com/63b949acac6e14b4d0ba0363/63bbd89dc04c8adbaa535925_JediSwap%20logotype%20color.svg) 
+
 **Swap**: ✅    
 **Add liquidity**: ✅    
 **Remove liquidity**: ✅    
   
+<br>
+<br>
+
 ## url
 - Mainnet: https://app.jediswap.xyz/
 - Docs: https://docs.jediswap.xyz/
 - Github: https://github.com/jediswaplabs 
   
 **AMM** *Swap* / *Add liquidity* / *remove liquidity*  
+  
+<br>
+<br>
 
 ## Calling jediSwap Functions
 
@@ -28,6 +33,9 @@ jediSwap.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
 jediSwap.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
 jediSwap.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
+  
+<br>
+<br>
 
 ### Swap  
 ```javascript
@@ -40,7 +48,7 @@ export const swap = async(
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
     priceImpact: number = 2, // this represent 2% of allowed price impact (default)
     maxFees?: bigint,
-    deadlineMinutes?: number,
+    deadline?: number,
 ): Promise<void>;
 ```
 The swap function need at least 3 parameters and 6 optionnal  
@@ -64,8 +72,11 @@ The swap function need at least 3 parameters and 6 optionnal
   
 `maxFees (optional)`: A custom fee limit to be include in the transaction.  
   
-`deadlineMinutes (optional)`: The deadline for the swap in minutes.  
-  
+`deadline (optional)`: The deadline for the swap in minutes.  
+    
+<br>
+<br>
+
 ### Add liquidity  
   
 ```javascript
@@ -105,7 +116,10 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)  
   
 `maxFees (optional)`: A custom fee limit to be include in the transaction.  
-  
+    
+<br>
+<br>
+
 ### Remove liquidity  
   
 ```javascript
@@ -134,7 +148,10 @@ The withdrawLiquidity function need at least 3 parameters and 4 optionnal;
 `slipage (optional)`: The slipage tolerance will protect us from *price movement* during the validation of the block. It is set by default to **0.5%** of slipage tolerance. [What is slipage ?](https://support.uniswap.org/hc/en-us/articles/8643879653261-What-is-Price-Slippage-)   
   
 `maxFees (optional)`: A custom fee limit to be include in the transaction.  
-  
+    
+<br>
+<br>
+
 ## Author
  
 Tondelier Jonathan

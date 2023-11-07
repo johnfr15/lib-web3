@@ -1,10 +1,10 @@
-import { ethers } from "ethers"
-import { Account, Contract, Uint256, uint256 } from "starknet"
-import { ERC20_ABI, JEDI_FACTORY_ABI, FACTORY_ADDRESS, JEDI_PAIR_ABI, TOKENS } from "../constant"
-import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk"
-import { Pool, SwapTx, SwapCallData, AddLiquidityTx } from "../types"
-import { get_swap_calldata } from "../calldata/swapCalldata"
-import { get_add_liq_calldata } from "../calldata/addLiqCalldata"
+import { ethers } from "ethers";
+import { get_swap_calldata } from "../calldatas/swapCalldata";
+import { Account, Contract, Uint256, uint256 } from "starknet";
+import { get_add_liq_calldata } from "../calldatas/addLiqCalldata";
+import { Pool, SwapTx, SwapCallData, AddLiquidityTx } from "../../types";
+import { Token, JSBI, TokenAmount, StarknetChainId } from "l0k_swap-sdk";
+import { ERC20_ABI, JEDI_FACTORY_ABI, FACTORY_ADDRESS, JEDI_PAIR_ABI, TOKENS } from "../../config/constants";
 
 
 export const get_token = async( tokenAddress: string, network: 'TESTNET' | 'MAINNET', signer: Account ) => {
@@ -180,4 +180,23 @@ export const enforce_add_liq_fees = async( addTx: AddLiquidityTx, utils: { [key:
         throw( error )
 
     }
+}
+
+export const log_balances = async(signer: Account, network: 'TESTNET' | 'MAINNET') => {
+
+    const Dai = new Contract(ERC20_ABI, TOKENS[ network ].dai, signer)
+    const Eth = new Contract(ERC20_ABI, TOKENS[ network ].eth, signer)
+    const Usdc = new Contract(ERC20_ABI, TOKENS[ network ].usdc, signer)
+    const Usdt = new Contract(ERC20_ABI, TOKENS[ network ].usdt, signer)
+
+    const { balance: daiBalance }  = await Dai.balanceOf( signer.address ) 
+    const { balance: ethBalance }  = await Eth.balanceOf( signer.address ) 
+    const { balance: usdcBalance } = await Usdc.balanceOf( signer.address ) 
+    const { balance: usdtBalance } = await Usdt.balanceOf( signer.address ) 
+
+    console.log( "Balance DAI:  ", Uint256_to_string( daiBalance ) )
+    console.log( "Balance ETH:  ", Uint256_to_string( ethBalance ) )
+    console.log( "Balance USDC: ", Uint256_to_string( usdcBalance, 6) )
+    console.log( "Balance USDT: ", Uint256_to_string( usdtBalance, 6) )
+    console.log("\n")
 }

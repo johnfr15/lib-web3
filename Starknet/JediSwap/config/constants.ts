@@ -1,32 +1,27 @@
+import erc20_abi from "./abis/erc20";
+import pair_abi from "./abis/jedi_pair_abi";
+import zap_in_abi from "./abis/zap_in_abi";
+import router_abi from "./abis/jedi_router_abi";
+import factory_abi from "./abis/jedi_factory_abi";
 import { Provider, constants, RpcProvider } from 'starknet';
-import erc20_abi from "./abis/erc20"
-import router_abi from "./abis/jedi_router_abi"
-import factory_abi from "./abis/jedi_factory_abi"
-import pair_abi from "./abis/jedi_pair_abi"
-import zap_in_abi from "./abis/zap_in_abi"
 
 
 
 
-// Misc
+
+/***********************************|
+|            PROVIDERS              |
+|__________________________________*/
 export const TESTNET_PROVIDER = new Provider( { sequencer: { network: constants.NetworkName.SN_GOERLI } }) // for starknet testnet 1
 export const MAINNET_PROVIDER = new RpcProvider({ nodeUrl: "https://starknet-mainnet.infura.io/v3/429467ee5c414c8686b4427c9b3dda16" }) // for starknet mainnet
 
-export const MAX_FEE = BigInt( 0 ); // Devnet
-export const MINIMUM_LIQUIDITY = BigInt( 1000 )
-export const FEES_NUMERATOR = BigInt( 9970 )
-export const FEES_DENOMINATOR = BigInt( 10000 )
-export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
-export const STARKNET_CHAIN_ID = {
-  'MAINNET': "SN_MAIN",
-  'TESTNET': "SN_GOERLI"
-}
 
 
 
 
-
-// ABIS
+/***********************************|
+|              ABIS                 |
+|__________________________________*/
 export const ERC20_ABI = erc20_abi
 export const JEDI_ROUTER_ABI = router_abi
 export const JEDI_FACTORY_ABI = factory_abi
@@ -37,7 +32,9 @@ export const ZAP_IN_ABI = zap_in_abi
 
 
 
-// Addresses
+/***********************************|
+|            CONTRACTS              |
+|__________________________________*/
 export const FACTORY_ADDRESS: { [key: string]: string } = {
   'MAINNET': '0xdad44c139a476c7a17fc8141e6db680e9abc9f56fe249a105094c44382c2fd',
   'TESTNET': '0x262744f8cea943dadc8823c318eaf24d0110dee2ee8026298f49a3bc58ed74a'
@@ -57,7 +54,9 @@ export const ZAP_IN_ADDRESS: { [key: string]: string } = {
 
 
 
-// Tokens
+/***********************************|
+|              TOKENS               |
+|__________________________________*/
 export const TOKENS: { [key: string]: any } = {
     'MAINNET': {
         eth: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
@@ -86,4 +85,21 @@ export const TICKER: {[key: string]: string} = {
     "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac": "wBTC",
     "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8": "USDT",
     "0x124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49": "LORDS",
+}
+
+
+
+
+
+/***********************************|
+|              MISC                 |
+|__________________________________*/
+export const MAX_FEE = BigInt( 0 ); // Devnet
+export const MINIMUM_LIQUIDITY = BigInt( 1000 )
+export const FEES_NUMERATOR = BigInt( 9970 )
+export const FEES_DENOMINATOR = BigInt( 10000 )
+export const MAX_UINT256 = BigInt( '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' )
+export const STARKNET_CHAIN_ID = {
+  'MAINNET': "SN_MAIN",
+  'TESTNET': "SN_GOERLI"
 }

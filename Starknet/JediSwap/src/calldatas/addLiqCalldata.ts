@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
-import { Account, Contract, uint256, Uint256 } from "starknet"
-import { TICKER, JEDI_ROUTER_ABI, ROUTER_ADDRESS } from "../constant";
-import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../types";
-import { get_token, get_balance, sort_tokens, get_pool, Uint256_to_string } from "../utils";
-import { Fraction, Token } from "l0k_swap-sdk";
-import { sort_tokens_2 } from "../../10kSwap/utils";
+import { Token } from "l0k_swap-sdk";
+import { Account, Contract, uint256, Uint256 } from "starknet";
+import { AddLiquidityCallData, AddLiquidityTx, Pool } from "../../types";
+import { get_token, get_balance, sort_tokens, get_pool } from "../utils";
+import { TICKER, JEDI_ROUTER_ABI, ROUTER_ADDRESS } from "../../config/constants";
 
 
 
@@ -147,7 +146,7 @@ const get_liq = async(
         if ( amount_2 > balance_2.bigint )
             throw new Error(`${ TICKER[ token_2.address ] }: Unsufficient balance.\nNeeded ${ ethers.formatUnits(amount_2, token_2.decimals) } but got ${ balance_2.string }`)
 
-        const { token0: tokenA, token1: tokenB } = sort_tokens_2( token_1, token_2 )
+        const { token0: tokenA, token1: tokenB } = sort_tokens( token_1, token_2, '0', '0' )
         
         return {
             contractAddress: Router.address,

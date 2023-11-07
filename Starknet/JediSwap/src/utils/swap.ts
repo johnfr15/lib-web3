@@ -1,8 +1,10 @@
 import { ethers } from "ethers";
-import { TokenAmount, Token, TradeType, Fraction } from "l0k_swap-sdk";
+import { Pool, Trade } from "../../types";
 import { Contract, Uint256, uint256 } from "starknet";
-import { Pool, Trade } from "../types";
-import { Uint256_to_string, jsbi_to_Uint256, jsbi_to_string, string_to_Uint256 } from "./index"
+import { jsbi_to_Uint256, string_to_Uint256 } from "./index";
+import { TokenAmount, Token, TradeType, Fraction } from "l0k_swap-sdk";
+
+
 
 export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
 
@@ -22,6 +24,8 @@ export const get_amount_out = async( amountIn: TokenAmount, pool: Pool, Router: 
         throw error
     }
 }
+
+
 
 export const get_amount_in = async( amountOut: TokenAmount, pool: Pool, Router: Contract ): Promise<TokenAmount> => {
     
@@ -43,6 +47,8 @@ export const get_amount_in = async( amountOut: TokenAmount, pool: Pool, Router: 
 
     }
 }
+
+
 
 export const get_trade = async( 
     tokenIn: Token, 
@@ -80,6 +86,8 @@ export const get_trade = async(
     }
 }
 
+
+
 export const calc_price_impact = async( amountIn: TokenAmount, amountOut: TokenAmount, tradeType: TradeType, Router: Contract, pool: Pool ) => {
 
     let percent: string
@@ -107,6 +115,8 @@ export const calc_price_impact = async( amountIn: TokenAmount, amountOut: TokenA
     return priceImpact
 }
 
+
+
 export const get_out_min = ( amountOut: TokenAmount, slipage: number): Uint256 => {
 
     const amount_out_min = amountOut.multiply( new Fraction( BigInt( (100 - slipage) * 100 ) ) )
@@ -115,6 +125,8 @@ export const get_out_min = ( amountOut: TokenAmount, slipage: number): Uint256 =
 
     return string_to_Uint256( amount_out_min, amountOut.token.decimals )
 }
+
+
 
 export const get_in_max = ( amountIn: TokenAmount, slipage: number): Uint256 => {
 
