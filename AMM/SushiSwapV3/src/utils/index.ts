@@ -16,7 +16,7 @@ export const resolve_chain = ( signer: Wallet, chain: Chains ): Wallet => {
 }
 export const get_token = async( tokenAddress: string, chain: Chains ): Promise<Token> => {
 
-    const FILE_PATH = __dirname + "/../config/tokens/" + chain + '.json'
+    const FILE_PATH = __dirname + "/../../config/tokens/" + chain + '.json'
     let Tokens: {[key: string]: Token } = {}
 
     if ( is_native( tokenAddress, chain ) )

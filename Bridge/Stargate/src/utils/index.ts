@@ -9,7 +9,7 @@ export const get_token = async( tokenAddress: string, chain: Chains ): Promise<T
 
     console.log(tokenAddress)
 
-    const FILE_PATH = __dirname + "/../config/tokens/" + chain + '.json'
+    const FILE_PATH = __dirname + "/../../config/tokens/" + chain + '.json'
     let Tokens: {[key: string]: Token } = {}
 
     if ( is_native( tokenAddress, chain ) )
