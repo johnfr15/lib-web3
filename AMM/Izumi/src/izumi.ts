@@ -134,7 +134,7 @@ export const addLiquidity = async(
 
 
 /**
- * @name withdrawLiquidity
+ * @name removeLiquidity
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenX         - Address of token A
  * @param tokenY         - Address of token B
@@ -146,7 +146,7 @@ export const addLiquidity = async(
  *        - fee:        (optional) The applied fee for the pool TokenIn/TokenOut 
  *        - tokenId:    (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenX: string, 
     tokenY: string, 

@@ -127,7 +127,7 @@ export const addLiquidity = async(
 
 
 /**
- * @name withdrawLiquidity
+ * @name removeLiquidity
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenA         - Address of token A
  * @param tokenB         - Address of token B
@@ -138,7 +138,7 @@ export const addLiquidity = async(
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
  *        - tokenId:       (optional) The id of the pool being used (this will faster the function and reduce the calls made to the provider)
  */
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 

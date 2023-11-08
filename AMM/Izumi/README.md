@@ -59,7 +59,7 @@ You will then be able to interact with the mains functions on all supported chai
 ```javascript
 Izumi.swap( signer, [ TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS ], "23", "polygon" )
 Izumi.addLiquidity( signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, "arbitrum", { max: true } )
-Izumi.withdrawLiquidity( signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS, "optimism", { percent: 50 } )
+Izumi.removeLiquidity( signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS, "optimism", { percent: 50 } )
 ```
 
 ### Swap  
@@ -168,7 +168,7 @@ export const addLiquidity = async(
 ### Remove liquidity  
   
 ```javascript
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 

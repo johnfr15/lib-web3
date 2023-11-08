@@ -31,7 +31,7 @@ You will then be able to interact with the mains functions
 ```javascript
 Mute.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
 Mute.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
-Mute.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+Mute.removeLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
     
 <br>
@@ -117,7 +117,7 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
 ### Remove liquidity  
   
 ```javascript
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
@@ -127,7 +127,7 @@ export const withdrawLiquidity = async(
     deadline: number | null = null,
 ): Promise<void>
 ```
-The withdrawLiquidity function need at least 3 parameters and 4 optionnal;   
+The removeLiquidity function need at least 3 parameters and 4 optionnal;   
   
 `signer`: The signer acount that will sign the transaction  
   

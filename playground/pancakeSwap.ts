@@ -45,7 +45,7 @@ const main = async() => {
             { max: true }
         )
 
-        // await PancakeSwapV3.withdrawLiquidity( 
+        // await PancakeSwapV3.removeLiquidity( 
         //     signer,
         //     TOKENS[ chain ].eth,
         //     TOKENS[ chain ].usdc,

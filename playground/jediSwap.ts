@@ -38,7 +38,7 @@ const main = async() => {
         //     network
         // )
 
-        // await JediSwap.withdrawLiquidity( 
+        // await JediSwap.removeLiquidity( 
         //     starkSigner,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].usdc,

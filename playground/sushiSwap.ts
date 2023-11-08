@@ -46,7 +46,7 @@ const main = async() => {
             { max: true }
         )
 
-        // await SushiSwapV3.withdrawLiquidity( 
+        // await SushiSwapV3.removeLiquidity( 
         //     signer,
         //     TOKENS[ chain ].eth,
         //     TOKENS[ chain ].usdc,

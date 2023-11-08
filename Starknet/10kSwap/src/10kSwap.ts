@@ -181,7 +181,7 @@ export const addLiquidity = async(
 
 
 /**
- * @name withdrawLiquidity
+ * @name removeLiquidity
  * @param signer                // The account to widthdraw its Liquidity Tokens (lp) 
  * @param tokenA                // Address of token A
  * @param tokenB                // Address of token B
@@ -190,7 +190,7 @@ export const addLiquidity = async(
  * @param slipage               // (optional) protection against price movement or to high price impact default is 2%
  * @param maxFees               // (optional) max fees signer is ready to pay for executing transaction
  */
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Account, 
     tokenA: string, 
     tokenB: string, 

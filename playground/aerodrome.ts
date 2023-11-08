@@ -39,7 +39,7 @@ const main = async() => {
         //     // { max: true }
         // )
 
-        await Aerodrome.withdrawLiquidity( 
+        await Aerodrome.removeLiquidity( 
             signer,
             TOKENS.eth,
             TOKENS.usdc,

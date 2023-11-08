@@ -40,7 +40,7 @@ const main = async() => {
         //     { max: true }
         // )
 
-        await BaseSwapV2.withdrawLiquidity( 
+        await BaseSwapV2.removeLiquidity( 
             signer,
             TOKENS.eth,
             TOKENS.usdc,

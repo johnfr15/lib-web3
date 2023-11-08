@@ -39,7 +39,7 @@ const main = async() => {
         //     { percent: 50 }
         // )
 
-        await Scale.withdrawLiquidity( 
+        await Scale.removeLiquidity( 
             signer,
             TOKENS.eth,
             TOKENS.usdc,

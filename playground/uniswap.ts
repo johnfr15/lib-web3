@@ -44,7 +44,7 @@ const main = async() => {
             { max: true }
         )
 
-        // await UniswapV3.withdrawLiquidity( 
+        // await UniswapV3.removeLiquidity( 
         //     signer,
         //     TOKENS[ chain ].eth,
         //     TOKENS[ chain ].usdc,

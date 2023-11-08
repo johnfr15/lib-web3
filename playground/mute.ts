@@ -41,7 +41,7 @@ const main = async() => {
         //     network
         // )
 
-        // await Mute.withdrawLiquidity( 
+        // await Mute.removeLiquidity( 
         //     signer,
         //     TOKENS[ network ].eth,
         //     TOKENS[ network ].dai,

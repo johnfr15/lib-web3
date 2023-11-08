@@ -130,7 +130,7 @@ export const addLiquidity = async(
 
 
 /**
- * @name withdrawLiquidity
+ * @name removeLiquidity
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenA         - Address of token A
  * @param tokenB         - Address of token B
@@ -139,7 +139,7 @@ export const addLiquidity = async(
  * @param slipage        - (optional) protection against price movement or to high price impact default is 2%
  * @param deadline       - (optional) Maximum amount of time (in unix time) before the trade get reverted
  */
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 

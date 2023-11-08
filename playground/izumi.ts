@@ -43,7 +43,7 @@ const main = async() => {
         //     { percent: 50 }
         // )
 
-        // await Izumi.withdrawLiquidity( 
+        // await Izumi.removeLiquidity( 
         //     signer,
         //     TOKENS[ chain ].eth,
         //     TOKENS[ chain ].usdc,

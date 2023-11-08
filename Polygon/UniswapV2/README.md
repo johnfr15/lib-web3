@@ -25,7 +25,7 @@ You will then be able to interact with the mains functions
 ```javascript
 UniswapV2.swap(signer, [TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS], "23")
 UniswapV2.addLiquidity(signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, 1)
-UniswapV2.withdrawLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
+UniswapV2.removeLiquidity(signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)
 ```
 
 ### Swap  
@@ -103,7 +103,7 @@ If the three **amountA** & **amountB** & **max** is set to ***null*** => throw e
 ### Remove liquidity  
   
 ```javascript
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 
@@ -112,7 +112,7 @@ export const withdrawLiquidity = async(
     slipage: number = 0.5, // this represent 0.5% of allowed slipage (default)
 ): Promise<void>
 ```
-The withdrawLiquidity function need at least 3 parameters and 4 optionnal;   
+The removeLiquidity function need at least 3 parameters and 4 optionnal;   
   
 `signer`: The signer acount that will sign the transaction  
   

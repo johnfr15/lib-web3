@@ -26,7 +26,7 @@ You will then be able to interact with the mains functions on all supported chai
 ```javascript
 BaseSwapV2.swap( signer, [ TOKEN_FROM_ADDRESS, TOKEN_TO_ADDRESS ], "23" )
 BaseSwapV2.addLiquidity( signer, TOKEN_A_ADDRESS, null, TOKEN_B_ADDRESS, null, { max: true } )
-BaseSwapV2.withdrawLiquidity( signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS, { percent: 50 } )
+BaseSwapV2.removeLiquidity( signer, TOKEN_A_ADDRESS, TOKEN_B_ADDRESS, { percent: 50 } )
 ```
 
 ### Swap  
@@ -117,7 +117,7 @@ export const addLiquidity = async(
 ### Remove liquidity  
   
 ```javascript
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenA: string, 
     tokenB: string, 

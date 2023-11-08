@@ -128,7 +128,7 @@ export const addLiquidity = async(
 
 
 /**
- * @name withdrawLiquidity
+ * @name removeLiquidity
  * @param signer         - The Wallet to widthdraw its Liquidity Tokens (lp) 
  * @param tokenX         - Address of token A
  * @param tokenY         - Address of token B
@@ -137,7 +137,7 @@ export const addLiquidity = async(
  *        - deadline:      (optional) Maximum amount of time (in unix time) before the trade get reverted
  *        - percent        (optional) Percentage of Liquidity Tokens (lp) to withdraw default is 100%
  */
-export const withdrawLiquidity = async(
+export const removeLiquidity = async(
     signer: Wallet, 
     tokenX: string, 
     tokenY: string, 
