@@ -6,7 +6,7 @@ import { get_swap_calldata } from './calldatas/swapCalldata';
 import { get_add_liq_calldata } from './calldatas/addLiqCalldata';
 import { get_approve_calldata } from './calldatas/approveCalldata';
 import { ROUTER_ADDRESS, TICKER, TOKENS } from '../config/constants';
-import { get_remove_calldata } from '../calldata/withdrawLiqCalldata';
+import { get_remove_calldata } from './calldatas/withdrawLiqCalldata';
 import { Uint256_to_string, get_balance, is_balance, enforce_swap_fees, enforce_add_liq_fees } from './utils';
 
 
