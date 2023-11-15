@@ -3,7 +3,7 @@ import { Wallet, ethers } from "ethers";
 import { get_amounts } from "./calldatas";
 import { TICKER } from "../config/constant";
 import { Chains, TxTransferArgs } from "../types";
-import { evm_transfer } from "../transfer/evm_transfer";
+import { evm_transfer } from "./transactions/evm_transfer";
 import { starknet_transfer } from "./transactions/starknet_transfer";
 import { get_balance, log_routes, resolve_provider, not_enough_balance } from "./utils";
 import { get_chain, resolve_maker, get_token, resolve_cross_address, append_network_target } from "./utils/bridge";
