@@ -1,6 +1,5 @@
 import { Wallet } from "ethers"
 import SushiSwapV3 from "../AMM/SushiSwapV3"
-import { log_balances } from "../AMM/SushiSwapV3/log"
 import { Chains } from "../AMM/SushiSwapV3/types"
 import dotenv from "dotenv"
 import { CHAIN_ID } from "../AMM/SushiSwapV3/config/constants"
@@ -11,12 +10,12 @@ dotenv.config()
 const main = async() => {
     
     const { TOKENS } = SushiSwapV3.Constant
-    const { resolve_provider } = SushiSwapV3.Utils
+    const { resolve_provider, log_balances } = SushiSwapV3.Utils
 
     
     try {
         // Set up
-        const chain: Chains = "optimism" // Testnet | Mainnet
+        const chain: Chains = "arbitrum" // Testnet | Mainnet
         const provider = resolve_provider( CHAIN_ID[ chain ] )
 
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
@@ -36,15 +35,15 @@ const main = async() => {
         //     chain
         // )
 
-        await SushiSwapV3.addLiquidity( 
-            signer,
-            TOKENS[ chain ].eth,
-            null,
-            TOKENS[ chain ].usdt,
-            null,
-            chain,
-            { max: true }
-        )
+        // await SushiSwapV3.addLiquidity( 
+        //     signer,
+        //     TOKENS[ chain ].eth,
+        //     null,
+        //     TOKENS[ chain ].usdt,
+        //     null,
+        //     chain,
+        //     { max: true }
+        // )
 
         // await SushiSwapV3.removeLiquidity( 
         //     signer,

@@ -555,7 +555,7 @@ export default [
             "decimals": 18,
             "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
         },
-        "rpc": [ "https://developer-access-mainnet.base.org" ],
+        "rpc": [ "https://lb.nodies.app/v1/1d7fddd1e0c94a84a7a061f84d06a866" ],
         "watch": [
             "rpc",
             "api"
