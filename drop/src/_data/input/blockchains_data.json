@@ -1,0 +1,90 @@
+[
+    {
+        "chainId": 5,
+        "gasToken": "eth",
+        "name": "arbitrum",
+        "rpc": "chosen arbitrum RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 43114,
+        "gasToken": "avax",
+        "name": "avalanche",
+        "rpc": "chosen avalanche RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 8453,
+        "gasToken": "eth",
+        "name": "base",
+        "rpc": "chosen base RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "airdrop"
+    },
+    {
+        "chainId": 56,
+        "gasToken": "bnb",
+        "name": "binance",
+        "rpc": "chosen binance RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 1,
+        "gasToken": "eth",
+        "name": "ethereum",
+        "rpc": "chosen ethereum RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 59144,
+        "gasToken": "eth",
+        "name": "linea",
+        "rpc": "chosen linea RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "airdrop"
+    },
+    {
+        "chainId": 300,
+        "gasToken": "eth",
+        "name": "optimism",
+        "rpc": "chosen optimism RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 137,
+        "gasToken": "matic",
+        "name": "polygon",
+        "rpc": "chosen polygon RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "legacy"
+    },
+    {
+        "chainId": 1101,
+        "gasToken": "eth",
+        "name": "polygonzkevm",
+        "rpc": "chosen polygonzkevm RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "airdrop"
+    },
+    {
+        "chainId": 0,
+        "gasToken": "eth",
+        "name": "starknet",
+        "rpc": "chosen starknet RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "airdrop"
+    },
+    {
+        "chainId": 324,
+        "gasToken": "eth",
+        "name": "zksyncera",
+        "rpc": "chosen zksyncera RPC",
+        "tokens": ["avax", "bnb", "eth", "dai", "matic", "usdc", "usdt"],
+        "type": "airdrop"
+    }
+]

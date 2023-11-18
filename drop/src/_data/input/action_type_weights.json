@@ -1,0 +1,22 @@
+[
+    {
+        "type": "swap",
+        "value": 0.6
+    },
+    {
+        "type": "add liquidity",
+        "value": 0.2
+    },
+    {
+        "type": "mint",
+        "value": 0.06
+    },
+    {
+        "type": "lend",
+        "value": 0.06
+    },
+    {
+        "type": "borrow",
+        "value": 0.08
+    }
+]

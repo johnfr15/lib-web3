@@ -1,0 +1,420 @@
+{
+    "balances": [
+        {
+            "blockchainName": "avalanche",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 55.56,
+                    "value": 500
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "eth",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "arbitrum",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "base",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "binance",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 2.39,
+                    "value": 500
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "ethereum",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "linea",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "optimism",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "polygon",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "matic",
+                    "amount": 1000,
+                    "value": 500
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "polygonzkevm",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "starknet",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "blockchainName": "zksyncera",
+            "tokens": [
+                {
+                    "name": "avax",
+                    "amount": 0,
+                    "value": 0
+                },
+                {
+                    "name": "bnb",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "dai",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "eth",
+                    "amount": 0.323,
+                    "value": 500
+                },{
+                    "name": "matic",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdc",
+                    "amount": 0,
+                    "value": 0
+                },{
+                    "name": "usdt",
+                    "amount": 0,
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "chains": [
+        "arbitrum",
+        "avalanche",
+        "base",
+        "binance",
+        "ethereum",
+        "linea",
+        "optimism",
+        "polygon",
+        "polygonzkevm",
+        "starknet",
+        "zksyncera"
+    ],
+    "signer": {
+        "publicKey": "0x...",
+        "privateKey": "0x..."
+    },
+    "tokens": [
+        "avax",
+        "bnb",
+        "dai",
+        "eth",
+        "matic",
+        "usdc",
+        "usdt"
+    ]
+}

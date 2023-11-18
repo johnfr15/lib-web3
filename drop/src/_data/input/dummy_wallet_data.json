@@ -1,0 +1,547 @@
+{
+    "balances": [
+        {
+            "amount": "0",
+            "blockchain": "avalanche",
+            "gasToken": true,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "10",
+            "blockchain": "avalanche",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "100"
+        },
+        {
+            "amount": "10",
+            "blockchain": "avalanche",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "100"
+        },
+        {
+            "amount": "10",
+            "blockchain": "avalanche",
+            "gasToken": false,
+            "symbol": "eth",
+            "value": "100"
+        },
+        {
+            "amount": "10",
+            "blockchain": "avalanche",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "100"
+        },
+        {
+            "amount": "10",
+            "blockchain": "avalanche",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "100"
+        },
+        {
+            "blockchain": "avalanche",
+            "amount": "10",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "100"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "arbitrum",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "base",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": true,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "binance",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "ethereum",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "linea",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "optimism",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": true,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygon",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },            
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "polygonzkevm",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "starknet",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "avax",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "bnb",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "dai",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": true,
+            "symbol": "eth",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "matic",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "usdc",
+            "value": "0"
+        },
+        {
+            "amount": "0",
+            "blockchain": "zksyncera",
+            "gasToken": false,
+            "symbol": "usdt",
+            "value": "0"
+        }
+    ],
+    "signer": {
+        "publicKey": "0x...",
+        "privateKey": "0x..."
+    }
+}
