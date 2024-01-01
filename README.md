@@ -1,6 +1,6 @@
-# Lib web3 
+# Lib web3 v1.0.0
 
-![ethereum](images/eth.png) 
+![ethereum](./images/eth.png) 
 <br />
   
 ## Abstract
@@ -19,7 +19,7 @@ This category include modules that can interact with single chain *Automated Mar
 <br />
 
 ### Module architecture
-![AMM architecture](images/AMM-abstract.jpeg) 
+![AMM architecture](./images/AMM-abstract.jpg) 
 <br />
 <br />
 <br />
@@ -31,7 +31,7 @@ This category allow to interact with bridges to **bridge** your tokens from one 
 <br />
 
 ### Module architecture
-![Bridge architecture](images/Bridge-abstract.jpeg) 
+![Bridge architecture](./images/Bridge-abstract.jpg) 
 <br />
 <br />
 <br />
@@ -43,6 +43,6 @@ this catogory include modules that can interact with an *Automated Market Maker*
 <br />
 
 ### Module architecture
-![MCAMM architecture](images/MCAMM-abstract.jpeg) 
+![MCAMM architecture](./images/MCAMM-abstract.jpg) 
 <br />
 <br />
