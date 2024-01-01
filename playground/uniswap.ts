@@ -1,6 +1,6 @@
-import { Wallet, ethers } from "ethers"
-import UniswapV3 from "../AMM/UniswapV3"
-import { Chains } from "../AMM/UniswapV3/types"
+import { Wallet } from "ethers"
+import UniswapV3 from "../libWeb3/MCAMM/UniswapV3"
+import { Chains } from "../libWeb3/MCAMM/UniswapV3/types"
 import dotenv from "dotenv"
 
 dotenv.config()

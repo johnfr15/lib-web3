@@ -1,8 +1,6 @@
 import { Wallet } from "ethers"
-import Stargate from "../Bridge/Stargate"
-import { log_balances } from "../Bridge/Stargate/log"
-import { resolve_provider } from "../Bridge/Stargate/utils"
-import { Chains } from "../Bridge/Stargate/types"
+import Stargate from "../libWeb3/Bridge/Stargate"
+import { Chains } from "../libWeb3/Bridge/Stargate/types"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -11,6 +9,7 @@ dotenv.config()
 const main = async() => {
     
     const { STARGATE_CHAIN_ID, TOKENS } = Stargate.Constant
+    const { resolve_provider } = Stargate.Utils
     
     try {
         // Set up
@@ -21,7 +20,6 @@ const main = async() => {
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, fromChain )
         console.log("")
 
         

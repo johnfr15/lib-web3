@@ -1,8 +1,7 @@
-import { Wallet } from "ethers"
-import Houdini from "../Bridge/Houdini"
 import dotenv from "dotenv"
-import { Network } from "../Bridge/Houdini/types"
-
+import { Wallet } from "ethers"
+import Houdini from "../libWeb3/Bridge/Houdini"
+import { Network } from "../libWeb3/Bridge/Houdini/types"
 
 dotenv.config()
 

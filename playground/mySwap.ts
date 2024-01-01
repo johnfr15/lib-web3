@@ -1,8 +1,7 @@
 import { Account } from "starknet"
-import MySwap from "../Starknet/MySwap"
-import dotenv from "dotenv"
-import { log_balances } from "../Starknet/MySwap/log/logBalances"
+import MySwap from "../libWeb3/AMM/Starknet/MySwap"
 import { Wallet, JsonRpcProvider, ethers } from "ethers"
+import dotenv from "dotenv"
 
 
 dotenv.config()
@@ -23,7 +22,6 @@ const main = async() => {
         console.log("stark account: ", starkSigner.address)
         console.log("evm account: ", evmSigner.address)
         console.log("Arbitrum eth balance: ", ethers.formatEther( await evm_provider.getBalance( evmSigner.address ) ))
-        await log_balances( starkSigner, network )
 
         // await MySwap.swap(
         //     starkSigner,

@@ -1,5 +1,5 @@
 import { Account } from "starknet"
-import JediSwap from "../Starknet/JediSwap"
+import JediSwap from "../libWeb3/AMM/Starknet/JediSwap"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -16,7 +16,6 @@ const main = async() => {
         const starkSigner = new Account( TESTNET_PROVIDER, process.env.ACCOUNT_ADDRESS!, process.env.PRIVATE_KEY! )
 
         console.log("stark account: ", starkSigner.address)
-        await JediSwap.Log.log_balances( starkSigner, network )
 
 
 
@@ -45,8 +44,6 @@ const main = async() => {
         //     100,
         //     network
         // )
-
-        await JediSwap.Log.log_balances( starkSigner, network )
 
     } catch (error: any) {
   

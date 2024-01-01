@@ -1,8 +1,8 @@
-import { Account, Contract, Provider } from "starknet"
+import { Account } from "starknet"
 import { Wallet, ethers, JsonRpcProvider } from "ethers"
-import Orbiter from "../Starknet/Orbiter"
+import Orbiter from "../libWeb3/Bridge/Orbiter"
 import dotenv from "dotenv"
-import { Chains } from "../Starknet/Orbiter/types"
+import { Chains } from "../libWeb3/Bridge/Orbiter/types"
 
 
 dotenv.config()

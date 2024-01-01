@@ -1,14 +1,13 @@
 import dotenv from "dotenv"
 import { Wallet } from "ethers"
-import Scale from "../Base/Scale"
-import { CHAIN_ID } from "../Base/Scale/config/constants"
+import Scale from "../libWeb3/AMM/Base/Scale"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TOKENS } = Scale.Constant
+    const { TOKENS, CHAIN_ID } = Scale.Constant
     const { resolve_provider, log_balances } = Scale.Utils
 
     

@@ -1,7 +1,7 @@
 import { Wallet } from "ethers"
 import dotenv from "dotenv"
-import PancakeSwapV3 from "../AMM/PancakeswapV3"
-import { Chains } from "../AMM/PancakeswapV3/types"
+import PancakeSwapV3 from "../libWeb3/MCAMM/PancakeswapV3"
+import { Chains } from "../libWeb3/MCAMM/PancakeswapV3/types"
 
 dotenv.config()
 
@@ -10,7 +10,6 @@ const main = async() => {
     
     const { TOKENS, CHAIN_ID } = PancakeSwapV3.Constant
     const { resolve_provider } = PancakeSwapV3.Utils
-    const { log_balances } = PancakeSwapV3.Log
 
     
     try {
@@ -22,7 +21,6 @@ const main = async() => {
         const signer = new Wallet( process.env.TEST_ETH_PRIVATE_KEY!, provider )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, chain )
         console.log("")
 
         console.log("PANCAKESWAP")

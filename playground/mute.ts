@@ -1,6 +1,5 @@
 import { Wallet } from "ethers"
-import Mute from "../ZkSync/Mute"
-import { log_balances } from "../ZkSync/Mute/log"
+import Mute from "../libWeb3/AMM/ZkSync/Mute"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -19,7 +18,6 @@ const main = async() => {
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, network )
         console.log("")
 
         // await Mute.swap(

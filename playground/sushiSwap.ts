@@ -1,15 +1,14 @@
 import { Wallet } from "ethers"
-import SushiSwapV3 from "../AMM/SushiSwapV3"
-import { Chains } from "../AMM/SushiSwapV3/types"
+import SushiSwapV3 from "../libWeb3/MCAMM/SushiSwapV3"
+import { Chains } from "../libWeb3/MCAMM/SushiSwapV3/types"
 import dotenv from "dotenv"
-import { CHAIN_ID } from "../AMM/SushiSwapV3/config/constants"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TOKENS } = SushiSwapV3.Constant
+    const { TOKENS, CHAIN_ID } = SushiSwapV3.Constant
     const { resolve_provider, log_balances } = SushiSwapV3.Utils
 
     

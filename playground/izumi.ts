@@ -1,6 +1,6 @@
 import { Wallet } from "ethers"
-import Izumi from "../AMM/Izumi"
-import { Chains } from "../AMM/Izumi/types"
+import Izumi from "../libWeb3/MCAMM/Izumi"
+import { Chains } from "../libWeb3/MCAMM/Izumi/types"
 import dotenv from "dotenv"
 
 dotenv.config()

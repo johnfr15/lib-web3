@@ -1,6 +1,5 @@
 import { Wallet } from "ethers"
-import SyncSwap from "../ZkSync/SyncSwap"
-import { log_balances } from "../ZkSync/SyncSwap/log"
+import SyncSwap from "../libWeb3/AMM/ZkSync/SyncSwap"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -17,7 +16,6 @@ const main = async() => {
         const signer = new Wallet( process.env.ETH_PRIVATE_KEY!, TESTNET_PROVIDER )
 
         console.log("account: ", signer.address)
-        await log_balances( signer, network )
         console.log("")
 
         // console.log( await get_balance(TOKENS[ network ].dai, signer))

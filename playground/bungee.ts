@@ -1,11 +1,10 @@
-import Bungee from "../Bridge/Bungee"
+import Bungee from "../libWeb3/Bridge/Bungee"
 import { Wallet } from "ethers"
-import { Chains } from "../Bridge/Bungee/type/types"
-import { NATIVE_TOKEN } from "../Bridge/Bungee/config/constants"
+import { Chains } from "../libWeb3/Bridge/Bungee/types/types"
 
 const main = async() => {
 
-    const { TOKENS, CHAIN_ID } = Bungee.Constant
+    const { TOKENS, CHAIN_ID, NATIVE_TOKEN } = Bungee.Constant
     const { resolve_provider, log_balances } = Bungee.Utils
     
     try {

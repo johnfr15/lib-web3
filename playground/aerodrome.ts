@@ -1,14 +1,13 @@
 import dotenv from "dotenv"
 import { Wallet } from "ethers"
-import Aerodrome from "../Base/Aerodrome"
-import { CHAIN_ID } from "../Base/Aerodrome/config/constants"
+import Aerodrome from "../libWeb3/AMM/Base/Aerodrome"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TOKENS } = Aerodrome.Constant
+    const { TOKENS, CHAIN_ID } = Aerodrome.Constant
     const { resolve_provider, log_balances } = Aerodrome.Utils
 
     

@@ -1,15 +1,14 @@
 import dotenv from "dotenv"
 import { Wallet } from "ethers"
-import BaseSwapV3 from "../Base/BaseSwapV3"
-import BaseSwapV2 from "../Base/BaseSwapV2"
-import { CHAIN_ID } from "../Base/BaseSwapV3/config/constants"
+import BaseSwapV3 from "../libWeb3/AMM/Base/BaseSwapV3"
+import BaseSwapV2 from "../libWeb3/AMM/Base/BaseSwapV2"
 
 dotenv.config()
 
 
 const main = async() => {
     
-    const { TOKENS } = BaseSwapV2.Constant
+    const { TOKENS, CHAIN_ID } = BaseSwapV2.Constant
     const { resolve_provider, log_balances } = BaseSwapV2.Utils
 
     
