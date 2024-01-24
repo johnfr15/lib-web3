@@ -13,7 +13,7 @@ const main = async() => {
         // Set up
         const network: 'TESTNET' | 'MAINNET' = "TESTNET" // Testnet | Mainnet
 
-        const starkSigner = new Account( TESTNET_PROVIDER, "0x58626fc877885de4d8a12abcca0eaa036e26ea969a16dc73a5aca5c264c4fba", "0xaaf79db8975ea77d8f231c5463b7ec134d906aaad154cf886bde55687a6f58" )
+        const starkSigner = new Account( TESTNET_PROVIDER, process.env.STARKNET_PUBLIC_KEY!, process.env.STARKNET_PRIVATE_KEY! )
 
         console.log("stark account: ", starkSigner.address)
 
