@@ -42,7 +42,7 @@ export const get_token = async( tokenAddress: string, chain: Chains ): Promise<T
 
 
     if ( token === undefined )
-        throw(`Error: Can't find token ${ tokenAddress } on network ${ chain }, please add it to /Mute/config/tokens.ts`)
+        throw(`Error: Can't find token ${ tokenAddress } on network ${ chain }, please add it to /config/tokens.ts`)
     
 
     return token
@@ -73,7 +73,10 @@ export const get_pool = async( tokenA: Token, tokenB: Token, signer: Wallet, cha
         const bestFee = get_best_fee( tokenA, tokenB, chain )
         const pair = await Factory.getPool( tokenA.address, tokenB.address, bestFee )
 
-        
+        console.log( "token A: ",tokenA.symbol, tokenA.address)
+        console.log( "token B: ",tokenB.symbol, tokenB.address)
+        console.log( pair  )
+
         if ( BigInt( pair ) === BigInt( 0 ) )
             throw(`Error: pair for token ${ tokenA.symbol }/${ tokenB.symbol } Fee: ${ bestFee } not created yet.`)
     

@@ -143,8 +143,8 @@ export const TOKENS: { [key in Chains]: any } = {
 
   polygonTestnet: {
     matic: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    weth9: "0x5B67676a984807a212b1c59eBFc9B3568a474F0a",
-    weth: '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323',
+    weth9: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
+    weth: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
     usdc:'0x742DfA5Aa70a8212857966D491D67B09Ce7D6ec7',
     usdt:'0x3813e82e6f7098b9583FC0F33a962D02018B6803',
     dai:'0xcB1e72786A6eb3b44C2a2429e317c8a2462CFeb1',
